@@ -36,6 +36,66 @@ function executeContentScriptOnAllTabs(findValue: string) {
   });
 }
 
+function executeContentScriptOnCurrentTab(findValue: string) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs[0];
+    if (tab.id) {
+      executeContentScript(tab.id, findValue);
+    }
+  });
+}
+
+function navigateToNextTabWithMatch() {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    let activeTabIndex = tabs.findIndex((tab) => tab.active);
+
+    for (let i = 1; i <= tabs.length; i++) {
+      let nextTab = tabs[(activeTabIndex + i) % tabs.length];
+      if (nextTab.id) {
+        chrome.tabs.sendMessage(
+          nextTab.id,
+          { type: 'next-match' },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              // Ignore this error
+            } else if (response.hasMatch) {
+              chrome.tabs.update(nextTab.id, { active: true });
+              return;
+            }
+          }
+        );
+      }
+    }
+  });
+}
+
+// chrome.runtime.onMessage.addListener((message: Messages, sender) => {
+//   if (
+//     message.from === 'content' &&
+//     message.type === 'get-inner-html' &&
+//     message.payload
+//   ) {
+//     const { title, innerHtml } = message.payload;
+//     console.log(
+//       // `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
+//       `Tab ID: ${sender.tab!.id}, title: ${title}`
+//     );
+//   }
+
+//   // if (message.from === 'content' && message.type === 'execute-content-script') {
+//   //   const findValue = message.payload;
+//   //   executeContentScriptOnAllTabs(findValue);
+//   // }
+
+//   if (message.from === 'content' && message.type === 'execute-content-script') {
+//     const findValue = message.payload;
+//     executeContentScriptOnAllTabs(findValue);
+//   } else if (message.from === 'content' && message.type === 'next-match') {
+//     executeContentScriptWithMessage(sender.tab!.id, 'next-match');
+//   } else if (message.from === 'content' && message.type === 'previous-match') {
+//     executeContentScriptWithMessage(sender.tab!.id, 'previous-match');
+//   }
+// });
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   if (
     message.from === 'content' &&
@@ -43,23 +103,28 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     message.payload
   ) {
     const { title, innerHtml } = message.payload;
-    console.log(
-      // `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
-      `Tab ID: ${sender.tab!.id}, title: ${title}`
-    );
+    // console.log(
+    //   // `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
+    //   `Tab ID: ${sender.tab!.id}, title: ${title}`
+    // );
   }
-
-  // if (message.from === 'content' && message.type === 'execute-content-script') {
-  //   const findValue = message.payload;
-  //   executeContentScriptOnAllTabs(findValue);
-  // }
 
   if (message.from === 'content' && message.type === 'execute-content-script') {
     const findValue = message.payload;
     executeContentScriptOnAllTabs(findValue);
-  } else if (message.from === 'content' && message.type === 'next-match') {
-    executeContentScriptWithMessage(sender.tab!.id, 'next-match');
-  } else if (message.from === 'content' && message.type === 'previous-match') {
-    executeContentScriptWithMessage(sender.tab!.id, 'previous-match');
+  } else if (
+    message.from === 'content' &&
+    (message.type === 'next-match' || message.type === 'previous-match')
+  ) {
+    executeContentScriptWithMessage(sender.tab!.id, message.type);
+  }
+
+  if (message.type === 'highlight-matches') {
+    const findValue = message.findValue;
+    executeContentScriptOnCurrentTab(findValue);
+  } else if (message.type === 'next-match') {
+    navigateToNextTabWithMatch();
+  } else if (message.type === 'previous-match') {
+    // Implement previous match tab navigation if needed
   }
 });

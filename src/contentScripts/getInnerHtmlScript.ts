@@ -66,8 +66,13 @@ function updateHighlights() {
 
 function nextMatch() {
   currentIndex = (currentIndex + 1) % matches.length;
-  // highlightMatch();
-  updateHighlights();
+  if (currentIndex === 0) {
+    // If it's the first match again, we've looped through all matches
+    // Notify background script to check the next tab
+    chrome.runtime.sendMessage({ type: 'next-match' });
+  } else {
+    updateHighlights();
+  }
 }
 
 function previousMatch() {
@@ -80,14 +85,39 @@ function scrollToElement(element) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-chrome.runtime.onMessage.addListener((message) => {
+// chrome.runtime.onMessage.addListener((message) => {
+//   console.log('Message received:', message);
+
+//   if (message.type === 'highlight') {
+//     findAllMatches(message.findValue);
+//     // highlightMatch();
+//   } else if (message.type === 'next-match') {
+//     // nextMatch();
+//     if (matches.length > 0) {
+//       nextMatch();
+//       return { hasMatch: true };
+//     } else {
+//       return { hasMatch: false };
+//     }
+//   } else if (message.type === 'previous-match') {
+//     previousMatch();
+//   }
+// });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log('Message received:', message);
 
   if (message.type === 'highlight') {
     findAllMatches(message.findValue);
     // highlightMatch();
   } else if (message.type === 'next-match') {
-    nextMatch();
+    // nextMatch();
+    if (matches.length > 0) {
+      nextMatch();
+      sendResponse({ hasMatch: true }); // Update this line
+    } else {
+      sendResponse({ hasMatch: false }); // Update this line
+    }
   } else if (message.type === 'previous-match') {
     previousMatch();
   }

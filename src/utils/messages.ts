@@ -26,6 +26,11 @@ export interface ExecuteContentScript extends BaseMessage {
   payload: string;
 }
 
+export interface HighlightMatchesMessage extends BaseMessage {
+  type: 'highlight-matches';
+  findValue: string;
+}
+
 export interface NextMatchMessage extends BaseMessage {
   type: 'next-match';
 }
@@ -38,5 +43,6 @@ export type Messages =
   | ExampleMessage
   | GetInnerHtmlMessage
   | ExecuteContentScript
+  | HighlightMatchesMessage
   | NextMatchMessage
   | PreviousMatchMessage;
