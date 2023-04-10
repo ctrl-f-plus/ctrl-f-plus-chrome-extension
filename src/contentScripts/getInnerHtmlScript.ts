@@ -14,42 +14,18 @@ let currentIndex = 0;
 let matches = [];
 let searchValue = '';
 
-// function findAllMatches(value: string) {
-//   const regex = new RegExp(`(${value})`, 'gi');
-//   let match;
-//   matches = [];
-//   while ((match = regex.exec(document.body.innerHTML)) !== null) {
-//     matches.push({
-//       index: match.index,
-//       length: match[1].length,
-//     });
-//   }
-//   currentIndex = 0;
-//   searchValue = value;
-// }
-
 function searchAndHighlight(node, findValue, callback) {
   function processNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       const matchIndex = node.data
         .toLowerCase()
         .indexOf(findValue.toLowerCase());
-      // if (matchIndex !== -1) {
-      //   const range = document.createRange();
-      //   range.setStart(node, matchIndex);
-      //   range.setEnd(node, matchIndex + findValue.length);
-      //   const span = document.createElement('span');
-      //   span.className = 'highlight';
-      //   range.surroundContents(span);
-      //   matches.push(span);
-      // }
       if (matchIndex !== -1) {
         const range = document.createRange();
         range.setStart(node, matchIndex);
         range.setEnd(node, matchIndex + findValue.length);
         const span = document.createElement('span');
         span.style.backgroundColor = 'yellow'; // Add inline styling
-        // span.style.padding = '2px'; // Add inline styling
         range.surroundContents(span);
         matches.push(span);
       }
@@ -73,56 +49,30 @@ function findAllMatches(findValue) {
   currentIndex = 0;
   searchAndHighlight(document.body, findValue, () => {
     console.log('Search and highlighting completed');
+    updateHighlights();
   });
 }
 
-function createMarkNode(matchValue: string) {
-  const markNode = document.createElement('mark');
-  markNode.style.backgroundColor = 'yellow';
-  markNode.style.padding = '2px';
-  markNode.textContent = matchValue;
-  return markNode;
-}
-
-function highlightMatch() {
-  if (matches.length === 0) return;
-
-  const currentMatch = matches[currentIndex];
-  const body = document.body;
-
-  let textNodeIndex = -1;
-  let matchIndex = 0;
-
-  const walk = (node: Node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      textNodeIndex++;
-
-      if (textNodeIndex === currentMatch.index) {
-        const textNode = node as Text;
-        const matchNode = createMarkNode(currentMatch.value);
-        const parentNode = textNode.parentNode;
-
-        parentNode.insertBefore(matchNode, textNode);
-        parentNode.removeChild(textNode);
-
-        matchIndex++;
-      }
+function updateHighlights() {
+  matches.forEach((match, index) => {
+    if (index === currentIndex) {
+      match.style.backgroundColor = 'yellow';
     } else {
-      node.childNodes.forEach((childNode) => walk(childNode));
+      match.style.backgroundColor = '';
     }
-  };
-
-  walk(body);
+  });
 }
 
 function nextMatch() {
   currentIndex = (currentIndex + 1) % matches.length;
-  highlightMatch();
+  // highlightMatch();
+  updateHighlights();
 }
 
 function previousMatch() {
   currentIndex = (currentIndex - 1 + matches.length) % matches.length;
-  highlightMatch();
+  // highlightMatch();
+  updateHighlights();
 }
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -130,7 +80,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
   if (message.type === 'highlight') {
     findAllMatches(message.findValue);
-    highlightMatch();
+    // highlightMatch();
   } else if (message.type === 'next-match') {
     nextMatch();
   } else if (message.type === 'previous-match') {

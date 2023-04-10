@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-// import { Messages } from '../utils/messages';
 import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
 import '../tailwind.css';
