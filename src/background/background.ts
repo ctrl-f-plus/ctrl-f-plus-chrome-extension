@@ -69,33 +69,6 @@ function navigateToNextTabWithMatch() {
   });
 }
 
-// chrome.runtime.onMessage.addListener((message: Messages, sender) => {
-//   if (
-//     message.from === 'content' &&
-//     message.type === 'get-inner-html' &&
-//     message.payload
-//   ) {
-//     const { title, innerHtml } = message.payload;
-//     console.log(
-//       // `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
-//       `Tab ID: ${sender.tab!.id}, title: ${title}`
-//     );
-//   }
-
-//   // if (message.from === 'content' && message.type === 'execute-content-script') {
-//   //   const findValue = message.payload;
-//   //   executeContentScriptOnAllTabs(findValue);
-//   // }
-
-//   if (message.from === 'content' && message.type === 'execute-content-script') {
-//     const findValue = message.payload;
-//     executeContentScriptOnAllTabs(findValue);
-//   } else if (message.from === 'content' && message.type === 'next-match') {
-//     executeContentScriptWithMessage(sender.tab!.id, 'next-match');
-//   } else if (message.from === 'content' && message.type === 'previous-match') {
-//     executeContentScriptWithMessage(sender.tab!.id, 'previous-match');
-//   }
-// });
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   if (
     message.from === 'content' &&
@@ -103,10 +76,6 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     message.payload
   ) {
     const { title, innerHtml } = message.payload;
-    // console.log(
-    //   // `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
-    //   `Tab ID: ${sender.tab!.id}, title: ${title}`
-    // );
   }
 
   if (message.from === 'content' && message.type === 'execute-content-script') {
