@@ -17,6 +17,20 @@ const App: React.FC<{}> = () => {
     });
   };
 
+  const handleNext = () => {
+    chrome.runtime.sendMessage({
+      from: 'content',
+      type: 'next-match',
+    });
+  };
+
+  const handlePrevious = () => {
+    chrome.runtime.sendMessage({
+      from: 'content',
+      type: 'previous-match',
+    });
+  };
+
   useEffect(() => {
     // ctrl-shft-f keydown listen:
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,7 +53,12 @@ const App: React.FC<{}> = () => {
         <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
           {' '}
           <DraggableModal>
-            <SearchInput onSubmit={handleSubmit} focus={showModal} />
+            <SearchInput
+              onSubmit={handleSubmit}
+              onNext={handleNext}
+              onPrevious={handlePrevious}
+              focus={showModal}
+            />
           </DraggableModal>
         </div>
       )}

@@ -26,7 +26,17 @@ export interface ExecuteContentScript extends BaseMessage {
   payload: string;
 }
 
+export interface NextMatchMessage extends BaseMessage {
+  type: 'next-match';
+}
+
+export interface PreviousMatchMessage extends BaseMessage {
+  type: 'previous-match';
+}
+
 export type Messages =
   | ExampleMessage
   | GetInnerHtmlMessage
-  | ExecuteContentScript;
+  | ExecuteContentScript
+  | NextMatchMessage
+  | PreviousMatchMessage;

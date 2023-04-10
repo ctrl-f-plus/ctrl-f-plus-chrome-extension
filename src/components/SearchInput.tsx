@@ -5,10 +5,17 @@ import { useState, useRef, useEffect } from 'react';
 
 interface SearchInputProps {
   onSubmit: (value: string) => void;
+  onNext: () => void;
+  onPrevious: () => void;
   focus: boolean;
 }
 
-const SearchInput: React.FC<SearchInputProps> = ({ onSubmit }) => {
+const SearchInput: React.FC<SearchInputProps> = ({
+  onSubmit,
+  onNext,
+  onPrevious,
+  focus,
+}) => {
   const [searchValue, setSearchValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -16,6 +23,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSubmit }) => {
     e.preventDefault();
     onSubmit(searchValue);
     setSearchValue('');
+  };
+
+  const handleNext = () => {
+    onNext();
+    chrome.runtime.sendMessage({ from: 'content', type: 'next-match' });
+  };
+
+  const handlePrevious = () => {
+    onPrevious();
+    chrome.runtime.sendMessage({ from: 'content', type: 'previous-match' });
   };
 
   useEffect(() => {
@@ -42,6 +59,20 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSubmit }) => {
         className="bg-transparent hover:bg-opacity-75 focus:outline-none"
       >
         Search
+      </button>
+      <button
+        type="button"
+        onClick={handlePrevious}
+        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        onClick={handleNext}
+        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+      >
+        Next
       </button>
     </form>
   );

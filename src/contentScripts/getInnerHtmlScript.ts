@@ -57,6 +57,7 @@ function updateHighlights() {
   matches.forEach((match, index) => {
     if (index === currentIndex) {
       match.style.backgroundColor = 'yellow';
+      scrollToElement(match); // Add this line
     } else {
       match.style.backgroundColor = '';
     }
@@ -73,6 +74,10 @@ function previousMatch() {
   currentIndex = (currentIndex - 1 + matches.length) % matches.length;
   // highlightMatch();
   updateHighlights();
+}
+
+function scrollToElement(element) {
+  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 chrome.runtime.onMessage.addListener((message) => {
