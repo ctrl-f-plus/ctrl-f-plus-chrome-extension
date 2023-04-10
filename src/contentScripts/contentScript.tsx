@@ -40,7 +40,7 @@ const App: React.FC<{}> = () => {
         <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
           {' '}
           <DraggableModal>
-            <SearchInput onSubmit={handleSubmit} />
+            <SearchInput onSubmit={handleSubmit} focus={showModal} />
           </DraggableModal>
         </div>
       )}
