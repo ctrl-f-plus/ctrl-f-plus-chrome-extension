@@ -63,7 +63,7 @@ function getHtmlPlugins(chunks) {
   return chunks.map(
     (chunk) =>
       new HtmlPlugin({
-        title: 'Weather Extension',
+        title: 'Cntrl-F',
         filename: `${chunk}.html`,
         chunks: [chunk],
       })
