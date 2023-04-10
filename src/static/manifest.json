@@ -1,0 +1,46 @@
+{
+  "name": "Weather Extension",
+  "description": "Weather Extension in React!",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Ktrl-F Extension",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "tabs",
+    "notifications",
+    // "http://*/",
+    // "https://*/",
+    "activeTab",
+    "scripting",
+    "storage",
+    "unlimitedStorage"
+    // "*://*.openai.com/*"
+  ],
+  "host_permissions": ["https://*/*"],
+  "commands": {
+    "print_local_storage": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F"
+      },
+      "description": "Show the overlay"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "options_page": "options.html"
+}
