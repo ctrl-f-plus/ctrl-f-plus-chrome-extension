@@ -22,7 +22,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(searchValue);
-    setSearchValue('');
+    // setSearchValue('');
   };
 
   const handleNext = () => {

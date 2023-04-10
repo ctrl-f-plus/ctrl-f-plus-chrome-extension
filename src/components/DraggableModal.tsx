@@ -1,4 +1,5 @@
-// Cntrl - F / src / components / DraggableModal.tsx
+// src/components/DraggableModal.tsx
+
 import React from 'react';
 import Draggable from 'react-draggable';
 import '../tailwind.css';

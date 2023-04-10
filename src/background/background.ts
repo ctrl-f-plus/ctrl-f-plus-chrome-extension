@@ -69,6 +69,30 @@ function navigateToNextTabWithMatch() {
   });
 }
 
+function navigateToPreviousTabWithMatch() {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    let activeTabIndex = tabs.findIndex((tab) => tab.active);
+
+    for (let i = 1; i <= tabs.length; i++) {
+      let previousTab = tabs[(activeTabIndex - i + tabs.length) % tabs.length];
+      if (previousTab.id) {
+        chrome.tabs.sendMessage(
+          previousTab.id,
+          { type: 'previous-match' },
+          (response) => {
+            if (chrome.runtime.lastError) {
+              // Ignore this error
+            } else if (response.hasMatch) {
+              chrome.tabs.update(previousTab.id, { active: true });
+              return;
+            }
+          }
+        );
+      }
+    }
+  });
+}
+
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   if (
     message.from === 'content' &&
@@ -92,8 +116,16 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     const findValue = message.findValue;
     executeContentScriptOnCurrentTab(findValue);
   } else if (message.type === 'next-match') {
+    // TODO: Review - see if you can update so that it doesn't switch tabs every time.
     navigateToNextTabWithMatch();
   } else if (message.type === 'previous-match') {
-    // Implement previous match tab navigation if needed
+    navigateToPreviousTabWithMatch();
   }
 });
+
+// Log the tab ID when a tab is activated
+chrome.tabs.onActivated.addListener((activeInfo) => {
+  console.log('Switched to tab with ID:', activeInfo.tabId);
+});
+
+// With the current functionality, the DraggableModal is only visible on the original tab. We want the modal to show on the activeTab even when we switch tabs.
