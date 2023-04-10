@@ -4,7 +4,8 @@ import { Messages, ExecuteContentScript } from '../utils/messages';
 function executeContentScript(tabId: number) {
   chrome.scripting.executeScript({
     target: { tabId: tabId },
-    files: ['contentScript.js'],
+    // files: ['contentScript.js'],
+    files: ['getInnerHtmlScript.js'],
   });
 }
 

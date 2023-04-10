@@ -10,13 +10,13 @@ import '../tailwind.css';
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const sendMessageToBackground = () => {
-    chrome.runtime.sendMessage({
-      from: 'content',
-      type: 'content',
-      payload: { title: document.title, innerHtml: document.body.innerHTML },
-    });
-  };
+  // const sendMessageToBackground = () => {
+  //   chrome.runtime.sendMessage({
+  //     from: 'content',
+  //     type: 'content',
+  //     payload: { title: document.title, innerHtml: document.body.innerHTML },
+  //   });
+  // };
 
   const handleSubmit = (value: string) => {
     chrome.runtime.sendMessage({
@@ -26,13 +26,6 @@ const App: React.FC<{}> = () => {
   };
 
   useEffect(() => {
-    const innerHTML = document.title;
-    chrome.runtime.sendMessage({
-      from: 'content',
-      type: 'get-inner-html',
-      payload: innerHTML,
-    });
-
     // ctrl-shft-f keydown listen:
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'F') {
