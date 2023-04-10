@@ -23,6 +23,7 @@ export interface GetInnerHtmlMessage extends BaseMessage {
 
 export interface ExecuteContentScript extends BaseMessage {
   type: 'execute-content-script';
+  payload: string;
 }
 
 export type Messages =

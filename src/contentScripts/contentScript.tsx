@@ -14,6 +14,7 @@ const App: React.FC<{}> = () => {
     chrome.runtime.sendMessage({
       from: 'content',
       type: 'execute-content-script',
+      payload: value,
     });
   };
 
