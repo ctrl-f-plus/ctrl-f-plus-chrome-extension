@@ -16,14 +16,23 @@ const SearchInput: React.FC<SearchInputProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-black bg-opacity-75 text-white inline-flex items-center p-2 rounded"
+    >
       <input
         type="text"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        className="bg-transparent focus:outline-none text-white placeholder-white mr-2"
         placeholder="Find on page"
       />
-      <button type="submit">Search</button>
+      <button
+        type="submit"
+        className="bg-transparent hover:bg-opacity-75 focus:outline-none"
+      >
+        Search
+      </button>
     </form>
   );
 };

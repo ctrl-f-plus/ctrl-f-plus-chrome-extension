@@ -10,19 +10,7 @@ interface DraggableModalProps {
 const DraggableModal: React.FC<DraggableModalProps> = ({ children }) => {
   return (
     <Draggable>
-      {/* <div
-        style={{
-          position: 'absolute',
-          backgroundColor: 'white',
-          padding: '.1rem',
-          // border: '1px solid black',
-          borderRadius: '5px',
-          cursor: 'move',
-        }}
-      > */}
-      <div className="absolute bg-red-500 p-5 rounded-lg cursor-move">
-        {children}
-      </div>
+      <div className="absolute p-1 rounded-lg cursor-move">{children}</div>
     </Draggable>
   );
 };

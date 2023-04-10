@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 // import { Messages } from '../utils/messages';
 import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
-// import './contentScript.css';
 import '../tailwind.css';
 
 const App: React.FC<{}> = () => {
@@ -52,7 +51,7 @@ const App: React.FC<{}> = () => {
     <>
       {showModal && (
         // overlay-card
-        <div className="fixed left-5 top-5 z-50 bg-purple-500">
+        <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
           {' '}
           <DraggableModal>
             <SearchInput onSubmit={handleSubmit} />
