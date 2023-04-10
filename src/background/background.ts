@@ -2,12 +2,15 @@
 import { Messages, ExecuteContentScript } from '../utils/messages';
 
 function executeContentScript(tabId: number, findValue: string) {
-  chrome.scripting.executeScript({
-    target: { tabId: tabId },
-    files: ['getInnerHtmlScript.js'],
-  });
-
-  chrome.tabs.sendMessage(tabId, { type: 'highlight', findValue });
+  chrome.scripting.executeScript(
+    {
+      target: { tabId: tabId },
+      files: ['getInnerHtmlScript.js'],
+    },
+    () => {
+      chrome.tabs.sendMessage(tabId, { type: 'highlight', findValue });
+    }
+  );
 }
 
 // TODO: Add Settings option to allow the toggling of currentWindow

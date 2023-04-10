@@ -1,12 +1,5 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
-// const sendMessageToBackground = () => {
-//   chrome.runtime.sendMessage({
-//     from: 'content',
-//     type: 'content',
-//     payload: { title: document.title, innerHtml: document.body.innerHTML },
-//   });
-// };
 // import './contentScript.css';
 
 chrome.runtime.sendMessage({
@@ -21,36 +14,105 @@ let currentIndex = 0;
 let matches = [];
 let searchValue = '';
 
-function findAllMatches(value: string) {
-  const regex = new RegExp(`(${value})`, 'gi');
-  let match;
-  matches = [];
-  while ((match = regex.exec(document.body.innerHTML)) !== null) {
-    matches.push({
-      index: match.index,
-      length: match[1].length,
-    });
+// function findAllMatches(value: string) {
+//   const regex = new RegExp(`(${value})`, 'gi');
+//   let match;
+//   matches = [];
+//   while ((match = regex.exec(document.body.innerHTML)) !== null) {
+//     matches.push({
+//       index: match.index,
+//       length: match[1].length,
+//     });
+//   }
+//   currentIndex = 0;
+//   searchValue = value;
+// }
+
+function searchAndHighlight(node, findValue, callback) {
+  function processNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const matchIndex = node.data
+        .toLowerCase()
+        .indexOf(findValue.toLowerCase());
+      // if (matchIndex !== -1) {
+      //   const range = document.createRange();
+      //   range.setStart(node, matchIndex);
+      //   range.setEnd(node, matchIndex + findValue.length);
+      //   const span = document.createElement('span');
+      //   span.className = 'highlight';
+      //   range.surroundContents(span);
+      //   matches.push(span);
+      // }
+      if (matchIndex !== -1) {
+        const range = document.createRange();
+        range.setStart(node, matchIndex);
+        range.setEnd(node, matchIndex + findValue.length);
+        const span = document.createElement('span');
+        span.style.backgroundColor = 'yellow'; // Add inline styling
+        // span.style.padding = '2px'; // Add inline styling
+        range.surroundContents(span);
+        matches.push(span);
+      }
+    } else {
+      for (let child of node.childNodes) {
+        searchAndHighlight(child, findValue, callback);
+      }
+    }
   }
+
+  window.requestIdleCallback(() => {
+    processNode(node);
+    if (callback) {
+      callback();
+    }
+  });
+}
+
+function findAllMatches(findValue) {
+  matches = [];
   currentIndex = 0;
-  searchValue = value;
+  searchAndHighlight(document.body, findValue, () => {
+    console.log('Search and highlighting completed');
+  });
+}
+
+function createMarkNode(matchValue: string) {
+  const markNode = document.createElement('mark');
+  markNode.style.backgroundColor = 'yellow';
+  markNode.style.padding = '2px';
+  markNode.textContent = matchValue;
+  return markNode;
 }
 
 function highlightMatch() {
   if (matches.length === 0) return;
 
   const currentMatch = matches[currentIndex];
-  const beforeMatch = document.body.innerHTML.slice(0, currentMatch.index);
-  const matchValue = document.body.innerHTML.slice(
-    currentMatch.index,
-    currentMatch.index + currentMatch.length
-  );
-  const afterMatch = document.body.innerHTML.slice(
-    currentMatch.index + currentMatch.length
-  );
+  const body = document.body;
 
-  const highlightedMatch = `<mark style="background-color: yellow; padding: 2px;">${matchValue}</mark>`;
+  let textNodeIndex = -1;
+  let matchIndex = 0;
 
-  document.body.innerHTML = beforeMatch + highlightedMatch + afterMatch;
+  const walk = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      textNodeIndex++;
+
+      if (textNodeIndex === currentMatch.index) {
+        const textNode = node as Text;
+        const matchNode = createMarkNode(currentMatch.value);
+        const parentNode = textNode.parentNode;
+
+        parentNode.insertBefore(matchNode, textNode);
+        parentNode.removeChild(textNode);
+
+        matchIndex++;
+      }
+    } else {
+      node.childNodes.forEach((childNode) => walk(childNode));
+    }
+  };
+
+  walk(body);
 }
 
 function nextMatch() {
@@ -64,7 +126,8 @@ function previousMatch() {
 }
 
 chrome.runtime.onMessage.addListener((message) => {
-  console.log('Message received:', message); // Add this line
+  console.log('Message received:', message);
+
   if (message.type === 'highlight') {
     findAllMatches(message.findValue);
     highlightMatch();
