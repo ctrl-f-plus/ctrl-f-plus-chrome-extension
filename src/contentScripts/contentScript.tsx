@@ -10,14 +10,6 @@ import '../tailwind.css';
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  // const sendMessageToBackground = () => {
-  //   chrome.runtime.sendMessage({
-  //     from: 'content',
-  //     type: 'content',
-  //     payload: { title: document.title, innerHtml: document.body.innerHTML },
-  //   });
-  // };
-
   const handleSubmit = (value: string) => {
     chrome.runtime.sendMessage({
       from: 'content',

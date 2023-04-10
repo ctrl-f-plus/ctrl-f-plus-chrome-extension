@@ -4,7 +4,6 @@ import { Messages, ExecuteContentScript } from '../utils/messages';
 function executeContentScript(tabId: number) {
   chrome.scripting.executeScript({
     target: { tabId: tabId },
-    // files: ['contentScript.js'],
     files: ['getInnerHtmlScript.js'],
   });
 }
@@ -20,8 +19,15 @@ function executeContentScriptOnAllTabs() {
 }
 
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
-  if (message.from === 'content' && message.type === 'get-inner-html') {
-    console.log(`Tab ID: ${sender.tab!.id}, InnerHTML: ${message.payload}`);
+  if (
+    message.from === 'content' &&
+    message.type === 'get-inner-html' &&
+    message.payload
+  ) {
+    const { title, innerHtml } = message.payload;
+    console.log(
+      `Tab ID: ${sender.tab!.id}, title: ${title}, InnerHTML: ${innerHtml}`
+    );
   }
 
   if (message.from === 'content' && message.type === 'execute-content-script') {

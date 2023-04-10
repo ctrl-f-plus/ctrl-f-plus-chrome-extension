@@ -15,7 +15,10 @@ export interface ExampleMessage extends BaseMessage {
 
 export interface GetInnerHtmlMessage extends BaseMessage {
   type: 'get-inner-html';
-  payload: string;
+  payload: {
+    title: string;
+    innerHtml: string;
+  };
 }
 
 export interface ExecuteContentScript extends BaseMessage {
