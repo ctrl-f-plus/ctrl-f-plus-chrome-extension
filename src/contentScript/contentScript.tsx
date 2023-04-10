@@ -1,10 +1,12 @@
 // start/src/contentScript/contentScript.tsx
+
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 // import { Messages } from '../utils/messages';
 import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
-import './contentScript.css';
+// import './contentScript.css';
+import '../tailwind.css';
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -49,7 +51,9 @@ const App: React.FC<{}> = () => {
   return (
     <>
       {showModal && (
-        <div className="overlayCard">
+        // overlay-card
+        <div className="fixed left-5 top-5 z-50 bg-purple-500">
+          {' '}
           <DraggableModal>
             <SearchInput onSubmit={handleSubmit} />
           </DraggableModal>
