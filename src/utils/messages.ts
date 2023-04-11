@@ -4,10 +4,6 @@ export interface BaseMessage {
   payload?: any;
 }
 
-// export enum Messages {
-//   TOGGLE_OVERLAY,
-// }
-
 export interface ExampleMessage extends BaseMessage {
   type: 'example-message';
   payload: string;
@@ -16,8 +12,9 @@ export interface ExampleMessage extends BaseMessage {
 export interface GetInnerHtmlMessage extends BaseMessage {
   type: 'get-inner-html';
   payload: {
+    tabId: number;
     title: string;
-    innerHtml: string;
+    matches: any[];
   };
 }
 
@@ -43,10 +40,22 @@ export interface PreviousMatchMessage extends BaseMessage {
   findValue: string;
 }
 
+export interface GetAllMatchesMessage extends BaseMessage {
+  type: 'get-all-matches';
+  findValue: string;
+}
+
+export interface AllMatchesMessage extends BaseMessage {
+  type: 'all-matches';
+  allMatches: any[];
+}
+
 export type Messages =
   | ExampleMessage
   | GetInnerHtmlMessage
   | ExecuteContentScript
   | HighlightMatchesMessage
   | NextMatchMessage
-  | PreviousMatchMessage;
+  | PreviousMatchMessage
+  | GetAllMatchesMessage
+  | AllMatchesMessage;

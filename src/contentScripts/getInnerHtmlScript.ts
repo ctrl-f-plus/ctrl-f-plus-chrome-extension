@@ -44,20 +44,78 @@ function injectStyles(css) {
 
 injectStyles(contentStylesImport);
 
-// Rest of your code...
-
 /////////////////////////////////////////////////////////////////////////////
-chrome.runtime.sendMessage({
-  from: 'content',
-  type: 'get-inner-html',
-  payload: { title: document.title, innerHtml: document.body.innerHTML },
-});
+// chrome.runtime.sendMessage({
+//   from: 'content',
+//   type: 'get-inner-html',
+//   // payload: { title: document.title, innerHtml: document.body.innerHTML },
+//   payload: {
+//     tabId: tabId,
+//     title: document.title,
+//     // matches: filteredMatches,
+//     matches: matchesArray,
+//   },
+// });
+/////////////////////////////////////////////////////////////////////////////
+// Set up a port for communication with the background script
+// const port = chrome.runtime.connect({ name: 'get-inner-html' });
 
+// port.onMessage.addListener((message) => {
+//   if (message.type === 'get-inner-html') {
+//     const tabId = message.tabId;
+//     // Replace 'matchesArray' with the actual variable name that contains the array of matches
+//     const matchesArray = [];
+//     // ... (rest of the code that populates the matchesArray)
+//     chrome.runtime.sendMessage({
+//       from: 'content',
+//       type: 'get-inner-html',
+//       payload: {
+//         tabId: tabId,
+//         title: document.title,
+//         matches: matchesArray,
+//       },
+//     });
+//   }
+// });
 /////////////////////////////////////////////////////////////////////////////
 let currentIndex = 0;
 let matches = [];
 let searchValue = '';
+let tabId;
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  //   console.log('Message received:', message);
+
+  if (message.type === 'highlight') {
+    tabId = message.tabId;
+    findAllMatches(message.findValue);
+  } else if (message.type === 'next-match') {
+    if (matches.length > 0) {
+      nextMatch();
+      sendResponse({ hasMatch: true, tabId: tabId });
+    } else {
+      sendResponse({ hasMatch: false, tabId: tabId });
+    }
+  } else if (message.type === 'previous-match') {
+    previousMatch();
+  } else if (message.type === 'get-inner-html') {
+    const tabId = message.tabId;
+    // Replace 'matchesArray' with the actual variable name that contains the array of matches
+    const matchesArray = [];
+    // ... (rest of the code that populates the matchesArray)
+    chrome.runtime.sendMessage({
+      from: 'content',
+      type: 'get-inner-html',
+      payload: {
+        tabId: tabId,
+        title: document.title,
+        matches: matchesArray,
+      },
+    });
+  }
+});
+
+/////////////////////////////////////////////////////////////////////////////
 function searchAndHighlight(node, findValue, callback) {
   function processNode(node) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -69,8 +127,7 @@ function searchAndHighlight(node, findValue, callback) {
         range.setStart(node, matchIndex);
         range.setEnd(node, matchIndex + findValue.length);
         const span = document.createElement('span');
-        span.classList.add('highlight', 'highlight-red');
-        span.style.padding = '2px';
+        span.classList.add('highlight');
         range.surroundContents(span);
         matches.push(span);
       }
@@ -101,16 +158,18 @@ function findAllMatches(findValue) {
 function updateHighlights() {
   matches.forEach((match, index) => {
     if (index === currentIndex) {
-      match.style.backgroundColor = 'yellow';
-      scrollToElement(match); // Add this line
+      match.classList.add('highlight-focus');
+      scrollToElement(match);
     } else {
-      match.style.backgroundColor = '';
+      match.classList.remove('highlight-focus');
     }
   });
 }
 
 function nextMatch() {
   currentIndex = (currentIndex + 1) % matches.length;
+  console.log('HERE!');
+  // debugger;
   if (currentIndex === 0) {
     // If it's the first match again, we've looped through all matches
     // Notify background script to check the next tab
@@ -129,19 +188,19 @@ function scrollToElement(element) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Message received:', message);
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   console.log('Message received:', message);
 
-  if (message.type === 'highlight') {
-    findAllMatches(message.findValue);
-  } else if (message.type === 'next-match') {
-    if (matches.length > 0) {
-      nextMatch();
-      sendResponse({ hasMatch: true }); // Update this line
-    } else {
-      sendResponse({ hasMatch: false }); // Update this line
-    }
-  } else if (message.type === 'previous-match') {
-    previousMatch();
-  }
-});
+//   if (message.type === 'highlight') {
+//     findAllMatches(message.findValue);
+//   } else if (message.type === 'next-match') {
+//     if (matches.length > 0) {
+//       nextMatch();
+//       sendResponse({ hasMatch: true, tabId: sender.tab.id });
+//     } else {
+//       sendResponse({ hasMatch: false, tabId: sender.tab.id });
+//     }
+//   } else if (message.type === 'previous-match') {
+//     previousMatch();
+//   }
+// });

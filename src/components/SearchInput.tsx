@@ -1,7 +1,6 @@
 // src/components/SearchInput.tsx
 
-import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import React, { FormEvent, useRef, useState, useEffect } from 'react';
 
 interface SearchInputProps {
   onSubmit: (value: string) => void;
@@ -16,8 +15,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onPrevious,
   focus,
 }) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  // const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearchSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    if (searchInputRef.current) {
+      const findValue = searchInputRef.current.value;
+      chrome.runtime.sendMessage({ type: 'get-all-matches', findValue });
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,18 +45,33 @@ const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   useEffect(() => {
-    if (focus && inputRef.current) {
-      inputRef.current.focus();
+    const handleMessage = (message: any) => {
+      if (message.type === 'all-matches') {
+        setMatches(message.allMatches);
+      }
+    };
+
+    if (focus && searchInputRef.current) {
+      searchInputRef.current.focus();
     }
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
   }, [focus]);
+  // }, []);
 
   return (
     <form
-      onSubmit={handleSubmit}
+      // onSubmit={handleSubmit}
+      onSubmit={handleSearchSubmit}
       className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
     >
       <input
-        ref={inputRef}
+        // ref={inputRef}
+        ref={searchInputRef}
         type="text"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}

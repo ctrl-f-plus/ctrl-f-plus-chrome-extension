@@ -2,16 +2,45 @@
 
 import { Messages, ExecuteContentScript } from '../utils/messages';
 
-function executeContentScript(tabId: number, findValue: string) {
-  chrome.scripting.executeScript(
-    {
-      target: { tabId: tabId },
-      files: ['getInnerHtmlScript.js'],
-    },
-    () => {
-      chrome.tabs.sendMessage(tabId, { type: 'highlight', findValue });
-    }
-  );
+const allMatches: { [tabId: number]: HTMLElement[] } = {};
+
+// function executeContentScript(tabId: number, findValue: string) {
+//   chrome.scripting.executeScript(
+//     {
+//       target: { tabId: tabId },
+//       files: ['getInnerHtmlScript.js'],
+//     },
+//     () => {
+//       // chrome.tabs.sendMessage(tabId, { type: 'highlight', findValue, tabId });
+//       chrome.tabs.sendMessage(tabId, {
+//         type: 'highlight',
+//         findValue: findValue,
+//         tabId: tabId,
+//       });
+//     }
+//   );
+// }
+
+function executeContentScript(findValue: string) {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id) {
+        chrome.scripting.executeScript(
+          {
+            target: { tabId: tab.id },
+            files: ['getInnerHtmlScript.js'],
+          },
+          () => {
+            chrome.tabs.sendMessage(tab.id, {
+              type: 'highlight',
+              findValue: findValue,
+              tabId: tab.id,
+            });
+          }
+        );
+      }
+    });
+  });
 }
 
 function executeContentScriptWithMessage(
@@ -25,7 +54,7 @@ function executeContentScriptWithMessage(
       files: ['getInnerHtmlScript.js'],
     },
     () => {
-      chrome.tabs.sendMessage(tabId, { type: messageType, findValue });
+      chrome.tabs.sendMessage(tabId, { type: messageType, findValue, tabId });
     }
   );
 }
@@ -35,7 +64,7 @@ function executeContentScriptOnAllTabs(findValue: string) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     for (const tab of tabs) {
       if (tab.id) {
-        executeContentScript(tab.id, findValue);
+        executeContentScript(findValue);
       }
     }
   });
@@ -45,7 +74,7 @@ function executeContentScriptOnCurrentTab(findValue: string) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
     if (tab.id) {
-      executeContentScript(tab.id, findValue);
+      executeContentScript(findValue);
     }
   });
 }
@@ -67,7 +96,9 @@ function navigateToNextTabWithMatch() {
             } else if (response.hasMatch) {
               if (!foundMatch) {
                 foundMatch = true;
-                chrome.tabs.update(nextTab.id, { active: true });
+                if (response.tabId === nextTab.id) {
+                  chrome.tabs.update(nextTab.id, { active: true });
+                }
               }
               return;
             }
@@ -112,7 +143,8 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     message.type === 'get-inner-html' &&
     message.payload
   ) {
-    const { title, innerHtml } = message.payload;
+    const { tabId, title, matches } = message.payload;
+    allMatches[tabId] = matches;
   }
 
   if (message.from === 'content' && message.type === 'execute-content-script') {
@@ -137,6 +169,12 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     navigateToNextTabWithMatch();
   } else if (message.type === 'previous-match') {
     navigateToPreviousTabWithMatch();
+  }
+
+  if (message.type === 'get-all-matches') {
+    const findValue = message.findValue;
+    executeContentScriptOnCurrentTab(findValue);
+    chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
   }
 });
 

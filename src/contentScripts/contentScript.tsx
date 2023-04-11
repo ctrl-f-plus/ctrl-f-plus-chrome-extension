@@ -52,7 +52,7 @@ const App: React.FC<{}> = () => {
     // Add the new message listener for 'next-match' and 'previous-match' events
     const handleMatchMessage = (message, sender, sendResponse) => {
       if (message.type === 'next-match') {
-        // Your code to find the next match
+        // FIXME: HERE
         const foundMatch = window.find(message.findValue, false, false);
         if (foundMatch) {
           sendResponse({ hasMatch: true });
@@ -60,7 +60,6 @@ const App: React.FC<{}> = () => {
           sendResponse({ hasMatch: false });
         }
       } else if (message.type === 'previous-match') {
-        // Your code to find the previous match
         const foundMatch = window.find(message.findValue, false, true);
         if (foundMatch) {
           sendResponse({ hasMatch: true });
@@ -83,7 +82,6 @@ const App: React.FC<{}> = () => {
   return (
     <>
       {showModal && (
-        // overlay-card
         <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
           {' '}
           <DraggableModal>

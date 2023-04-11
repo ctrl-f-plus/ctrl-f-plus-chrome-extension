@@ -1,0 +1,1 @@
+- the `cntrl-shift-f` keyboard command doesn't work if caps lock is on
