@@ -32,11 +32,15 @@ export interface HighlightMatchesMessage extends BaseMessage {
 }
 
 export interface NextMatchMessage extends BaseMessage {
+  from: 'content';
   type: 'next-match';
+  findValue: string;
 }
 
 export interface PreviousMatchMessage extends BaseMessage {
+  from: 'content';
   type: 'previous-match';
+  findValue: string;
 }
 
 export type Messages =

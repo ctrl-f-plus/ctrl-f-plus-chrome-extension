@@ -31,6 +31,46 @@ const App: React.FC<{}> = () => {
     });
   };
 
+  // useEffect(() => {
+  //   // ctrl-shft-f keydown listen:
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+  //       setShowModal((prevState) => !prevState);
+  //     }
+  //   };
+  //   window.addEventListener('keydown', handleKeyDown);
+
+  //   // Cleanup the event listener on unmount
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, [showModal]);
+
+  // useEffect(() => {
+  //   // ctrl-shft-f keydown listen:
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+  //       setShowModal((prevState) => !prevState);
+  //     }
+  //   };
+  //   window.addEventListener('keydown', handleKeyDown);
+
+  //   // Add this listener for 'tab-activated' events
+  //   const handleMessage = (message: { type: string }) => {
+  //     if (message.type === 'tab-activated') {
+  //       setShowModal(true);
+  //     }
+  //   };
+
+  //   chrome.runtime.onMessage.addListener(handleMessage);
+
+  //   // Cleanup the event listeners on unmount
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown);
+  //     chrome.runtime.onMessage.removeListener(handleMessage);
+  //   };
+  // }, []);
+
   useEffect(() => {
     // ctrl-shft-f keydown listen:
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,11 +80,45 @@ const App: React.FC<{}> = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup the event listener on unmount
+    // Add this listener for 'tab-activated' events
+    const handleMessage = (message: { type: string }) => {
+      if (message.type === 'tab-activated') {
+        setShowModal(true);
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMessage);
+
+    // Add the new message listener for 'next-match' and 'previous-match' events
+    const handleMatchMessage = (message, sender, sendResponse) => {
+      if (message.type === 'next-match') {
+        // Your code to find the next match
+        const foundMatch = window.find(message.findValue, false, false);
+        if (foundMatch) {
+          sendResponse({ hasMatch: true });
+        } else {
+          sendResponse({ hasMatch: false });
+        }
+      } else if (message.type === 'previous-match') {
+        // Your code to find the previous match
+        const foundMatch = window.find(message.findValue, false, true);
+        if (foundMatch) {
+          sendResponse({ hasMatch: true });
+        } else {
+          sendResponse({ hasMatch: false });
+        }
+      }
+    };
+
+    chrome.runtime.onMessage.addListener(handleMatchMessage);
+
+    // Cleanup the event listeners on unmount
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+      chrome.runtime.onMessage.removeListener(handleMessage);
+      chrome.runtime.onMessage.removeListener(handleMatchMessage);
     };
-  }, [showModal]);
+  }, []);
 
   return (
     <>
