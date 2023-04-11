@@ -50,56 +50,6 @@ function executeContentScriptOnCurrentTab(findValue: string) {
   });
 }
 
-// let switchedByMatch = false;
-
-// function navigateToNextTabWithMatch() {
-//   chrome.tabs.query({ currentWindow: true }, (tabs) => {
-//     let activeTabIndex = tabs.findIndex((tab) => tab.active);
-
-//     for (let i = 1; i <= tabs.length; i++) {
-//       let nextTab = tabs[(activeTabIndex + i) % tabs.length];
-//       if (nextTab.id) {
-//         chrome.tabs.sendMessage(
-//           nextTab.id,
-//           { type: 'next-match' },
-//           (response) => {
-//             if (chrome.runtime.lastError) {
-//               // Ignore this error
-//             } else if (response.hasMatch) {
-//               chrome.tabs.update(nextTab.id, { active: true });
-//               return;
-//             }
-//           }
-//         );
-//       }
-//     }
-//   });
-// }
-
-// function navigateToPreviousTabWithMatch() {
-//   chrome.tabs.query({ currentWindow: true }, (tabs) => {
-//     let activeTabIndex = tabs.findIndex((tab) => tab.active);
-
-//     for (let i = 1; i <= tabs.length; i++) {
-//       let previousTab = tabs[(activeTabIndex - i + tabs.length) % tabs.length];
-//       if (previousTab.id) {
-//         chrome.tabs.sendMessage(
-//           previousTab.id,
-//           { type: 'previous-match' },
-//           (response) => {
-//             if (chrome.runtime.lastError) {
-//               // Ignore this error
-//             } else if (response.hasMatch) {
-//               chrome.tabs.update(previousTab.id, { active: true });
-//               return;
-//             }
-//           }
-//         );
-//       }
-//     }
-//   });
-// }
-
 function navigateToNextTabWithMatch() {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
@@ -190,20 +140,7 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   }
 });
 
-// Log the tab ID when a tab is activated
-// chrome.tabs.onActivated.addListener((activeInfo) => {
-//   console.log('Switched to tab with ID:', activeInfo.tabId);
-// });
-
 chrome.tabs.onActivated.addListener(({ tabId }) => {
   console.log('Activated tab:', tabId);
   chrome.tabs.sendMessage(tabId, { type: 'tab-activated' });
 });
-
-// chrome.tabs.onActivated.addListener(({ tabId }) => {
-//   console.log('Activated tab:', tabId);
-//   if (switchedByMatch) {
-//     chrome.tabs.sendMessage(tabId, { type: 'tab-activated' });
-//     switchedByMatch = false;
-//   }
-// });

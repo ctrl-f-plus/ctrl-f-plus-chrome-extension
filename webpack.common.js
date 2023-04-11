@@ -14,6 +14,7 @@ module.exports = {
     getInnerHtmlScript: path.resolve(
       'src/contentScripts/getInnerHtmlScript.ts'
     ),
+    contentStyles: path.resolve('src/contentScripts/contentStyles.ts'),
   },
   module: {
     rules: [

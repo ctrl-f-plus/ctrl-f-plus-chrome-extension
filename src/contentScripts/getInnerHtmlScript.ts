@@ -1,5 +1,52 @@
-// src/contentScripts/getInnerHtmlScript.ts
+// ./src/contentScripts/getInnerHtmlScript.ts
 
+// function injectStyles(css) {
+//   const style = document.createElement('style');
+//   style.type = 'text/css';
+//   style.appendChild(document.createTextNode(css));
+//   document.head.appendChild(style);
+// }
+
+// const css = `
+// .highlight {
+//   background-color: green !important;
+// }
+
+// .highlight-red {
+//   background-color: red;
+// }
+// `;
+
+// injectStyles(css);
+
+// FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
+// import contentStyles from './contentStyles.js';
+
+// function injectStyles(css) {
+//   const style = document.createElement('style');
+//   style.type = 'text/css';
+//   style.appendChild(document.createTextNode(css));
+//   document.head.appendChild(style);
+// }
+
+// injectStyles(contentStyles);
+
+////////
+// ./src/contentScripts/getInnerHtmlScript.ts
+const contentStylesImport = require('./contentStyles.ts');
+
+function injectStyles(css) {
+  const style = document.createElement('style');
+  style.type = 'text/css';
+  style.appendChild(document.createTextNode(css));
+  document.head.appendChild(style);
+}
+
+injectStyles(contentStylesImport);
+
+// Rest of your code...
+
+/////////////////////////////////////////////////////////////////////////////
 chrome.runtime.sendMessage({
   from: 'content',
   type: 'get-inner-html',
@@ -22,7 +69,8 @@ function searchAndHighlight(node, findValue, callback) {
         range.setStart(node, matchIndex);
         range.setEnd(node, matchIndex + findValue.length);
         const span = document.createElement('span');
-        span.style.backgroundColor = 'yellow';
+        span.classList.add('highlight', 'highlight-red');
+        span.style.padding = '2px';
         range.surroundContents(span);
         matches.push(span);
       }
