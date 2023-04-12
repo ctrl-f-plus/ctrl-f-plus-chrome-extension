@@ -55,7 +55,7 @@ const App: React.FC<{}> = () => {
       let foundMatch;
 
       if (message.type === 'next-match') {
-        foundMatch = window.find(message.findfindValue, false, false);
+        foundMatch = window.find(message.findValue, false, false);
       } else if (message.type === 'prev-match') {
         foundMatch = window.find(message.findValue, false, true);
       } else {
