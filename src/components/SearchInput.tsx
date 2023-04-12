@@ -24,7 +24,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     event.preventDefault();
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
-      chrome.runtime.sendMessage({ type: 'get-all-matches', findValue });
+      chrome.runtime.sendMessage({ type: 'get-all-matches-msg', findValue });
     }
   };
 

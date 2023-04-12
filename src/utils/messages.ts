@@ -41,7 +41,7 @@ export interface PreviousMatchMessage extends BaseMessage {
 }
 
 export interface GetAllMatchesMessage extends BaseMessage {
-  type: 'get-all-matches';
+  type: 'get-all-matches-msg';
   findValue: string;
 }
 
@@ -51,7 +51,7 @@ export interface AllMatchesMessage extends BaseMessage {
 }
 
 export interface GetAllMatchesRequest {
-  type: 'get-allMatches';
+  type: 'get-all-matches-req';
 }
 
 export type Messages = {

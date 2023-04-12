@@ -8,24 +8,9 @@ import {
 
 const allMatches: { [tabId: number]: HTMLElement[] } = {};
 
-// function executeContentScript(tabId: number, findValue: string) {
-//   chrome.scripting.executeScript(
-//     {
-//       target: { tabId: tabId },
-//       files: ['getInnerHtmlScript.js'],
-//     },
-//     () => {
-//       // chrome.tabs.sendMessage(tabId, { type: 'highlight', findValue, tabId });
-//       chrome.tabs.sendMessage(tabId, {
-//         type: 'highlight',
-//         findValue: findValue,
-//         tabId: tabId,
-//       });
-//     }
-//   );
-// }
-
 function executeContentScript(findValue: string) {
+  console.log('executeContentScript');
+  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
       if (tab.id) {
@@ -52,6 +37,8 @@ function executeContentScriptWithMessage(
   messageType: string,
   findValue: string
 ) {
+  console.log('executeContentScriptWithMessage');
+  // debugger;
   chrome.scripting.executeScript(
     {
       target: { tabId: tabId },
@@ -65,6 +52,8 @@ function executeContentScriptWithMessage(
 
 // TODO: Add Settings option to allow the toggling of currentWindow
 function executeContentScriptOnAllTabs(findValue: string) {
+  console.log('executeContentScriptOnAllTabs(findValue: string)');
+  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     for (const tab of tabs) {
       if (tab.id) {
@@ -75,6 +64,8 @@ function executeContentScriptOnAllTabs(findValue: string) {
 }
 
 function executeContentScriptOnCurrentTab(findValue: string) {
+  console.log('executeContentScriptOnCurrentTab(findValue: string)');
+  // debugger;
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
     if (tab.id) {
@@ -84,6 +75,8 @@ function executeContentScriptOnCurrentTab(findValue: string) {
 }
 
 function navigateToNextTabWithMatch() {
+  console.log('navigateToNextTabWithMatch()');
+  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
     let foundMatch = false;
@@ -114,6 +107,8 @@ function navigateToNextTabWithMatch() {
 }
 
 function navigateToPreviousTabWithMatch() {
+  console.log('navigateToPreviousTabWithMatch()');
+  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
     let foundMatch = false;
@@ -141,35 +136,25 @@ function navigateToPreviousTabWithMatch() {
   });
 }
 
+// TODO: decide if you need/want this on each if statement: `message.from === 'content' &&`
+// TODO: Review - see if you can update so that it doesn't switch tabs every time.
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
-  // Add this block to handle 'get-allMatches' message type
-  if (message.type === 'get-allMatches') {
-    // Add the code snippet here
+  if (message.type === 'get-all-matches-req') {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length) {
         const activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { type: 'get-allMatches' });
+        chrome.tabs.sendMessage(activeTab.id, { type: 'get-all-matches-req' });
       }
     });
+
     return;
-  }
-  if (
-    message.from === 'content' &&
-    message.type === 'get-inner-html' &&
-    message.payload
-  ) {
+  } else if (message.type === 'get-inner-html' && message.payload) {
     const { tabId, title, matches } = message.payload;
     allMatches[tabId] = matches;
-    debugger;
-  }
-
-  if (message.from === 'content' && message.type === 'execute-content-script') {
+  } else if (message.type === 'execute-content-script') {
     const findValue = message.payload;
     executeContentScriptOnAllTabs(findValue);
-  } else if (
-    message.from === 'content' &&
-    (message.type === 'next-match' || message.type === 'prev-match')
-  ) {
+  } else if (message.type === 'next-match' || message.type === 'prev-match') {
     executeContentScriptWithMessage(
       sender.tab!.id,
       message.type,
@@ -180,14 +165,15 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   if (message.type === 'highlight-matches') {
     const findValue = message.findValue;
     executeContentScriptOnCurrentTab(findValue);
-  } else if (message.type === 'next-match') {
-    // TODO: Review - see if you can update so that it doesn't switch tabs every time.
-    navigateToNextTabWithMatch();
-  } else if (message.type === 'prev-match') {
-    navigateToPreviousTabWithMatch();
   }
+  // else if (message.type === 'next-match') {
 
-  if (message.type === 'get-all-matches') {
+  //   navigateToNextTabWithMatch();
+  // } else if (message.type === 'prev-match') {
+  //   navigateToPreviousTabWithMatch();
+  // }
+
+  if (message.type === 'get-all-matches-msg') {
     const findValue = message.findValue;
     executeContentScriptOnCurrentTab(findValue);
     chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
