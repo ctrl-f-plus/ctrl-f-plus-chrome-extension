@@ -1,12 +1,13 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
+import { getStoredFindValue, setStoredFindValue } from '../utils/storage';
 const contentStylesImport = require('./contentStyles.ts');
+
 // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
 // import contentStyles from './contentStyles.js';
 
 let currentIndex = 0;
 let matches = [];
-let searchValue = '';
 let tabId;
 
 function injectStyles(css) {

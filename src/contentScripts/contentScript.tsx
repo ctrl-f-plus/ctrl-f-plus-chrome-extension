@@ -9,11 +9,11 @@ import '../tailwind.css';
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const handleSubmit = (value: string) => {
+  const handleSubmit = (findValue: string) => {
     chrome.runtime.sendMessage({
       from: 'content',
       type: 'execute-content-script',
-      payload: value,
+      payload: findValue,
     });
   };
 
@@ -38,10 +38,12 @@ const App: React.FC<{}> = () => {
         setShowModal((prevState) => !prevState);
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
 
     // Add this listener for 'tab-activated' events
     const handleMessage = (message: { type: string }) => {
+      // TODO: This shouldn't happen on every new tab
       if (message.type === 'tab-activated') {
         setShowModal(true);
       }
@@ -53,7 +55,7 @@ const App: React.FC<{}> = () => {
       let foundMatch;
 
       if (message.type === 'next-match') {
-        foundMatch = window.find(message.findValue, false, false);
+        foundMatch = window.find(message.findfindValue, false, false);
       } else if (message.type === 'prev-match') {
         foundMatch = window.find(message.findValue, false, true);
       } else {

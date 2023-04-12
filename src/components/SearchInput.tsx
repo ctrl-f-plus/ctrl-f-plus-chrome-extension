@@ -3,7 +3,7 @@
 import React, { FormEvent, useRef, useState, useEffect } from 'react';
 
 interface SearchInputProps {
-  onSubmit: (value: string) => void;
+  onSubmit: (findValue: string) => void;
   onNext: () => void;
   onPrevious: () => void;
   focus: boolean;
@@ -18,21 +18,22 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  // const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearchSubmit = (event: FormEvent) => {
     event.preventDefault();
+
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
+
       chrome.runtime.sendMessage({ type: 'get-all-matches-msg', findValue });
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(searchValue);
-    // setSearchValue('');
-  };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   onSubmit(searchValue);
+  //   // setSearchValue('');
+  // };
 
   const handleNext = () => {
     onNext();
