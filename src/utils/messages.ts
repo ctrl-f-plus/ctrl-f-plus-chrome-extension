@@ -36,7 +36,7 @@ export interface NextMatchMessage extends BaseMessage {
 
 export interface PreviousMatchMessage extends BaseMessage {
   from: 'content';
-  type: 'previous-match';
+  type: 'prev-match';
   findValue: string;
 }
 

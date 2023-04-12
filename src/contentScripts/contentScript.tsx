@@ -27,7 +27,7 @@ const App: React.FC<{}> = () => {
   const handlePrevious = () => {
     chrome.runtime.sendMessage({
       from: 'content',
-      type: 'previous-match',
+      type: 'prev-match',
     });
   };
 
@@ -49,7 +49,6 @@ const App: React.FC<{}> = () => {
 
     chrome.runtime.onMessage.addListener(handleMessage);
 
-    // Add the new message listener for 'next-match' and 'previous-match' events
     const handleMatchMessage = (message, sender, sendResponse) => {
       if (message.type === 'next-match') {
         // FIXME: HERE
@@ -59,7 +58,7 @@ const App: React.FC<{}> = () => {
         } else {
           sendResponse({ hasMatch: false });
         }
-      } else if (message.type === 'previous-match') {
+      } else if (message.type === 'prev-match') {
         const foundMatch = window.find(message.findValue, false, true);
         if (foundMatch) {
           sendResponse({ hasMatch: true });

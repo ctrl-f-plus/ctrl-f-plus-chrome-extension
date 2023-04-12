@@ -41,7 +41,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   const handlePrevious = () => {
     onPrevious();
-    chrome.runtime.sendMessage({ from: 'content', type: 'previous-match' });
+    chrome.runtime.sendMessage({ from: 'content', type: 'prev-match' });
   };
 
   useEffect(() => {

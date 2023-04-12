@@ -123,7 +123,7 @@ function navigateToPreviousTabWithMatch() {
       if (previousTab.id) {
         chrome.tabs.sendMessage(
           previousTab.id,
-          { type: 'previous-match' },
+          { type: 'prev-match' },
           (response) => {
             if (chrome.runtime.lastError) {
               // Ignore this error
@@ -168,7 +168,7 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     executeContentScriptOnAllTabs(findValue);
   } else if (
     message.from === 'content' &&
-    (message.type === 'next-match' || message.type === 'previous-match')
+    (message.type === 'next-match' || message.type === 'prev-match')
   ) {
     executeContentScriptWithMessage(
       sender.tab!.id,
@@ -183,7 +183,7 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   } else if (message.type === 'next-match') {
     // TODO: Review - see if you can update so that it doesn't switch tabs every time.
     navigateToNextTabWithMatch();
-  } else if (message.type === 'previous-match') {
+  } else if (message.type === 'prev-match') {
     navigateToPreviousTabWithMatch();
   }
 

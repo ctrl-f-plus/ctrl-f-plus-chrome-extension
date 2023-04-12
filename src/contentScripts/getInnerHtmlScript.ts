@@ -99,7 +99,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
       sendResponse({ hasMatch: false, tabId: tabId });
     }
-  } else if (message.type === 'previous-match') {
+  } else if (message.type === 'prev-match') {
     previousMatch();
   } else if (message.type === 'get-inner-html') {
     const tabId = message.tabId;
@@ -190,20 +190,3 @@ function previousMatch() {
 function scrollToElement(element) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
-
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   console.log('Message received:', message);
-
-//   if (message.type === 'highlight') {
-//     findAllMatches(message.findValue);
-//   } else if (message.type === 'next-match') {
-//     if (matches.length > 0) {
-//       nextMatch();
-//       sendResponse({ hasMatch: true, tabId: sender.tab.id });
-//     } else {
-//       sendResponse({ hasMatch: false, tabId: sender.tab.id });
-//     }
-//   } else if (message.type === 'previous-match') {
-//     previousMatch();
-//   }
-// });
