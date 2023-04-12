@@ -89,6 +89,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'highlight') {
     tabId = message.tabId;
     findAllMatches(message.findValue);
+  } else if (message.type === 'get-allMatches') {
+    // Add the code snippet here
+    console.log('allMatches:', matches);
   } else if (message.type === 'next-match') {
     if (matches.length > 0) {
       nextMatch();

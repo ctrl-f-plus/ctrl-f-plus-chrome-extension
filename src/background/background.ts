@@ -1,6 +1,10 @@
 // src/background/background.ts
 
-import { Messages, ExecuteContentScript } from '../utils/messages';
+import {
+  Messages,
+  ExecuteContentScript,
+  GetAllMatchesRequest,
+} from '../utils/messages';
 
 const allMatches: { [tabId: number]: HTMLElement[] } = {};
 
@@ -138,6 +142,17 @@ function navigateToPreviousTabWithMatch() {
 }
 
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
+  // Add this block to handle 'get-allMatches' message type
+  if (message.type === 'get-allMatches') {
+    // Add the code snippet here
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length) {
+        const activeTab = tabs[0];
+        chrome.tabs.sendMessage(activeTab.id, { type: 'get-allMatches' });
+      }
+    });
+    return;
+  }
   if (
     message.from === 'content' &&
     message.type === 'get-inner-html' &&
@@ -145,6 +160,7 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   ) {
     const { tabId, title, matches } = message.payload;
     allMatches[tabId] = matches;
+    debugger;
   }
 
   if (message.from === 'content' && message.type === 'execute-content-script') {

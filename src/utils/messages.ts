@@ -50,7 +50,13 @@ export interface AllMatchesMessage extends BaseMessage {
   allMatches: any[];
 }
 
-export type Messages =
+export interface GetAllMatchesRequest {
+  type: 'get-allMatches';
+}
+
+export type Messages = {
+  from?: 'content' | 'popup' | 'background';
+} & (
   | ExampleMessage
   | GetInnerHtmlMessage
   | ExecuteContentScript
@@ -58,4 +64,6 @@ export type Messages =
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage
-  | AllMatchesMessage;
+  | AllMatchesMessage
+  | GetAllMatchesRequest
+);
