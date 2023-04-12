@@ -19,6 +19,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
+  const [initialLoad, setInitialLoad] = useState(true);
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
@@ -59,6 +60,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
+
+      if (searchValue && initialLoad) {
+        searchInputRef.current.select();
+        setInitialLoad(false);
+      }
     }
 
     chrome.runtime.onMessage.addListener(handleMessage);
@@ -66,7 +72,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
     };
-  }, [focus]);
+    // }, [focus]);
+  }, [focus, searchValue]);
   // }, []);
 
   useEffect(() => {
@@ -114,6 +121,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         Next
       </button>
     </form>
+    // </div>
   );
 };
 
