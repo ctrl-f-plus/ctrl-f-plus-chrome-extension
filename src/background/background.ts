@@ -148,13 +148,39 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     });
 
     return;
-  } else if (message.type === 'get-inner-html' && message.payload) {
+  }
+
+  if (message.type === 'get-inner-html' && message.payload) {
     const { tabId, title, matches } = message.payload;
     allMatches[tabId] = matches;
-  } else if (message.type === 'execute-content-script') {
+
+    return;
+  }
+
+  if (message.type === 'execute-content-script') {
     const findValue = message.payload;
     executeContentScriptOnAllTabs(findValue);
-  } else if (message.type === 'next-match' || message.type === 'prev-match') {
+
+    return;
+  }
+
+  if (message.type === 'highlight-matches') {
+    const findValue = message.findValue;
+    executeContentScriptOnCurrentTab(findValue);
+
+    return;
+  }
+
+  if (message.type === 'get-all-matches-msg') {
+    const findValue = message.findValue;
+    executeContentScriptOnCurrentTab(findValue);
+    chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
+
+    return;
+  }
+
+  // FIXME: Should be able to modify this to remove the second if block
+  if (message.type === 'next-match' || message.type === 'prev-match') {
     executeContentScriptWithMessage(
       sender.tab!.id,
       message.type,
@@ -162,21 +188,10 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     );
   }
 
-  if (message.type === 'highlight-matches') {
-    const findValue = message.findValue;
-    executeContentScriptOnCurrentTab(findValue);
-  }
-  // else if (message.type === 'next-match') {
-
-  //   navigateToNextTabWithMatch();
-  // } else if (message.type === 'prev-match') {
-  //   navigateToPreviousTabWithMatch();
-  // }
-
-  if (message.type === 'get-all-matches-msg') {
-    const findValue = message.findValue;
-    executeContentScriptOnCurrentTab(findValue);
-    chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
+  if (message.type === 'next-match') {
+    navigateToNextTabWithMatch();
+  } else if (message.type === 'prev-match') {
+    navigateToPreviousTabWithMatch();
   }
 });
 
