@@ -130,7 +130,7 @@ function searchAndHighlight(node, findValue, callback) {
         range.setStart(node, matchIndex);
         range.setEnd(node, matchIndex + findValue.length);
         const span = document.createElement('span');
-        span.classList.add('highlight');
+        span.classList.add('ctrl-f-highlight');
         range.surroundContents(span);
         matches.push(span);
       }
@@ -161,10 +161,10 @@ function findAllMatches(findValue) {
 function updateHighlights() {
   matches.forEach((match, index) => {
     if (index === currentIndex) {
-      match.classList.add('highlight-focus');
+      match.classList.add('ctrl-f-highlight-focus');
       scrollToElement(match);
     } else {
-      match.classList.remove('highlight-focus');
+      match.classList.remove('ctrl-f-highlight-focus');
     }
   });
 }

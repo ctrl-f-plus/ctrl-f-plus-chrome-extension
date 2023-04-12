@@ -17,15 +17,13 @@
 // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
 
 const contentStyles = `
-.highlight {
+.ctrl-f-highlight {
   background-color: green !important;
 }
 
-.highlight-focus {
+.ctrl-f-highlight-focus {
   background-color: red !important;;
 }
 `;
-
-// padding: 2px;
 
 module.exports = contentStyles;
