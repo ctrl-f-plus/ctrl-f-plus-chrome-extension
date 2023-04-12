@@ -50,21 +50,22 @@ const App: React.FC<{}> = () => {
     chrome.runtime.onMessage.addListener(handleMessage);
 
     const handleMatchMessage = (message, sender, sendResponse) => {
+      let foundMatch;
+
       if (message.type === 'next-match') {
-        // FIXME: HERE
-        const foundMatch = window.find(message.findValue, false, false);
-        if (foundMatch) {
-          sendResponse({ hasMatch: true });
-        } else {
-          sendResponse({ hasMatch: false });
-        }
+        foundMatch = window.find(message.findValue, false, false);
       } else if (message.type === 'prev-match') {
-        const foundMatch = window.find(message.findValue, false, true);
-        if (foundMatch) {
-          sendResponse({ hasMatch: true });
-        } else {
-          sendResponse({ hasMatch: false });
-        }
+        foundMatch = window.find(message.findValue, false, true);
+      } else {
+        // TODO: Review why this is getting hit so often
+        // debugger;
+        return;
+      }
+
+      if (foundMatch) {
+        sendResponse({ hasMatch: true });
+      } else {
+        sendResponse({ hasMatch: false });
       }
     };
 
