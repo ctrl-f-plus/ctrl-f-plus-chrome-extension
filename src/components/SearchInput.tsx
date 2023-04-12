@@ -1,6 +1,7 @@
 // src/components/SearchInput.tsx
 
 import React, { FormEvent, useRef, useState, useEffect } from 'react';
+import { getStoredFindValue, setStoredFindValue } from '../utils/storage';
 
 interface SearchInputProps {
   onSubmit: (findValue: string) => void;
@@ -19,11 +20,15 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
 
+  // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
+
   const handleSearchSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
+
+      setStoredFindValue(findValue);
 
       chrome.runtime.sendMessage({ type: 'get-all-matches-msg', findValue });
     }
@@ -63,6 +68,15 @@ const SearchInput: React.FC<SearchInputProps> = ({
     };
   }, [focus]);
   // }, []);
+
+  useEffect(() => {
+    const fetchStoredFindValue = async () => {
+      const storedFindValue = await getStoredFindValue();
+      setSearchValue(storedFindValue);
+    };
+
+    fetchStoredFindValue();
+  }, []);
 
   return (
     <form
