@@ -31,6 +31,9 @@ function searchAndHighlight(node, findValue, callback) {
         span.classList.add('ctrl-f-highlight');
         range.surroundContents(span);
         matches.push(span);
+
+        // TODO: START HERE!!TODO: START HERE!!TODO: START HERE!!TODO: START HERE!!
+        // TODO: Add & call functions to storage util to save matches to local storage
       }
     } else {
       for (let child of node.childNodes) {

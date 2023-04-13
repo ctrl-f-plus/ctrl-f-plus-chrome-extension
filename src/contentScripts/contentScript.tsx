@@ -47,6 +47,7 @@ const App: React.FC<{}> = () => {
   const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
     setStoredFindValue(searchValue);
+    // TODO: unhighlight all matches
   };
 
   useEffect(() => {
