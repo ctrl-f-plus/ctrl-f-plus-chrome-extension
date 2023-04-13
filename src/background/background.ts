@@ -199,3 +199,13 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
   console.log('Activated tab:', tabId);
   chrome.tabs.sendMessage(tabId, { type: 'tab-activated' });
 });
+
+chrome.commands.onCommand.addListener((command) => {
+  if (command === 'toggle_search_overlay') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0].id) {
+        chrome.tabs.sendMessage(tabs[0].id, { command });
+      }
+    });
+  }
+});

@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
 import '../tailwind.css';
+import { handleKeyboardCommand } from '../utils/keyboardCommands';
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -31,15 +32,38 @@ const App: React.FC<{}> = () => {
     });
   };
 
+  const toggleSearchOverlay = () => {
+    setShowModal((prevState) => !prevState);
+  };
+
+  const closeSearchOverlay = () => {
+    setShowModal(false);
+  };
+
   useEffect(() => {
     // ctrl-shft-f keydown listen:
+
+    // const handleKeyDown = (e: KeyboardEvent) => {
+    //   if (e.ctrlKey && e.shiftKey && (e.key === 'F' || e.key === 'f')) {
+    //     // if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+    //     setShowModal((prevState) => !prevState);
+    //   }
+    // };
+
+    // window.addEventListener('keydown', handleKeyDown);
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'F') {
-        setShowModal((prevState) => !prevState);
+      if (e.key === 'Escape') {
+        closeSearchOverlay();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    const handleCommandMessage = (message: { command: string }) => {
+      handleKeyboardCommand(message.command, {
+        toggleSearchOverlay,
+        closeSearchOverlay,
+      });
+    };
 
     // Add this listener for 'tab-activated' events
     const handleMessage = (message: { type: string }) => {
@@ -48,8 +72,6 @@ const App: React.FC<{}> = () => {
         setShowModal(true);
       }
     };
-
-    chrome.runtime.onMessage.addListener(handleMessage);
 
     const handleMatchMessage = (message, sender, sendResponse) => {
       let foundMatch;
@@ -71,11 +93,15 @@ const App: React.FC<{}> = () => {
       }
     };
 
+    window.addEventListener('keydown', handleKeyDown);
+    chrome.runtime.onMessage.addListener(handleCommandMessage);
+    chrome.runtime.onMessage.addListener(handleMessage);
     chrome.runtime.onMessage.addListener(handleMatchMessage);
 
     // Cleanup the event listeners on unmount
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.addEventListener('keydown', handleKeyDown);
+      chrome.runtime.onMessage.removeListener(handleCommandMessage);
       chrome.runtime.onMessage.removeListener(handleMessage);
       chrome.runtime.onMessage.removeListener(handleMatchMessage);
     };

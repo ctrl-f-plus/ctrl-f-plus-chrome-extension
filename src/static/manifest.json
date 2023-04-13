@@ -26,12 +26,18 @@
   ],
   "host_permissions": ["https://*/*"],
   "commands": {
-    "print_local_storage": {
+    "toggle_search_overlay": {
       "suggested_key": {
         "default": "Ctrl+Shift+F"
       },
-      "description": "Show the overlay"
+      "description": "Toggle the Cntrl-F search overlay"
     }
+    // "close_search_overlay": {
+    //   "suggested_key": {
+    //     "default": "Escape"
+    //   },
+    //   "description": "Close the Cntrl-F search overlay"
+    // }
   },
   "background": {
     "service_worker": "background.js"
