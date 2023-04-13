@@ -1,5 +1,7 @@
 // src/utils/keyboardCommands.ts
 
+// TODO: Refactor this whole thing?
+
 export type KeyboardCommandHandler = {
   toggleSearchOverlay?: () => void;
   closeSearchOverlay?: () => void;

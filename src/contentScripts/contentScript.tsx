@@ -41,6 +41,7 @@ const App: React.FC<{}> = () => {
   };
 
   useEffect(() => {
+    // TODO: Refactor here and in the utils/keyboardCmmands.ts file
     // ctrl-shft-f keydown listen:
 
     // const handleKeyDown = (e: KeyboardEvent) => {
