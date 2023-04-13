@@ -6,9 +6,13 @@ import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
+import { setStoredFindValue } from '../utils/storage';
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  // const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const handleSubmit = (findValue: string) => {
     chrome.runtime.sendMessage({
@@ -32,37 +36,31 @@ const App: React.FC<{}> = () => {
     });
   };
 
+  const handleSearchValueChange = (newValue: string) => {
+    setSearchValue(newValue);
+  };
+
   const toggleSearchOverlay = () => {
     setShowModal((prevState) => !prevState);
   };
 
-  const closeSearchOverlay = () => {
+  const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
+    setStoredFindValue(searchValue);
   };
 
   useEffect(() => {
-    // TODO: Refactor here and in the utils/keyboardCmmands.ts file
-    // ctrl-shft-f keydown listen:
-
-    // const handleKeyDown = (e: KeyboardEvent) => {
-    //   if (e.ctrlKey && e.shiftKey && (e.key === 'F' || e.key === 'f')) {
-    //     // if (e.ctrlKey && e.shiftKey && e.key === 'F') {
-    //     setShowModal((prevState) => !prevState);
-    //   }
-    // };
-
-    // window.addEventListener('keydown', handleKeyDown);
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeSearchOverlay();
+      if (e.key === 'Escape' && showModal) {
+        // Check if the search overlay is visible
+        closeSearchOverlay(searchValue);
       }
     };
 
     const handleCommandMessage = (message: { command: string }) => {
       handleKeyboardCommand(message.command, {
         toggleSearchOverlay,
-        closeSearchOverlay,
+        // closeSearchOverlay,
       });
     };
 
@@ -101,12 +99,13 @@ const App: React.FC<{}> = () => {
 
     // Cleanup the event listeners on unmount
     return () => {
-      window.addEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
       chrome.runtime.onMessage.removeListener(handleCommandMessage);
       chrome.runtime.onMessage.removeListener(handleMessage);
       chrome.runtime.onMessage.removeListener(handleMatchMessage);
     };
-  }, []);
+    // }, []);
+  }, [showModal, searchValue]);
 
   return (
     <>
@@ -119,6 +118,9 @@ const App: React.FC<{}> = () => {
               onNext={handleNext}
               onPrevious={handlePrevious}
               focus={showModal}
+              // onSearchValueChange={handleSearchValueChange}
+              onSearchValueChange={setSearchValue}
+              // onClose={closeSearchOverlay}
             />
           </DraggableModal>
         </div>

@@ -5,3 +5,8 @@
         chrome.tabs.sendMessage(tabs[0].id, { type: 'get-all-matches-req' });
       });
     ```
+
+- Review: https://stackoverflow.com/questions/73089998/how-to-refactor-global-variables-from-mv2-to-using-chrome-storage-in-mv3-service
+
+- Review and potentially add "busy" to the storage utility. I also think you may be able to abstract more code out of the contentScript and into the storage util
+    - : https://stackoverflow.com/questions/48104433/how-to-import-es6-modules-in-content-script-for-chrome-extension

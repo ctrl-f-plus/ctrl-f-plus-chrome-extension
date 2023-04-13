@@ -8,6 +8,10 @@ interface SearchInputProps {
   onNext: () => void;
   onPrevious: () => void;
   focus: boolean;
+
+  // TODO: REVIEW THESE:
+  onSearchValueChange: (searchValue: string) => void;
+  // onClose: (searchValue: string) => void;
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
@@ -15,6 +19,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onNext,
   onPrevious,
   focus,
+  onSearchValueChange,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [matches, setMatches] = useState<any[]>([]);
@@ -50,6 +55,18 @@ const SearchInput: React.FC<SearchInputProps> = ({
     onPrevious();
     chrome.runtime.sendMessage({ from: 'content', type: 'prev-match' });
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchValue(newValue);
+    // TODO: check if you still need onSearchValueChange:
+    onSearchValueChange(newValue);
+  };
+
+  useEffect(() => {
+    onSearchValueChange(searchValue);
+    console.log('searchValue:', searchValue);
+  }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
     const handleMessage = (message: any) => {
@@ -92,11 +109,11 @@ const SearchInput: React.FC<SearchInputProps> = ({
       className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
     >
       <input
-        // ref={inputRef}
         ref={searchInputRef}
         type="text"
         value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        // onChange={(e) => setSearchValue(e.target.value)}
+        onChange={handleInputChange}
         className="mr-2 text-white placeholder-white bg-transparent focus:outline-none"
         placeholder="Find on page"
       />
@@ -121,7 +138,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
         Next
       </button>
     </form>
-    // </div>
   );
 };
 

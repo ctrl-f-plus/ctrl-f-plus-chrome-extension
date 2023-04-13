@@ -1,6 +1,5 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
-import { getStoredFindValue, setStoredFindValue } from '../utils/storage';
 const contentStylesImport = require('./contentStyles.ts');
 
 // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
