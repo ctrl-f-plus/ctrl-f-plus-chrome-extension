@@ -59,6 +59,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setSearchValue(newValue);
+    setInitialLoad(false);
     // TODO: check if you still need onSearchValueChange:
     onSearchValueChange(newValue);
   };
