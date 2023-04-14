@@ -7,8 +7,8 @@ import { getStoredAllMatches, setStoredAllMatches } from '../utils/storage';
 // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
 // import contentStyles from './contentStyles.js';
 
-let currentIndex = 0;
-let matches = [];
+let currentIndex;
+let matches;
 let tabId;
 
 function injectStyles(css) {
@@ -22,23 +22,18 @@ function injectStyles(css) {
 function searchAndHighlight(node, findValue, callback) {
   console.log('searchAndHighlight()');
   function processNode(node) {
-    // console.log(node);
-    // if (node.nodeType === Node.TEXT_NODE) {
     if (node.nodeType === Node.TEXT_NODE && node.data) {
       const nodeData = node.data || '';
-      // const matchIndex = node.data
       const matchIndex = nodeData
         .toLowerCase()
         .indexOf(findValue.toLowerCase());
 
       if (matchIndex !== -1) {
         const range = document.createRange();
-
         range.setStart(node, matchIndex);
         range.setEnd(node, matchIndex + findValue.length);
 
         const span = document.createElement('span');
-
         span.classList.add('ctrl-f-highlight');
         range.surroundContents(span);
         matches.push(span);
@@ -59,7 +54,6 @@ function searchAndHighlight(node, findValue, callback) {
 }
 
 function findAllMatches(findValue) {
-  console.log('findAllMatches()');
   matches = [];
   currentIndex = 0;
 
@@ -70,39 +64,41 @@ function findAllMatches(findValue) {
   });
 }
 
-function updateHighlights() {
-  // debugger;
-  console.log('updateHighlights()');
+function updateHighlights(prevIndex?: number) {
+  console.log(`updateHighlights(${prevIndex})`);
+  if (!matches.length) {
+    return;
+  }
 
-  matches.forEach((match, index) => {
-    if (index === currentIndex) {
-      match.classList.add('ctrl-f-highlight-focus');
-      scrollToElement(match);
-    } else {
-      match.classList.remove('ctrl-f-highlight-focus');
-    }
-  });
+  if (typeof prevIndex === 'number') {
+    const prevMatch = matches[prevIndex];
+    prevMatch.classList.remove('ctrl-f-highlight-focus');
+  }
+
+  const curMatch = matches[currentIndex];
+  curMatch.classList.add('ctrl-f-highlight-focus');
+  scrollToElement(curMatch);
 }
 
 function nextMatch() {
-  console.log('nextMatch()');
-
+  const prevIndex = currentIndex;
   currentIndex = (currentIndex + 1) % matches.length;
   console.log(currentIndex);
-  if (currentIndex === 0) {
-    // If it's the first match again, we've looped through all matches
-    // Notify background script to check the next tab
-    chrome.runtime.sendMessage({ type: 'next-match' });
-  } else {
-    updateHighlights();
-  }
+  // if (currentIndex === 0) {
+  //   // If it's the first match again, we've looped through all matches
+  //   // Notify background script to check the next tab
+  //   chrome.runtime.sendMessage({ type: 'next-match' });
+  // } else {
+  updateHighlights(prevIndex);
+  // }
 }
 
 function previousMatch() {
-  console.log('previousMatch()');
+  // console.log('previousMatch()');
+  const prevIndex = currentIndex;
   currentIndex = (currentIndex - 1 + matches.length) % matches.length;
 
-  updateHighlights();
+  updateHighlights(prevIndex);
 }
 
 function scrollToElement(element) {
@@ -112,8 +108,6 @@ function scrollToElement(element) {
 injectStyles(contentStylesImport);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  //   console.log('Message received:', message);
-
   if (message.type === 'highlight') {
     tabId = message.tabId;
     findAllMatches(message.findValue);

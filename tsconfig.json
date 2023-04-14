@@ -4,11 +4,11 @@
     "module": "es6",
     "target": "es6",
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
 
     // "lib": ["dom", "es2017"],
     // "strict": true,
-    // "sourceMap": true
+    "sourceMap": true
   },
   "exclude": ["node_modules", ".tmp"]
 }

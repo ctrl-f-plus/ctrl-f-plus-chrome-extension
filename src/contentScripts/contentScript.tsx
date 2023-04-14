@@ -10,9 +10,7 @@ import { setStoredFindValue } from '../utils/storage';
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-
-  // const [searchValue, setSearchValue] = useState('');
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState('');
 
   const handleSearchSubmit = (findValue: string) => {
     setStoredFindValue(findValue);
@@ -76,6 +74,7 @@ const App: React.FC<{}> = () => {
     };
 
     const handleMatchMessage = (message, sender, sendResponse) => {
+      // console.log('???handleMatchMessage');
       let foundMatch;
 
       if (message.type === 'next-match') {
@@ -107,7 +106,6 @@ const App: React.FC<{}> = () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
       chrome.runtime.onMessage.removeListener(handleMatchMessage);
     };
-    // }, []);
   }, [showModal, searchValue]);
 
   return (

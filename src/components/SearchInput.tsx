@@ -28,7 +28,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (searchInputRef.current) {
@@ -39,7 +39,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   const handleNext = () => {
     onNext();
-    chrome.runtime.sendMessage({ from: 'content', type: 'next-match' });
   };
 
   const handlePrevious = () => {
@@ -61,12 +60,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
   }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
-    // const handleMessage = (message: any) => {
-    //   // Receives message from background script
-    //   if (message.type === 'all-matches') {
-    //     setMatches(message.allMatches);
-    //   }
-    // };
+    const handleMessage = (message: any) => {
+      // Receives message from background script
+      // if (message.type === 'all-matches') {
+      // setMatches(message.allMatches);
+      // }
+    };
 
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
@@ -82,9 +81,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     return () => {
       chrome.runtime.onMessage.removeListener(handleMessage);
     };
-    // }, [focus]);
   }, [focus, searchValue]);
-  // }, []);
 
   useEffect(() => {
     const fetchStoredFindValue = async () => {
@@ -97,7 +94,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <form
-      // onSubmit={handleSubmit}
       onSubmit={handleSearchSubmit}
       className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
     >
@@ -120,6 +116,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type="button"
         onClick={handlePrevious}
         className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+        disabled={searchValue === ''}
       >
         Previous
       </button>
@@ -127,6 +124,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type="button"
         onClick={handleNext}
         className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+        disabled={searchValue === ''} //FIXME: review this functionality and style it
       >
         Next
       </button>

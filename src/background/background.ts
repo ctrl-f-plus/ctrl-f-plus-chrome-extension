@@ -164,11 +164,12 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     );
   }
 
-  if (message.type === 'next-match') {
-    navigateToNextTabWithMatch();
-  } else if (message.type === 'prev-match') {
-    navigateToPreviousTabWithMatch();
-  }
+  // if (message.type === 'next-match') {
+  //   console.log('here2');
+  //   navigateToNextTabWithMatch();
+  // } else if (message.type === 'prev-match') {
+  //   navigateToPreviousTabWithMatch();
+  // }
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {

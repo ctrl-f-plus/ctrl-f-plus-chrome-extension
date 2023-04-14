@@ -1,4 +1,4 @@
-// start / webpack.common.js;
+// webpack.common.js;
 
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');

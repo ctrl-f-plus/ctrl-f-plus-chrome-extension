@@ -32,10 +32,10 @@ export interface PreviousMatchMessage extends BaseMessage {
   findValue: string;
 }
 
-export interface AllMatchesMessage extends BaseMessage {
-  type: 'all-matches';
-  allMatches: any[];
-}
+// export interface AllMatchesMessage extends BaseMessage {
+//   type: 'all-matches';
+//   allMatches: any[];
+// }
 
 export interface GetAllMatchesRequest {
   type: 'get-all-matches-req';
@@ -48,6 +48,6 @@ export type Messages = {
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage
-  | AllMatchesMessage
+  // | AllMatchesMessage
   | GetAllMatchesRequest
 );
