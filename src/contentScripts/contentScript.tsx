@@ -14,11 +14,18 @@ const App: React.FC<{}> = () => {
   // const [searchValue, setSearchValue] = useState('');
   const [searchValue, setSearchValue] = useState<string>('');
 
-  const handleSubmit = (findValue: string) => {
+  const handleSearchSubmit = (findValue: string) => {
+    setStoredFindValue(findValue);
+
+    // chrome.runtime.sendMessage({
+    //   from: 'content',
+    //   type: 'get-all-matches-msg',
+    //   payload: findValue,
+    // });
+
     chrome.runtime.sendMessage({
-      from: 'content',
-      type: 'execute-content-script',
-      payload: findValue,
+      type: 'get-all-matches-msg',
+      findValue,
     });
   };
 
@@ -36,9 +43,9 @@ const App: React.FC<{}> = () => {
     });
   };
 
-  const handleSearchValueChange = (newValue: string) => {
-    setSearchValue(newValue);
-  };
+  // const handleSearchValueChange = (newValue: string) => {
+  //   setSearchValue(newValue);
+  // };
 
   const toggleSearchOverlay = () => {
     setShowModal((prevState) => !prevState);
@@ -115,7 +122,7 @@ const App: React.FC<{}> = () => {
           {' '}
           <DraggableModal>
             <SearchInput
-              onSubmit={handleSubmit}
+              onSubmit={handleSearchSubmit}
               onNext={handleNext}
               onPrevious={handlePrevious}
               focus={showModal}

@@ -28,23 +28,14 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
-  const handleSearchSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
-
-      setStoredFindValue(findValue);
-
-      chrome.runtime.sendMessage({ type: 'get-all-matches-msg', findValue });
+      onSubmit(findValue);
     }
   };
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   onSubmit(searchValue);
-  //   // setSearchValue('');
-  // };
 
   const handleNext = () => {
     onNext();
@@ -71,6 +62,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   useEffect(() => {
     const handleMessage = (message: any) => {
+      // Receives message from background script
       if (message.type === 'all-matches') {
         setMatches(message.allMatches);
       }

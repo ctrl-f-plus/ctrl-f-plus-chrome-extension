@@ -1,8 +1,11 @@
 // src/background/background.ts
 
+// get-all-matches-msg
+// execute-content-script
+
 import {
   Messages,
-  ExecuteContentScript,
+  // ExecuteContentScript,
   GetAllMatchesRequest,
 } from '../utils/messages';
 
@@ -38,7 +41,6 @@ function executeContentScriptWithMessage(
   findValue: string
 ) {
   console.log('executeContentScriptWithMessage');
-  // debugger;
   chrome.scripting.executeScript(
     {
       target: { tabId: tabId },
@@ -50,21 +52,19 @@ function executeContentScriptWithMessage(
   );
 }
 
-// TODO: Add Settings option to allow the toggling of currentWindow
-function executeContentScriptOnAllTabs(findValue: string) {
-  console.log('executeContentScriptOnAllTabs(findValue: string)');
-  // debugger;
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    for (const tab of tabs) {
-      if (tab.id) {
-        executeContentScript(findValue);
-      }
-    }
-  });
-}
+// TODO: Add Settings option to allow the toggling of currentWindow to allow for the feature to work across multiple browser windows
+// function executeContentScriptOnAllTabs(findValue: string) {
+//   chrome.tabs.query({ currentWindow: true }, (tabs) => {
+//     for (const tab of tabs) {
+//       if (tab.id) {
+//         executeContentScript(findValue);
+//       }
+//     }
+//   });
+// }
 
 function executeContentScriptOnCurrentTab(findValue: string) {
-  console.log('executeContentScriptOnCurrentTab(findValue: string)');
+  // console.log('executeContentScriptOnCurrentTab(findValue: string)');
   // debugger;
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
@@ -157,12 +157,12 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     return;
   }
 
-  if (message.type === 'execute-content-script') {
-    const findValue = message.payload;
-    executeContentScriptOnAllTabs(findValue);
+  // if (message.type === 'execute-content-script') {
+  //   const findValue = message.payload;
+  //   executeContentScriptOnAllTabs(findValue);
 
-    return;
-  }
+  //   return;
+  // }
 
   if (message.type === 'highlight-matches') {
     const findValue = message.findValue;
@@ -171,9 +171,12 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     return;
   }
 
+  // Receive message from SearchInput component
   if (message.type === 'get-all-matches-msg') {
     const findValue = message.findValue;
     executeContentScriptOnCurrentTab(findValue);
+
+    // Sends Message back to SearchInput component
     chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
 
     return;

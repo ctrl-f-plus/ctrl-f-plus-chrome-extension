@@ -1,9 +1,15 @@
 // src/utils/storage.ts
 
+export interface Match {
+  innerText: string;
+  className: string;
+  id: string;
+}
+
 export interface LocalStorage {
   // searchValue?: string;
   findValue?: string;
-  matches?: string[];
+  allMatches?: Match[];
 }
 
 export type LocalStorageKeys = keyof LocalStorage;
@@ -31,10 +37,25 @@ export function setStoredFindValue(findValue: string): Promise<void> {
   });
 }
 
-// // Update lastActiveTabInfo
-// setLastActiveTabInfo(updatedLastActiveTabInfo);
+export function getStoredAllMatches(): Promise<Match[]> {
+  const keys: LocalStorageKeys[] = ['allMatches'];
 
-// // Get lastActiveTabInfo
-// getLastActiveTabInfo().then((lastActiveTabInfo) => {
-//   // Do something with lastActiveTabInfo
-// });
+  return new Promise((resolve) => {
+    chrome.storage.local.get(keys, (res: LocalStorage) => {
+      resolve(res.allMatches ?? []);
+    });
+  });
+}
+
+export function setStoredAllMatches(allMatches: Match[]): Promise<void> {
+  // const vals: LocalStorage = { allMatches };
+  const vals: LocalStorage = { allMatches };
+
+  console.log('TESTING!');
+  // debugger;
+  return new Promise((resolve) => {
+    chrome.storage.local.set(vals, () => {
+      resolve();
+    });
+  });
+}

@@ -1,12 +1,8 @@
+// src/utils/messages.ts
 export interface BaseMessage {
   from: 'background' | 'content';
   type: string;
   payload?: any;
-}
-
-export interface ExampleMessage extends BaseMessage {
-  type: 'example-message';
-  payload: string;
 }
 
 export interface GetInnerHtmlMessage extends BaseMessage {
@@ -18,10 +14,10 @@ export interface GetInnerHtmlMessage extends BaseMessage {
   };
 }
 
-export interface ExecuteContentScript extends BaseMessage {
-  type: 'execute-content-script';
-  payload: string;
-}
+// export interface ExecuteContentScript extends BaseMessage {
+//   type: 'execute-content-script';
+//   payload: string;
+// }
 
 export interface HighlightMatchesMessage extends BaseMessage {
   type: 'highlight-matches';
@@ -57,9 +53,8 @@ export interface GetAllMatchesRequest {
 export type Messages = {
   from?: 'content' | 'popup' | 'background';
 } & (
-  | ExampleMessage
   | GetInnerHtmlMessage
-  | ExecuteContentScript
+  // | ExecuteContentScript
   | HighlightMatchesMessage
   | NextMatchMessage
   | PreviousMatchMessage
