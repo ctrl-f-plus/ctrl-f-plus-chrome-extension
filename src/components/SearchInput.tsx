@@ -22,7 +22,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSearchValueChange,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [matches, setMatches] = useState<any[]>([]);
+  // const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
 
@@ -61,12 +61,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
   }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
-    const handleMessage = (message: any) => {
-      // Receives message from background script
-      if (message.type === 'all-matches') {
-        setMatches(message.allMatches);
-      }
-    };
+    // const handleMessage = (message: any) => {
+    //   // Receives message from background script
+    //   if (message.type === 'all-matches') {
+    //     setMatches(message.allMatches);
+    //   }
+    // };
 
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
