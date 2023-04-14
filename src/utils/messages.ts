@@ -14,14 +14,10 @@ export interface GetInnerHtmlMessage extends BaseMessage {
   };
 }
 
-// export interface ExecuteContentScript extends BaseMessage {
-//   type: 'execute-content-script';
-//   payload: string;
-// }
-
-export interface HighlightMatchesMessage extends BaseMessage {
-  type: 'highlight-matches';
-  findValue: string;
+export interface GetAllMatchesMessage extends BaseMessage {
+  from: 'content';
+  type: 'get-all-matches-msg';
+  payload: string;
 }
 
 export interface NextMatchMessage extends BaseMessage {
@@ -33,11 +29,6 @@ export interface NextMatchMessage extends BaseMessage {
 export interface PreviousMatchMessage extends BaseMessage {
   from: 'content';
   type: 'prev-match';
-  findValue: string;
-}
-
-export interface GetAllMatchesMessage extends BaseMessage {
-  type: 'get-all-matches-msg';
   findValue: string;
 }
 
@@ -54,8 +45,6 @@ export type Messages = {
   from?: 'content' | 'popup' | 'background';
 } & (
   | GetInnerHtmlMessage
-  // | ExecuteContentScript
-  | HighlightMatchesMessage
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage

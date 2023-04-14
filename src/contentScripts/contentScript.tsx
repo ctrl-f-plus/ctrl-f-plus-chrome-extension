@@ -17,15 +17,10 @@ const App: React.FC<{}> = () => {
   const handleSearchSubmit = (findValue: string) => {
     setStoredFindValue(findValue);
 
-    // chrome.runtime.sendMessage({
-    //   from: 'content',
-    //   type: 'get-all-matches-msg',
-    //   payload: findValue,
-    // });
-
     chrome.runtime.sendMessage({
+      from: 'content',
       type: 'get-all-matches-msg',
-      findValue,
+      payload: findValue,
     });
   };
 

@@ -1,39 +1,40 @@
+// function executeContentScriptOnCurrentTab(findValue: string) {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     const tab = tabs[0];
+//     if (tab.id) {
+//       executeContentScript(findValue);
+//     }
+//   });
+// }
+
+// function executeContentScript(findValue: string) {
+
+//   chrome.tabs.query({ currentWindow: true }, (tabs) => {
+//     tabs.forEach((tab) => {
+//       if (tab.id) {
+//         chrome.scripting.executeScript(
+//           {
+//             target: { tabId: tab.id },
+//             files: ['getInnerHtmlScript.js'],
+//           },
+//           () => {
+//             chrome.tabs.sendMessage(tab.id, {
+//               type: 'highlight',
+//               findValue: findValue,
+//               tabId: tab.id,
+//             });
+//           }
+//         );
+//       }
+//     });
+//   });
+// }
+
 // src/background/background.ts
 
-// get-all-matches-msg
-// execute-content-script
-
-import {
-  Messages,
-  // ExecuteContentScript,
-  GetAllMatchesRequest,
-} from '../utils/messages';
+import { Messages, GetAllMatchesRequest } from '../utils/messages';
 
 const allMatches: { [tabId: number]: HTMLElement[] } = {};
-
-function executeContentScript(findValue: string) {
-  console.log('executeContentScript');
-  // debugger;
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    tabs.forEach((tab) => {
-      if (tab.id) {
-        chrome.scripting.executeScript(
-          {
-            target: { tabId: tab.id },
-            files: ['getInnerHtmlScript.js'],
-          },
-          () => {
-            chrome.tabs.sendMessage(tab.id, {
-              type: 'highlight',
-              findValue: findValue,
-              tabId: tab.id,
-            });
-          }
-        );
-      }
-    });
-  });
-}
 
 function executeContentScriptWithMessage(
   tabId: number,
@@ -53,6 +54,32 @@ function executeContentScriptWithMessage(
 }
 
 // TODO: Add Settings option to allow the toggling of currentWindow to allow for the feature to work across multiple browser windows
+function executeContentScriptOnAllTabs(findValue: string) {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id) {
+        executeContentScript(findValue, tab);
+      }
+    });
+  });
+}
+
+function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
+  chrome.scripting.executeScript(
+    {
+      target: { tabId: tab.id },
+      files: ['getInnerHtmlScript.js'],
+    },
+    () => {
+      chrome.tabs.sendMessage(tab.id, {
+        type: 'highlight',
+        findValue: findValue,
+        tabId: tab.id,
+      });
+    }
+  );
+}
+
 // function executeContentScriptOnAllTabs(findValue: string) {
 //   chrome.tabs.query({ currentWindow: true }, (tabs) => {
 //     for (const tab of tabs) {
@@ -63,16 +90,14 @@ function executeContentScriptWithMessage(
 //   });
 // }
 
-function executeContentScriptOnCurrentTab(findValue: string) {
-  // console.log('executeContentScriptOnCurrentTab(findValue: string)');
-  // debugger;
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs[0];
-    if (tab.id) {
-      executeContentScript(findValue);
-    }
-  });
-}
+// function executeContentScriptOnCurrentTab(findValue: string) {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     const tab = tabs[0];
+//     if (tab.id) {
+//       executeContentScript(findValue);
+//     }
+//   });
+// }
 
 function navigateToNextTabWithMatch() {
   console.log('navigateToNextTabWithMatch()');
@@ -157,25 +182,15 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     return;
   }
 
-  // if (message.type === 'execute-content-script') {
-  //   const findValue = message.payload;
-  //   executeContentScriptOnAllTabs(findValue);
-
-  //   return;
-  // }
-
-  if (message.type === 'highlight-matches') {
-    const findValue = message.findValue;
-    executeContentScriptOnCurrentTab(findValue);
-
-    return;
-  }
-
   // Receive message from SearchInput component
   if (message.type === 'get-all-matches-msg') {
-    const findValue = message.findValue;
-    executeContentScriptOnCurrentTab(findValue);
+    const findValue = message.payload;
 
+    executeContentScriptOnAllTabs(findValue);
+
+    // TODO: START HERE! TODO: START HERE! TODO: START HERE! TODO: START HERE!
+    // TODO: check if you need this `all-matches` message
+    // TODO: THis might be a good place to save the matches to local storage
     // Sends Message back to SearchInput component
     chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
 
