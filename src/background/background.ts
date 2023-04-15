@@ -9,8 +9,6 @@ function executeContentScriptWithMessage(
   messageType: string,
   findValue: string
 ) {
-  console.log('executeContentScriptWithMessage');
-  console.log('executeContentScriptWithMessage - beg');
   chrome.scripting.executeScript(
     {
       target: { tabId: tabId },
@@ -20,14 +18,9 @@ function executeContentScriptWithMessage(
       chrome.tabs.sendMessage(tabId, { type: messageType, findValue, tabId });
     }
   );
-  console.log('Sent some type of message');
-  console.log('executeContentScriptWithMessage - end');
 }
 
 function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
-  console.log('executeContentScript - beg');
-  console.log(`${tab.id}`);
-  // debugger;
   chrome.scripting.executeScript(
     {
       target: { tabId: tab.id },
@@ -40,29 +33,22 @@ function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
         tabId: tab.id,
         messageId: Date.now(),
       });
-      console.log('Sent highlight message');
     }
   );
 }
 
 // TODO: Add Settings option to allow the toggling of currentWindow to allow for the feature to work across multiple browser windows
 function executeContentScriptOnAllTabs(findValue: string) {
-  console.log('executeContentScriptOnAllTabs - beg');
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
-      console.log('loop', tab.id);
       if (tab.id) {
         executeContentScript(findValue, tab);
       }
     });
   });
-
-  // console.log('executeContentScriptOnAllTabs - end');
 }
 
 function navigateToNextTabWithMatch() {
-  console.log('navigateToNextTabWithMatch()');
-  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
     let foundMatch = false;
@@ -93,8 +79,6 @@ function navigateToNextTabWithMatch() {
 }
 
 function navigateToPreviousTabWithMatch() {
-  console.log('navigateToPreviousTabWithMatch()');
-  // debugger;
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
     let foundMatch = false;
@@ -126,7 +110,6 @@ function navigateToPreviousTabWithMatch() {
 // TODO: Review - see if you can update so that it doesn't switch tabs every time.
 chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   if (message.type === 'get-all-matches-req') {
-    console.log("background - rec'd `get-all-matches-req - beg");
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length) {
         const activeTab = tabs[0];
@@ -138,17 +121,13 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   }
 
   if (message.type === 'get-inner-html' && message.payload) {
-    console.log('get-inner-html - beg');
     const { tabId, title, matches } = message.payload;
     // allMatches[tabId] = matches;
-
     return;
   }
 
   // Receive message from SearchInput component
   if (message.type === 'get-all-matches-msg') {
-    console.log("background - rec'd `get-all-matches-msg - beg");
-    console.log("Handling 'get-all-matches-msg' message"); // Add this line
     const findValue = message.payload;
 
     executeContentScriptOnAllTabs(findValue);
@@ -158,12 +137,11 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     // TODO: THis might be a good place to save the matches to local storage
     // Sends Message back to SearchInput component
     // chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
-    // console.log("background - rec'd `get-all-matches-msg - end");
+
     return;
   }
 
   if (message.type === 'next-match' || message.type === 'prev-match') {
-    console.log('nex-match - beg');
     executeContentScriptWithMessage(
       sender.tab!.id,
       message.type,
@@ -172,7 +150,6 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   }
 
   // if (message.type === 'next-match') {
-  //   console.log('here2');
   //   navigateToNextTabWithMatch();
   // } else if (message.type === 'prev-match') {
   //   navigateToPreviousTabWithMatch();
@@ -180,7 +157,6 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-  console.log('Activated tab:', tabId);
   chrome.tabs.sendMessage(tabId, { type: 'tab-activated' });
 });
 

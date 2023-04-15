@@ -1,7 +1,5 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
-///////////////////////////////////////
-// import '../glo';
 (function () {
   if (window.myUniqueExtensionFlag) {
     // The content script has already been injected, so exit early
@@ -13,10 +11,7 @@
   window.myUniqueExtensionFlag = true;
   ///////////////////////////////////////
 
-  console.log('getInnerHtmlScript.js - Executed');
   const contentStylesImport = require('./contentStyles.ts');
-
-  // import { getStoredAllMatches, setStoredAllMatches } from '../utils/storage';
 
   // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
   // import contentStyles from './contentStyles.js';
@@ -68,7 +63,6 @@
   // }
 
   function searchAndHighlight(findValue, callback) {
-    console.log(`searchAndHighlight(${findValue}, ${callback})`);
     const treeWalker = document.createTreeWalker(
       document.body,
       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
@@ -93,7 +87,6 @@
       currentNode = treeWalker.nextNode();
     }
 
-    // debugger;
     textNodesToProcess.forEach((textNode) => {
       const textNodeAsText = textNode as Text;
       let match;
@@ -126,27 +119,20 @@
     });
 
     if (callback) {
-      // debugger;
       callback();
     }
   }
 
   function findAllMatches(findValue) {
-    console.log(`findAllMatches(${findValue})`);
     matches = [];
     currentIndex = 0;
 
-    // searchAndHighlight(findValue, updateHighlights());
     searchAndHighlight(findValue, () => {
-      // FIXME: uncomment the clg and review. This should not be runnning/printing that many times
-      console.log('Inside Callback - Search and highlighting completed');
       updateHighlights();
     });
   }
 
   function updateHighlights(prevIndex?: number) {
-    console.log(`updateHighlights(${prevIndex})`);
-    // debugger;
     if (!matches.length) {
       return;
     }
@@ -162,10 +148,9 @@
   }
 
   function nextMatch() {
-    console.log('nextMatch()');
     const prevIndex = currentIndex;
     currentIndex = (currentIndex + 1) % matches.length;
-    console.log(currentIndex);
+
     // if (currentIndex === 0) {
     //   // If it's the first match again, we've looped through all matches
     //   // Notify background script to check the next tab
@@ -176,7 +161,6 @@
   }
 
   function previousMatch() {
-    console.log('previousMatch()');
     const prevIndex = currentIndex;
     currentIndex = (currentIndex - 1 + matches.length) % matches.length;
 
@@ -189,29 +173,19 @@
 
   injectStyles(contentStylesImport);
 
-  function handleMessage(message, sender, sendResponse) {
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Received message:', message, 'Message ID:', message.messageId);
-    // Your existing message handling code
-    // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    // console.log('Received message:', message, 'Message ID:', message.messageId);
     if (message.type === 'highlight') {
-      console.log('highlight - msg');
       tabId = message.tabId;
-      // debugger;
       findAllMatches(message.findValue);
-
       return;
     }
 
     if (message.type === 'get-all-matches-req') {
-      console.log('get-all-matches-req - msg');
-      console.log('allMatches:', matches);
-
       return;
     }
 
     if (message.type === 'next-match') {
-      console.log('nextMatch - msg');
       if (matches.length > 0) {
         nextMatch();
         sendResponse({ hasMatch: true, tabId: tabId });
@@ -223,14 +197,12 @@
     }
 
     if (message.type === 'prev-match') {
-      console.log('prevMatch - msg');
       previousMatch();
 
       return;
     }
 
     if (message.type === 'get-inner-html') {
-      console.log('get-innter-html - msg');
       const tabId = message.tabId;
       // Replace 'matchesArray' with the actual variable name that contains the array of matches
       const matchesArray = [];
@@ -247,13 +219,5 @@
 
       return;
     }
-  }
-  // });
-
-  chrome.runtime.onMessage.addListener(handleMessage);
-
-  // Remove the listener when the extension is deactivated or the tab is closed
-  window.addEventListener('unload', () => {
-    chrome.runtime.onMessage.removeListener(handleMessage);
   });
 })();

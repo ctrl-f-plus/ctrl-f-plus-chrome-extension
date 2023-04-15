@@ -33,18 +33,15 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
-      console.log('SearchInput - onSubmit', findValue); // Add this line
       onSubmit(findValue);
     }
   };
 
   const handleNext = () => {
-    console.log('SearchInput - onNext');
     onNext();
   };
 
   const handlePrevious = () => {
-    console.log('SearchInput - onPrevious');
     onPrevious();
   };
 
@@ -58,7 +55,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   useEffect(() => {
     onSearchValueChange(searchValue);
-    console.log('searchValue:', searchValue);
   }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
