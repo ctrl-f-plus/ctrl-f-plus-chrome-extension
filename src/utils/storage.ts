@@ -16,6 +16,7 @@ export type LocalStorageKeys = keyof LocalStorage;
 
 // export function getStoredSearchValue(): Promise<string> {
 export function getStoredFindValue(): Promise<string> {
+  console.log(`getStoredFindValue()`);
   const key: LocalStorageKeys[] = ['findValue'];
   // const key: LocalStorageKeys = 'searchValue';
 
@@ -28,6 +29,7 @@ export function getStoredFindValue(): Promise<string> {
 
 // export function setStoredSearchValue(searchValue: string): Promise<void> {
 export function setStoredFindValue(findValue: string): Promise<void> {
+  console.log(`setStoredFindValue()`);
   const val: LocalStorage = { findValue };
 
   return new Promise((resolve) => {
@@ -38,6 +40,7 @@ export function setStoredFindValue(findValue: string): Promise<void> {
 }
 
 export function getStoredAllMatches(): Promise<Match[]> {
+  console.log(`getStoredAllMatches()`);
   const keys: LocalStorageKeys[] = ['allMatches'];
 
   return new Promise((resolve) => {
@@ -48,6 +51,7 @@ export function getStoredAllMatches(): Promise<Match[]> {
 }
 
 export function setStoredAllMatches(allMatches: Match[]): Promise<void> {
+  console.log(`setStoredAllMatches`);
   // const vals: LocalStorage = { allMatches };
   const vals: LocalStorage = { allMatches };
 

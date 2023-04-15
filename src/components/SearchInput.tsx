@@ -1,7 +1,7 @@
 // src/components/SearchInput.tsx
 
 import React, { FormEvent, useRef, useState, useEffect } from 'react';
-import { getStoredFindValue, setStoredFindValue } from '../utils/storage';
+import { getStoredFindValue } from '../utils/storage';
 
 interface SearchInputProps {
   onSubmit: (findValue: string) => void;
@@ -33,17 +33,19 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
+      console.log('SearchInput - onSubmit', findValue); // Add this line
       onSubmit(findValue);
     }
   };
 
   const handleNext = () => {
+    console.log('SearchInput - onNext');
     onNext();
   };
 
   const handlePrevious = () => {
+    console.log('SearchInput - onPrevious');
     onPrevious();
-    chrome.runtime.sendMessage({ from: 'content', type: 'prev-match' });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

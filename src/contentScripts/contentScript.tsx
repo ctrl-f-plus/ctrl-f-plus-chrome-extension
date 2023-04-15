@@ -13,13 +13,17 @@ const App: React.FC<{}> = () => {
   const [searchValue, setSearchValue] = useState('');
 
   const handleSearchSubmit = (findValue: string) => {
-    setStoredFindValue(findValue);
+    console.log('handleSearchSubmit() - beg');
+    console.log("Handling 'handleSearchSubmit'");
+    // setStoredFindValue(findValue);
 
+    console.log('Sending get-all-matches-msg');
     chrome.runtime.sendMessage({
       from: 'content',
       type: 'get-all-matches-msg',
       payload: findValue,
     });
+    // console.log('handleSearchSubmit() - end');
   };
 
   const handleNext = () => {
@@ -68,29 +72,38 @@ const App: React.FC<{}> = () => {
     // Add this listener for 'tab-activated' events
     const handleMessage = (message: { type: string }) => {
       // TODO: This shouldn't happen on every new tab
+      console.log('handleMessage()', message.type); // Add this line
+      // debugger;
       if (message.type === 'tab-activated') {
         setShowModal(true);
       }
     };
 
     const handleMatchMessage = (message, sender, sendResponse) => {
-      // console.log('???handleMatchMessage');
+      console.log('???handleMatchMessage');
       let foundMatch;
 
-      if (message.type === 'next-match') {
-        foundMatch = window.find(message.findValue, false, false);
-      } else if (message.type === 'prev-match') {
-        foundMatch = window.find(message.findValue, false, true);
-      } else {
-        // TODO: Review why this is getting hit so often
-        // debugger;
-        return;
-      }
+      if (message.type === 'next-match' || message.type === 'prev-match') {
+        {
+          console.log('inside handlematchmessage if block');
+        }
+        if (message.type === 'next-match') {
+          foundMatch = window.find(message.findValue, false, false);
+        } else if (message.type === 'prev-match') {
+          foundMatch = window.find(message.findValue, false, true);
+        } else {
+          // TODO: Review why this is getting hit so often
+          // debugger;
+          // return;
+        }
 
-      if (foundMatch) {
-        sendResponse({ hasMatch: true });
+        if (foundMatch) {
+          sendResponse({ hasMatch: true });
+        } else {
+          sendResponse({ hasMatch: false });
+        }
       } else {
-        sendResponse({ hasMatch: false });
+        // return;
       }
     };
 
