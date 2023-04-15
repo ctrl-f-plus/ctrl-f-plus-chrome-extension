@@ -111,12 +111,6 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     return;
   }
 
-  if (message.type === 'get-inner-html' && message.payload) {
-    const { tabId, title, matches } = message.payload;
-    // allMatches[tabId] = matches;
-    return;
-  }
-
   // Receive message from SearchInput component
   if (message.type === 'get-all-matches-msg') {
     const findValue = message.payload;

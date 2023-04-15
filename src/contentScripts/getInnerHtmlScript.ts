@@ -76,24 +76,6 @@ import { findAllMatches, nextMatch, previousMatch } from '../utils/matchUtils';
       return;
     }
 
-    if (message.type === 'get-inner-html') {
-      const tabId = message.tabId;
-      // Replace 'matchesArray' with the actual variable name that contains the array of matches
-      const matchesArray = [];
-
-      chrome.runtime.sendMessage({
-        from: 'content',
-        type: 'get-inner-html',
-        payload: {
-          tabId: tabId,
-          title: document.title,
-          matches: matchesArray,
-        },
-      });
-
-      return;
-    }
-
     if (message.type === 'remove_styles') {
       // TODO: START HERE: TRY TO GET THE STYLES TO TOGGLE WITH THE SEARCH MODAL
 

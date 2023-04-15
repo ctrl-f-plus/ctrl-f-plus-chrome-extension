@@ -5,15 +5,6 @@ export interface BaseMessage {
   payload?: any;
 }
 
-export interface GetInnerHtmlMessage extends BaseMessage {
-  type: 'get-inner-html';
-  payload: {
-    tabId: number;
-    title: string;
-    matches: any[];
-  };
-}
-
 export interface GetAllMatchesMessage extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
@@ -49,7 +40,6 @@ export interface RemoveStylesMessage extends BaseMessage {
 export type Messages = {
   from?: 'content' | 'popup' | 'background';
 } & (
-  | GetInnerHtmlMessage
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage
