@@ -41,6 +41,11 @@ export interface GetAllMatchesRequest {
   type: 'get-all-matches-req';
 }
 
+export interface RemoveStylesMessage extends BaseMessage {
+  from: 'background' | 'content';
+  type: 'remove_styles';
+}
+
 export type Messages = {
   from?: 'content' | 'popup' | 'background';
 } & (
@@ -50,4 +55,5 @@ export type Messages = {
   | GetAllMatchesMessage
   // | AllMatchesMessage
   | GetAllMatchesRequest
+  | RemoveStylesMessage
 );

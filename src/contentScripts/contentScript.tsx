@@ -23,6 +23,8 @@ const App: React.FC<{}> = () => {
   };
 
   const handleNext = () => {
+    console.log('contentScript - handleNext()');
+
     chrome.runtime.sendMessage({
       from: 'content',
       type: 'next-match',
@@ -47,7 +49,15 @@ const App: React.FC<{}> = () => {
   const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
     setStoredFindValue(searchValue);
+
     // TODO: unhighlight all matches
+    // console.log('remove_styles');
+    // chrome.runtime.sendMessage({ type: 'remove_styles' });
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].id) {
+        chrome.tabs.sendMessage(tabs[0].id, { type: 'remove_styles' });
+      }
+    });
   };
 
   useEffect(() => {
@@ -75,9 +85,12 @@ const App: React.FC<{}> = () => {
     };
 
     const handleMatchMessage = (message, sender, sendResponse) => {
+      console.log('contentScript - handleMatchMessage()');
       let foundMatch;
 
       if (message.type === 'next-match') {
+        // debugger;
+        console.log('contentScript - next-match');
         foundMatch = window.find(message.findValue, false, false);
       } else if (message.type === 'prev-match') {
         foundMatch = window.find(message.findValue, false, true);
@@ -86,10 +99,12 @@ const App: React.FC<{}> = () => {
         // debugger;
         return;
       }
-
+      // debugger;
       if (foundMatch) {
+        console.log('contentScript - foundMatch - true');
         sendResponse({ hasMatch: true });
       } else {
+        console.log('contentScript - foundMatch - false');
         sendResponse({ hasMatch: false });
       }
     };

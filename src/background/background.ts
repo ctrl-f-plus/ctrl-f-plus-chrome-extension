@@ -15,19 +15,32 @@ function executeContentScriptWithMessage(
       files: ['getInnerHtmlScript.js'],
     },
     () => {
-      chrome.tabs.sendMessage(tabId, { type: messageType, findValue, tabId });
+      chrome.tabs.sendMessage(tabId, {
+        from: 'background',
+        type: messageType,
+        findValue,
+        tabId,
+      });
     }
   );
 }
 
 function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
+  if (tab.id === undefined) {
+    console.warn('executeContentScript: Tab ID is undefined:', tab);
+    return;
+  }
+
+  const tabId = tab.id as number;
+
   chrome.scripting.executeScript(
     {
-      target: { tabId: tab.id },
+      target: { tabId },
       files: ['getInnerHtmlScript.js'],
     },
     () => {
-      chrome.tabs.sendMessage(tab.id, {
+      chrome.tabs.sendMessage(tabId, {
+        from: 'background',
         type: 'highlight',
         findValue: findValue,
         tabId: tab.id,
@@ -48,54 +61,29 @@ function executeContentScriptOnAllTabs(findValue: string) {
   });
 }
 
-function navigateToNextTabWithMatch() {
+function navigateWithMatch(direction: 'next' | 'previous') {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     let activeTabIndex = tabs.findIndex((tab) => tab.active);
     let foundMatch = false;
 
     for (let i = 1; i <= tabs.length; i++) {
-      let nextTab = tabs[(activeTabIndex + i) % tabs.length];
-      if (nextTab.id) {
+      let tabIndex =
+        direction === 'next'
+          ? (activeTabIndex + i) % tabs.length
+          : (activeTabIndex - i + tabs.length) % tabs.length;
+      let targetTab = tabs[tabIndex];
+
+      if (targetTab.id) {
         chrome.tabs.sendMessage(
-          nextTab.id,
-          { type: 'next-match' },
+          targetTab.id,
+          { type: `${direction}-match` },
           (response) => {
             if (chrome.runtime.lastError) {
               // Ignore this error
             } else if (response.hasMatch) {
               if (!foundMatch) {
                 foundMatch = true;
-                if (response.tabId === nextTab.id) {
-                  chrome.tabs.update(nextTab.id, { active: true });
-                }
-              }
-              return;
-            }
-          }
-        );
-      }
-    }
-  });
-}
-
-function navigateToPreviousTabWithMatch() {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    let activeTabIndex = tabs.findIndex((tab) => tab.active);
-    let foundMatch = false;
-
-    for (let i = 1; i <= tabs.length; i++) {
-      let previousTab = tabs[(activeTabIndex - i + tabs.length) % tabs.length];
-      if (previousTab.id) {
-        chrome.tabs.sendMessage(
-          previousTab.id,
-          { type: 'prev-match' },
-          (response) => {
-            if (chrome.runtime.lastError) {
-              // Ignore this error
-            } else if (response.hasMatch) {
-              if (!foundMatch) {
-                foundMatch = true;
-                chrome.tabs.update(previousTab.id, { active: true });
+                chrome.tabs.update(targetTab.id, { active: true });
               }
               return;
             }
@@ -113,7 +101,10 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length) {
         const activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, { type: 'get-all-matches-req' });
+        chrome.tabs.sendMessage(activeTab.id, {
+          from: 'background',
+          type: 'get-all-matches-req',
+        });
       }
     });
 
@@ -142,6 +133,9 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   }
 
   if (message.type === 'next-match' || message.type === 'prev-match') {
+    console.log('background Script - next-match');
+
+    // message.from,
     executeContentScriptWithMessage(
       sender.tab!.id,
       message.type,
@@ -150,14 +144,20 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   }
 
   // if (message.type === 'next-match') {
-  //   navigateToNextTabWithMatch();
+  //   // navigateToNextTabWithMatch();
+  //   navigateWithMatch('next');
   // } else if (message.type === 'prev-match') {
-  //   navigateToPreviousTabWithMatch();
+  //   // navigateToPreviousTabWithMatch();
+  //   navigateWithMatch('previous');
   // }
+  return true;
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-  chrome.tabs.sendMessage(tabId, { type: 'tab-activated' });
+  chrome.tabs.sendMessage(tabId, {
+    from: 'background',
+    type: 'tab-activated',
+  });
 });
 
 chrome.commands.onCommand.addListener((command) => {
