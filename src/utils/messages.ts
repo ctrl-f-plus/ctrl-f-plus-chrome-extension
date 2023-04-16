@@ -1,6 +1,7 @@
 // src/utils/messages.ts
 export interface BaseMessage {
   from: 'background' | 'content';
+  // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
 }
@@ -8,7 +9,7 @@ export interface BaseMessage {
 export interface GetAllMatchesMessage extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
-  payload: string;
+  payload?: string;
 }
 
 export interface NextMatchMessage extends BaseMessage {
@@ -37,13 +38,27 @@ export interface RemoveStylesMessage extends BaseMessage {
   type: 'remove_styles';
 }
 
-export type Messages = {
-  from?: 'content' | 'popup' | 'background';
-} & (
+export interface MessageFixMe {
+  type: string;
+  findValue?: string;
+  command?: string;
+}
+
+// export type Messages = {
+//   from?: 'content' | 'popup' | 'background';
+// } & (
+//   | NextMatchMessage
+//   | PreviousMatchMessage
+//   // | GetAllMatchesMessage
+//   // | AllMatchesMessage
+//   | GetAllMatchesRequest
+//   | RemoveStylesMessage
+// );
+
+export type Messages =
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage
   // | AllMatchesMessage
   | GetAllMatchesRequest
-  | RemoveStylesMessage
-);
+  | RemoveStylesMessage;

@@ -1,20 +1,4 @@
-// // src/contentScripts/contentStyles.js
-
-// const contentStyles = `
-// .highlight {
-//   background-color: green !important;
-// }
-
-// .highlight-red {
-//   background-color: red;
-// }
-// `;
-
-// export default contentStyles;
-
-// src/contentScripts/contentStyles.js
-
-// FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
+// src/contentScripts/contentStyles.ts
 
 const contentStyles = `
 .ctrl-f-highlight {
@@ -28,4 +12,4 @@ const contentStyles = `
 }
 `;
 
-module.exports = contentStyles;
+export default contentStyles;

@@ -1,8 +1,7 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
-import { RemoveStylesMessage } from '../utils/messages';
-import { searchAndHighlight } from '../utils/searchAndHighlightUtils';
 import { findAllMatches, nextMatch, previousMatch } from '../utils/matchUtils';
+import contentStylesImport from './contentStyles';
 
 (function () {
   if (window.myUniqueExtensionFlag) {
@@ -12,10 +11,6 @@ import { findAllMatches, nextMatch, previousMatch } from '../utils/matchUtils';
 
   // Set the unique flag to indicate that the content script has been injected
   window.myUniqueExtensionFlag = true;
-
-  // FIXME: ES modules, which are not yet fully supported by the content scripts in Chrome extensions
-  // import contentStyles from './contentStyles.js';
-  const contentStylesImport = require('./contentStyles.ts');
 
   const state = {
     currentIndex: undefined,
@@ -77,7 +72,7 @@ import { findAllMatches, nextMatch, previousMatch } from '../utils/matchUtils';
     }
 
     if (message.type === 'remove_styles') {
-      // TODO: START HERE: TRY TO GET THE STYLES TO TOGGLE WITH THE SEARCH MODAL
+      // TODO: TRY TO GET THE STYLES TO TOGGLE WITH THE SEARCH MODAL
 
       removeStyles(injectedStyle);
       return;
