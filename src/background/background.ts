@@ -96,80 +96,110 @@ function navigateWithMatch(direction: 'next' | 'previous') {
 
 // TODO: decide if you need/want this on each if statement: `message.from === 'content' &&`
 // TODO: Review - see if you can update so that it doesn't switch tabs every time.
-chrome.runtime.onMessage.addListener((message: Messages, sender) => {
-  if (message.type === 'get-all-matches-req') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length) {
-        const activeTab = tabs[0];
-        chrome.tabs.sendMessage(activeTab.id, {
-          from: 'background',
-          type: 'get-all-matches-req',
+chrome.runtime.onMessage.addListener(
+  (message: Messages, sender, sendResponse) => {
+    if (message.type === 'get-all-matches-req') {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length) {
+          const activeTab = tabs[0];
+          chrome.tabs.sendMessage(activeTab.id, {
+            from: 'background',
+            type: 'get-all-matches-req',
+          });
+        }
+      });
+
+      return;
+    }
+
+    // Receive message from SearchInput component
+    if (message.type === 'get-all-matches-msg') {
+      const findValue = message.payload;
+
+      executeContentScriptOnAllTabs(findValue);
+
+      // TODO: START HERE! TODO: START HERE! TODO: START HERE! TODO: START HERE!
+      // TODO: check if you need this `all-matches` message
+      // TODO: THis might be a good place to save the matches to local storage
+      // Sends Message back to SearchInput component
+      // chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
+
+      return;
+    }
+
+    if (message.type === 'next-match' || message.type === 'prev-match') {
+      console.log('background Script - next-match');
+
+      // message.from,
+      executeContentScriptWithMessage(
+        sender.tab!.id,
+        message.type,
+        message.findValue
+      );
+      return true;
+    }
+
+    // if (message.type === 'next-match') {
+    //   // navigateToNextTabWithMatch();
+    //   navigateWithMatch('next');
+    // } else if (message.type === 'prev-match') {
+    //   // navigateToPreviousTabWithMatch();
+    //   navigateWithMatch('previous');
+    // }
+
+    if (message.type === 'remove-styles-all-tabs') {
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          if (tab.id) {
+            chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
+          }
         });
-      }
-    });
-
-    return;
-  }
-
-  // Receive message from SearchInput component
-  if (message.type === 'get-all-matches-msg') {
-    const findValue = message.payload;
-
-    executeContentScriptOnAllTabs(findValue);
-
-    // TODO: START HERE! TODO: START HERE! TODO: START HERE! TODO: START HERE!
-    // TODO: check if you need this `all-matches` message
-    // TODO: THis might be a good place to save the matches to local storage
-    // Sends Message back to SearchInput component
-    // chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
-
-    return;
-  }
-
-  if (message.type === 'next-match' || message.type === 'prev-match') {
-    console.log('background Script - next-match');
-
-    // message.from,
-    executeContentScriptWithMessage(
-      sender.tab!.id,
-      message.type,
-      message.findValue
-    );
-    return true;
-  }
-
-  // if (message.type === 'next-match') {
-  //   // navigateToNextTabWithMatch();
-  //   navigateWithMatch('next');
-  // } else if (message.type === 'prev-match') {
-  //   // navigateToPreviousTabWithMatch();
-  //   navigateWithMatch('previous');
-  // }
-
-  if (message.type === 'remove-styles-all-tabs') {
-    chrome.tabs.query({}, (tabs) => {
-      tabs.forEach((tab) => {
-        if (tab.id) {
-          chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
-        }
       });
-    });
 
-    return true;
-  }
+      return true;
+    }
 
-  if (message.type === 'add-styles-all-tabs') {
-    chrome.tabs.query({}, (tabs) => {
-      tabs.forEach((tab) => {
-        if (tab.id) {
-          chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
-        }
+    if (message.type === 'add-styles-all-tabs') {
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+          if (tab.id) {
+            chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
+          }
+        });
       });
-    });
 
-    return true;
+      return true;
+    }
+
+    if (message.type === 'remove-all-highlight-matches') {
+      chrome.tabs.query({}, (tabs) => {
+        const tabPromises = tabs.map((tab) => {
+          return new Promise((resolve) => {
+            if (tab.id) {
+              chrome.tabs.sendMessage(
+                tab.id,
+                {
+                  type: 'remove-all-highlight-matches',
+                },
+                (response) => {
+                  resolve(response);
+                }
+              );
+            } else {
+              resolve(null);
+            }
+          });
+        });
+
+        Promise.all(tabPromises).then((responses) => {
+          sendResponse(responses);
+        });
+
+        return true;
+      });
+    }
   }
-});
+);
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
   chrome.tabs.sendMessage(tabId, {

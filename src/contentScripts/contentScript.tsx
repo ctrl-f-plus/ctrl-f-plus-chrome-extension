@@ -11,6 +11,7 @@ import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../utils/messages';
+import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 
 // const injectedStyle = injectStyles(contentStyles);
 let injectedStyle;
@@ -19,8 +20,21 @@ const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState('');
 
-  const handleSearchSubmit = (findValue: string) => {
+  const handleSearchSubmit = async (findValue: string) => {
     setStoredFindValue(findValue);
+
+    await new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        {
+          from: 'content',
+          type: 'remove-all-highlight-matches',
+          payload: findValue,
+        },
+        (response) => {
+          resolve(response);
+        }
+      );
+    });
 
     chrome.runtime.sendMessage({
       from: 'content',
@@ -108,6 +122,10 @@ const App: React.FC<{}> = () => {
       return;
     } else if (message.type === 'add-styles') {
       injectedStyle = injectStyles(contentStyles);
+      return;
+    } else if (message.type === 'remove-all-highlight-matches') {
+      removeAllHighlightMatches();
+      sendResponse({ success: true });
       return;
     }
   };

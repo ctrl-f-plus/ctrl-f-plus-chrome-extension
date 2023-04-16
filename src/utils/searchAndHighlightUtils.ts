@@ -133,6 +133,26 @@ function processTextNode({
   parent.replaceChild(fragment, textNode);
 }
 
+export function removeAllHighlightMatches() {
+  const highlightElements = document.querySelectorAll(
+    '.ctrl-f-highlight, .ctrl-f-highlight-focus'
+  );
+
+  highlightElements.forEach((elem) => {
+    const parent = elem.parentNode;
+    if (!parent) {
+      console.warn(
+        'removeAllHighlights: Parent node not found for elem:',
+        elem
+      );
+      return;
+    }
+
+    const textNode = document.createTextNode(elem.textContent);
+    parent.replaceChild(textNode, elem);
+  });
+}
+
 export function searchAndHighlight({
   currentIndex,
   matches,

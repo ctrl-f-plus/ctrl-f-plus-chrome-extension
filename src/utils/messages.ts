@@ -54,6 +54,14 @@ export interface AddStylesAllTabs extends BaseMessage {
   type: 'add-styles-all-tabs';
 }
 
+export interface RemoveAllHighlightMatches extends BaseMessage {
+  from: 'content';
+  type: 'remove-all-highlight-matches';
+}
+
+
+
+
 // export type Messages = {
 //   from?: 'content' | 'popup' | 'background';
 // } & (
@@ -73,4 +81,5 @@ export type Messages =
   | GetAllMatchesRequest
   | RemoveStylesMessage
   | RemoveStylesAllTabs
-  | AddStylesAllTabs;
+  | AddStylesAllTabs
+  | RemoveAllHighlightMatches;
