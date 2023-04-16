@@ -7,8 +7,13 @@ import SearchInput from '../components/SearchInput';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { setStoredFindValue } from '../utils/storage';
+import { injectStyles, removeStyles } from '../utils/styleUtils';
+import contentStyles from './contentStyles';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../utils/messages';
+
+// const injectedStyle = injectStyles(contentStyles);
+let injectedStyle;
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -45,21 +50,21 @@ const App: React.FC<{}> = () => {
   // };
 
   const toggleSearchOverlay = () => {
-    setShowModal((prevState) => !prevState);
+    // debugger;
+    // setShowModal((prevState) => !prevState);
+    showModal ? closeSearchOverlay(searchValue) : openSearchOverlay();
+  };
+
+  const openSearchOverlay = () => {
+    console.log('openSearchOverlay');
+    setShowModal(true);
+    chrome.runtime.sendMessage({ type: 'add-styles-all-tabs' });
   };
 
   const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
     setStoredFindValue(searchValue);
-
-    // TODO: unhighlight all matches
-    // console.log('remove_styles');
-    // chrome.runtime.sendMessage({ type: 'remove_styles' });
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0] && tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { type: 'remove_styles' });
-      }
-    });
+    chrome.runtime.sendMessage({ type: 'remove-styles-all-tabs' });
   };
 
   const handleMessage = (
@@ -70,8 +75,8 @@ const App: React.FC<{}> = () => {
     const { type, findValue, command } = message;
     if (type === 'tab-activated') {
       // TODO: This shouldn't happen on every new tab
-      setShowModal(true);
-    } else if (type === 'next-match') {
+      // setShowModal(true);
+    } else if (type === 'next-match' || type === 'prev-match') {
       console.log('contentScript - handleMatchMessage()');
       let foundMatch;
 
@@ -85,6 +90,7 @@ const App: React.FC<{}> = () => {
         // debugger;
         return;
       }
+
       if (foundMatch) {
         console.log('contentScript - foundMatch - true');
         sendResponse({ hasMatch: true });
@@ -97,6 +103,12 @@ const App: React.FC<{}> = () => {
         toggleSearchOverlay,
         // closeSearchOverlay,
       });
+    } else if (message.type === 'remove-styles') {
+      removeStyles(injectedStyle);
+      return;
+    } else if (message.type === 'add-styles') {
+      injectedStyle = injectStyles(contentStyles);
+      return;
     }
   };
 

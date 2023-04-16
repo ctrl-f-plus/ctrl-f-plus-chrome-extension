@@ -44,6 +44,16 @@ export interface MessageFixMe {
   command?: string;
 }
 
+export interface RemoveStylesAllTabs extends BaseMessage {
+  from: 'content';
+  type: 'remove-styles-all-tabs';
+}
+
+export interface AddStylesAllTabs extends BaseMessage {
+  from: 'content';
+  type: 'add-styles-all-tabs';
+}
+
 // export type Messages = {
 //   from?: 'content' | 'popup' | 'background';
 // } & (
@@ -61,4 +71,6 @@ export type Messages =
   | GetAllMatchesMessage
   // | AllMatchesMessage
   | GetAllMatchesRequest
-  | RemoveStylesMessage;
+  | RemoveStylesMessage
+  | RemoveStylesAllTabs
+  | AddStylesAllTabs;

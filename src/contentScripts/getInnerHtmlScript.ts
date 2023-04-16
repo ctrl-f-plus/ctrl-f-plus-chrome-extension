@@ -19,24 +19,6 @@ import contentStylesImport from './contentStyles';
     tabId: undefined,
   };
 
-  function injectStyles(css) {
-    const style = document.createElement('style');
-
-    style.type = 'text/css';
-    style.appendChild(document.createTextNode(css));
-    document.head.appendChild(style);
-
-    return style;
-  }
-
-  function removeStyles(styleElement) {
-    if (styleElement && styleElement.parentNode) {
-      styleElement.parentNode.removeChild(styleElement);
-    }
-  }
-
-  const injectedStyle = injectStyles(contentStylesImport);
-
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { from, type } = message;
 
@@ -45,11 +27,11 @@ import contentStylesImport from './contentStyles';
     if (from === 'background' && type === 'highlight') {
       state.tabId = message.tabId;
       findAllMatches(state, message.findValue);
-      return;
+      return true;
     }
 
     if (message.type === 'get-all-matches-req') {
-      return;
+      return true;
     }
 
     if (message.type === 'next-match') {
@@ -62,20 +44,13 @@ import contentStylesImport from './contentStyles';
         sendResponse({ hasMatch: false, tabId: state.tabId });
       }
 
-      return;
+      return true;
     }
 
     if (message.type === 'prev-match') {
       previousMatch(state);
 
-      return;
-    }
-
-    if (message.type === 'remove_styles') {
-      // TODO: TRY TO GET THE STYLES TO TOGGLE WITH THE SEARCH MODAL
-
-      removeStyles(injectedStyle);
-      return;
+      return true;
     }
   });
 })();

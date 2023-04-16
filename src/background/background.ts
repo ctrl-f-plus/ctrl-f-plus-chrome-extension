@@ -135,6 +135,7 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
       message.type,
       message.findValue
     );
+    return true;
   }
 
   // if (message.type === 'next-match') {
@@ -144,7 +145,30 @@ chrome.runtime.onMessage.addListener((message: Messages, sender) => {
   //   // navigateToPreviousTabWithMatch();
   //   navigateWithMatch('previous');
   // }
-  return true;
+
+  if (message.type === 'remove-styles-all-tabs') {
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        if (tab.id) {
+          chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
+        }
+      });
+    });
+
+    return true;
+  }
+
+  if (message.type === 'add-styles-all-tabs') {
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach((tab) => {
+        if (tab.id) {
+          chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
+        }
+      });
+    });
+
+    return true;
+  }
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
