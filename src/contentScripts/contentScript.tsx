@@ -77,6 +77,7 @@ const App: React.FC<{}> = () => {
 
   const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
+    // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION
     setStoredFindValue(searchValue);
     chrome.runtime.sendMessage({ type: 'remove-styles-all-tabs' });
   };

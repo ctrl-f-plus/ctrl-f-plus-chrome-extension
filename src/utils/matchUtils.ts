@@ -1,7 +1,7 @@
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
 
-export function findAllMatches(state, findValue) {
+export function findAllMatches(state, findValue, firstMatchFound) {
   state.matches = [];
   state.currentIndex = 0;
 
@@ -13,7 +13,10 @@ export function findAllMatches(state, findValue) {
     tabId: state.tabId,
     callback: () => {
       // TODO: only update highlights on the active tab/on the first match when calling here
-      updateHighlights(state);
+      // updateHighlights(state);
+      if (!firstMatchFound) {
+        updateHighlights(state);
+      }
 
       // TODO: This would be a good place to set everything to storage
       console.log(state.matchesObj);

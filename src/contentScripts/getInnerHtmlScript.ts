@@ -26,7 +26,7 @@ import contentStylesImport from './contentStyles';
 
     if (from === 'background' && type === 'highlight') {
       state.tabId = message.tabId;
-      findAllMatches(state, message.findValue);
+      findAllMatches(state, message.findValue, message.firstMatchFound);
       return true;
     }
 

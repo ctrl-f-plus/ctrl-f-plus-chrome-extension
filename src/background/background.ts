@@ -4,6 +4,8 @@ import { Messages } from '../utils/messages';
 
 // const allMatches: { [tabId: number]: HTMLElement[] } = {};
 
+let firstMatchFound = false;
+
 function executeContentScriptWithMessage(
   tabId: number,
   messageType: string,
@@ -45,7 +47,12 @@ function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
         findValue: findValue,
         tabId: tab.id,
         messageId: Date.now(),
+        firstMatchFound: firstMatchFound,
       });
+
+      if (!firstMatchFound) {
+        firstMatchFound = true;
+      }
     }
   );
 }
@@ -53,6 +60,8 @@ function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
 // TODO: Add Settings option to allow the toggling of currentWindow to allow for the feature to work across multiple browser windows
 function executeContentScriptOnAllTabs(findValue: string) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    firstMatchFound = false;
+
     tabs.forEach((tab) => {
       if (tab.id) {
         executeContentScript(findValue, tab);
