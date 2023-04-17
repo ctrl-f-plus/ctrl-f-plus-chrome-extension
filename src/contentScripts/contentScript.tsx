@@ -1,4 +1,4 @@
-// ./src/contentScript/contentScript.tsx
+// src/contentScript/contentScript.tsx
 
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -6,7 +6,7 @@ import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { setStoredFindValue } from '../utils/storage';
+import { setStoredFindValue, clearStoredMatchesObject } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { useMessageHandler } from '../hooks/useMessageHandler';
@@ -22,6 +22,8 @@ const App: React.FC<{}> = () => {
 
   const handleSearchSubmit = async (findValue: string) => {
     setStoredFindValue(findValue);
+
+    await clearStoredMatchesObject();
 
     await new Promise((resolve) => {
       chrome.runtime.sendMessage(
@@ -87,32 +89,15 @@ const App: React.FC<{}> = () => {
     sender: any,
     sendResponse: any
   ) => {
+    console.log('Received message:', message);
+
     const { type, findValue, command } = message;
-    if (type === 'tab-activated') {
-      // TODO: This shouldn't happen on every new tab
-      // setShowModal(true);
+
+    if (type === 'switched-active-tab-show-modal') {
+      debugger;
+      setShowModal(true);
     } else if (type === 'next-match' || type === 'prev-match') {
-      console.log('contentScript - handleMatchMessage()');
-      let foundMatch;
-
-      if (type === 'next-match') {
-        console.log('contentScript - next-match');
-        foundMatch = window.find(findValue, false, false);
-      } else if (type === 'prev-match') {
-        foundMatch = window.find(findValue, false, true);
-      } else {
-        // TODO: Review why this is getting hit so often
-        // debugger;
-        return;
-      }
-
-      if (foundMatch) {
-        console.log('contentScript - foundMatch - true');
-        sendResponse({ hasMatch: true });
-      } else {
-        console.log('contentScript - foundMatch - false');
-        sendResponse({ hasMatch: false });
-      }
+      //  TODO: ???
     } else if (command) {
       handleKeyboardCommand(command, {
         toggleSearchOverlay,

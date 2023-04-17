@@ -1,6 +1,6 @@
 // src/utils/messages.ts
 export interface BaseMessage {
-  from: 'background' | 'content';
+  from: 'background' | 'content' | 'match-utils';
   // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
@@ -59,8 +59,24 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
   type: 'remove-all-highlight-matches';
 }
 
+export interface SwitchTab extends BaseMessage {
+  from: 'match-utils';
+  type: 'switch-tab';
+  state: any; // Replace 'any' with the actual type of the 'state' object
+  matchesObject: any; // Replace 'any' with the actual type of the 'matchesObject'
+  prevIndex: number;
+}
 
-
+export interface UpdateHighlightsMessage extends BaseMessage {
+  from: 'background';
+  type: 'update-highlights';
+  state: any; // Replace 'any' with the actual type of the 'state' object
+  prevIndex: number;
+}
+export interface SwitchedActiveTabShowModal extends BaseMessage {
+  from: 'background';
+  type: 'switched-active-tab-show-modal';
+}
 
 // export type Messages = {
 //   from?: 'content' | 'popup' | 'background';
@@ -82,4 +98,7 @@ export type Messages =
   | RemoveStylesMessage
   | RemoveStylesAllTabs
   | AddStylesAllTabs
-  | RemoveAllHighlightMatches;
+  | RemoveAllHighlightMatches
+  | SwitchTab
+  | UpdateHighlightsMessage
+  | SwitchedActiveTabShowModal;

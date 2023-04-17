@@ -1,4 +1,4 @@
-// src/utils/matchUtils.ts
+// src/utils/searchAndHighlightUtils.ts
 
 interface MatchUtilsBase {
   currentIndex?: number;
@@ -39,8 +39,15 @@ function createCustomTreeWalker() {
     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
     {
       acceptNode: (node) => {
-        if (node.nodeName !== 'SCRIPT') return NodeFilter.FILTER_ACCEPT;
-        return NodeFilter.FILTER_SKIP;
+        if (
+          node.nodeName !== 'SCRIPT' &&
+          node.nodeName !== 'STYLE' &&
+          // TODO: REVIEW IF YOU NEED `SVG` OR NOT  - ALSO MAKE SURE YOU ARE NOT EXCLUDING TOO MUCH
+          node.nodeName !== 'SVG'
+        ) {
+          return NodeFilter.FILTER_ACCEPT;
+        }
+        return NodeFilter.FILTER_REJECT;
       },
     }
   );
@@ -57,12 +64,14 @@ function createHighlightSpan({
 }
 
 function updateMatchesObject({
-  matches,
+  // matches,
   matchesObj,
   tabId,
   span,
 }: UpdateMatchesObjectProps) {
   if (matchesObj.hasOwnProperty(tabId)) {
+    // debugger;
+
     matchesObj[tabId].push(span);
   } else {
     matchesObj[tabId] = [span];
@@ -119,7 +128,7 @@ function processTextNode({
 
     const span = createHighlightSpan({ matchText });
     // TODO: HERE!
-    matches.push(span);
+    // matches.push(span);
 
     updateMatchesObject({ matches, matchesObj, tabId, span });
     fragment.appendChild(span);

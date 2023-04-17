@@ -1,8 +1,13 @@
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
+import {
+  getStoredMatchesObject,
+  setStoredMatchesObject,
+  // clearLocalStorage,
+} from './storage';
 
-export function findAllMatches(state, findValue, firstMatchFound) {
-  state.matches = [];
+export async function findAllMatches(state, findValue, firstMatchFound) {
+  state.matchesObj = {};
   state.currentIndex = 0;
 
   searchAndHighlight({
@@ -11,52 +16,89 @@ export function findAllMatches(state, findValue, firstMatchFound) {
     matchesObj: state.matchesObj,
     findValue,
     tabId: state.tabId,
-    callback: () => {
-      // TODO: only update highlights on the active tab/on the first match when calling here
-      // updateHighlights(state);
+    callback: async () => {
       if (!firstMatchFound) {
         updateHighlights(state);
       }
 
-      // TODO: This would be a good place to set everything to storage
+      console.log('here');
+      // debugger;
+      const strg = await getStoredMatchesObject();
+      // debugger;
+      setStoredMatchesObject(state.matchesObj, state.tabId);
       console.log(state.matchesObj);
     },
   });
 }
 
-function updateHighlights(state, prevIndex?: number) {
-  if (!state.matches.length) {
+export function updateHighlights(state, prevIndex?: number) {
+  // if (!state.matches.length) {
+  if (!state.matchesObj[state.tabId].length) {
     return;
   }
 
   if (typeof prevIndex === 'number') {
-    const prevMatch = state.matches[prevIndex];
+    // const prevMatch = state.matches[prevIndex];
+    const prevMatch = state.matchesObj[state.tabId][prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
 
-  const curMatch = state.matches[state.currentIndex];
+  // const curMatch = state.matches[state.currentIndex];
+  const curMatch = state.matchesObj[state.tabId][state.currentIndex];
   curMatch.classList.add('ctrl-f-highlight-focus');
   scrollToElement(curMatch);
 }
 
-export function nextMatch(state) {
+export async function nextMatch(state) {
   console.log('getInnerHtmlScript - nextMatch()');
   const prevIndex = state.currentIndex;
-  state.currentIndex = (state.currentIndex + 1) % state.matches.length;
+  // state.currentIndex = (state.currentIndex + 1) % state.matches.length;
 
-  // if (currentIndex === 0) {
-  //   // If it's the first match again, we've looped through all matches
-  //   // Notify background script to check the next tab
-  //   chrome.runtime.sendMessage({ type: 'next-match' });
-  // } else {
-  updateHighlights(state, prevIndex);
-  // }
+  state.currentIndex =
+    (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
+
+  if (state.currentIndex === 0) {
+    // debugger;
+    // const strg = await getStoredMatchesObject();
+    // debugger;
+
+    // // Find the next tab that has matches
+    // const tabIds = Object.keys(strg).map((key) => parseInt(key, 10));
+    // const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
+    // const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
+    // const nextTabId = tabIds[nextTabIndex];
+
+    // debugger;
+
+    // // Switch to the next tab
+    // chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
+    //   // Add the .ctrl-f-highlight-focus class to the first match on that tab
+    //   state.tabId = tab.id;
+    //   state.matchesObj[state.tabId][0].classList.add('ctrl-f-highlight-focus');
+
+    //   // Update the state object and highlights
+    //   state.currentIndex = 0;
+    //   updateHighlights(state, prevIndex);
+    // });
+
+    const strg = await getStoredMatchesObject();
+    const message = {
+      type: 'switch-tab',
+      state: state,
+      matchesObject: strg,
+      prevIndex: prevIndex,
+    };
+    chrome.runtime.sendMessage(message);
+  } else {
+    updateHighlights(state, prevIndex);
+  }
 }
 
 export function previousMatch(state) {
   const prevIndex = state.currentIndex;
   state.currentIndex =
-    (state.currentIndex - 1 + state.matches.length) % state.matches.length;
+    (state.currentIndex - 1 + state.matchesObj[state.tabId].length) %
+    state.matchesObj[state.tabId].length;
 
   updateHighlights(state, prevIndex);
 }

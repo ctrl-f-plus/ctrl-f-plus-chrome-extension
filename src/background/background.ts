@@ -1,8 +1,18 @@
 // src/background/background.ts
 
-import { Messages } from '../utils/messages';
+import {
+  Messages,
+  SwitchedActiveTabShowModal,
+  UpdateHighlightsMessage,
+} from '../utils/messages';
+import { getStoredMatchesObject } from '../utils/storage';
 
 // const allMatches: { [tabId: number]: HTMLElement[] } = {};
+
+(global as any).getStoredMatchesObject = getStoredMatchesObject;
+
+// (global as any).setStoredMatchesObject = setStoredMatchesObject({}, );
+// src/background/background.ts
 
 let firstMatchFound = false;
 
@@ -49,6 +59,10 @@ function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
         messageId: Date.now(),
         firstMatchFound: firstMatchFound,
       });
+
+      if (chrome.runtime.lastError) {
+        console.log(chrome.runtime.lastError);
+      }
 
       if (!firstMatchFound) {
         firstMatchFound = true;
@@ -103,6 +117,40 @@ function navigateWithMatch(direction: 'next' | 'previous') {
   });
 }
 
+async function switchTab(state, matchesObject, prevIndex) {
+  const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
+  const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
+  const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
+  const nextTabId = tabIds[nextTabIndex];
+
+  chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
+    state.tabId = tab.id;
+    // state.matchesObj[state.tabId][0].classList.add('ctrl-f-highlight-focus');
+    if (
+      state.matchesObj[state.tabId] &&
+      state.matchesObj[state.tabId].length > 0
+    ) {
+      state.matchesObj[state.tabId][0].classList.add('ctrl-f-highlight-focus');
+    }
+
+    state.currentIndex = 0;
+    const message: UpdateHighlightsMessage = {
+      from: 'background',
+      type: 'update-highlights',
+      state: state,
+      prevIndex: prevIndex,
+    };
+    chrome.tabs.sendMessage(tab.id, message);
+
+    const message2: SwitchedActiveTabShowModal = {
+      from: 'background',
+      type: 'switched-active-tab-show-modal',
+    };
+    console.log('Sending message:', message2);
+    chrome.tabs.sendMessage(tab.id, message2);
+  });
+}
+
 // TODO: decide if you need/want this on each if statement: `message.from === 'content' &&`
 // TODO: Review - see if you can update so that it doesn't switch tabs every time.
 chrome.runtime.onMessage.addListener(
@@ -145,7 +193,7 @@ chrome.runtime.onMessage.addListener(
         message.type,
         message.findValue
       );
-      return true;
+      return;
     }
 
     // if (message.type === 'next-match') {
@@ -165,7 +213,7 @@ chrome.runtime.onMessage.addListener(
         });
       });
 
-      return true;
+      return;
     }
 
     if (message.type === 'add-styles-all-tabs') {
@@ -177,7 +225,7 @@ chrome.runtime.onMessage.addListener(
         });
       });
 
-      return true;
+      return;
     }
 
     if (message.type === 'remove-all-highlight-matches') {
@@ -206,6 +254,10 @@ chrome.runtime.onMessage.addListener(
 
         return true;
       });
+    }
+
+    if (message.type === 'switch-tab') {
+      switchTab(message.state, message.matchesObject, message.prevIndex);
     }
   }
 );
