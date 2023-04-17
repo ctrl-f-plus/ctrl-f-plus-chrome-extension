@@ -78,6 +78,12 @@ export interface SwitchedActiveTabShowModal extends BaseMessage {
   type: 'switched-active-tab-show-modal';
 }
 
+export interface UpdateTabStates extends BaseMessage {
+  from: 'content';
+  type: 'update-tab-states';
+  payload: any;
+}
+
 // export type Messages = {
 //   from?: 'content' | 'popup' | 'background';
 // } & (
@@ -101,4 +107,5 @@ export type Messages =
   | RemoveAllHighlightMatches
   | SwitchTab
   | UpdateHighlightsMessage
-  | SwitchedActiveTabShowModal;
+  | SwitchedActiveTabShowModal
+  | UpdateTabStates;

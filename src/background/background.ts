@@ -1,5 +1,6 @@
 // src/background/background.ts
 
+import { updateHighlights } from '../utils/matchUtils';
 import {
   Messages,
   SwitchedActiveTabShowModal,
@@ -8,13 +9,109 @@ import {
 import { getStoredMatchesObject } from '../utils/storage';
 
 // const allMatches: { [tabId: number]: HTMLElement[] } = {};
+const tabStates: { [tabId: number]: any } = {};
 
 (global as any).getStoredMatchesObject = getStoredMatchesObject;
 
-// (global as any).setStoredMatchesObject = setStoredMatchesObject({}, );
-// src/background/background.ts
+function executeContentScript(
+  findValue: string,
+  tab: chrome.tabs.Tab
+): Promise<{
+  hasMatch: boolean;
+  state: any;
+}> {
+  return new Promise<{ hasMatch: boolean; state: any }>((resolve, reject) => {
+    if (tab.id === undefined) {
+      console.warn('executeContentScript: Tab ID is undefined:', tab);
+      reject({ hasMatch: false, state: null });
+      return;
+    }
 
-let firstMatchFound = false;
+    const tabId = tab.id as number;
+
+    chrome.scripting.executeScript(
+      {
+        target: { tabId },
+        files: ['getInnerHtmlScript.js'],
+      },
+      () => {
+        chrome.tabs.sendMessage(
+          tabId,
+          {
+            from: 'background',
+            type: 'highlight',
+            findValue: findValue,
+            tabId: tab.id,
+            messageId: Date.now(),
+          },
+          (response) => {
+            // debugger;
+            if (chrome.runtime.lastError) {
+              console.log(chrome.runtime.lastError);
+              reject({ hasMatch: false, state: null });
+              // } else {
+              //   tabStates[tab.id] = response.state;
+
+              //   resolve(response);
+              //   // resolve(response.hasMatch);
+            } else {
+              // Deserialize the matchesObj
+              const deserializedMatchesObj = {};
+              for (const key in response.serializedMatchesObj) {
+                deserializedMatchesObj[key] = response.serializedMatchesObj[
+                  key
+                ].map((serializedEl) => {
+                  const el = document.createElement('div');
+                  el.innerText = serializedEl.innerText;
+                  el.className = serializedEl.className;
+                  el.id = serializedEl.id;
+                  return el;
+                });
+              }
+
+              // Update the state with deserializedMatchesObj
+              response.state.matchesObj = deserializedMatchesObj;
+              tabStates[tab.id] = response.state;
+              resolve(response);
+            }
+          }
+        );
+      }
+    );
+  });
+}
+async function executeContentScriptOnAllTabs(findValue: string) {
+  const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
+    chrome.tabs.query({ currentWindow: true }, resolve);
+  });
+
+  const activeTabIndex = tabs.findIndex((tab) => tab.active);
+  const orderedTabs = [
+    ...tabs.slice(activeTabIndex),
+    ...tabs.slice(0, activeTabIndex),
+  ];
+
+  let foundFirstMatch = false;
+  for (const tab of orderedTabs) {
+    if (tab.id) {
+      const { hasMatch, state } = await executeContentScript(findValue, tab);
+
+      console.log(hasMatch);
+      console.log(foundFirstMatch);
+
+      if (hasMatch && !foundFirstMatch) {
+        foundFirstMatch = true;
+        debugger;
+        chrome.tabs.sendMessage(tab.id, {
+          from: 'background',
+          type: 'update-highlights',
+          state: tabStates[tab.id],
+          prevIndex: undefined, // or the previous index if needed
+        });
+      }
+    }
+  }
+}
 
 function executeContentScriptWithMessage(
   tabId: number,
@@ -35,53 +132,6 @@ function executeContentScriptWithMessage(
       });
     }
   );
-}
-
-function executeContentScript(findValue: string, tab: chrome.tabs.Tab) {
-  if (tab.id === undefined) {
-    console.warn('executeContentScript: Tab ID is undefined:', tab);
-    return;
-  }
-
-  const tabId = tab.id as number;
-
-  chrome.scripting.executeScript(
-    {
-      target: { tabId },
-      files: ['getInnerHtmlScript.js'],
-    },
-    () => {
-      chrome.tabs.sendMessage(tabId, {
-        from: 'background',
-        type: 'highlight',
-        findValue: findValue,
-        tabId: tab.id,
-        messageId: Date.now(),
-        firstMatchFound: firstMatchFound,
-      });
-
-      if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError);
-      }
-
-      if (!firstMatchFound) {
-        firstMatchFound = true;
-      }
-    }
-  );
-}
-
-// TODO: Add Settings option to allow the toggling of currentWindow to allow for the feature to work across multiple browser windows
-function executeContentScriptOnAllTabs(findValue: string) {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    firstMatchFound = false;
-
-    tabs.forEach((tab) => {
-      if (tab.id) {
-        executeContentScript(findValue, tab);
-      }
-    });
-  });
 }
 
 function navigateWithMatch(direction: 'next' | 'previous') {
@@ -118,6 +168,10 @@ function navigateWithMatch(direction: 'next' | 'previous') {
 }
 
 async function switchTab(state, matchesObject, prevIndex) {
+  // if (state.tab.id === undefined) {
+  //   console.warn('switchTab: Tab ID is undefined:', state.tab);
+  //   return;
+  // }
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
   const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
@@ -258,6 +312,15 @@ chrome.runtime.onMessage.addListener(
 
     if (message.type === 'switch-tab') {
       switchTab(message.state, message.matchesObject, message.prevIndex);
+      return;
+    }
+
+    if (message.type === 'update-tab-states') {
+      debugger;
+      const { tabId, state, payload } = message.payload;
+      tabStates[tabId] = state;
+      // sendResponse({ status: 'success' });
+      return;
     }
   }
 );

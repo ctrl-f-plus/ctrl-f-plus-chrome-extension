@@ -94,7 +94,7 @@ const App: React.FC<{}> = () => {
     const { type, findValue, command } = message;
 
     if (type === 'switched-active-tab-show-modal') {
-      debugger;
+      // debugger;
       setShowModal(true);
     } else if (type === 'next-match' || type === 'prev-match') {
       //  TODO: ???

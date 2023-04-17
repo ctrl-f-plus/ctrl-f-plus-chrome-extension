@@ -229,6 +229,7 @@ export function setStoredFindValue(findValue: string): Promise<void> {
 }
 
 ////////////////////////////////////////////////////////
+// TODO: See if you can figure out how many MBs are currently being used.
 export async function getStoredMatchesObject(): Promise<{
   [tabId: number]: HTMLElement[];
 }> {

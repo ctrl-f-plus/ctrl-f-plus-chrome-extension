@@ -6,7 +6,7 @@ import {
   // clearLocalStorage,
 } from './storage';
 
-export async function findAllMatches(state, findValue, firstMatchFound) {
+export async function findAllMatches(state, findValue) {
   state.matchesObj = {};
   state.currentIndex = 0;
 
@@ -17,15 +17,35 @@ export async function findAllMatches(state, findValue, firstMatchFound) {
     findValue,
     tabId: state.tabId,
     callback: async () => {
-      if (!firstMatchFound) {
-        updateHighlights(state);
+      const serializedMatchesObj = {};
+      for (const key in state.matchesObj) {
+        serializedMatchesObj[key] = state.matchesObj[key].map((el) => {
+          return {
+            innerText: el.innerText,
+            className: el.className,
+            id: el.id,
+          };
+        });
       }
 
-      console.log('here');
-      // debugger;
       const strg = await getStoredMatchesObject();
-      // debugger;
+      debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
+
+      // // Call this right after the state has been updated with the matches
+      chrome.runtime.sendMessage(
+        {
+          from: 'content',
+          type: 'update-tab-states',
+          payload: {
+            hasMatch: state.matchesObj[state.tabId].length > 0,
+            state,
+            serializedMatchesObj,
+            tabId: state.tabId,
+          },
+        },
+        function (response) {}
+      );
       console.log(state.matchesObj);
     },
   });
@@ -33,6 +53,7 @@ export async function findAllMatches(state, findValue, firstMatchFound) {
 
 export function updateHighlights(state, prevIndex?: number) {
   // if (!state.matches.length) {
+  debugger;
   if (!state.matchesObj[state.tabId].length) {
     return;
   }
@@ -54,6 +75,7 @@ export async function nextMatch(state) {
   const prevIndex = state.currentIndex;
   // state.currentIndex = (state.currentIndex + 1) % state.matches.length;
 
+  // TODO: send message to update tab states?
   state.currentIndex =
     (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
 
