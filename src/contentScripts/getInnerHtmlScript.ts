@@ -76,7 +76,7 @@ import contentStylesImport from './contentStyles';
       }
 
       if (message.type === 'update-highlights') {
-        debugger;
+        // debugger;
         // state.tabId = message.tabId;
         updateHighlights(state, message.prevIndex);
       }

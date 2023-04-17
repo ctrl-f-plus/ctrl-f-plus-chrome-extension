@@ -45,7 +45,6 @@ function executeContentScript(
             messageId: Date.now(),
           },
           (response) => {
-            // debugger;
             if (chrome.runtime.lastError) {
               console.log(chrome.runtime.lastError);
               reject({ hasMatch: false, state: null });
@@ -80,6 +79,7 @@ function executeContentScript(
     );
   });
 }
+
 async function executeContentScriptOnAllTabs(findValue: string) {
   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, resolve);
@@ -101,7 +101,7 @@ async function executeContentScriptOnAllTabs(findValue: string) {
 
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
-        debugger;
+
         chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
@@ -167,7 +167,8 @@ function navigateWithMatch(direction: 'next' | 'previous') {
   });
 }
 
-async function switchTab(state, matchesObject, prevIndex) {
+async function switchTab(state, matchesObject) {
+  //, prevIndex) {
   // if (state.tab.id === undefined) {
   //   console.warn('switchTab: Tab ID is undefined:', state.tab);
   //   return;
@@ -192,7 +193,8 @@ async function switchTab(state, matchesObject, prevIndex) {
       from: 'background',
       type: 'update-highlights',
       state: state,
-      prevIndex: prevIndex,
+      // prevIndex: prevIndex,
+      prevIndex: undefined,
     };
     chrome.tabs.sendMessage(tab.id, message);
 
@@ -311,12 +313,13 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'switch-tab') {
-      switchTab(message.state, message.matchesObject, message.prevIndex);
+      debugger;
+      switchTab(message.state, message.matchesObject);
+      // , message.prevIndex);
       return;
     }
 
-    if (message.type === 'update-tab-states') {
-      debugger;
+    if (message.type === 'update-tab-states-obj') {
       const { tabId, state, payload } = message.payload;
       tabStates[tabId] = state;
       // sendResponse({ status: 'success' });

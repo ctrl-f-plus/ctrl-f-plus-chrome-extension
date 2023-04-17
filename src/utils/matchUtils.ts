@@ -29,14 +29,14 @@ export async function findAllMatches(state, findValue) {
       }
 
       const strg = await getStoredMatchesObject();
-      debugger;
+
       setStoredMatchesObject(state.matchesObj, state.tabId);
 
       // // Call this right after the state has been updated with the matches
       chrome.runtime.sendMessage(
         {
           from: 'content',
-          type: 'update-tab-states',
+          type: 'update-tab-states-obj',
           payload: {
             hasMatch: state.matchesObj[state.tabId].length > 0,
             state,
@@ -53,20 +53,22 @@ export async function findAllMatches(state, findValue) {
 
 export function updateHighlights(state, prevIndex?: number) {
   // if (!state.matches.length) {
-  debugger;
+  // debugger;
   if (!state.matchesObj[state.tabId].length) {
     return;
   }
 
   if (typeof prevIndex === 'number') {
     // const prevMatch = state.matches[prevIndex];
+    // debugger;
     const prevMatch = state.matchesObj[state.tabId][prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
-
+  // debugger;
   // const curMatch = state.matches[state.currentIndex];
   const curMatch = state.matchesObj[state.tabId][state.currentIndex];
   curMatch.classList.add('ctrl-f-highlight-focus');
+  // debugger;
   scrollToElement(curMatch);
 }
 
