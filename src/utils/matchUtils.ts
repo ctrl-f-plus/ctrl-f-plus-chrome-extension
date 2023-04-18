@@ -20,9 +20,9 @@ export async function findAllMatches(state, findValue) {
         serializedMatchesObj[tabId] = htmlToOuterHtml(state.matchesObj, tabId);
       }
 
-      debugger;
+      // KEEP AND TEST STORAGE HERE: debugger;
       const strg = await getStoredMatchesObject();
-      debugger;
+      // KEEP AND TEST STORAGE HERE: debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
 
       // FIXME: REVIE this message
@@ -85,9 +85,9 @@ export async function nextMatch(state) {
     //   state.matchesObj,
     //   state.tabId
     // );
-    debugger;
+    // KEEP AND TEST STORAGE HERE: debugger;
     const strg = await getStoredMatchesObject();
-    debugger;
+    // KEEP AND TEST STORAGE HERE: debugger;
     const message = {
       type: 'switch-tab',
       state: state,
@@ -95,11 +95,11 @@ export async function nextMatch(state) {
       prevIndex: undefined,
     };
     chrome.runtime.sendMessage(message);
-    debugger;
+    // KEEP AND TEST STORAGE HERE: debugger;
     // state.matchesObj[state.tabId] = outerHtmlToHtml(
     //   state.matchesObj[state.tabId]
     // );
-    debugger;
+    // KEEP AND TEST STORAGE HERE: debugger;
   } else {
     updateHighlights(state, prevIndex);
   }

@@ -296,7 +296,6 @@ export function setStoredMatchesObject(
 export async function clearStoredMatchesObject() {
   return new Promise<void>((resolve) => {
     chrome.storage.local.get(null, (items) => {
-      // Get all keys in local storage
       const allKeys = Object.keys(items);
 
       // Filter the keys to only include those that start with 'matchesObjOuterHtml_'

@@ -13,15 +13,17 @@ export interface GetAllMatchesMessage extends BaseMessage {
 }
 
 export interface NextMatchMessage extends BaseMessage {
+  // TODO: check to see if you ever pass findValue or if you can get rid of it here
   from: 'content';
   type: 'next-match';
-  findValue: string;
+  findValue?: string;
 }
 
 export interface PreviousMatchMessage extends BaseMessage {
+  // TODO: check to see if you ever pass findValue or if you can get rid of it here
   from: 'content';
   type: 'prev-match';
-  findValue: string;
+  findValue?: string;
 }
 
 // export interface AllMatchesMessage extends BaseMessage {

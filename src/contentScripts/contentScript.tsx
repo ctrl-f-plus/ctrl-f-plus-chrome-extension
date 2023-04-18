@@ -12,6 +12,7 @@ import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { Messages } from '../utils/messages';
 
 let injectedStyle;
 
@@ -19,25 +20,26 @@ const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState('');
 
+  const sendMessageToBackground = async (message: Messages) => {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(message, (response) => {
+        resolve(response);
+      });
+    });
+  };
+
   const handleSearchSubmit = async (findValue: string) => {
     setStoredFindValue(findValue);
 
     await clearStoredMatchesObject();
 
-    await new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          from: 'content',
-          type: 'remove-all-highlight-matches',
-          payload: findValue,
-        },
-        (response) => {
-          resolve(response);
-        }
-      );
+    await sendMessageToBackground({
+      from: 'content',
+      type: 'remove-all-highlight-matches',
+      payload: findValue,
     });
 
-    chrome.runtime.sendMessage({
+    sendMessageToBackground({
       from: 'content',
       type: 'get-all-matches-msg',
       payload: findValue,
@@ -45,16 +47,14 @@ const App: React.FC<{}> = () => {
   };
 
   const handleNext = () => {
-    console.log('contentScript - handleNext()');
-
-    chrome.runtime.sendMessage({
+    sendMessageToBackground({
       from: 'content',
       type: 'next-match',
     });
   };
 
   const handlePrevious = () => {
-    chrome.runtime.sendMessage({
+    sendMessageToBackground({
       from: 'content',
       type: 'prev-match',
     });
@@ -65,16 +65,21 @@ const App: React.FC<{}> = () => {
   };
 
   const openSearchOverlay = () => {
-    console.log('openSearchOverlay');
     setShowModal(true);
-    chrome.runtime.sendMessage({ type: 'add-styles-all-tabs' });
+    sendMessageToBackground({
+      from: 'content',
+      type: 'add-styles-all-tabs',
+    });
   };
 
   const closeSearchOverlay = (searchValue: string) => {
     setShowModal(false);
-    // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION
+    // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
     setStoredFindValue(searchValue);
-    chrome.runtime.sendMessage({ type: 'remove-styles-all-tabs' });
+    sendMessageToBackground({
+      from: 'content',
+      type: 'remove-styles-all-tabs',
+    });
   };
 
   const handleMessage = (
@@ -86,24 +91,32 @@ const App: React.FC<{}> = () => {
 
     const { type, findValue, command } = message;
 
-    if (type === 'switched-active-tab-show-modal') {
-      setShowModal(true);
-    } else if (type === 'next-match' || type === 'prev-match') {
-      //  TODO: ???
-    } else if (command) {
-      handleKeyboardCommand(command, {
-        toggleSearchOverlay,
-      });
-    } else if (message.type === 'remove-styles') {
-      removeStyles(injectedStyle);
-      return;
-    } else if (message.type === 'add-styles') {
-      injectedStyle = injectStyles(contentStyles);
-      return;
-    } else if (message.type === 'remove-all-highlight-matches') {
-      removeAllHighlightMatches();
-      sendResponse({ success: true });
-      return;
+    switch (type) {
+      case 'switched-active-tab-show-modal':
+        setShowModal(true);
+        break;
+      case 'next-match':
+      case 'prev-match':
+        debugger;
+        console.log(`(type === 'next-match' || type === 'prev-match')`);
+        break;
+      case 'remove-styles':
+        removeStyles(injectedStyle);
+        break;
+      case 'add-styles':
+        injectedStyle = injectStyles(contentStyles);
+        break;
+      case 'remove-all-highlight-matches':
+        removeAllHighlightMatches();
+        sendResponse({ success: true });
+        break;
+      default:
+        if (command) {
+          handleKeyboardCommand(command, {
+            toggleSearchOverlay,
+          });
+        }
+        break;
     }
   };
 

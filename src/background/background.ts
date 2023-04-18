@@ -114,18 +114,11 @@ async function switchTab(state, matchesObject) {
   //   console.warn('switchTab: Tab ID is undefined:', state.tab);
   //   return;
   // }
-  // debugger;
-  const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-  // debugger;
-  const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
-  // debugger;
-  const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
-  // debugger;
-  const nextTabId = tabIds[nextTabIndex];
 
-  // state.matchesObj = tabStates[state.tabId].matchesObj[state.tabId][state.currentIndex];
-  // TODO: YOU NEED TO DESERIALIZE THE TABSTATE
-  // debugger;
+  const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
+  const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
+  const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
+  const nextTabId = tabIds[nextTabIndex];
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
