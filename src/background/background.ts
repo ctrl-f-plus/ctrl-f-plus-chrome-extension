@@ -119,18 +119,21 @@ async function switchTab(state, matchesObject) {
   //   console.warn('switchTab: Tab ID is undefined:', state.tab);
   //   return;
   // }
+  // debugger;
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
+  // debugger;
   const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
+  // debugger;
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
+  // debugger;
   const nextTabId = tabIds[nextTabIndex];
 
   // state.matchesObj = tabStates[state.tabId].matchesObj[state.tabId][state.currentIndex];
   // TODO: YOU NEED TO DESERIALIZE THE TABSTATE
-  debugger;
+  // debugger;
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
-    // state.matchesObj[state.tabId][0].classList.add('ctrl-f-highlight-focus');
     if (
       state.matchesObj[state.tabId] &&
       state.matchesObj[state.tabId].length > 0
@@ -152,7 +155,6 @@ async function switchTab(state, matchesObject) {
       from: 'background',
       type: 'switched-active-tab-show-modal',
     };
-    console.log('Sending message:', message2);
     chrome.tabs.sendMessage(tab.id, message2);
   });
 }
@@ -187,7 +189,6 @@ chrome.runtime.onMessage.addListener(
     if (message.type === 'next-match' || message.type === 'prev-match') {
       console.log('background Script - next-match');
 
-      // message.from,
       executeContentScriptWithMessage(
         sender.tab!.id,
         message.type,
@@ -250,7 +251,6 @@ chrome.runtime.onMessage.addListener(
 
     if (message.type === 'switch-tab') {
       switchTab(message.state, message.matchesObject);
-      // , message.prevIndex);
       return;
     }
 

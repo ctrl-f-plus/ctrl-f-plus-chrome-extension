@@ -38,7 +38,7 @@ import {
       if (from === 'background' && type === 'highlight') {
         state.tabId = message.tabId;
         await findAllMatches(state, message.findValue);
-
+        debugger;
         if (state.matchesObj[state.tabId].length > 0) {
           sendResponse({ hasMatch: true, state: state });
         } else {
@@ -54,7 +54,7 @@ import {
 
       if (message.type === 'next-match') {
         console.log('getInnerHtmlScript - next-match');
-
+        debugger;
         // if (state.matches.length > 0) {
         if (state.matchesObj[state.tabId].length > 0) {
           nextMatch(state);
@@ -73,7 +73,7 @@ import {
       }
 
       if (message.type === 'update-highlights') {
-        // debugger;
+        debugger;
         // state.tabId = message.tabId;
         updateHighlights(state, message.prevIndex);
       }

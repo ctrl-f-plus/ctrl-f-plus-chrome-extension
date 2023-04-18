@@ -1,5 +1,5 @@
 // src/utils/matchUtils.ts
-import { htmlToOuterHtml } from './htmlUtils';
+import { htmlToOuterHtml, outerHtmlToHtml } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
 
@@ -58,14 +58,15 @@ export function updateHighlights(
     const prevMatch = state.matchesObj[state.tabId][prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
-  debugger;
+
   if (endOfTab) {
     return;
   }
   debugger;
   const curMatch = state.matchesObj[state.tabId][state.currentIndex];
+  debugger;
   curMatch.classList.add('ctrl-f-highlight-focus');
-
+  debugger;
   scrollToElement(curMatch);
 }
 
@@ -74,6 +75,7 @@ export async function nextMatch(state) {
   const prevIndex = state.currentIndex;
 
   // TODO: send message to update tabStates?
+  debugger;
   state.currentIndex =
     (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
 
@@ -82,15 +84,26 @@ export async function nextMatch(state) {
     debugger;
     updateHighlights(state, prevIndex, endOfTab);
     debugger;
-    state.matchesObj = htmlToOuterHtml(state.matchesObj, state.tabId);
+    debugger;
+    debugger;
+    // state.matchesObj[state.tabId] = htmlToOuterHtml(
+    //   state.matchesObj,
+    //   state.tabId
+    // );
+    debugger;
     const strg = await getStoredMatchesObject();
     const message = {
       type: 'switch-tab',
       state: state,
       matchesObject: strg,
-      prevIndex: prevIndex,
+      prevIndex: undefined,
     };
     chrome.runtime.sendMessage(message);
+    debugger;
+    // state.matchesObj[state.tabId] = outerHtmlToHtml(
+    //   state.matchesObj[state.tabId]
+    // );
+    debugger;
   } else {
     debugger;
     updateHighlights(state, prevIndex);
