@@ -1,6 +1,5 @@
 // src/background/background.ts
 
-import { updateHighlights } from '../utils/matchUtils';
 import {
   Messages,
   SwitchedActiveTabShowModal,
@@ -8,7 +7,6 @@ import {
 } from '../utils/messages';
 import { getStoredMatchesObject } from '../utils/storage';
 
-// const allMatches: { [tabId: number]: HTMLElement[] } = {};
 const tabStates: { [tabId: number]: any } = {};
 
 (global as any).getStoredMatchesObject = getStoredMatchesObject;
@@ -106,7 +104,7 @@ async function executeContentScriptOnAllTabs(findValue: string) {
           from: 'background',
           type: 'update-highlights',
           state: tabStates[tab.id],
-          prevIndex: undefined, // or the previous index if needed
+          prevIndex: undefined,
         });
       }
     }
@@ -132,39 +130,6 @@ function executeContentScriptWithMessage(
       });
     }
   );
-}
-
-function navigateWithMatch(direction: 'next' | 'previous') {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    let activeTabIndex = tabs.findIndex((tab) => tab.active);
-    let foundMatch = false;
-
-    for (let i = 1; i <= tabs.length; i++) {
-      let tabIndex =
-        direction === 'next'
-          ? (activeTabIndex + i) % tabs.length
-          : (activeTabIndex - i + tabs.length) % tabs.length;
-      let targetTab = tabs[tabIndex];
-
-      if (targetTab.id) {
-        chrome.tabs.sendMessage(
-          targetTab.id,
-          { type: `${direction}-match` },
-          (response) => {
-            if (chrome.runtime.lastError) {
-              // Ignore this error
-            } else if (response.hasMatch) {
-              if (!foundMatch) {
-                foundMatch = true;
-                chrome.tabs.update(targetTab.id, { active: true });
-              }
-              return;
-            }
-          }
-        );
-      }
-    }
-  });
 }
 
 // function deserializeMatchesObj(serializedMatchesObj) {
@@ -252,12 +217,6 @@ chrome.runtime.onMessage.addListener(
 
       executeContentScriptOnAllTabs(findValue);
 
-      // TODO: START HERE! TODO: START HERE! TODO: START HERE! TODO: START HERE!
-      // TODO: check if you need this `all-matches` message
-      // TODO: THis might be a good place to save the matches to local storage
-      // Sends Message back to SearchInput component
-      // chrome.runtime.sendMessage({ type: 'all-matches', allMatches });
-
       return;
     }
 
@@ -272,14 +231,6 @@ chrome.runtime.onMessage.addListener(
       );
       return;
     }
-
-    // if (message.type === 'next-match') {
-    //   // navigateToNextTabWithMatch();
-    //   navigateWithMatch('next');
-    // } else if (message.type === 'prev-match') {
-    //   // navigateToPreviousTabWithMatch();
-    //   navigateWithMatch('previous');
-    // }
 
     if (message.type === 'remove-styles-all-tabs') {
       chrome.tabs.query({}, (tabs) => {

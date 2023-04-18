@@ -1,6 +1,6 @@
 {
-  "name": "Weather Extension",
-  "description": "Weather Extension in React!",
+  "name": "Cntrl-F",
+  "description": "Cntrl-F in React!",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -16,15 +16,12 @@
   "permissions": [
     "tabs",
     "notifications",
-    // "http://*/",
-    // "https://*/",
     "activeTab",
     "scripting",
     "storage",
     "unlimitedStorage"
-    // "*://*.openai.com/*"
   ],
-  "host_permissions": ["https://*/*"],
+  // "host_permissions": ["https://*/*"],
   "commands": {
     "toggle_search_overlay": {
       "suggested_key": {
