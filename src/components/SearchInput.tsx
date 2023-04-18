@@ -1,18 +1,14 @@
 // src/components/SearchInput.tsx
 
-import React, { FormEvent, useRef, useState, useEffect } from 'react';
+import {
+  faAngleDown,
+  faAngleUp,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
-
-interface SearchInputProps {
-  onSubmit: (findValue: string) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-  focus: boolean;
-
-  // TODO: REVIEW THESE:
-  onSearchValueChange: (searchValue: string) => void;
-  // onClose: (searchValue: string) => void;
-}
 
 const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,
@@ -20,6 +16,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onPrevious,
   focus,
   onSearchValueChange,
+  onClose,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   // const [matches, setMatches] = useState<any[]>([]);
@@ -49,8 +46,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
     const newValue = e.target.value;
     setSearchValue(newValue);
     setInitialLoad(false);
-    // TODO: check if you still need onSearchValueChange:
+    // TODO: check if you still need onSearchValueChange() and compare to setSearchValue():
     onSearchValueChange(newValue);
+  };
+
+  const handleClose = () => {
+    onClose(searchValue);
   };
 
   useEffect(() => {
@@ -58,13 +59,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
   }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
-    const handleMessage = (message: any) => {
-      // Receives message from background script
-      // if (message.type === 'all-matches') {
-      // setMatches(message.allMatches);
-      // }
-    };
-
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
 
@@ -73,12 +67,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
         setInitialLoad(false);
       }
     }
-
-    chrome.runtime.onMessage.addListener(handleMessage);
-
-    return () => {
-      chrome.runtime.onMessage.removeListener(handleMessage);
-    };
   }, [focus, searchValue]);
 
   useEffect(() => {
@@ -99,7 +87,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
         ref={searchInputRef}
         type="text"
         value={searchValue}
-        // onChange={(e) => setSearchValue(e.target.value)}
         onChange={handleInputChange}
         className="mr-2 text-white placeholder-white bg-transparent focus:outline-none"
         placeholder="Find on page"
@@ -108,7 +95,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         type="submit"
         className="bg-transparent hover:bg-opacity-75 focus:outline-none"
       >
-        Search
+        {/* Search */}
       </button>
       <button
         type="button"
@@ -116,7 +103,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
         disabled={searchValue === ''}
       >
-        Previous
+        <FontAwesomeIcon icon={faAngleUp} />
       </button>
       <button
         type="button"
@@ -124,10 +111,20 @@ const SearchInput: React.FC<SearchInputProps> = ({
         className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
         disabled={searchValue === ''} //FIXME: review this functionality and style it
       >
-        Next
+        <FontAwesomeIcon icon={faAngleDown} />
+      </button>
+      <button
+        type="button"
+        onClick={handleClose}
+        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+      >
+        <FontAwesomeIcon icon={faXmark} />
       </button>
     </form>
   );
 };
+
+// RxCaretUp;
+// RxCaretDown;
 
 export default SearchInput;

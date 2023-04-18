@@ -148,6 +148,7 @@ const App: React.FC<{}> = () => {
               onPrevious={handlePrevious}
               focus={showModal}
               onSearchValueChange={setSearchValue}
+              onClose={closeSearchOverlay}
             />
           </DraggableModal>
         </div>
