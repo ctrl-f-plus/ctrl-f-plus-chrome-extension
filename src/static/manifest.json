@@ -21,7 +21,7 @@
     "storage",
     "unlimitedStorage"
   ],
-  // "host_permissions": ["https://*/*"],
+  "host_permissions": ["https://*/*"],
   "commands": {
     "toggle_search_overlay": {
       "suggested_key": {

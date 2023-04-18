@@ -21,9 +21,9 @@ export async function findAllMatches(state, findValue) {
       }
 
       // TODO: START HERE ^^
-
+      debugger;
       const strg = await getStoredMatchesObject();
-
+      debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
 
       // FIXME: REVIEW: Call this right after the state has been updated with the matches
@@ -75,23 +75,22 @@ export async function nextMatch(state) {
   const prevIndex = state.currentIndex;
 
   // TODO: send message to update tabStates?
-  debugger;
+
   state.currentIndex =
     (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
 
   if (state.currentIndex === 0) {
     const endOfTab: boolean = true;
-    debugger;
+
     updateHighlights(state, prevIndex, endOfTab);
-    debugger;
-    debugger;
-    debugger;
+
     // state.matchesObj[state.tabId] = htmlToOuterHtml(
     //   state.matchesObj,
     //   state.tabId
     // );
     debugger;
     const strg = await getStoredMatchesObject();
+    debugger;
     const message = {
       type: 'switch-tab',
       state: state,
