@@ -167,6 +167,24 @@ function navigateWithMatch(direction: 'next' | 'previous') {
   });
 }
 
+// function deserializeMatchesObj(serializedMatchesObj) {
+//   const deserializedMatchesObj = {};
+
+//   for (const key in serializedMatchesObj) {
+//     deserializedMatchesObj[key] = serializedMatchesObj[key].map(
+//       (serializedEl) => {
+//         const el = document.createElement('div');
+//         el.innerText = serializedEl.innerText;
+//         el.className = serializedEl.className;
+//         el.id = serializedEl.id;
+//         return el;
+//       }
+//     );
+//   }
+
+//   return deserializedMatchesObj;
+// }
+
 async function switchTab(state, matchesObject) {
   //, prevIndex) {
   // if (state.tab.id === undefined) {
@@ -177,6 +195,9 @@ async function switchTab(state, matchesObject) {
   const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
+
+  // state.matchesObj = tabStates[state.tabId].matchesObj[state.tabId][state.currentIndex];
+  // TODO: YOU NEED TO DESERIALIZE THE TABSTATE
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
@@ -313,16 +334,27 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'switch-tab') {
-      debugger;
       switchTab(message.state, message.matchesObject);
       // , message.prevIndex);
       return;
     }
 
     if (message.type === 'update-tab-states-obj') {
-      const { tabId, state, payload } = message.payload;
+      // debugger;
+      // const { tabId, state, payload } = message.payload;
+      const { tabId, state, serializedMatchesObj } = message.payload;
+
       tabStates[tabId] = state;
+      tabStates[tabId].matchesObj = serializedMatchesObj;
+      // tabStates[tabId] = state.serializedMatchesObj;
+
       // sendResponse({ status: 'success' });
+
+      // const { tabId, state, payload, serializedMatchesObj } = message.payload;
+      // const deserializedMatchesObj =
+      //   deserializeMatchesObj(serializedMatchesObj);
+      // tabStates[tabId] = state;
+      // tabStates[tabId].matchesObj = deserializedMatchesObj;
       return;
     }
   }
