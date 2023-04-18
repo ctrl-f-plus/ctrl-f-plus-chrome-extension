@@ -7,6 +7,8 @@ import {
 } from '../utils/messages';
 import { getStoredMatchesObject } from '../utils/storage';
 
+import { htmlToOuterHtml, outerHtmlToHtml } from '../utils/htmlUtils';
+
 const tabStates: { [tabId: number]: any } = {};
 
 (global as any).getStoredMatchesObject = getStoredMatchesObject;
@@ -47,7 +49,6 @@ function executeContentScript(
               console.log(chrome.runtime.lastError);
               reject({ hasMatch: false, state: null });
             } else {
-              debugger;
               // tabStates[tab.id] = response.state;
               resolve(response);
             }
@@ -80,7 +81,6 @@ async function executeContentScriptOnAllTabs(findValue: string) {
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        debugger;
         chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
@@ -113,24 +113,6 @@ function executeContentScriptWithMessage(
   );
 }
 
-// function deserializeMatchesObj(serializedMatchesObj) {
-//   const deserializedMatchesObj = {};
-
-//   for (const key in serializedMatchesObj) {
-//     deserializedMatchesObj[key] = serializedMatchesObj[key].map(
-//       (serializedEl) => {
-//         const el = document.createElement('div');
-//         el.innerText = serializedEl.innerText;
-//         el.className = serializedEl.className;
-//         el.id = serializedEl.id;
-//         return el;
-//       }
-//     );
-//   }
-
-//   return deserializedMatchesObj;
-// }
-
 async function switchTab(state, matchesObject) {
   //, prevIndex) {
   // if (state.tab.id === undefined) {
@@ -144,6 +126,7 @@ async function switchTab(state, matchesObject) {
 
   // state.matchesObj = tabStates[state.tabId].matchesObj[state.tabId][state.currentIndex];
   // TODO: YOU NEED TO DESERIALIZE THE TABSTATE
+  debugger;
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
@@ -272,21 +255,12 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'update-tab-states-obj') {
-      debugger;
-      // const { tabId, state, payload } = message.payload;
       const { tabId, state, serializedMatchesObj } = message.payload;
 
       tabStates[tabId] = state;
       tabStates[tabId].matchesObj = serializedMatchesObj;
-      // tabStates[tabId] = state.serializedMatchesObj;
 
-      // sendResponse({ status: 'success' });
-
-      // const { tabId, state, payload, serializedMatchesObj } = message.payload;
-      // const deserializedMatchesObj =
-      //   deserializeMatchesObj(serializedMatchesObj);
-      // tabStates[tabId] = state;
-      // tabStates[tabId].matchesObj = deserializedMatchesObj;
+      sendResponse({ status: 'success' });
       return;
     }
   }

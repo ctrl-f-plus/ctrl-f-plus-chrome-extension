@@ -45,7 +45,11 @@ export async function findAllMatches(state, findValue) {
   });
 }
 
-export function updateHighlights(state, prevIndex?: number) {
+export function updateHighlights(
+  state,
+  prevIndex?: number,
+  endOfTab?: boolean
+) {
   if (!state.matchesObj[state.tabId].length) {
     return;
   }
@@ -54,7 +58,11 @@ export function updateHighlights(state, prevIndex?: number) {
     const prevMatch = state.matchesObj[state.tabId][prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
-
+  debugger;
+  if (endOfTab) {
+    return;
+  }
+  debugger;
   const curMatch = state.matchesObj[state.tabId][state.currentIndex];
   curMatch.classList.add('ctrl-f-highlight-focus');
 
@@ -66,11 +74,15 @@ export async function nextMatch(state) {
   const prevIndex = state.currentIndex;
 
   // TODO: send message to update tabStates?
-  debugger;
   state.currentIndex =
     (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
 
   if (state.currentIndex === 0) {
+    const endOfTab: boolean = true;
+    debugger;
+    updateHighlights(state, prevIndex, endOfTab);
+    debugger;
+    state.matchesObj = htmlToOuterHtml(state.matchesObj, state.tabId);
     const strg = await getStoredMatchesObject();
     const message = {
       type: 'switch-tab',
@@ -80,6 +92,7 @@ export async function nextMatch(state) {
     };
     chrome.runtime.sendMessage(message);
   } else {
+    debugger;
     updateHighlights(state, prevIndex);
   }
 }

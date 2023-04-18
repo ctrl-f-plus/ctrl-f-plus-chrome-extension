@@ -53,3 +53,25 @@ function handleNextMatch(sendResponse) {
 
 chrome.runtime.onMessage.addListener(handleMessage);
 ```
+
+
+- Potentially change the serialization of storage objects:
+```ts
+function deserializeMatchesObj(serializedMatchesObj) {
+  const deserializedMatchesObj = {};
+
+  for (const key in serializedMatchesObj) {
+    deserializedMatchesObj[key] = serializedMatchesObj[key].map(
+      (serializedEl) => {
+        const el = document.createElement('div');
+        el.innerText = serializedEl.innerText;
+        el.className = serializedEl.className;
+        el.id = serializedEl.id;
+        return el;
+      }
+    );
+  }
+
+  return deserializedMatchesObj;
+}
+```
