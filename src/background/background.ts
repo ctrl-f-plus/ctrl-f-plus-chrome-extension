@@ -7,8 +7,6 @@ import {
 } from '../utils/messages';
 import { getStoredMatchesObject } from '../utils/storage';
 
-import { htmlToOuterHtml, outerHtmlToHtml } from '../utils/htmlUtils';
-
 const tabStates: { [tabId: number]: any } = {};
 
 (global as any).getStoredMatchesObject = getStoredMatchesObject;
@@ -74,9 +72,6 @@ async function executeContentScriptOnAllTabs(findValue: string) {
   for (const tab of orderedTabs) {
     if (tab.id) {
       const { hasMatch, state } = await executeContentScript(findValue, tab);
-
-      console.log(hasMatch);
-      console.log(foundFirstMatch);
 
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
@@ -146,7 +141,6 @@ async function switchTab(state, matchesObject) {
       from: 'background',
       type: 'update-highlights',
       state: state,
-      // prevIndex: prevIndex,
       prevIndex: undefined,
     };
     chrome.tabs.sendMessage(tab.id, message);
@@ -159,8 +153,6 @@ async function switchTab(state, matchesObject) {
   });
 }
 
-// TODO: decide if you need/want this on each if statement: `message.from === 'content' &&`
-// TODO: Review - see if you can update so that it doesn't switch tabs every time.
 chrome.runtime.onMessage.addListener(
   (message: Messages, sender, sendResponse) => {
     if (message.type === 'get-all-matches-req') {

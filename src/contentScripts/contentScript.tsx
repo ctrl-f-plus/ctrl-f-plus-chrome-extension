@@ -60,10 +60,6 @@ const App: React.FC<{}> = () => {
     });
   };
 
-  // const handleSearchValueChange = (newValue: string) => {
-  //   setSearchValue(newValue);
-  // };
-
   const toggleSearchOverlay = () => {
     showModal ? closeSearchOverlay(searchValue) : openSearchOverlay();
   };
@@ -97,7 +93,6 @@ const App: React.FC<{}> = () => {
     } else if (command) {
       handleKeyboardCommand(command, {
         toggleSearchOverlay,
-        // closeSearchOverlay,
       });
     } else if (message.type === 'remove-styles') {
       removeStyles(injectedStyle);
@@ -117,7 +112,6 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showModal) {
-        // Check if the search overlay is visible
         closeSearchOverlay(searchValue);
       }
     };
@@ -140,9 +134,7 @@ const App: React.FC<{}> = () => {
               onNext={handleNext}
               onPrevious={handlePrevious}
               focus={showModal}
-              // onSearchValueChange={handleSearchValueChange}
               onSearchValueChange={setSearchValue}
-              // onClose={closeSearchOverlay}
             />
           </DraggableModal>
         </div>

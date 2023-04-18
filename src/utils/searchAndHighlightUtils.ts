@@ -33,6 +33,16 @@ type MatchesObject = {
   [tabId: number]: HTMLElement[];
 };
 
+function isVisible(node: Node): boolean {
+  if (node.nodeType === Node.ELEMENT_NODE) {
+    const style = window.getComputedStyle(node as HTMLElement);
+    if (style.display === 'none' || style.visibility === 'hidden') {
+      return false;
+    }
+  }
+  return node.parentNode ? isVisible(node.parentNode) : true;
+}
+
 function createCustomTreeWalker() {
   return document.createTreeWalker(
     document.body,
@@ -43,7 +53,8 @@ function createCustomTreeWalker() {
           node.nodeName !== 'SCRIPT' &&
           node.nodeName !== 'STYLE' &&
           // TODO: REVIEW IF YOU NEED `SVG` OR NOT  - ALSO MAKE SURE YOU ARE NOT EXCLUDING TOO MUCH
-          node.nodeName !== 'SVG'
+          node.nodeName !== 'SVG' &&
+          isVisible(node)
         ) {
           return NodeFilter.FILTER_ACCEPT;
         }
@@ -64,14 +75,11 @@ function createHighlightSpan({
 }
 
 function updateMatchesObject({
-  // matches,
   matchesObj,
   tabId,
   span,
 }: UpdateMatchesObjectProps) {
   if (matchesObj.hasOwnProperty(tabId)) {
-    // debugger;
-
     matchesObj[tabId].push(span);
   } else {
     matchesObj[tabId] = [span];

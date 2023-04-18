@@ -20,13 +20,12 @@ export async function findAllMatches(state, findValue) {
         serializedMatchesObj[tabId] = htmlToOuterHtml(state.matchesObj, tabId);
       }
 
-      // TODO: START HERE ^^
       debugger;
       const strg = await getStoredMatchesObject();
       debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
 
-      // FIXME: REVIEW: Call this right after the state has been updated with the matches
+      // FIXME: REVIE this message
       chrome.runtime.sendMessage(
         {
           from: 'content',
@@ -62,11 +61,9 @@ export function updateHighlights(
   if (endOfTab) {
     return;
   }
-  debugger;
+
   const curMatch = state.matchesObj[state.tabId][state.currentIndex];
-  debugger;
   curMatch.classList.add('ctrl-f-highlight-focus');
-  debugger;
   scrollToElement(curMatch);
 }
 
@@ -104,7 +101,6 @@ export async function nextMatch(state) {
     // );
     debugger;
   } else {
-    debugger;
     updateHighlights(state, prevIndex);
   }
 }
