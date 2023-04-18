@@ -327,3 +327,96 @@ export async function clearStoredMatchesObject() {
     });
   });
 }
+
+///////////////////////////////////////////////////
+// The matchesObj provided
+const matchesObj = {
+  237543846: [
+    document.querySelector('span.ctrl-f-highlight.ctrl-f-highlight-focus'),
+    document.querySelector('span.ctrl-f-highlight'),
+    document.querySelector('span.ctrl-f-highlight'),
+  ],
+};
+
+function getElementXPath(element) {
+  if (element && element.id) {
+    return `//*[@id="${element.id}"]`;
+  }
+  const parts = [];
+  while (element && element.nodeType === Node.ELEMENT_NODE) {
+    let nbOfPreviousSiblings = 0;
+    let hasNextSiblings = false;
+    let sibling = element.previousSibling;
+    while (sibling) {
+      if (
+        sibling.nodeType === Node.ELEMENT_NODE &&
+        sibling.nodeName === element.nodeName
+      ) {
+        nbOfPreviousSiblings++;
+      }
+      sibling = sibling.previousSibling;
+    }
+    sibling = element.nextSibling;
+    while (sibling) {
+      if (
+        sibling.nodeType === Node.ELEMENT_NODE &&
+        sibling.nodeName === element.nodeName
+      ) {
+        hasNextSiblings = true;
+        break;
+      }
+      sibling = sibling.nextSibling;
+    }
+    const prefix = element.prefix ? `${element.prefix}:` : '';
+    const nth =
+      nbOfPreviousSiblings || hasNextSiblings
+        ? `[${nbOfPreviousSiblings + 1}]`
+        : '';
+    parts.push(`${prefix}${element.localName}${nth}`);
+    element = element.parentNode;
+  }
+  return parts.length ? `/${parts.reverse().join('/')}` : '';
+}
+
+function generateXPaths(matchesObj) {
+  const xpaths = {};
+
+  for (const tabId in matchesObj) {
+    const elements = matchesObj[tabId];
+    xpaths[tabId] = elements.map(getElementXPath);
+  }
+
+  return xpaths;
+}
+
+function getElementByXPath(path) {
+  return document.evaluate(
+    path,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  ).singleNodeValue;
+}
+
+function restoreHighlights(xpaths) {
+  for (const tabId in xpaths) {
+    const tabXPaths = xpaths[tabId];
+    tabXPaths.forEach((xpath) => {
+      const element = getElementByXPath(xpath);
+      if (element) {
+        element.classList.add('ctrl-f-highlight');
+      }
+    });
+  }
+}
+
+// Serialize and store the XPaths
+const xpaths = generateXPaths(matchesObj);
+const serializedXPaths = JSON.stringify(xpaths);
+localStorage.setItem('storedXPaths', serializedXPaths);
+
+// Retrieve the stored XPaths and restore the highlights
+const serializedStoredXPaths = localStorage.getItem('storedXPaths');
+const storedXPaths = JSON.parse(serializedStoredXPaths);
+restoreHighlights(storedXPaths);

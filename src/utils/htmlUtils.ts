@@ -18,93 +18,101 @@ export function outerHtmlToHtml(matchesObjOuterHtml) {
   return matchesObjElements;
 }
 
-// function getXPathForElement(element) {
-//   const parts = [];
-//   for (
-//     ;
-//     element && element.nodeType === Node.ELEMENT_NODE;
-//     element = element.parentNode
-//   ) {
-//     let part = element.nodeName.toLowerCase();
-//     if (element.id) {
-//       part += `[@id="${element.id}"]`;
-//     } else {
-//       const index =
-//         Array.prototype.indexOf.call(element.parentNode.children, element) + 1;
-//       part += `[${index}]`;
-//     }
-//     parts.unshift(part);
-//   }
-//   return parts.length ? '/' + parts.join('/') : null;
-// }
+export function getXPath(element) {
+  if (element.id !== '') {
+    return `//*[@id="${element.id}"]`;
+  }
+  if (element === document.body) {
+    return element.tagName;
+  }
 
-// // Function to get an HTMLElement by its XPath
-// function getElementByXPath(xpath) {
-//   return document.evaluate(
-//     xpath,
-//     document,
-//     null,
-//     XPathResult.FIRST_ORDERED_NODE_TYPE,
-//     null
-//   ).singleNodeValue;
-// }
+  let siblingIndex = 1;
+  let sibling = element;
+  while (sibling.previousSibling) {
+    sibling = sibling.previousSibling;
+    if (
+      sibling.nodeType === Node.ELEMENT_NODE &&
+      sibling.tagName === element.tagName
+    ) {
+      siblingIndex++;
+    }
+  }
 
-// // Serialize the array of HTMLElements into an array of XPath expressions
-// function serializeElements(elements) {
-//   return elements.map(getXPathForElement);
-// }
+  return `${getXPath(element.parentNode)}/${element.tagName}[${siblingIndex}]`;
+}
 
-// // Deserialize the array of XPath expressions into an array of HTMLElements
-// function deserializeElements(xpaths) {
-//   return xpaths.map(getElementByXPath);
-// }
+export function getElementByXPath(xpath) {
+  return document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  ).singleNodeValue;
+}
 
-// // Serialize the array of HTMLElements into an array of objects containing XPath expressions and classList
-// function serializeElements(elements) {
-//   return elements.map((element) => ({
-//     xpath: getXPathForElement(element),
-//     classList: Array.from(element.classList),
-//   }));
-// }
+export function wrapTextWithHighlight(element, text, spanClasses) {
+  const textNodeIndex = Array.prototype.slice
+    .call(element.childNodes)
+    .findIndex(
+      (node) =>
+        node.nodeType === Node.TEXT_NODE && node.textContent.includes(text)
+    );
 
-// // Deserialize the array of objects containing XPath expressions and classList into an array of HTMLElements
-// function deserializeElements(serializedElements) {
-//   return serializedElements.map((serializedElement) => {
-//     const element = getElementByXPath(serializedElement.xpath);
-//     if (element) {
-//       serializedElement.classList.forEach((className) => {
-//         element.classList.add(className);
-//       });
-//     }
-//     return element;
-//   });
-// }
+  if (textNodeIndex === -1) return;
 
-// // Example usage:
+  const textNode = element.childNodes[textNodeIndex];
+  const range = document.createRange();
+  const span = document.createElement('span');
 
-// const matchesObj = {
-//   237543846: [
-//     document.querySelector('a.navbar-brand.font-alt'),
-//   ],
-// };
+  span.classList.add(...spanClasses);
+  range.setStart(textNode, textNode.textContent.indexOf(text));
+  range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
+  range.surroundContents(span);
+}
 
-// // Serialize the HTMLElements
-// const serializedMatchesObj = {
-//   237543846: serializeElements(matchesObj[237543846]),
-// };
+export function generateXPaths(matchesObj) {
+  const xpaths = {};
+  for (const tabId in matchesObj) {
+    xpaths[tabId] = matchesObj[tabId].map((el) => {
+      const xpath = getXPath(el.parentNode);
+      const text = el.textContent;
+      const spanClasses = Array.from(el.classList);
+      return { xpath, text, spanClasses };
+    });
+  }
+  return xpaths;
+}
 
-// // Update the classList of the first element in the matchesObj
-// matchesObj[237543846][0].classList.add('ctrl-f-highlight', 'ctrl-f-highlight-focus');
+export function restoreHighlights(xpathObj) {
+  Object.keys(xpathObj).forEach((tabId) => {
+    const tabXPaths = xpathObj[tabId];
+    tabXPaths.forEach(({ xpath, text, spanClasses }) => {
+      const element = getElementByXPath(xpath);
+      if (element) {
+        wrapTextWithHighlight(element, text, spanClasses);
+      }
+    });
+  });
+}
 
-// // Store the serialized data (e.g., using localStorage)
-// localStorage.setItem('serializedMatchesObj', JSON.stringify(serializedMatchesObj));
+// Example use
+/**
+ * const matchesObj = {
+  237543846: [
+    document.querySelector('nav > div > a > span.ctrl-f-highlight'),
+    document.querySelector(
+      'h1.display-3.text-center.font-alt-no-space > span.ctrl-f-highlight'
+    ),
+    document.querySelector('p > span.ctrl-f-highlight'),
+  ],
+};
 
-// // Refresh the page...
+const xpaths = generateXPaths(matchesObj);
+const serializedXPaths = JSON.stringify(xpaths);
+localStorage.setItem('storedXPaths', serializedXPaths);
 
-// // Retrieve the stored data and deserialize it
-// const storedSerializedMatchesObj = JSON.parse(localStorage.getItem('serializedMatchesObj'));
-// const deserializedMatchesObj = {
-//   237543846: deserializeElements(storedSerializedMatchesObj[237543846]),
-// };
-
-// console.log(deserializedMatchesObj);
+const serializedStoredXPaths = localStorage.getItem('storedXPaths');
+const storedXPaths = JSON.parse(serializedStoredXPaths);
+restoreHighlights(storedXPaths);
+ */
