@@ -6,7 +6,6 @@ import {
   previousMatch,
   updateHighlights,
 } from '../utils/matchUtils';
-import contentStylesImport from './contentStyles';
 
 (function () {
   if (window.myUniqueExtensionFlag) {
@@ -19,7 +18,6 @@ import contentStylesImport from './contentStyles';
 
   const state = {
     currentIndex: undefined,
-    // matches: undefined,
     matchesObj: {},
     tabId: undefined,
   };
@@ -41,7 +39,6 @@ import contentStylesImport from './contentStyles';
         state.tabId = message.tabId;
         await findAllMatches(state, message.findValue);
 
-        // debugger;
         if (state.matchesObj[state.tabId].length > 0) {
           sendResponse({ hasMatch: true, state: state });
         } else {

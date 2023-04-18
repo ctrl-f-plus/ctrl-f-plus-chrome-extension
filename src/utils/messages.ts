@@ -84,17 +84,6 @@ export interface UpdateTabStatesObj extends BaseMessage {
   payload: any;
 }
 
-// export type Messages = {
-//   from?: 'content' | 'popup' | 'background';
-// } & (
-//   | NextMatchMessage
-//   | PreviousMatchMessage
-//   // | GetAllMatchesMessage
-//   // | AllMatchesMessage
-//   | GetAllMatchesRequest
-//   | RemoveStylesMessage
-// );
-
 export type Messages =
   | NextMatchMessage
   | PreviousMatchMessage

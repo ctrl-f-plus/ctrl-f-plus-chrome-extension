@@ -46,29 +46,9 @@ function executeContentScript(
             if (chrome.runtime.lastError) {
               console.log(chrome.runtime.lastError);
               reject({ hasMatch: false, state: null });
-              // } else {
-              //   tabStates[tab.id] = response.state;
-
-              //   resolve(response);
-              //   // resolve(response.hasMatch);
             } else {
-              // Deserialize the matchesObj
-              const deserializedMatchesObj = {};
-              for (const key in response.serializedMatchesObj) {
-                deserializedMatchesObj[key] = response.serializedMatchesObj[
-                  key
-                ].map((serializedEl) => {
-                  const el = document.createElement('div');
-                  el.innerText = serializedEl.innerText;
-                  el.className = serializedEl.className;
-                  el.id = serializedEl.id;
-                  return el;
-                });
-              }
-
-              // Update the state with deserializedMatchesObj
-              response.state.matchesObj = deserializedMatchesObj;
-              tabStates[tab.id] = response.state;
+              debugger;
+              // tabStates[tab.id] = response.state;
               resolve(response);
             }
           }
@@ -100,6 +80,7 @@ async function executeContentScriptOnAllTabs(findValue: string) {
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
+        debugger;
         chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
@@ -291,7 +272,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'update-tab-states-obj') {
-      // debugger;
+      debugger;
       // const { tabId, state, payload } = message.payload;
       const { tabId, state, serializedMatchesObj } = message.payload;
 

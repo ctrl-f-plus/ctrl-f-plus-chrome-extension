@@ -4,16 +4,15 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import DraggableModal from '../components/DraggableModal';
 import SearchInput from '../components/SearchInput';
+import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { setStoredFindValue, clearStoredMatchesObject } from '../utils/storage';
-import { injectStyles, removeStyles } from '../utils/styleUtils';
-import contentStyles from './contentStyles';
-import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../utils/messages';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
+import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
+import { injectStyles, removeStyles } from '../utils/styleUtils';
+import contentStyles from './contentStyles';
 
-// const injectedStyle = injectStyles(contentStyles);
 let injectedStyle;
 
 const App: React.FC<{}> = () => {
@@ -66,8 +65,6 @@ const App: React.FC<{}> = () => {
   // };
 
   const toggleSearchOverlay = () => {
-    // debugger;
-    // setShowModal((prevState) => !prevState);
     showModal ? closeSearchOverlay(searchValue) : openSearchOverlay();
   };
 
@@ -94,7 +91,6 @@ const App: React.FC<{}> = () => {
     const { type, findValue, command } = message;
 
     if (type === 'switched-active-tab-show-modal') {
-      // debugger;
       setShowModal(true);
     } else if (type === 'next-match' || type === 'prev-match') {
       //  TODO: ???

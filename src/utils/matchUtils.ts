@@ -1,10 +1,7 @@
 // src/utils/matchUtils.ts
+import { htmlToOuterHtml } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
-import {
-  getStoredMatchesObject,
-  setStoredMatchesObject,
-  // clearLocalStorage,
-} from './storage';
+import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
 
 export async function findAllMatches(state, findValue) {
   state.matchesObj = {};
@@ -18,15 +15,12 @@ export async function findAllMatches(state, findValue) {
     tabId: state.tabId,
     callback: async () => {
       const serializedMatchesObj = {};
-      for (const key in state.matchesObj) {
-        serializedMatchesObj[key] = state.matchesObj[key].map((el) => {
-          return {
-            innerText: el.innerText,
-            className: el.className,
-            id: el.id,
-          };
-        });
+
+      for (const tabId in state.matchesObj) {
+        serializedMatchesObj[tabId] = htmlToOuterHtml(state.matchesObj, tabId);
       }
+
+      // TODO: START HERE ^^
 
       const strg = await getStoredMatchesObject();
 
@@ -72,6 +66,7 @@ export async function nextMatch(state) {
   const prevIndex = state.currentIndex;
 
   // TODO: send message to update tabStates?
+  debugger;
   state.currentIndex =
     (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
 
