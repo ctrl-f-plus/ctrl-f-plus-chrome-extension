@@ -1,4 +1,5 @@
-// src/utils/messages.ts
+// src/interfaces/message.types.ts
+
 export interface BaseMessage {
   from: 'background' | 'content' | 'match-utils';
   // from?: 'content' | 'background' | 'popup';

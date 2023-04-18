@@ -4,7 +4,7 @@ import {
   Messages,
   SwitchedActiveTabShowModal,
   UpdateHighlightsMessage,
-} from '../utils/messages';
+} from '../interfaces/message.types';
 import { getStoredMatchesObject } from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};

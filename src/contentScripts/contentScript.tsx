@@ -7,12 +7,12 @@ import SearchInput from '../components/SearchInput';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { MessageFixMe } from '../utils/messages';
+import { MessageFixMe } from '../interfaces/message.types';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { Messages } from '../utils/messages';
+import { Messages } from '../interfaces/message.types';
 
 let injectedStyle;
 

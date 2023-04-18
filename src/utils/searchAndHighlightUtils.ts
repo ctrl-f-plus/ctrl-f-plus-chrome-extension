@@ -1,37 +1,13 @@
 // src/utils/searchAndHighlightUtils.ts
 
-interface MatchUtilsBase {
-  currentIndex?: number;
-  matches: HTMLElement[];
-  matchesObj: MatchesObject;
-  tabId: number;
-}
-
-interface CreateHighlightSpanProps {
-  matchText: string;
-}
-
-interface UpdateMatchesObjectProps extends MatchUtilsBase {
-  span: HTMLElement;
-}
-
-interface GetAllTextNodesToProcessProps {
-  regex: RegExp;
-}
-
-interface ProcessTextNodeProps extends MatchUtilsBase {
-  textNode: Node;
-  regex: RegExp;
-}
-
-interface SearchAndHighlightProps extends MatchUtilsBase {
-  findValue: string;
-  callback?: () => void;
-}
-
-type MatchesObject = {
-  [tabId: number]: HTMLElement[];
-};
+import {
+  CreateHighlightSpanProps,
+  UpdateMatchesObjectProps,
+  GetAllTextNodesToProcessProps,
+  ProcessTextNodeProps,
+  SearchAndHighlightProps,
+  MatchesObject,
+} from '../interfaces/searchAndHighlight.types';
 
 function isVisible(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
