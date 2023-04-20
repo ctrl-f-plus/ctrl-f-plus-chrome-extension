@@ -118,3 +118,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 
 - FIX: if you have two tabs and you search, but then you close one or move it to its own window, then the next feature doestn' cycle back to the beginning (first match) properly.
+
+- FIX: if the current tab does not have any matches, then we should move to the first tab that does
