@@ -122,12 +122,6 @@ async function switchTab(state, matchesObject) {
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
-    if (
-      state.matchesObj[state.tabId] &&
-      state.matchesObj[state.tabId].length > 0
-    ) {
-      state.matchesObj[state.tabId][0].classList.add('ctrl-f-highlight-focus');
-    }
 
     state.currentIndex = 0;
     const message: UpdateHighlightsMessage = {

@@ -19,19 +19,34 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onClose,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  // const [matches, setMatches] = useState<any[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
-  const handleSearchSubmit = (e: FormEvent) => {
+  const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // const storedFindValue = await getStoredFindValue();
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
+
+      // if (storedFindValue !== findValue) {
       onSubmit(findValue);
+      // } else {
+      //   handleNext();
+      // }
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    setSearchValue(newValue);
+    setInitialLoad(false);
+    // TODO: check if you still need onSearchValueChange() and compare to setSearchValue():
+    onSearchValueChange(newValue);
   };
 
   const handleNext = () => {
@@ -40,14 +55,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   const handlePrevious = () => {
     onPrevious();
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setSearchValue(newValue);
-    setInitialLoad(false);
-    // TODO: check if you still need onSearchValueChange() and compare to setSearchValue():
-    onSearchValueChange(newValue);
   };
 
   const handleClose = () => {
@@ -94,9 +101,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       <button
         type="submit"
         className="bg-transparent hover:bg-opacity-75 focus:outline-none"
-      >
-        {/* Search */}
-      </button>
+      />
       <button
         type="button"
         onClick={handlePrevious}
