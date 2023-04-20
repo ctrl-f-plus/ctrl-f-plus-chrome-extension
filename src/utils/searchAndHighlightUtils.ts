@@ -133,15 +133,17 @@ export function removeAllHighlightMatches() {
 
   highlightElements.forEach((elem) => {
     const parent = elem.parentNode;
-    if (!parent) {
+    const textContent = elem.textContent;
+
+    if (!parent || !textContent) {
       console.warn(
-        'removeAllHighlights: Parent node not found for elem:',
+        'removeAllHighlights: Missing parent Node or textContent for elem:',
         elem
       );
       return;
     }
 
-    const textNode = document.createTextNode(elem.textContent);
+    const textNode = document.createTextNode(textContent);
     parent.replaceChild(textNode, elem);
   });
 }

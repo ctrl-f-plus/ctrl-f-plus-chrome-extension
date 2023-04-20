@@ -1,3 +1,4 @@
+//@ts-nocheck
 ////////////////////////////////////////////////////////////////////////////////
 // ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE **
 // ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE **

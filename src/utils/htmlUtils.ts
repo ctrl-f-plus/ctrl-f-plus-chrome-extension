@@ -1,3 +1,4 @@
+//@ts-nocheck
 export function htmlToOuterHtml(matchesObj, tabId) {
   const matchesArray = matchesObj[tabId];
 

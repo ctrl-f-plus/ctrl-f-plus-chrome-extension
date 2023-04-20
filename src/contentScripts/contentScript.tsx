@@ -14,7 +14,7 @@ import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { Messages } from '../interfaces/message.types';
 
-let injectedStyle;
+let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const [showModal, setShowModal] = useState<boolean>(false);

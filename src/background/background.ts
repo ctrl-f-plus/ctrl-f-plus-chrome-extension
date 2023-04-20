@@ -166,13 +166,15 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'next-match' || message.type === 'prev-match') {
-      console.log('background Script - next-match');
+      const senderTabId = sender.tab ? sender.tab.id : null;
+      const { type, findValue } = message;
 
-      executeContentScriptWithMessage(
-        sender.tab!.id,
-        message.type,
-        message.findValue
-      );
+      if (!senderTabId || !findValue) {
+        console.warn(`ADD_LOCATION: missing senderTabId or findValue`);
+        return;
+      }
+
+      executeContentScriptWithMessage(senderTabId, message.type, findValue);
       return;
     }
 

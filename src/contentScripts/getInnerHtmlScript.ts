@@ -53,8 +53,6 @@ import {
       }
 
       if (message.type === 'next-match') {
-        console.log('getInnerHtmlScript - next-match');
-
         // if (state.matches.length > 0) {
         if (state.matchesObj[state.tabId].length > 0) {
           nextMatch(state);
