@@ -32,10 +32,10 @@ const SearchInput: React.FC<SearchInputProps> = ({
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
 
-      // if (storedFindValue !== findValue) {
+      // if (storedFindValue !== findValue && TODO: NOTHING IS HIGHLIGHTED/NO MATCHES EXIST) {
       onSubmit(findValue);
       // } else {
-      //   handleNext();
+      // handleNext();
       // }
     }
   };

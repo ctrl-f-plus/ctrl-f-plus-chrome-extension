@@ -97,8 +97,8 @@ const App: React.FC<{}> = () => {
         break;
       case 'next-match':
       case 'prev-match':
-        debugger;
-        console.log(`(type === 'next-match' || type === 'prev-match')`);
+        // debugger;
+        // console.log(`(type === 'next-match' || type === 'prev-match')`);
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
