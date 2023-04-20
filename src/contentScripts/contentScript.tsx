@@ -139,18 +139,20 @@ const App: React.FC<{}> = () => {
   return (
     <>
       {showModal && (
-        <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
-          {' '}
-          <DraggableModal>
-            <SearchInput
-              onSubmit={handleSearchSubmit}
-              onNext={handleNext}
-              onPrevious={handlePrevious}
-              focus={showModal}
-              onSearchValueChange={setSearchValue}
-              onClose={closeSearchOverlay}
-            />
-          </DraggableModal>
+        <div className="cntrl-f-extension">
+          <div className="fixed left-5 top-5 z-[9999] bg-purple-500">
+            {' '}
+            <DraggableModal>
+              <SearchInput
+                onSubmit={handleSearchSubmit}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+                focus={showModal}
+                onSearchValueChange={setSearchValue}
+                onClose={closeSearchOverlay}
+              />
+            </DraggableModal>
+          </div>
         </div>
       )}
     </>

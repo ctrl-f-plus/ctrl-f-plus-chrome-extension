@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Draggable from 'react-draggable';
-import '../tailwind.css';
+// import '../tailwind.css';
 
 interface DraggableModalProps {
   children: React.ReactNode;

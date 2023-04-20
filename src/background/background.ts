@@ -166,15 +166,20 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'next-match' || message.type === 'prev-match') {
-      const senderTabId = sender.tab ? sender.tab.id : null;
-      const { type, findValue } = message;
+      // const senderTabId = sender.tab ? sender.tab.id : null;
+      // const { type, findValue } = message;
 
-      if (!senderTabId || !findValue) {
-        console.warn(`ADD_LOCATION: missing senderTabId or findValue`);
-        return;
-      }
+      // if (!senderTabId || !findValue) {
+      //   console.warn(`ADD_LOCATION: missing senderTabId or findValue`);
+      //   return;
+      // }
 
-      executeContentScriptWithMessage(senderTabId, message.type, findValue);
+      // executeContentScriptWithMessage(senderTabId, message.type, findValue);
+      executeContentScriptWithMessage(
+        sender.tab.id,
+        message.type,
+        message.findValue
+      );
       return;
     }
 

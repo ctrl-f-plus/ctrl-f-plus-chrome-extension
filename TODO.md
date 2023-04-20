@@ -115,3 +115,6 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - Tips for using the Chrome Web Store:
     - https://support.google.com/chrome_webstore/answer/1050673?visit_id=638174638501656455-168292003&p=cws_badges&rd=1#cws_badges&zippy=%2Cunderstand-chrome-web-store-badges
     - https://developer.chrome.com/docs/webstore/best_practices/
+
+
+- FIX: if you have two tabs and you search, but then you close one or move it to its own window, then the next feature doestn' cycle back to the beginning (first match) properly.
