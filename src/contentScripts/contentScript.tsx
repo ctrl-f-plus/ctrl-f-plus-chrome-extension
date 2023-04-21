@@ -139,7 +139,7 @@ const App: React.FC<{}> = () => {
   return (
     <>
       {showModal && (
-        <div className="cntrl-f-extension">
+        <div id="cntrl-f-extension">
           {/* <div className="fixed left-5 top-5 z-[9999]"> */}
           <div className="fixed left-5 top-5 z-[9999] w-screen">
             {' '}

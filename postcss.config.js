@@ -2,11 +2,6 @@ module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
+    'postcss-parent-selector': { selector: '#cntrl-f-extension' },
   },
 };
-
-// const nested = require('postcss-nested');
-
-// module.exports = {
-//   plugins: [require('tailwindcss'), nested(), require('autoprefixer')],
-// };
