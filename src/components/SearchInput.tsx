@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
+import { FaAngleUp } from 'react-icons/fa';
+import { TfiAngleUp } from 'react-icons/tfi';
 
 const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,
@@ -86,97 +88,55 @@ const SearchInput: React.FC<SearchInputProps> = ({
   }, []);
 
   return (
-    <form
-      onSubmit={handleSearchSubmit}
-      // items-center
-      className=" inline-flex w-full p-2 text-white bg-black bg-opacity-75 rounded"
-    >
-      {/* //   className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"> */}
-      <input
-        ref={searchInputRef}
-        type="text"
-        value={searchValue}
-        onChange={handleInputChange}
-        className=" text-white placeholder-white bg-transparent focus:outline-none"
-        placeholder="Find on page"
-      />
+    <>
+      <form
+        onSubmit={handleSearchSubmit}
+        className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
+      >
+        <div className="col-span-3 grid grid-cols-6 gap-0 ">
+          <input
+            ref={searchInputRef}
+            type="text"
+            value={searchValue}
+            onChange={handleInputChange}
+            className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
+            placeholder="Find on page"
+          />
+          <div className="mx-2">
+            {/* <p className=" bg-red-500 text-right float-right">1/10000</p> */}
+          </div>
+        </div>
 
-      <button type="submit" className="hidden" />
+        <button type="submit" className="hidden" />
 
-      <div className="flex justify-between w-full">
-        {/* <div className="grid grid-flow-col auto-cols-max"> */}
-        <button
-          type="button"
-          onClick={handlePrevious}
-          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
-          disabled={searchValue === ''}
-        >
-          <FontAwesomeIcon icon={faAngleUp} />
-        </button>
-        <button
-          type="button"
-          onClick={handleNext}
-          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
-          disabled={searchValue === ''} //FIXME: review this functionality and style it
-        >
-          <FontAwesomeIcon icon={faAngleDown} />
-        </button>
-        <button
-          type="button"
-          onClick={handleClose}
-          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-      </div>
-    </form>
+        <div className=" flex justify-evenly">
+          <button
+            type="button"
+            onClick={handlePrevious}
+            className="bg-transparent hover:bg-opacity-75 focus:outline-none"
+            disabled={searchValue === ''}
+          >
+            <FontAwesomeIcon icon={faAngleUp} />
+          </button>
+          <button
+            type="button"
+            onClick={handleNext}
+            className="bg-transparent hover:bg-opacity-75 focus:outline-none"
+            disabled={searchValue === ''} //FIXME: review this functionality and style it
+          >
+            <FontAwesomeIcon icon={faAngleDown} />
+          </button>
+          <button
+            type="button"
+            onClick={handleClose}
+            className="bg-transparent hover:bg-opacity-75 focus:outline-none"
+          >
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
-// RxCaretUp;
-// RxCaretDown;
-
 export default SearchInput;
-
-{
-  /* <form
-  onSubmit={handleSearchSubmit}
-  className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
->
-  <input
-    ref={searchInputRef}
-    type="text"
-    value={searchValue}
-    onChange={handleInputChange}
-    className="mr-2 text-white placeholder-white bg-transparent focus:outline-none"
-    placeholder="Find on page"
-  />
-  <button
-    type="submit"
-    className="bg-transparent hover:bg-opacity-75 focus:outline-none"
-  />
-  <button
-    type="button"
-    onClick={handlePrevious}
-    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-    disabled={searchValue === ''}
-  >
-    <FontAwesomeIcon icon={faAngleUp} />
-  </button>
-  <button
-    type="button"
-    onClick={handleNext}
-    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-    disabled={searchValue === ''} //FIXME: review this functionality and style it
-  >
-    <FontAwesomeIcon icon={faAngleDown} />
-  </button>
-  <button
-    type="button"
-    onClick={handleClose}
-    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-  >
-    <FontAwesomeIcon icon={faXmark} />
-  </button>
-</form>; */
-}
