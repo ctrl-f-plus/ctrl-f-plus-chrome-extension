@@ -88,43 +88,47 @@ const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <form
       onSubmit={handleSearchSubmit}
-      className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
+      // items-center
+      className=" inline-flex w-full p-2 text-white bg-black bg-opacity-75 rounded"
     >
+      {/* //   className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"> */}
       <input
         ref={searchInputRef}
         type="text"
         value={searchValue}
         onChange={handleInputChange}
-        className="mr-2 text-white placeholder-white bg-transparent focus:outline-none"
+        className=" text-white placeholder-white bg-transparent focus:outline-none"
         placeholder="Find on page"
       />
-      <button
-        type="submit"
-        className="bg-transparent hover:bg-opacity-75 focus:outline-none"
-      />
-      <button
-        type="button"
-        onClick={handlePrevious}
-        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-        disabled={searchValue === ''}
-      >
-        <FontAwesomeIcon icon={faAngleUp} />
-      </button>
-      <button
-        type="button"
-        onClick={handleNext}
-        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-        disabled={searchValue === ''} //FIXME: review this functionality and style it
-      >
-        <FontAwesomeIcon icon={faAngleDown} />
-      </button>
-      <button
-        type="button"
-        onClick={handleClose}
-        className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
-      >
-        <FontAwesomeIcon icon={faXmark} />
-      </button>
+
+      <button type="submit" className="hidden" />
+
+      <div className="flex justify-between w-full">
+        {/* <div className="grid grid-flow-col auto-cols-max"> */}
+        <button
+          type="button"
+          onClick={handlePrevious}
+          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
+          disabled={searchValue === ''}
+        >
+          <FontAwesomeIcon icon={faAngleUp} />
+        </button>
+        <button
+          type="button"
+          onClick={handleNext}
+          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
+          disabled={searchValue === ''} //FIXME: review this functionality and style it
+        >
+          <FontAwesomeIcon icon={faAngleDown} />
+        </button>
+        <button
+          type="button"
+          onClick={handleClose}
+          className=" bg-transparent hover:bg-opacity-75 focus:outline-none"
+        >
+          <FontAwesomeIcon icon={faXmark} />
+        </button>
+      </div>
     </form>
   );
 };
@@ -133,3 +137,46 @@ const SearchInput: React.FC<SearchInputProps> = ({
 // RxCaretDown;
 
 export default SearchInput;
+
+{
+  /* <form
+  onSubmit={handleSearchSubmit}
+  className="inline-flex items-center p-2 text-white bg-black bg-opacity-75 rounded"
+>
+  <input
+    ref={searchInputRef}
+    type="text"
+    value={searchValue}
+    onChange={handleInputChange}
+    className="mr-2 text-white placeholder-white bg-transparent focus:outline-none"
+    placeholder="Find on page"
+  />
+  <button
+    type="submit"
+    className="bg-transparent hover:bg-opacity-75 focus:outline-none"
+  />
+  <button
+    type="button"
+    onClick={handlePrevious}
+    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+    disabled={searchValue === ''}
+  >
+    <FontAwesomeIcon icon={faAngleUp} />
+  </button>
+  <button
+    type="button"
+    onClick={handleNext}
+    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+    disabled={searchValue === ''} //FIXME: review this functionality and style it
+  >
+    <FontAwesomeIcon icon={faAngleDown} />
+  </button>
+  <button
+    type="button"
+    onClick={handleClose}
+    className="ml-2 bg-transparent hover:bg-opacity-75 focus:outline-none"
+  >
+    <FontAwesomeIcon icon={faXmark} />
+  </button>
+</form>; */
+}
