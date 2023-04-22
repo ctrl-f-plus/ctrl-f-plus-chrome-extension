@@ -24,16 +24,14 @@ import {
 
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
-      console.log('Received message- inner:', message);
-
-      const { from, type, findValue, tabId, messageId } = message;
-
       console.log(
         'Received message:',
         message,
         'Message ID:',
         message.messageId
       );
+
+      const { from, type, findValue, tabId, messageId } = message;
 
       if (from === 'background' && type === 'highlight') {
         state.tabId = message.tabId;
@@ -53,7 +51,6 @@ import {
       }
 
       if (message.type === 'next-match') {
-        // if (state.matches.length > 0) {
         if (state.matchesObj[state.tabId].length > 0) {
           nextMatch(state);
           sendResponse({ hasMatch: true, tabId: state.tabId });

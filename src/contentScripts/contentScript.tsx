@@ -2,23 +2,22 @@
 
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import DraggableModal from '../components/DraggableModal';
+import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { useMessageHandler } from '../hooks/useMessageHandler';
+import { MessageFixMe, Messages } from '../interfaces/message.types';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { MessageFixMe } from '../interfaces/message.types';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { Messages } from '../interfaces/message.types';
+import { useSearchHandler } from '../hooks/useSearchHandler';
+import { userOverlayHandler } from '../hooks/useOverlayHandler';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [searchValue, setSearchValue] = useState('');
 
   const sendMessageToBackground = async (message: Messages) => {
     return new Promise((resolve) => {
@@ -28,59 +27,21 @@ const App: React.FC<{}> = () => {
     });
   };
 
-  const handleSearchSubmit = async (findValue: string) => {
-    setStoredFindValue(findValue);
+  const {
+    searchValue,
+    setSearchValue,
+    handleSearchSubmit,
+    handleNext,
+    handlePrevious,
+  } = useSearchHandler(sendMessageToBackground);
 
-    await clearStoredMatchesObject();
-
-    await sendMessageToBackground({
-      from: 'content',
-      type: 'remove-all-highlight-matches',
-      payload: findValue,
-    });
-
-    sendMessageToBackground({
-      from: 'content',
-      type: 'get-all-matches-msg',
-      payload: findValue,
-    });
-  };
-
-  const handleNext = () => {
-    sendMessageToBackground({
-      from: 'content',
-      type: 'next-match',
-    });
-  };
-
-  const handlePrevious = () => {
-    sendMessageToBackground({
-      from: 'content',
-      type: 'prev-match',
-    });
-  };
-
-  const toggleSearchOverlay = () => {
-    showModal ? closeSearchOverlay(searchValue) : openSearchOverlay();
-  };
-
-  const openSearchOverlay = () => {
-    setShowModal(true);
-    sendMessageToBackground({
-      from: 'content',
-      type: 'add-styles-all-tabs',
-    });
-  };
-
-  const closeSearchOverlay = (searchValue: string) => {
-    setShowModal(false);
-    // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
-    setStoredFindValue(searchValue);
-    sendMessageToBackground({
-      from: 'content',
-      type: 'remove-styles-all-tabs',
-    });
-  };
+  const {
+    showOverlay,
+    setShowOverlay,
+    toggleSearchOverlay,
+    openSearchOverlay,
+    closeSearchOverlay,
+  } = userOverlayHandler(searchValue, sendMessageToBackground);
 
   const handleMessage = (
     message: MessageFixMe,
@@ -93,7 +54,7 @@ const App: React.FC<{}> = () => {
 
     switch (type) {
       case 'switched-active-tab-show-modal':
-        setShowModal(true);
+        setShowOverlay(true);
         break;
       case 'next-match':
       case 'prev-match':
@@ -124,7 +85,7 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showModal) {
+      if (e.key === 'Escape' && showOverlay) {
         closeSearchOverlay(searchValue);
       }
     };
@@ -134,25 +95,24 @@ const App: React.FC<{}> = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showModal, searchValue]);
+  }, [showOverlay, searchValue]);
 
   return (
     <>
-      {showModal && (
+      {showOverlay && (
         <div id="cntrl-f-extension">
-          {/* <div className="fixed left-5 top-5 z-[9999]"> */}
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
-            <DraggableModal>
+            <Layover>
               <SearchInput
                 onSubmit={handleSearchSubmit}
                 onNext={handleNext}
                 onPrevious={handlePrevious}
-                focus={showModal}
+                focus={showOverlay}
                 onSearchValueChange={setSearchValue}
                 onClose={closeSearchOverlay}
               />
-            </DraggableModal>
+            </Layover>
           </div>
         </div>
       )}

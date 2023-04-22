@@ -5,11 +5,11 @@ import {
   SwitchedActiveTabShowModal,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
-import { getStoredMatchesObject } from '../utils/storage';
+// import { getStoredMatchesObject } from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};
 
-(global as any).getStoredMatchesObject = getStoredMatchesObject;
+// (global as any).getStoredMatchesObject = getStoredMatchesObject;
 
 function executeContentScript(
   findValue: string,

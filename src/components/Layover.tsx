@@ -3,11 +3,11 @@
 import React from 'react';
 import Draggable from 'react-draggable';
 
-interface DraggableModalProps {
+interface LayoverProps {
   children: React.ReactNode;
 }
 
-const DraggableModal: React.FC<DraggableModalProps> = ({ children }) => {
+const Layover: React.FC<LayoverProps> = ({ children }) => {
   return (
     <Draggable>
       <div className="absolute w-[434px] rounded-lg cursor-move">
@@ -17,4 +17,4 @@ const DraggableModal: React.FC<DraggableModalProps> = ({ children }) => {
   );
 };
 
-export default DraggableModal;
+export default Layover;
