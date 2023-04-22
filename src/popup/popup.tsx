@@ -1,8 +1,3 @@
-// To return the list of matches on the current tab, run the following in the popup console:
-// chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//   chrome.tabs.sendMessage(tabs[0].id, { type: 'get-all-matches-req' });
-// });
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './popup.css';

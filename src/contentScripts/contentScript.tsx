@@ -141,7 +141,7 @@ const App: React.FC<{}> = () => {
       {showModal && (
         <div id="cntrl-f-extension">
           {/* <div className="fixed left-5 top-5 z-[9999]"> */}
-          <div className="fixed left-5 top-5 z-[9999] w-screen">
+          <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
             <DraggableModal>
               <SearchInput

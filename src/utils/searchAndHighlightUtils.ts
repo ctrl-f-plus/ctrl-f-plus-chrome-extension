@@ -159,8 +159,6 @@ export function searchAndHighlight({
 }: SearchAndHighlightProps) {
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
-  debugger;
-
   textNodesToProcess.forEach((textNode) => {
     processTextNode({ textNode, regex, matches, matchesObj, tabId });
   });
