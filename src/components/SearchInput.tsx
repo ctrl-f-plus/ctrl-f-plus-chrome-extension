@@ -3,16 +3,12 @@
 import {
   faAngleDown,
   faAngleUp,
-  faCircle,
-  faTimes,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
-import { FaAngleUp } from 'react-icons/fa';
-import { TfiAngleUp } from 'react-icons/tfi';
 
 const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,
@@ -91,8 +87,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <>
-      {/* Add this div for the border-like line */}
-
+      {' '}
       <form
         onSubmit={handleSearchSubmit}
         className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
@@ -170,37 +165,3 @@ const SearchInput: React.FC<SearchInputProps> = ({
 };
 
 export default SearchInput;
-{
-  /* <button
-            type="button"
-            onClick={handlePrevious}
-            className="group focus:outline-none"
-            disabled={searchValue === ''}
-          >
-            <div className=" flex items-center justify-center relative w-10 h-10 bg-transparent focus:outline-none">
-              <FontAwesomeIcon icon={faAngleUp} className="text-white" />
-              <FontAwesomeIcon
-                icon={faCircle}
-                className="text-black bg-opacity-95 hidden group-hover:block "
-              />{' '}
-            </div>
-          </button> */
-}
-{
-  /* <button
-  type="button"
-  onClick={handleNext}
-  className="bg-transparent hover:bg-opacity-75 focus:outline-none"
-  disabled={searchValue === ''} //FIXME: review this functionality and style it
->
-  <FontAwesomeIcon icon={faAngleDown} />
-</button>; */
-}
-
-//  <button
-//    type="button"
-//    onClick={handleClose}
-//    className="bg-transparent hover:bg-opacity-75 focus:outline-none"
-//  >
-//    <FontAwesomeIcon icon={faXmark} />
-//  </button>;
