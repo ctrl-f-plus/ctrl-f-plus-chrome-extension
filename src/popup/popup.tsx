@@ -1,3 +1,6 @@
+// src/popup/popup.tsx
+
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './popup.css';
