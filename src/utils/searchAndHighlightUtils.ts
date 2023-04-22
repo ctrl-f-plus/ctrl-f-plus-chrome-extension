@@ -70,6 +70,7 @@ function getAllTextNodesToProcess({
   let currentNode = treeWalker.nextNode();
 
   while (currentNode) {
+    regex.lastIndex = 0;
     if (currentNode.nodeType === 3 && regex.test((currentNode as Text).data)) {
       textNodesToProcess.push(currentNode);
     }
@@ -158,6 +159,7 @@ export function searchAndHighlight({
 }: SearchAndHighlightProps) {
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
+  debugger;
 
   textNodesToProcess.forEach((textNode) => {
     processTextNode({ textNode, regex, matches, matchesObj, tabId });

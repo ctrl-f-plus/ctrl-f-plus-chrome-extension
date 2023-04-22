@@ -16,7 +16,11 @@ module.exports = {
     extend: {},
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['disabled', 'group-hover'],
+      textColor: ['disabled', 'group-hover'],
+      opacity: ['disabled'],
+    },
   },
   plugins: [],
 };
