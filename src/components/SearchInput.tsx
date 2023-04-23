@@ -25,9 +25,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onSearchValueChange,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [searchValue, setSearchValue] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
-  const { showOverlay, setShowOverlay, toggleSearchOverlay } =
+  const { searchValue, setSearchValue, toggleSearchOverlay } =
     useContext(OverlayContext);
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES

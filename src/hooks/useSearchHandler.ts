@@ -1,9 +1,12 @@
-import { useState } from 'react';
+// src/hooks/useSearchHandler.ts
+
+import { useContext } from 'react';
+import { OverlayContext } from '../contexts/Contexts';
 import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
 
 export const useSearchHandler = () => {
-  const [searchValue, setSearchValue] = useState('');
+  // const { searchValue, setSearchValue } = useContext(OverlayContext);
   const { sendMessageToBackground } = useSendMessageToBackground();
 
   const handleSearchSubmit = async (findValue: string) => {
@@ -39,8 +42,6 @@ export const useSearchHandler = () => {
   };
 
   return {
-    searchValue,
-    setSearchValue,
     handleSearchSubmit,
     handleNext,
     handlePrevious,
