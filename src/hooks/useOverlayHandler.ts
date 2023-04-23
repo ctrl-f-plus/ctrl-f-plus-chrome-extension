@@ -10,6 +10,8 @@ export const useOverlayHandler = (searchValue: string) => {
   const { sendMessageToBackground } = useSendMessageToBackground();
 
   const toggleSearchOverlay = () => {
+    console.log(`toggleSearchOverlay called. showOverlay: ${showOverlay}`);
+
     showOverlay ? closeSearchOverlay(searchValue) : openSearchOverlay();
     setShowOverlay(!showOverlay);
   };

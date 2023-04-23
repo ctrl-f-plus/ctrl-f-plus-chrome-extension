@@ -6,9 +6,16 @@ import {
   faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  useContext,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
+import { OverlayContext } from '../contexts/Contexts';
 
 const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,
@@ -16,11 +23,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
   onPrevious,
   focus,
   onSearchValueChange,
-  onClose,
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
+  const { showOverlay, setShowOverlay, toggleSearchOverlay } =
+    useContext(OverlayContext);
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
@@ -58,7 +66,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   const handleClose = () => {
-    onClose(searchValue);
+    toggleSearchOverlay();
   };
 
   useEffect(() => {
@@ -144,8 +152,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
           </button>
 
           <button
-            type="button"
             onClick={handleClose}
+            type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >
             {' '}

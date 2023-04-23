@@ -1,20 +1,19 @@
 // src/contentScript/contentScript.tsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
+import { OverlayContext } from '../contexts/Contexts';
 import { useMessageHandler } from '../hooks/useMessageHandler';
-import { MessageFixMe, Messages } from '../interfaces/message.types';
+import { useOverlayHandler } from '../hooks/useOverlayHandler';
+import { useSearchHandler } from '../hooks/useSearchHandler';
+import { MessageFixMe } from '../interfaces/message.types';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
-import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { useSearchHandler } from '../hooks/useSearchHandler';
-import { useOverlayHandler } from '../hooks/useOverlayHandler';
-import { useSendMessageToBackground } from '../hooks/useSendMessageToBackground';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -41,7 +40,7 @@ const App: React.FC<{}> = () => {
 
     switch (type) {
       case 'switched-active-tab-show-modal':
-        setShowOverlay(true);
+        toggleSearchOverlay();
         break;
       case 'next-match':
       case 'prev-match':
@@ -84,8 +83,16 @@ const App: React.FC<{}> = () => {
     };
   }, [showOverlay, searchValue]);
 
+  useEffect(() => {
+    console.log('showOverlay:', showOverlay);
+  }, [showOverlay]);
+
+  console.log('App component showOverlay:', showOverlay);
+
   return (
-    <>
+    <OverlayContext.Provider
+      value={{ showOverlay, setShowOverlay, toggleSearchOverlay }}
+    >
       {showOverlay && (
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
@@ -97,13 +104,12 @@ const App: React.FC<{}> = () => {
                 onPrevious={handlePrevious}
                 focus={showOverlay}
                 onSearchValueChange={setSearchValue}
-                onClose={toggleSearchOverlay}
               />
             </Layover>
           </div>
         </div>
       )}
-    </>
+    </OverlayContext.Provider>
   );
 };
 

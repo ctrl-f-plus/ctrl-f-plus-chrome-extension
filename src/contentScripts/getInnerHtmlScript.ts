@@ -24,12 +24,12 @@ import {
 
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
-      console.log(
-        'Received message:',
-        message,
-        'Message ID:',
-        message.messageId
-      );
+      // console.log(
+      //   'Received message:',
+      //   message,
+      //   'Message ID:',
+      //   message.messageId
+      // );
 
       const { from, type, findValue, tabId, messageId } = message;
 

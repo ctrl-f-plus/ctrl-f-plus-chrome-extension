@@ -6,5 +6,4 @@ export interface SearchInputProps {
 
   // TODO: REVIEW THESE:
   onSearchValueChange: (searchValue: string) => void;
-  onClose: (searchValue: string) => void;
 }
