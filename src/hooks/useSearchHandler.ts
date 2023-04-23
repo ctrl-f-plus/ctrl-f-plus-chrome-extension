@@ -4,7 +4,6 @@ import { useSendMessageToBackground } from './useSendMessageToBackground';
 
 export const useSearchHandler = () => {
   const [searchValue, setSearchValue] = useState('');
-
   const { sendMessageToBackground } = useSendMessageToBackground();
 
   const handleSearchSubmit = async (findValue: string) => {

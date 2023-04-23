@@ -1,11 +1,10 @@
 // src/hooks/useOverlayHandler.ts
 
 import { useState } from 'react';
-import { Messages } from '../interfaces/message.types';
 import { setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
 
-export const userOverlayHandler = (searchValue: string) => {
+export const useOverlayHandler = (searchValue: string) => {
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
 
   const { sendMessageToBackground } = useSendMessageToBackground();

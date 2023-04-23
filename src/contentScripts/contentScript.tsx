@@ -13,7 +13,7 @@ import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { useSearchHandler } from '../hooks/useSearchHandler';
-import { userOverlayHandler } from '../hooks/useOverlayHandler';
+import { useOverlayHandler } from '../hooks/useOverlayHandler';
 import { useSendMessageToBackground } from '../hooks/useSendMessageToBackground';
 
 let injectedStyle: HTMLStyleElement;
@@ -28,7 +28,7 @@ const App: React.FC<{}> = () => {
   } = useSearchHandler();
 
   const { showOverlay, setShowOverlay, toggleSearchOverlay } =
-    userOverlayHandler(searchValue);
+    useOverlayHandler(searchValue);
 
   const handleMessage = (
     message: MessageFixMe,
