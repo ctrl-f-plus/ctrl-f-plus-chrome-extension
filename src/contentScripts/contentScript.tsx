@@ -14,34 +14,21 @@ import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { userOverlayHandler } from '../hooks/useOverlayHandler';
+import { useSendMessageToBackground } from '../hooks/useSendMessageToBackground';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
-
-  const sendMessageToBackground = async (message: Messages) => {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(message, (response) => {
-        resolve(response);
-      });
-    });
-  };
-
   const {
     searchValue,
     setSearchValue,
     handleSearchSubmit,
     handleNext,
     handlePrevious,
-  } = useSearchHandler(sendMessageToBackground);
+  } = useSearchHandler();
 
-  const {
-    showOverlay,
-    setShowOverlay,
-    toggleSearchOverlay,
-    openSearchOverlay,
-    closeSearchOverlay,
-  } = userOverlayHandler(searchValue, sendMessageToBackground);
+  const { showOverlay, setShowOverlay, toggleSearchOverlay } =
+    userOverlayHandler(searchValue);
 
   const handleMessage = (
     message: MessageFixMe,
@@ -86,7 +73,7 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showOverlay) {
-        closeSearchOverlay(searchValue);
+        toggleSearchOverlay();
       }
     };
 
@@ -110,7 +97,7 @@ const App: React.FC<{}> = () => {
                 onPrevious={handlePrevious}
                 focus={showOverlay}
                 onSearchValueChange={setSearchValue}
-                onClose={closeSearchOverlay}
+                onClose={toggleSearchOverlay}
               />
             </Layover>
           </div>

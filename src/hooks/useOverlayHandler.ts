@@ -1,19 +1,21 @@
+// src/hooks/useOverlayHandler.ts
+
 import { useState } from 'react';
 import { Messages } from '../interfaces/message.types';
 import { setStoredFindValue } from '../utils/storage';
+import { useSendMessageToBackground } from './useSendMessageToBackground';
 
-export const userOverlayHandler = (
-  searchValue: string,
-  sendMessageToBackground: (message: Messages) => Promise<any>
-) => {
+export const userOverlayHandler = (searchValue: string) => {
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+
+  const { sendMessageToBackground } = useSendMessageToBackground();
 
   const toggleSearchOverlay = () => {
     showOverlay ? closeSearchOverlay(searchValue) : openSearchOverlay();
+    setShowOverlay(!showOverlay);
   };
 
   const openSearchOverlay = () => {
-    setShowOverlay(true);
     sendMessageToBackground({
       from: 'content',
       type: 'add-styles-all-tabs',
@@ -21,7 +23,6 @@ export const userOverlayHandler = (
   };
 
   const closeSearchOverlay = (searchValue: string) => {
-    setShowOverlay(false);
     // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
     setStoredFindValue(searchValue);
     sendMessageToBackground({
@@ -34,7 +35,5 @@ export const userOverlayHandler = (
     showOverlay,
     setShowOverlay,
     toggleSearchOverlay,
-    openSearchOverlay,
-    closeSearchOverlay,
   };
 };

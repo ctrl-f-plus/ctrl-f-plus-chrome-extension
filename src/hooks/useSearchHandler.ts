@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
-import { Messages } from '../interfaces/message.types';
+import { useSendMessageToBackground } from './useSendMessageToBackground';
 
-export const useSearchHandler = (
-  sendMessageToBackground: (message: Messages) => Promise<any>
-) => {
+export const useSearchHandler = () => {
   const [searchValue, setSearchValue] = useState('');
+
+  const { sendMessageToBackground } = useSendMessageToBackground();
 
   const handleSearchSubmit = async (findValue: string) => {
     setStoredFindValue(findValue);
