@@ -22,44 +22,35 @@ import {
     tabId: undefined,
   };
 
+  // console.log('Received message:', message, 'Message ID:', message.messageId);
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
+      console.log("Rec'd msg:", message);
       const { from, type, findValue, tabId, messageId } = message;
-      // console.log('Received message:', message, 'Message ID:', message.messageId);
 
-      if (from === 'background' && type === 'highlight') {
-        state.tabId = message.tabId;
-
-        await findAllMatches(state, message.findValue);
-
-        if (state.matchesObj[state.tabId].length > 0) {
-          sendResponse({ hasMatch: true, state: state });
-        } else {
-          sendResponse({ hasMatch: false, state: state });
-        }
-
-        return true;
+      switch (`${from}:${type}`) {
+        case 'background:highlight':
+          state.tabId = message.tabId;
+          await findAllMatches(state, message.findValue);
+          sendResponse({
+            hasMatch: state.matchesObj[state.tabId].length > 0,
+            state: state,
+          });
+          return true;
+        case 'background:next-match':
+          if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+          break;
+        case 'background:prev-match':
+          previousMatch(state);
+          break;
+        case 'update-highlights':
+          updateHighlights(state, message.prevIndex);
+          break;
+        default:
+          break;
       }
 
-      // ***3
-      if (message.type === 'next-match') {
-        if (state.matchesObj[state.tabId].length > 0) {
-          nextMatch(state);
-        }
-
-        return;
-      }
-
-      if (message.type === 'prev-match') {
-        previousMatch(state);
-        return;
-      }
-
-      if (message.type === 'update-highlights') {
-        updateHighlights(state, message.prevIndex);
-      }
-
-      return true;
+      return;
     }
   );
 })();

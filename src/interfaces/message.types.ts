@@ -20,6 +20,13 @@ export interface NextMatchMessage extends BaseMessage {
   findValue?: string;
 }
 
+export interface NextMatchMessageFromBack extends BaseMessage {
+  // TODO: check to see if you ever pass findValue or if you can get rid of it here
+  from: 'background';
+  type: 'next-match';
+  findValue?: string;
+}
+
 export interface PreviousMatchMessage extends BaseMessage {
   // TODO: check to see if you ever pass findValue or if you can get rid of it here
   from: 'content';
