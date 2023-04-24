@@ -5,7 +5,7 @@ import { useOverlayHandler } from '../hooks/useOverlayHandler';
 import {
   OverlayContextData,
   OverlayProviderProps,
-} from '../interfaces/overlayContext';
+} from '../interfaces/overlayContext.type';
 
 export const OverlayContext = createContext<OverlayContextData>({
   showOverlay: false,
