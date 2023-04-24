@@ -89,6 +89,8 @@ export async function nextMatch(state) {
     // KEEP AND TEST STORAGE HERE: debugger;
     const strg = await getStoredMatchesObject();
     // KEEP AND TEST STORAGE HERE: debugger;
+
+    // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
     const message = {
       type: 'switch-tab',
       state: state,
