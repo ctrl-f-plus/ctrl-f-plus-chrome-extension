@@ -50,12 +50,14 @@ import {
         return;
       }
 
+      // ***3
       if (message.type === 'next-match') {
+        debugger;
         if (state.matchesObj[state.tabId].length > 0) {
           nextMatch(state);
-          sendResponse({ hasMatch: true, tabId: state.tabId });
+          // sendResponse({ hasMatch: true, tabId: state.tabId });
         } else {
-          sendResponse({ hasMatch: false, tabId: state.tabId });
+          // sendResponse({ hasMatch: false, tabId: state.tabId });
         }
 
         return;

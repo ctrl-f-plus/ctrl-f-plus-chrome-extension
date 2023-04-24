@@ -6,7 +6,7 @@ import { useSendMessageToBackground } from './useSendMessageToBackground';
 export const useSearchHandler = () => {
   const { sendMessageToBackground } = useSendMessageToBackground();
 
-  const handleSearchSubmit = async (findValue: string) => {
+  const handleSearch = async (findValue: string) => {
     setStoredFindValue(findValue);
 
     await clearStoredMatchesObject();
@@ -24,7 +24,9 @@ export const useSearchHandler = () => {
     });
   };
 
+  // ***1
   const handleNext = () => {
+    debugger;
     sendMessageToBackground({
       from: 'content',
       type: 'next-match',
@@ -39,7 +41,7 @@ export const useSearchHandler = () => {
   };
 
   return {
-    handleSearchSubmit,
+    handleSearch,
     handleNext,
     handlePrevious,
   };

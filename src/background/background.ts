@@ -98,6 +98,7 @@ function executeContentScriptWithMessage(
       files: ['getInnerHtmlScript.js'],
     },
     () => {
+      // ***2.5
       chrome.tabs.sendMessage(tabId, {
         from: 'background',
         type: messageType,
@@ -175,6 +176,7 @@ chrome.runtime.onMessage.addListener(
       // }
 
       // executeContentScriptWithMessage(senderTabId, message.type, findValue);
+      // ***2
       executeContentScriptWithMessage(
         sender.tab.id,
         message.type,

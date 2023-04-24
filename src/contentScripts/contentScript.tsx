@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
-import { OverlayContext, OverlayProvider } from '../contexts/Contexts';
+import { OverlayContext, OverlayProvider } from '../contexts/OverlaytContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { MessageFixMe } from '../interfaces/message.types';
@@ -13,11 +13,12 @@ import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { TabProvider } from '../contexts/TabContext';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
-  const { handleSearchSubmit, handleNext, handlePrevious } = useSearchHandler();
+  // const { handleSearchSubmit, handleNext, handlePrevious } = useSearchHandler();
   const { searchValue, setSearchValue, showOverlay, toggleSearchOverlay } =
     useContext(OverlayContext);
 
@@ -33,11 +34,6 @@ const App: React.FC<{}> = () => {
     switch (type) {
       case 'switched-active-tab-show-modal':
         toggleSearchOverlay();
-        break;
-      case 'next-match':
-      case 'prev-match':
-        // debugger;
-        // console.log(`(type === 'next-match' || type === 'prev-match')`);
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
@@ -83,9 +79,7 @@ const App: React.FC<{}> = () => {
             {' '}
             <Layover>
               <SearchInput
-                onSubmit={handleSearchSubmit}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
+                // onSubmit={handleSearchSubmit}
                 focus={showOverlay}
                 onSearchValueChange={setSearchValue}
               />
@@ -100,8 +94,12 @@ const App: React.FC<{}> = () => {
 const root = document.createElement('div');
 document.body.appendChild(root);
 ReactDOM.render(
-  <OverlayProvider>
-    <App />
-  </OverlayProvider>,
+  <React.StrictMode>
+    <OverlayProvider>
+      <TabProvider>
+        <App />
+      </TabProvider>
+    </OverlayProvider>
+  </React.StrictMode>,
   root
 );

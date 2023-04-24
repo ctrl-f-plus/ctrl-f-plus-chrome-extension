@@ -13,14 +13,12 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { OverlayContext } from '../contexts/Contexts';
+import { OverlayContext } from '../contexts/OverlaytContext';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
+import { useSearchHandler } from '../hooks/useSearchHandler';
 
 const SearchInput: React.FC<SearchInputProps> = ({
-  onSubmit,
-  onNext,
-  onPrevious,
   focus,
   onSearchValueChange,
 }) => {
@@ -28,6 +26,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
   const [initialLoad, setInitialLoad] = useState(true);
   const { searchValue, setSearchValue, toggleSearchOverlay } =
     useContext(OverlayContext);
+
+  const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
   // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
 
@@ -40,7 +40,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
       const findValue = searchInputRef.current.value;
 
       // if (storedFindValue !== findValue && TODO: NOTHING IS HIGHLIGHTED/NO MATCHES EXIST) {
-      onSubmit(findValue);
+      handleSearch(findValue);
       // } else {
       // handleNext();
       // }
@@ -54,18 +54,6 @@ const SearchInput: React.FC<SearchInputProps> = ({
     setInitialLoad(false);
     // TODO: check if you still need onSearchValueChange() and compare to setSearchValue():
     onSearchValueChange(newValue);
-  };
-
-  const handleNext = () => {
-    onNext();
-  };
-
-  const handlePrevious = () => {
-    onPrevious();
-  };
-
-  const handleClose = () => {
-    toggleSearchOverlay();
   };
 
   useEffect(() => {
@@ -151,7 +139,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
           </button>
 
           <button
-            onClick={handleClose}
+            onClick={toggleSearchOverlay}
             type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >

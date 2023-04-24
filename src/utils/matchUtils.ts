@@ -68,6 +68,7 @@ export function updateHighlights(
 }
 
 export async function nextMatch(state) {
+  // ***5
   console.log('getInnerHtmlScript - nextMatch()');
   const prevIndex = state.currentIndex;
 

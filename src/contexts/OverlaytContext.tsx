@@ -7,6 +7,7 @@ import {
   OverlayProviderProps,
 } from '../interfaces/overlayContext.type';
 
+// TODO: Potentially move searchValue and setSearchValue out of this file
 export const OverlayContext = createContext<OverlayContextData>({
   showOverlay: false,
   setShowOverlay: () => {},
