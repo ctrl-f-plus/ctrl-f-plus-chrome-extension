@@ -7,15 +7,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, {
-  useContext,
   FormEvent,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
+import { OverlayContext } from '../contexts/Contexts';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
-import { OverlayContext } from '../contexts/Contexts';
 
 const SearchInput: React.FC<SearchInputProps> = ({
   onSubmit,

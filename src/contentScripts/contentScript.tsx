@@ -18,7 +18,6 @@ let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const { handleSearchSubmit, handleNext, handlePrevious } = useSearchHandler();
-
   const { searchValue, setSearchValue, showOverlay, toggleSearchOverlay } =
     useContext(OverlayContext);
 
