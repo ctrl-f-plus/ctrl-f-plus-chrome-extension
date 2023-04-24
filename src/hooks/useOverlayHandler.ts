@@ -19,7 +19,6 @@ export const useOverlayHandler = () => {
     };
 
     const closeSearchOverlay = (searchValue: string) => {
-      debugger;
       // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
       setStoredFindValue(searchValue);
       sendMessageToBackground({

@@ -26,7 +26,6 @@ export const useSearchHandler = () => {
 
   // ***1
   const handleNext = () => {
-    debugger;
     sendMessageToBackground({
       from: 'content',
       type: 'next-match',

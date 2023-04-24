@@ -24,17 +24,12 @@ import {
 
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
-      // console.log(
-      //   'Received message:',
-      //   message,
-      //   'Message ID:',
-      //   message.messageId
-      // );
-
       const { from, type, findValue, tabId, messageId } = message;
+      // console.log('Received message:', message, 'Message ID:', message.messageId);
 
       if (from === 'background' && type === 'highlight') {
         state.tabId = message.tabId;
+
         await findAllMatches(state, message.findValue);
 
         if (state.matchesObj[state.tabId].length > 0) {
@@ -46,18 +41,10 @@ import {
         return true;
       }
 
-      if (message.type === 'get-all-matches-req') {
-        return;
-      }
-
       // ***3
       if (message.type === 'next-match') {
-        debugger;
         if (state.matchesObj[state.tabId].length > 0) {
           nextMatch(state);
-          // sendResponse({ hasMatch: true, tabId: state.tabId });
-        } else {
-          // sendResponse({ hasMatch: false, tabId: state.tabId });
         }
 
         return;
@@ -65,7 +52,6 @@ import {
 
       if (message.type === 'prev-match') {
         previousMatch(state);
-
         return;
       }
 

@@ -5,11 +5,8 @@ import {
   SwitchedActiveTabShowModal,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
-// import { getStoredMatchesObject } from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};
-
-// (global as any).getStoredMatchesObject = getStoredMatchesObject;
 
 function executeContentScript(
   findValue: string,
@@ -143,20 +140,6 @@ async function switchTab(state, matchesObject) {
 
 chrome.runtime.onMessage.addListener(
   (message: Messages, sender, sendResponse) => {
-    if (message.type === 'get-all-matches-req') {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length) {
-          const activeTab = tabs[0];
-          chrome.tabs.sendMessage(activeTab.id, {
-            from: 'background',
-            type: 'get-all-matches-req',
-          });
-        }
-      });
-
-      return;
-    }
-
     // Receive message from SearchInput component
     if (message.type === 'get-all-matches-msg') {
       const findValue = message.payload;

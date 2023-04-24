@@ -5,20 +5,18 @@ import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { OverlayContext, OverlayProvider } from '../contexts/OverlaytContext';
+import { TabProvider } from '../contexts/TabContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
-import { useSearchHandler } from '../hooks/useSearchHandler';
 import { MessageFixMe } from '../interfaces/message.types';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { TabProvider } from '../contexts/TabContext';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
-  // const { handleSearchSubmit, handleNext, handlePrevious } = useSearchHandler();
   const { searchValue, setSearchValue, showOverlay, toggleSearchOverlay } =
     useContext(OverlayContext);
 
@@ -79,7 +77,6 @@ const App: React.FC<{}> = () => {
             {' '}
             <Layover>
               <SearchInput
-                // onSubmit={handleSearchSubmit}
                 focus={showOverlay}
                 onSearchValueChange={setSearchValue}
               />

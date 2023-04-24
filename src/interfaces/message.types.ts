@@ -32,10 +32,6 @@ export interface PreviousMatchMessage extends BaseMessage {
 //   allMatches: any[];
 // }
 
-export interface GetAllMatchesRequest {
-  type: 'get-all-matches-req';
-}
-
 export interface RemoveStylesMessage extends BaseMessage {
   from: 'background' | 'content';
   type: 'remove_styles';
@@ -92,7 +88,6 @@ export type Messages =
   | PreviousMatchMessage
   | GetAllMatchesMessage
   // | AllMatchesMessage
-  | GetAllMatchesRequest
   | RemoveStylesMessage
   | RemoveStylesAllTabs
   | AddStylesAllTabs
