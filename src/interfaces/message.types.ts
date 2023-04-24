@@ -1,7 +1,7 @@
 // src/interfaces/message.types.ts
 
 export interface BaseMessage {
-  from: 'background' | 'content' | 'match-utils';
+  from: 'background' | 'content' | 'match-utils' | 'inner-match-utils';
   // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
@@ -85,6 +85,7 @@ export interface SwitchedActiveTabShowModal extends BaseMessage {
 }
 
 export interface UpdateTabStatesObj extends BaseMessage {
+  // from: 'inner-match-utils';
   from: 'content';
   type: 'update-tab-states-obj';
   payload: any;

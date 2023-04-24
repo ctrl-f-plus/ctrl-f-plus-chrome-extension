@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { OverlayContext, OverlayProvider } from '../contexts/OverlaytContext';
-import { TabProvider } from '../contexts/TabContext';
+// import { TabProvider } from '../contexts/TabContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../interfaces/message.types';
 import '../tailwind.css';
@@ -94,9 +94,9 @@ document.body.appendChild(root);
 ReactDOM.render(
   <React.StrictMode>
     <OverlayProvider>
-      <TabProvider>
-        <App />
-      </TabProvider>
+      {/* <TabProvider> */}
+      <App />
+      {/* </TabProvider> */}
     </OverlayProvider>
   </React.StrictMode>,
   root
