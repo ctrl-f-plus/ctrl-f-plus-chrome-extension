@@ -24,31 +24,22 @@ function executeContentScript(
 
     const tabId = tab.id as number;
 
-    chrome.scripting.executeScript(
+    chrome.tabs.sendMessage(
+      tabId,
       {
-        target: { tabId },
-        files: ['getInnerHtmlScript.js'],
+        from: 'background',
+        type: 'highlight',
+        findValue: findValue,
+        tabId: tab.id,
+        messageId: Date.now(),
       },
-      () => {
-        chrome.tabs.sendMessage(
-          tabId,
-          {
-            from: 'background',
-            type: 'highlight',
-            findValue: findValue,
-            tabId: tab.id,
-            messageId: Date.now(),
-          },
-          (response) => {
-            if (chrome.runtime.lastError) {
-              console.log(chrome.runtime.lastError);
-              reject({ hasMatch: false, state: null });
-            } else {
-              // tabStates[tab.id] = response.state;
-              resolve(response);
-            }
-          }
-        );
+      (response) => {
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError);
+          reject({ hasMatch: false, state: null });
+        } else {
+          resolve(response);
+        }
       }
     );
   });
@@ -89,21 +80,13 @@ function executeContentScriptWithMessage(
   messageType: string,
   findValue: string
 ) {
-  chrome.scripting.executeScript(
-    {
-      target: { tabId: tabId },
-      files: ['getInnerHtmlScript.js'],
-    },
-    () => {
-      // ***2.5
-      chrome.tabs.sendMessage(tabId, {
-        from: 'background',
-        type: messageType,
-        findValue,
-        tabId,
-      });
-    }
-  );
+  // ***2.5
+  chrome.tabs.sendMessage(tabId, {
+    from: 'background',
+    type: messageType,
+    findValue,
+    tabId,
+  });
 }
 
 async function switchTab(state, matchesObject) {
@@ -150,15 +133,6 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'next-match' || message.type === 'prev-match') {
-      // const senderTabId = sender.tab ? sender.tab.id : null;
-      // const { type, findValue } = message;
-
-      // if (!senderTabId || !findValue) {
-      //   console.warn(`ADD_LOCATION: missing senderTabId or findValue`);
-      //   return;
-      // }
-
-      // executeContentScriptWithMessage(senderTabId, message.type, findValue);
       // ***2
       executeContentScriptWithMessage(
         sender.tab.id,

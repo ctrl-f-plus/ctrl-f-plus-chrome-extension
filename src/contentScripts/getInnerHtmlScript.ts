@@ -21,11 +21,13 @@ import {
     matchesObj: {},
     tabId: undefined,
   };
+  console.log(new Date().toLocaleString());
 
   // console.log('Received message:', message, 'Message ID:', message.messageId);
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
       console.log("Rec'd msg:", message);
+
       const { from, type, findValue, tabId, messageId } = message;
 
       switch (`${from}:${type}`) {

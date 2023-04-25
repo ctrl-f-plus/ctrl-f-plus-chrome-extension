@@ -21,7 +21,6 @@
     "storage",
     "unlimitedStorage"
   ],
-  "host_permissions": ["https://*/*"],
   "commands": {
     "toggle_search_overlay": {
       "suggested_key": {
@@ -29,12 +28,6 @@
       },
       "description": "Toggle the Cntrl-F search overlay"
     }
-    // "close_search_overlay": {
-    //   "suggested_key": {
-    //     "default": "Escape"
-    //   },
-    //   "description": "Close the Cntrl-F search overlay"
-    // }
   },
   "background": {
     "service_worker": "background.js"
