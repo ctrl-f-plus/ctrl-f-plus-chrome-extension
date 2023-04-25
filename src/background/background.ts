@@ -8,6 +8,7 @@ import {
 
 const tabStates: { [tabId: number]: any } = {};
 
+// TODO:DRY these
 function executeContentScript(
   findValue: string,
   tab: chrome.tabs.Tab

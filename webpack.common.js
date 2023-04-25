@@ -12,7 +12,7 @@ module.exports = {
     background: path.resolve('src/background/background.ts'),
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
     getInnerHtmlScript: path.resolve(
-      'src/contentScripts/getInnerHtmlScript.ts'
+      'src/contentScripts/getInnerHtmlScript.tsx'
     ),
     contentStyles: path.resolve('src/contentScripts/contentStyles.ts'),
   },
@@ -66,7 +66,9 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks(chunk) {
-        return chunk.name !== 'contentScript';
+        return (
+          chunk.name !== 'contentScript' && chunk.name !== 'getInnerHtmlScript'
+        );
       },
     },
   },

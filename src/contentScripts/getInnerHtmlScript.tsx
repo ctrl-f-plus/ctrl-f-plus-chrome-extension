@@ -1,0 +1,127 @@
+// // src/contentScripts/getInnerHtmlScript.ts
+
+// import {
+//   findAllMatches,
+//   nextMatch,
+//   previousMatch,
+//   updateHighlights,
+// } from '../utils/matchUtils';
+
+// (function () {
+//   if (window.myUniqueExtensionFlag) {
+//     console.log('Content script already injected. Exiting...');
+//     return;
+//   }
+
+//   // Set the unique flag to indicate that the content script has been injected
+//   window.myUniqueExtensionFlag = true;
+
+//   const state = {
+//     currentIndex: undefined,
+//     matchesObj: {},
+//     tabId: undefined,
+//   };
+//   console.log(new Date().toLocaleString());
+
+//   // console.log('Received message:', message, 'Message ID:', message.messageId);
+//   chrome.runtime.onMessage.addListener(
+//     async (message, sender, sendResponse) => {
+//       console.log("Rec'd msg:", message);
+
+//       const { from, type, findValue, tabId, messageId } = message;
+
+//       switch (`${from}:${type}`) {
+//         case 'background:highlight':
+//           state.tabId = message.tabId;
+//           await findAllMatches(state, message.findValue);
+//           sendResponse({
+//             hasMatch: state.matchesObj[state.tabId].length > 0,
+//             state: state,
+//           });
+//           return true;
+//         case 'background:next-match':
+//           if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+//           break;
+//         case 'background:prev-match':
+//           previousMatch(state);
+//           break;
+//         case 'background:update-highlights':
+//           updateHighlights(state, message.prevIndex);
+//           break;
+//         default:
+//           break;
+//       }
+
+//       return;
+//     }
+//   );
+// })();
+
+// src/contentScripts/getInnerHtmlScript.ts
+
+import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import {
+  findAllMatches,
+  nextMatch,
+  previousMatch,
+  updateHighlights,
+} from '../utils/matchUtils';
+
+const GetInnerHtmlScriptComponent: React.FC = () => {
+  useEffect(() => {
+    if (window.myUniqueExtensionFlag) {
+      console.log('Content script already injected. Exiting...');
+      return;
+    }
+
+    // Set the unique flag to indicate that the content script has been injected
+    window.myUniqueExtensionFlag = true;
+
+    const state = {
+      currentIndex: undefined,
+      matchesObj: {},
+      tabId: undefined,
+    };
+    console.log(new Date().toLocaleString());
+
+    chrome.runtime.onMessage.addListener(
+      async (message, sender, sendResponse) => {
+        console.log("Rec'd msg:", message);
+
+        const { from, type, findValue, tabId, messageId } = message;
+
+        switch (`${from}:${type}`) {
+          case 'background:highlight':
+            state.tabId = message.tabId;
+            await findAllMatches(state, message.findValue);
+            sendResponse({
+              hasMatch: state.matchesObj[state.tabId].length > 0,
+              state: state,
+            });
+            return true;
+          case 'background:next-match':
+            if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+            break;
+          case 'background:prev-match':
+            previousMatch(state);
+            break;
+          case 'background:update-highlights':
+            updateHighlights(state, message.prevIndex);
+            break;
+          default:
+            break;
+        }
+
+        return;
+      }
+    );
+  }, []);
+
+  return null;
+};
+
+// export default GetInnerHtmlScriptComponent;
+const root2 = document.createElement('div');
+document.body.appendChild(root2);
+ReactDOM.render(<GetInnerHtmlScriptComponent />, root2);
