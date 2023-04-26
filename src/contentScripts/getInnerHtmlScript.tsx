@@ -21,12 +21,6 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
     // Set the unique flag to indicate that the content script has been injected
     window.myUniqueExtensionFlag = true;
 
-    const state = {
-      currentIndex: undefined,
-      matchesObj: [],
-      tabId: undefined,
-    };
-
     const state2 = {
       currentIndex: undefined,
       // matchesObj: [],
@@ -44,7 +38,6 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
 
         switch (`${from}:${type}`) {
           case 'background:highlight':
-            state.tabId = message.tabId;
             state2.tabId = message.tabId;
 
             await findAllMatches(state2, findValue);
@@ -66,7 +59,7 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
             if (state2.matchesObj.length > 0) nextMatch(state2);
             break;
           case 'background:prev-match':
-            previousMatch(state);
+            previousMatch(state2);
             break;
           case 'background:update-highlights':
             updateHighlights(state2, message.prevIndex);
