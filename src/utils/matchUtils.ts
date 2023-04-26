@@ -1,7 +1,5 @@
 // src/utils/matchUtils.ts
-import { htmlToOuterHtml, outerHtmlToHtml } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
-// import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 
 export async function findAllMatches(state, findValue) {

@@ -217,24 +217,7 @@ chrome.runtime.onMessage.addListener(
 
     if (message.type === 'update-tab-states-obj') {
       const { hasMatch, state, tabId, state2 } = message.payload;
-
-      // NEW
-
-      // const chromeStrgStart = await getStoredTab(tabId);
-      // chromeStrgStart.matchesObj = await deserializeMatchesObj(
-      //   chromeStrgStart.matchesObj
-      // );
-      // console.log(chromeStrgStart);
-
-      // TODO: START HERE: figure out why the stored Tabs object has duplicate arrays in the matchesObj
-
       await setStoredTabs(state2);
-
-      const chromeStrgEnd = await getStoredTab(state2.tabId);
-      chromeStrgEnd.matchesObj = await deserializeMatchesObj(
-        chromeStrgEnd.matchesObj
-      );
-      console.log(chromeStrgEnd);
 
       sendResponse({ status: 'success' });
       return;

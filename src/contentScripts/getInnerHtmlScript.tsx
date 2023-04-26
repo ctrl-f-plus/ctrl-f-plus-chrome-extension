@@ -37,7 +37,7 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
         switch (`${from}:${type}`) {
           case 'background:highlight':
             state.tabId = message.tabId;
-            await findAllMatches(state, message.findValue);
+            await findAllMatches(state, findValue);
             sendResponse({
               hasMatch: state.matchesObj[state.tabId].length > 0,
               state: state,

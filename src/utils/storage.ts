@@ -518,7 +518,7 @@ export function getAllStoredTabs(): Promise<any> {
 }
 
 export function getStoredTab(tabId): Promise<any> {
-  console.log(`setTabsStorage(${tabId})`);
+  console.log(`getStoredTab(${tabId})`);
   // const key[]: LocalStorage = ['tabs'];
 
   return new Promise((resolve, reject) => {
@@ -536,7 +536,7 @@ export function getStoredTab(tabId): Promise<any> {
 }
 
 export function setStoredTabs(state2: any): Promise<void> {
-  console.log(`setTabsStorage()`);
+  console.log(`setStoredTabs()`);
   // const vals: LocalStorage = { tabs };
   return new Promise((resolve, reject) => {
     const { tabId, currentIndex, matchesObj } = state2;
