@@ -43,53 +43,54 @@ export function updateHighlights(
   prevIndex?: number,
   endOfTab?: boolean
 ) {
-  debugger;
   if (state2.matchesObj[state2.tabId]) {
     state2.matchesObj = state2.matchesObj[state2.tabId];
   }
-  debugger;
+
   if (!state2.matchesObj.length) {
     return;
   }
-  debugger;
+
   if (typeof prevIndex === 'number') {
     const prevMatch = state2.matchesObj[prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
-  debugger;
+
   if (endOfTab) {
     return;
   }
-  debugger;
+
   const curMatch = state2.matchesObj[state2.currentIndex];
   curMatch.classList.add('ctrl-f-highlight-focus');
   scrollToElement(curMatch);
 }
 
 export async function nextMatch(state2) {
-  debugger;
-
   // ***5
   console.log('getInnerHtmlScript - nextMatch()');
   const prevIndex = state2.currentIndex;
-  debugger;
+
   state2.currentIndex = (state2.currentIndex + 1) % state2.matchesObj.length;
-  debugger;
+
   if (state2.currentIndex === 0) {
     const endOfTab: boolean = true;
 
     updateHighlights(state2, prevIndex, endOfTab);
-    state2.matchesObj = serializeMatchesObj(state2.matchesObj);
+
+    const serializedState2 = { ...state2 };
+    serializedState2.matchesObj = serializeMatchesObj(
+      serializedState2.matchesObj
+    );
 
     // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
     const message = {
       type: 'switch-tab',
-      state: state2,
+      serializedState2: serializedState2,
       prevIndex: undefined,
     };
+
     chrome.runtime.sendMessage(message);
   } else {
-    debugger;
     updateHighlights(state2, prevIndex);
   }
 }

@@ -210,7 +210,8 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'switch-tab') {
-      switchTab(message.state);
+      debugger;
+      switchTab(message.serializedState2);
       return;
     }
 

@@ -68,7 +68,8 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
 export interface SwitchTab extends BaseMessage {
   from: 'match-utils';
   type: 'switch-tab';
-  state: any; // Replace 'any' with the actual type of the 'state' object
+  state?: any; // Replace 'any' with the actual type of the 'state' object
+  serializedState2?: any;
   // matchesObject: any; // Replace 'any' with the actual type of the 'matchesObject'
   prevIndex: number;
 }
