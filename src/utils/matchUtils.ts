@@ -13,17 +13,10 @@ export async function findAllMatches(state, findValue) {
     findValue,
     tabId: state.tabId,
     callback: async () => {
-      // setStoredMatchesObject(state.matchesObj, state.tabId);
+      const state2 = { ...state };
+      state2.matchesObj = state2.matchesObj[state2.tabId];
 
-      // const state2 = { ...state };
-      // state2.matchesObj = state2.matchesObj[state2.tabId];
-      // state2.matchesObj = serializeMatchesObj(state2.matchesObj);
-
-      const serializedState2 = { ...state };
-
-      serializedState2.matchesObj =
-        serializedState2.matchesObj[serializedState2.tabId];
-
+      const serializedState2 = { ...state2 };
       serializedState2.matchesObj = serializeMatchesObj(
         serializedState2.matchesObj
       );
@@ -34,15 +27,12 @@ export async function findAllMatches(state, findValue) {
           from: 'content',
           type: 'update-tab-states-obj',
           payload: {
-            hasMatch: state.matchesObj[state.tabId].length > 0,
-            state,
-            tabId: state.tabId,
             serializedState2,
           },
         },
         function (response) {}
       );
-      console.log(state.matchesObj);
+      console.log(state2.matchesObj);
     },
   });
 }
@@ -52,7 +42,6 @@ export function updateHighlights(
   prevIndex?: number,
   endOfTab?: boolean
 ) {
-  debugger;
   if (state2.matchesObj[state2.tabId]) {
     state2.matchesObj = state2.matchesObj[state2.tabId];
   }
