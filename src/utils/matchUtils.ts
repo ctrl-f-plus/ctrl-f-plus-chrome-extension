@@ -8,11 +8,10 @@ export async function findAllMatches(state, findValue) {
   const state2 = { ...state };
 
   searchAndHighlight({
-    currentIndex: state.currentIndex,
-    matches: state.matches,
-    matchesObj: state.matchesObj,
+    currentIndex: state2.currentIndex,
+    matchesObj: state2.matchesObj,
     findValue,
-    tabId: state.tabId,
+    tabId: state2.tabId,
     state2: state2,
     callback: async () => {
       state2.matchesObj = state2.matchesObj[state2.tabId];

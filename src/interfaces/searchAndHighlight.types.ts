@@ -1,6 +1,5 @@
 export interface MatchUtilsBase {
   currentIndex?: number;
-  matches: HTMLElement[];
   matchesObj: MatchesObject;
   tabId: number;
   state2?: any;

@@ -83,7 +83,7 @@ function getAllTextNodesToProcess({
 function processTextNode({
   textNode,
   regex,
-  matches,
+
   matchesObj,
   tabId,
 }: ProcessTextNodeProps) {
@@ -115,7 +115,7 @@ function processTextNode({
     // TODO: HERE!
     // matches.push(span);
 
-    updateMatchesObject({ matches, matchesObj, tabId, span });
+    updateMatchesObject({ matchesObj, tabId, span });
     fragment.appendChild(span);
   }
 
@@ -151,7 +151,6 @@ export function removeAllHighlightMatches() {
 
 export function searchAndHighlight({
   currentIndex,
-  matches,
   matchesObj,
   findValue,
   tabId,
@@ -161,7 +160,7 @@ export function searchAndHighlight({
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
   textNodesToProcess.forEach((textNode) => {
-    processTextNode({ textNode, regex, matches, matchesObj, tabId });
+    processTextNode({ textNode, regex, matchesObj, tabId });
   });
 
   callback && callback();
