@@ -14,9 +14,19 @@ export async function findAllMatches(state, findValue) {
     tabId: state.tabId,
     callback: async () => {
       // setStoredMatchesObject(state.matchesObj, state.tabId);
-      const state2 = { ...state };
-      state2.matchesObj = state2.matchesObj[state2.tabId];
-      state2.matchesObj = serializeMatchesObj(state2.matchesObj);
+
+      // const state2 = { ...state };
+      // state2.matchesObj = state2.matchesObj[state2.tabId];
+      // state2.matchesObj = serializeMatchesObj(state2.matchesObj);
+
+      const serializedState2 = { ...state };
+
+      serializedState2.matchesObj =
+        serializedState2.matchesObj[serializedState2.tabId];
+
+      serializedState2.matchesObj = serializeMatchesObj(
+        serializedState2.matchesObj
+      );
 
       // FIXME: REVIEW this message
       chrome.runtime.sendMessage(
@@ -27,7 +37,7 @@ export async function findAllMatches(state, findValue) {
             hasMatch: state.matchesObj[state.tabId].length > 0,
             state,
             tabId: state.tabId,
-            state2,
+            serializedState2,
           },
         },
         function (response) {}

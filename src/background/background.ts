@@ -216,8 +216,8 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'update-tab-states-obj') {
-      const { hasMatch, state, tabId, state2 } = message.payload;
-      await setStoredTabs(state2);
+      const { hasMatch, state, tabId, serializedState2 } = message.payload;
+      await setStoredTabs(serializedState2);
 
       sendResponse({ status: 'success' });
       return;
