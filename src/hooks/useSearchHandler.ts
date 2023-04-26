@@ -1,6 +1,10 @@
 // src/hooks/useSearchHandler.ts
 
-import { clearStoredMatchesObject, setStoredFindValue } from '../utils/storage';
+import {
+  clearStoredMatchesObject,
+  setStoredFindValue,
+  clearAllStoredTabs,
+} from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
 
 export const useSearchHandler = () => {
@@ -10,6 +14,7 @@ export const useSearchHandler = () => {
     setStoredFindValue(findValue);
 
     await clearStoredMatchesObject();
+    await clearAllStoredTabs();
 
     await sendMessageToBackground({
       from: 'content',

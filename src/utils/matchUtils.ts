@@ -2,6 +2,7 @@
 import { htmlToOuterHtml, outerHtmlToHtml } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
+import { serializeMatchesObj } from '../utils/htmlUtils';
 
 export async function findAllMatches(state, findValue) {
   state.matchesObj = {};
@@ -24,6 +25,10 @@ export async function findAllMatches(state, findValue) {
       const strg = await getStoredMatchesObject();
       // KEEP AND TEST STORAGE HERE: debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
+      const state2 = { ...state };
+      state2.matchesObj = state2.matchesObj[state2.tabId];
+      state2.matchesObj = serializeMatchesObj(state2.matchesObj);
+      debugger;
 
       // FIXME: REVIE this message
       chrome.runtime.sendMessage(
@@ -35,6 +40,7 @@ export async function findAllMatches(state, findValue) {
             state,
             serializedMatchesObj,
             tabId: state.tabId,
+            state2,
           },
         },
         function (response) {}

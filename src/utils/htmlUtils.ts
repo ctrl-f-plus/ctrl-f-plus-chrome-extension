@@ -73,19 +73,21 @@ export function wrapTextWithHighlight(element, text, spanClasses) {
 }
 
 export function generateXPaths(matchesObj) {
-  const xpaths = {};
-  for (const tabId in matchesObj) {
-    xpaths[tabId] = matchesObj[tabId].map((el) => {
-      const xpath = getXPath(el.parentNode);
-      const text = el.textContent;
-      const spanClasses = Array.from(el.classList);
-      return { xpath, text, spanClasses };
-    });
-  }
+  // const xpaths = {};
+  // for (const tabId in matchesObj) {
+  // xpaths[tabId] = matchesObj[tabId].map((el) => {
+  // xpaths[tabId] = matchesObj.map((el) => {
+  const xpaths = matchesObj.map((el) => {
+    const xpath = getXPath(el.parentNode);
+    const text = el.textContent;
+    const spanClasses = Array.from(el.classList);
+    return { xpath, text, spanClasses };
+  });
+  // }
   return xpaths;
 }
 
-export function restoreHighlights(xpathObj) {
+export function restoreHighlightSpans(xpathObj) {
   Object.keys(xpathObj).forEach((tabId) => {
     const tabXPaths = xpathObj[tabId];
     tabXPaths.forEach(({ xpath, text, spanClasses }) => {
@@ -95,6 +97,32 @@ export function restoreHighlights(xpathObj) {
       }
     });
   });
+}
+
+// export function serializeMatchesObj(state) {
+//   const matchesObj = state.matchesObj;
+//   const xpaths = generateXPaths(state.matchesObj);
+//   const serializedXPaths = JSON.stringify(xpaths);
+//   state.matchesObj = serializedXPaths;
+//   // return serializedXPaths;
+// }
+
+export function serializeMatchesObj(matchesObj) {
+  // const matchesObj = state.matchesObj;
+  const xpaths = generateXPaths(matchesObj);
+  const serializedXPaths = JSON.stringify(xpaths);
+
+  return serializedXPaths;
+}
+
+export function deserializeMatchesObj(matchesObj) {
+  // const serializedStoredXPaths = localStorage.getItem('storedXPaths');
+
+  const serializedXPaths = matchesObj;
+  const deSerializedXPaths = JSON.parse(serializedXPaths);
+
+  // return restoreHighlightSpans(deSerializedXPaths);
+  return deSerializedXPaths;
 }
 
 // Example use
@@ -115,5 +143,5 @@ localStorage.setItem('storedXPaths', serializedXPaths);
 
 const serializedStoredXPaths = localStorage.getItem('storedXPaths');
 const storedXPaths = JSON.parse(serializedStoredXPaths);
-restoreHighlights(storedXPaths);
+restoreHighlightSpans(storedXPaths);
  */

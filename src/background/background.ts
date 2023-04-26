@@ -5,6 +5,8 @@ import {
   SwitchedActiveTabShowModal,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
+import { deserializeMatchesObj } from '../utils/htmlUtils';
+import { getStoredTab, setStoredTabs } from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};
 
@@ -123,7 +125,7 @@ async function switchTab(state, matchesObject) {
 }
 
 chrome.runtime.onMessage.addListener(
-  (message: Messages, sender, sendResponse) => {
+  async (message: Messages, sender, sendResponse) => {
     // Receive message from SearchInput component
     if (message.type === 'get-all-matches-msg') {
       const findValue = message.payload;
@@ -201,10 +203,30 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'update-tab-states-obj') {
-      const { tabId, state, serializedMatchesObj } = message.payload;
+      // const { tabId, state, serializedMatchesObj } = message.payload;
+      const { hasMatch, state, serializedMatchesObj, tabId, state2 } =
+        message.payload;
 
-      tabStates[tabId] = state;
-      tabStates[tabId].matchesObj = serializedMatchesObj;
+      // tabStates[tabId] = state;
+      // tabStates[tabId].matchesObj = serializedMatchesObj;
+
+      // NEW
+
+      // const chromeStrgStart = await getStoredTab(tabId);
+      // chromeStrgStart.matchesObj = await deserializeMatchesObj(
+      //   chromeStrgStart.matchesObj
+      // );
+      // console.log(chromeStrgStart);
+
+      // TODO: START HERE: figure out why the stored Tabs object has duplicate arrays in the matchesObj
+
+      await setStoredTabs(state2);
+
+      const chromeStrgEnd = await getStoredTab(state2.tabId);
+      chromeStrgEnd.matchesObj = await deserializeMatchesObj(
+        chromeStrgEnd.matchesObj
+      );
+      console.log(chromeStrgEnd);
 
       sendResponse({ status: 'success' });
       return;

@@ -1,4 +1,3 @@
-//@ts-nocheck
 ////////////////////////////////////////////////////////////////////////////////
 // ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE **
 // ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE ** NEW STORAGE **
@@ -356,6 +355,7 @@ export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
   matchesObj?: { [tabId: number]: Match[] };
+  tabs?: {};
 }
 
 export type LocalStorageKeys = keyof LocalStorage;
@@ -496,6 +496,81 @@ export async function clearStoredMatchesObject() {
         }
         resolve();
       });
+    });
+  });
+}
+
+export function getStoredTab(tabId): Promise<any> {
+  console.log(`setTabsStorage(${tabId})`);
+  // const key[]: LocalStorage = ['tabs'];
+
+  return new Promise((resolve, reject) => {
+    if (!tabId) {
+      reject(new Error('tabId not stored'));
+      return;
+    }
+
+    chrome.storage.local.get(['tabs'], (res: LocalStorage) => {
+      // chrome.storage.local.get(key, (res: LocalStorage) => {
+      const tabs = res.tabs || {};
+      resolve(tabs[tabId]);
+    });
+  });
+}
+
+export function setStoredTabs(state2: any): Promise<void> {
+  console.log(`setTabsStorage()`);
+  // const vals: LocalStorage = { tabs };
+  return new Promise((resolve, reject) => {
+    const { tabId, currentIndex, matchesObj } = state2;
+
+    if (!tabId || typeof currentIndex === 'undefined' || !matchesObj) {
+      reject(new Error('Invalid tab storage object'));
+      return;
+    }
+
+    chrome.storage.local.get(['tabs'], (res) => {
+      const currentData = res.tabs || {};
+      debugger;
+      currentData[tabId] = { tabId, currentIndex, matchesObj };
+
+      chrome.storage.local.set({ tabs: currentData }, () => {
+        resolve();
+      });
+    });
+  });
+}
+
+export function clearStoredTab(tabId): Promise<void> {
+  console.log(`clearStoredTabs(${tabId})`);
+
+  return new Promise((resolve, reject) => {
+    if (!tabId) {
+      reject(new Error('tabId not provided'));
+      return;
+    }
+
+    chrome.storage.local.get(['tabs'], (res) => {
+      const currentData = res.tabs || {};
+      if (currentData.hasOwnProperty(tabId)) {
+        delete currentData[tabId];
+
+        chrome.storage.local.set({ tabs: currentData }, () => {
+          resolve();
+        });
+      } else {
+        reject(new Error('tabId not found in storage'));
+      }
+    });
+  });
+}
+
+export function clearAllStoredTabs(): Promise<void> {
+  console.log(`clearAllStoredTabs()`);
+
+  return new Promise((resolve) => {
+    chrome.storage.local.set({ tabs: {} }, () => {
+      resolve();
     });
   });
 }
