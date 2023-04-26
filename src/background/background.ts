@@ -96,34 +96,36 @@ function executeContentScriptWithMessage(
   });
 }
 
-async function switchTab(state) {
+async function switchTab(serializedState2) {
   //, prevIndex) {
-  // if (state.tab.id === undefined) {
-  //   console.warn('switchTab: Tab ID is undefined:', state.tab);
+  // if (serializedState2.tab.id === undefined) {
+  //   console.warn('switchTab: Tab ID is undefined:', serializedState2.tab);
   //   return;
   // }
 
   // TODO: START HERE!! =>
   //    1) Clean this up (storedTabs vs matchesObject var naming)
-  //    2) Clean up all old references to matchesObj[tabId]
+  // //    2) Clean up all old references to matchesObj[tabId]
   //    3) Consolidate state/state2 naming convention into one name
   //    4) matchesObj isn't actually an object? check this and potentially update name
   const storedTabs = await getAllStoredTabs();
-  // const matchesObject = state.matchesObj || {};
+  // const matchesObject = serializedState2.matchesObj || {};
   const matchesObject = storedTabs;
 
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-  const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
+  const currentTabIndex = tabIds.findIndex(
+    (tabId) => tabId === serializedState2.tabId
+  );
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
-    state.tabId = tab.id;
+    serializedState2.tabId = tab.id;
 
-    state.currentIndex = 0;
+    serializedState2.currentIndex = 0;
     const message: UpdateHighlightsMessage = {
       from: 'background',
       type: 'update-highlights',
-      state: state,
+      state: serializedState2,
       prevIndex: undefined,
     };
     chrome.tabs.sendMessage(tab.id, message);

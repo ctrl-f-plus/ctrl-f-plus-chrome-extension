@@ -23,7 +23,6 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
 
     const state2 = {
       currentIndex: undefined,
-      // matchesObj: [],
       matchesObj: [] as string | any[],
       tabId: undefined,
     };
