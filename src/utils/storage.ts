@@ -401,78 +401,78 @@ export function setStoredFindValue(findValue: string): Promise<void> {
   });
 }
 
-////////////////////////////////////////////////////////
-// TODO: See if you can figure out how many MBs are currently being used.
-export async function getStoredMatchesObject(): Promise<{
-  [tabId: number]: HTMLElement[];
-}> {
-  console.log(`getStoredMatchesObject()`);
+// ////////////////////////////////////////////////////////
+// // TODO: See if you can figure out how many MBs are currently being used.
+// export async function getStoredMatchesObject(): Promise<{
+//   [tabId: number]: HTMLElement[];
+// }> {
+//   console.log(`getStoredMatchesObject()`);
 
-  // Get all keys in local storage
-  const allKeys = await new Promise<string[]>((resolve) => {
-    chrome.storage.local.get(null, (items) => {
-      resolve(Object.keys(items));
-    });
-  });
+//   // Get all keys in local storage
+//   const allKeys = await new Promise<string[]>((resolve) => {
+//     chrome.storage.local.get(null, (items) => {
+//       resolve(Object.keys(items));
+//     });
+//   });
 
-  // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
-  const outerHtmlKeys = allKeys.filter((key) =>
-    key.startsWith('matchesObjOuterHtml_')
-  );
+//   // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
+//   const outerHtmlKeys = allKeys.filter((key) =>
+//     key.startsWith('matchesObjOuterHtml_')
+//   );
 
-  // Fetch the data for each key and map it to an object
-  const matchesObj = await Promise.all(
-    outerHtmlKeys.map(async (key) => {
-      const tabId = parseInt(key.replace('matchesObjOuterHtml_', ''), 10);
+//   // Fetch the data for each key and map it to an object
+//   const matchesObj = await Promise.all(
+//     outerHtmlKeys.map(async (key) => {
+//       const tabId = parseInt(key.replace('matchesObjOuterHtml_', ''), 10);
 
-      const matchesObjOuterHtml: string[] = await new Promise((resolve) => {
-        chrome.storage.local.get(key, (res: LocalStorage) => {
-          resolve(res[key] ?? []);
-        });
-      });
+//       const matchesObjOuterHtml: string[] = await new Promise((resolve) => {
+//         chrome.storage.local.get(key, (res: LocalStorage) => {
+//           resolve(res[key] ?? []);
+//         });
+//       });
 
-      const elements: HTMLElement[] = matchesObjOuterHtml.map((el) => {
-        let wrapper = document.createElement('div');
-        wrapper.innerHTML = el;
-        return wrapper.firstChild as HTMLElement;
-      });
+//       const elements: HTMLElement[] = matchesObjOuterHtml.map((el) => {
+//         let wrapper = document.createElement('div');
+//         wrapper.innerHTML = el;
+//         return wrapper.firstChild as HTMLElement;
+//       });
 
-      return { [tabId]: elements };
-    })
-  );
+//       return { [tabId]: elements };
+//     })
+//   );
 
-  // Combine the individual objects into one object
-  const combinedMatchesObj: { [tabId: number]: HTMLElement[] } = Object.assign(
-    {},
-    ...matchesObj
-  );
+//   // Combine the individual objects into one object
+//   const combinedMatchesObj: { [tabId: number]: HTMLElement[] } = Object.assign(
+//     {},
+//     ...matchesObj
+//   );
 
-  return combinedMatchesObj;
-}
+//   return combinedMatchesObj;
+// }
 
-export function setStoredMatchesObject(
-  matchesObj: {
-    [tabId: number]: HTMLElement[];
-  },
-  tabId: number
-): Promise<void> {
-  console.log(`setStoredMatchesObject()`);
-  const matchesArray = matchesObj[tabId];
-  const matchesObjOuterHtml = matchesArray
-    ? matchesArray.map((el) => el.outerHTML)
-    : [];
+// export function setStoredMatchesObject(
+//   matchesObj: {
+//     [tabId: number]: HTMLElement[];
+//   },
+//   tabId: number
+// ): Promise<void> {
+//   console.log(`setStoredMatchesObject()`);
+//   const matchesArray = matchesObj[tabId];
+//   const matchesObjOuterHtml = matchesArray
+//     ? matchesArray.map((el) => el.outerHTML)
+//     : [];
 
-  // Use a dynamic key based on the tabId
-  const val: LocalStorage = {
-    [`matchesObjOuterHtml_${tabId}`]: matchesObjOuterHtml,
-  };
+//   // Use a dynamic key based on the tabId
+//   const val: LocalStorage = {
+//     [`matchesObjOuterHtml_${tabId}`]: matchesObjOuterHtml,
+//   };
 
-  return new Promise((resolve) => {
-    chrome.storage.local.set(val, () => {
-      resolve();
-    });
-  });
-}
+//   return new Promise((resolve) => {
+//     chrome.storage.local.set(val, () => {
+//       resolve();
+//     });
+//   });
+// }
 
 export async function clearStoredMatchesObject() {
   return new Promise<void>((resolve) => {
@@ -496,6 +496,23 @@ export async function clearStoredMatchesObject() {
         }
         resolve();
       });
+    });
+  });
+}
+
+export function getAllStoredTabs(): Promise<any> {
+  // console.log(`setTabsStorage(${tabId})`);
+  // const key[]: LocalStorage = ['tabs'];
+
+  return new Promise((resolve, reject) => {
+    // if (!tabId) {
+    //   reject(new Error('tabId not stored'));
+    //   return;
+    // }
+
+    chrome.storage.local.get(['tabs'], (res: LocalStorage) => {
+      const tabs = res.tabs || {};
+      resolve(tabs);
     });
   });
 }

@@ -22,7 +22,7 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
 
     const state = {
       currentIndex: undefined,
-      matchesObj: {},
+      matchesObj: [],
       tabId: undefined,
     };
 
@@ -44,12 +44,16 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
             });
             return true;
           case 'background:next-match':
-            if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+            debugger;
+            // if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+            if (state.matchesObj.length > 0) nextMatch(state);
+            debugger;
             break;
           case 'background:prev-match':
             previousMatch(state);
             break;
           case 'background:update-highlights':
+            debugger;
             updateHighlights(state, message.prevIndex);
             break;
           default:

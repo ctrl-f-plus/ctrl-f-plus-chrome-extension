@@ -69,7 +69,7 @@ export interface SwitchTab extends BaseMessage {
   from: 'match-utils';
   type: 'switch-tab';
   state: any; // Replace 'any' with the actual type of the 'state' object
-  matchesObject: any; // Replace 'any' with the actual type of the 'matchesObject'
+  // matchesObject: any; // Replace 'any' with the actual type of the 'matchesObject'
   prevIndex: number;
 }
 

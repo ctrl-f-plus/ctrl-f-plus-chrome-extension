@@ -6,7 +6,11 @@ import {
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
 import { deserializeMatchesObj } from '../utils/htmlUtils';
-import { getStoredTab, setStoredTabs } from '../utils/storage';
+import {
+  getAllStoredTabs,
+  getStoredTab,
+  setStoredTabs,
+} from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};
 
@@ -67,6 +71,7 @@ async function executeContentScriptOnAllTabs(findValue: string) {
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
+        // debugger;
         chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
@@ -92,18 +97,26 @@ function executeContentScriptWithMessage(
   });
 }
 
-async function switchTab(state, matchesObject) {
+async function switchTab(state) {
   //, prevIndex) {
   // if (state.tab.id === undefined) {
   //   console.warn('switchTab: Tab ID is undefined:', state.tab);
   //   return;
   // }
 
+  // TODO: START HERE!! =>
+  //    1) Clean this up (storedTabs vs matchesObject var naming)
+  //    2) Clean up all old references to matchesObj[tabId]
+  //    3) Consolidate state/state2 naming convention into one name
+  //    4) matchesObj isn't actually an object? check this and potentially update name
+  const storedTabs = await getAllStoredTabs();
+  // const matchesObject = state.matchesObj || {};
+  const matchesObject = storedTabs;
+
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
   const currentTabIndex = tabIds.findIndex((tabId) => tabId === state.tabId);
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
-
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     state.tabId = tab.id;
 
@@ -198,7 +211,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'switch-tab') {
-      switchTab(message.state, message.matchesObject);
+      switchTab(message.state);
       return;
     }
 

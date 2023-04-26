@@ -1,7 +1,7 @@
 // src/utils/matchUtils.ts
 import { htmlToOuterHtml, outerHtmlToHtml } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
-import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
+// import { getStoredMatchesObject, setStoredMatchesObject } from './storage';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 
 export async function findAllMatches(state, findValue) {
@@ -15,12 +15,12 @@ export async function findAllMatches(state, findValue) {
     findValue,
     tabId: state.tabId,
     callback: async () => {
-      setStoredMatchesObject(state.matchesObj, state.tabId);
+      // setStoredMatchesObject(state.matchesObj, state.tabId);
       const state2 = { ...state };
       state2.matchesObj = state2.matchesObj[state2.tabId];
       state2.matchesObj = serializeMatchesObj(state2.matchesObj);
 
-      // FIXME: REVIE this message
+      // FIXME: REVIEW this message
       chrome.runtime.sendMessage(
         {
           from: 'content',
@@ -40,16 +40,21 @@ export async function findAllMatches(state, findValue) {
 }
 
 export function updateHighlights(
-  state,
+  state2,
   prevIndex?: number,
   endOfTab?: boolean
 ) {
-  if (!state.matchesObj[state.tabId].length) {
+  debugger;
+  if (state2.matchesObj[state2.tabId]) {
+    state2.matchesObj = state2.matchesObj[state2.tabId];
+  }
+
+  if (!state2.matchesObj.length) {
     return;
   }
 
   if (typeof prevIndex === 'number') {
-    const prevMatch = state.matchesObj[state.tabId][prevIndex];
+    const prevMatch = state2.matchesObj[prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
 
@@ -57,12 +62,13 @@ export function updateHighlights(
     return;
   }
 
-  const curMatch = state.matchesObj[state.tabId][state.currentIndex];
+  const curMatch = state2.matchesObj[state2.currentIndex];
   curMatch.classList.add('ctrl-f-highlight-focus');
   scrollToElement(curMatch);
 }
 
 export async function nextMatch(state) {
+  debugger;
   // ***5
   console.log('getInnerHtmlScript - nextMatch()');
   const prevIndex = state.currentIndex;
@@ -70,26 +76,25 @@ export async function nextMatch(state) {
   // TODO: send message to update tabStates?
 
   state.currentIndex =
-    (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
+    // (state.currentIndex + 1) % state.matchesObj[state.tabId].length;
+    (state.currentIndex + 1) % state.matchesObj.length;
+  debugger;
+  // TODO: DRY
+  const state2 = { ...state };
+  // state2.matchesObj = state2.matchesObj[state2.tabId];
 
   if (state.currentIndex === 0) {
     const endOfTab: boolean = true;
 
-    updateHighlights(state, prevIndex, endOfTab);
-
-    // state.matchesObj[state.tabId] = htmlToOuterHtml(
-    //   state.matchesObj,
-    //   state.tabId
-    // );
-    // KEEP AND TEST STORAGE HERE: debugger;
-    const strg = await getStoredMatchesObject();
-    // KEEP AND TEST STORAGE HERE: debugger;
+    debugger;
+    updateHighlights(state2, prevIndex, endOfTab);
+    state2.matchesObj = serializeMatchesObj(state2.matchesObj);
 
     // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
     const message = {
       type: 'switch-tab',
-      state: state,
-      matchesObject: strg,
+      state: state2,
+      // matchesObject: strg,
       prevIndex: undefined,
     };
     chrome.runtime.sendMessage(message);
@@ -99,7 +104,8 @@ export async function nextMatch(state) {
     // );
     // KEEP AND TEST STORAGE HERE: debugger;
   } else {
-    updateHighlights(state, prevIndex);
+    debugger;
+    updateHighlights(state2, prevIndex);
   }
 }
 
@@ -109,6 +115,7 @@ export function previousMatch(state) {
     (state.currentIndex - 1 + state.matchesObj[state.tabId].length) %
     state.matchesObj[state.tabId].length;
 
+  debugger;
   updateHighlights(state, prevIndex);
 }
 

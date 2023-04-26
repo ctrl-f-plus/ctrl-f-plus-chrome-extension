@@ -46,6 +46,7 @@ import {
           previousMatch(state);
           break;
         case 'background:update-highlights':
+          debugger;
           updateHighlights(state, message.prevIndex);
           break;
         default:
