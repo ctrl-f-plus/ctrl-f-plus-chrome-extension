@@ -55,10 +55,9 @@ function updateMatchesObject({
   tabId,
   span,
 }: UpdateMatchesObjectProps) {
-  if (matchesObj.hasOwnProperty(tabId)) {
-    matchesObj[tabId].push(span);
-  } else {
-    matchesObj[tabId] = [span];
+  // TODO:Remove object version
+  if (Array.isArray(matchesObj)) {
+    matchesObj.push(span);
   }
 }
 
@@ -150,7 +149,6 @@ export function removeAllHighlightMatches() {
 }
 
 export function searchAndHighlight({
-  currentIndex,
   matchesObj,
   findValue,
   tabId,
@@ -159,7 +157,16 @@ export function searchAndHighlight({
 }: SearchAndHighlightProps) {
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
+
+  // if (!Array.isArray(matchesObj)) {
+  //   debugger;
+  //   matchesObj = [];
+  // }
+
   textNodesToProcess.forEach((textNode) => {
+    if (!Array.isArray(matchesObj)) {
+      debugger;
+    }
     processTextNode({ textNode, regex, matchesObj, tabId });
   });
 

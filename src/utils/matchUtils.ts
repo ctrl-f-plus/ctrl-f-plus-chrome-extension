@@ -2,20 +2,19 @@
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 
-export async function findAllMatches(state, findValue) {
+export async function findAllMatches(state, state2, findValue) {
   state.matchesObj = {};
   state.currentIndex = 0;
-  const state2 = { ...state };
+
+  state2.matchesObj = [];
+  state2.currentIndex = 0;
 
   searchAndHighlight({
-    currentIndex: state2.currentIndex,
     matchesObj: state2.matchesObj,
     findValue,
     tabId: state2.tabId,
     state2: state2,
     callback: async () => {
-      state2.matchesObj = state2.matchesObj[state2.tabId];
-
       const serializedState2 = { ...state2 };
       serializedState2.matchesObj = serializeMatchesObj(
         serializedState2.matchesObj
@@ -32,6 +31,7 @@ export async function findAllMatches(state, findValue) {
         },
         function (response) {}
       );
+
       console.log(state2.matchesObj);
     },
   });

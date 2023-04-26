@@ -21,6 +21,12 @@ import {
     matchesObj: {},
     tabId: undefined,
   };
+
+  let state2 = {
+    currentIndex: undefined,
+    matchesObj: [],
+    tabId: undefined,
+  };
   console.log(new Date().toLocaleString());
 
   // console.log('Received message:', message, 'Message ID:', message.messageId);
@@ -33,7 +39,7 @@ import {
       switch (`${from}:${type}`) {
         case 'background:highlight':
           state.tabId = message.tabId;
-          await findAllMatches(state, message.findValue);
+          await findAllMatches(state, state2, message.findValue);
 
           sendResponse({
             hasMatch: state.matchesObj[state.tabId].length > 0,

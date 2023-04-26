@@ -26,7 +26,7 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
       tabId: undefined,
     };
 
-    let state2 = {
+    const state2 = {
       currentIndex: undefined,
       matchesObj: [],
       tabId: undefined,
@@ -43,27 +43,26 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
         switch (`${from}:${type}`) {
           case 'background:highlight':
             state.tabId = message.tabId;
+            state2.tabId = message.tabId;
 
-            await findAllMatches(state, findValue);
+            await findAllMatches(state, state2, findValue);
+            debugger;
+
+            // TODO: UPDATE TO SEND state2 INSTEAD OF state
             sendResponse({
-              hasMatch: state.matchesObj[state.tabId].length > 0,
+              hasMatch: state2.matchesObj.length > 0,
               state: state,
             });
-            state2 = { ...state };
-            state2.matchesObj = state2.matchesObj[state2.tabId];
-            debugger;
+
             return true;
           case 'background:next-match':
-            debugger;
             if (state2.matchesObj.length > 0) nextMatch(state2);
-            debugger;
             break;
           case 'background:prev-match':
             previousMatch(state);
             break;
           case 'background:update-highlights':
-            debugger;
-            updateHighlights(state, message.prevIndex);
+            updateHighlights(state2, message.prevIndex);
             break;
           default:
             break;
