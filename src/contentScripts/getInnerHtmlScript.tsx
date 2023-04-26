@@ -9,6 +9,7 @@ import {
   updateHighlights,
 } from '../utils/matchUtils';
 import { TabsContext, TabsProvider } from '../contexts/TabsContext';
+import { serializeMatchesObj } from '../utils/htmlUtils';
 
 const GetInnerHtmlScriptComponent: React.FC = () => {
   useEffect(() => {
@@ -28,7 +29,8 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
 
     const state2 = {
       currentIndex: undefined,
-      matchesObj: [],
+      // matchesObj: [],
+      matchesObj: [] as string | any[],
       tabId: undefined,
     };
 
@@ -46,12 +48,17 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
             state2.tabId = message.tabId;
 
             await findAllMatches(state2, findValue);
-            debugger;
 
-            // TODO: UPDATE TO SEND state2 INSTEAD OF state
+            // TODO: DRY
+            const serializedState2 = { ...state2 };
+
+            serializedState2.matchesObj = serializeMatchesObj(
+              serializedState2.matchesObj
+            );
+
             sendResponse({
               hasMatch: state2.matchesObj.length > 0,
-              state: state,
+              serializedState2: serializedState2,
             });
 
             return true;
