@@ -203,12 +203,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'update-tab-states-obj') {
-      // const { tabId, state, serializedMatchesObj } = message.payload;
-      const { hasMatch, state, serializedMatchesObj, tabId, state2 } =
-        message.payload;
-
-      // tabStates[tabId] = state;
-      // tabStates[tabId].matchesObj = serializedMatchesObj;
+      const { hasMatch, state, tabId, state2 } = message.payload;
 
       // NEW
 

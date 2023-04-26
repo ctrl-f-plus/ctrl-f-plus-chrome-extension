@@ -531,7 +531,7 @@ export function setStoredTabs(state2: any): Promise<void> {
 
     chrome.storage.local.get(['tabs'], (res) => {
       const currentData = res.tabs || {};
-      debugger;
+
       currentData[tabId] = { tabId, currentIndex, matchesObj };
 
       chrome.storage.local.set({ tabs: currentData }, () => {

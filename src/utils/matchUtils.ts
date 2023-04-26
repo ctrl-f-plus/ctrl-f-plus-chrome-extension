@@ -15,20 +15,10 @@ export async function findAllMatches(state, findValue) {
     findValue,
     tabId: state.tabId,
     callback: async () => {
-      const serializedMatchesObj = {};
-
-      for (const tabId in state.matchesObj) {
-        serializedMatchesObj[tabId] = htmlToOuterHtml(state.matchesObj, tabId);
-      }
-
-      // KEEP AND TEST STORAGE HERE: debugger;
-      const strg = await getStoredMatchesObject();
-      // KEEP AND TEST STORAGE HERE: debugger;
       setStoredMatchesObject(state.matchesObj, state.tabId);
       const state2 = { ...state };
       state2.matchesObj = state2.matchesObj[state2.tabId];
       state2.matchesObj = serializeMatchesObj(state2.matchesObj);
-      debugger;
 
       // FIXME: REVIE this message
       chrome.runtime.sendMessage(
@@ -38,7 +28,6 @@ export async function findAllMatches(state, findValue) {
           payload: {
             hasMatch: state.matchesObj[state.tabId].length > 0,
             state,
-            serializedMatchesObj,
             tabId: state.tabId,
             state2,
           },
