@@ -59,6 +59,7 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showOverlay) {
+        debugger;
         toggleSearchOverlay();
       }
     };

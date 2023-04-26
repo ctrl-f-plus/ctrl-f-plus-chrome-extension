@@ -10,26 +10,32 @@ export const useOverlayHandler = () => {
 
   const { sendMessageToBackground } = useSendMessageToBackground();
 
-  const toggleSearchOverlay = useCallback(() => {
-    const openSearchOverlay = () => {
-      sendMessageToBackground({
-        from: 'content',
-        type: 'add-styles-all-tabs',
-      });
-    };
+  const toggleSearchOverlay = useCallback(
+    (forceShowOverlay?: boolean) => {
+      const openSearchOverlay = () => {
+        sendMessageToBackground({
+          from: 'content',
+          type: 'add-styles-all-tabs',
+        });
+      };
 
-    const closeSearchOverlay = (searchValue: string) => {
-      // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
-      setStoredFindValue(searchValue);
-      sendMessageToBackground({
-        from: 'content',
-        type: 'remove-styles-all-tabs',
-      });
-    };
+      const closeSearchOverlay = (searchValue: string) => {
+        // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
+        setStoredFindValue(searchValue);
+        sendMessageToBackground({
+          from: 'content',
+          type: 'remove-styles-all-tabs',
+        });
+      };
 
-    showOverlay ? closeSearchOverlay(searchValue) : openSearchOverlay();
-    setShowOverlay((prevShowOverlay) => !prevShowOverlay);
-  }, [sendMessageToBackground]);
+      const newState =
+        forceShowOverlay === undefined ? !showOverlay : forceShowOverlay;
+
+      newState ? openSearchOverlay() : closeSearchOverlay(searchValue);
+      setShowOverlay(newState);
+    },
+    [sendMessageToBackground]
+  );
 
   return {
     showOverlay,

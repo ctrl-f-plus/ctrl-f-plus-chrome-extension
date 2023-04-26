@@ -39,10 +39,6 @@ export function updateHighlights(
   prevIndex?: number,
   endOfTab?: boolean
 ) {
-  if (state2.matchesObj[state2.tabId]) {
-    state2.matchesObj = state2.matchesObj[state2.tabId];
-  }
-
   if (!state2.matchesObj.length) {
     return;
   }
@@ -91,14 +87,13 @@ export async function nextMatch(state2) {
   }
 }
 
-export function previousMatch(state) {
-  const prevIndex = state.currentIndex;
-  state.currentIndex =
-    (state.currentIndex - 1 + state.matchesObj[state.tabId].length) %
-    state.matchesObj[state.tabId].length;
+export function previousMatch(state2) {
+  const prevIndex = state2.currentIndex;
+  state2.currentIndex =
+    (state2.currentIndex - 1 + state2.matchesObj[state2.tabId].length) %
+    state2.matchesObj[state2.tabId].length;
 
-  debugger;
-  updateHighlights(state, prevIndex);
+  updateHighlights(state2, prevIndex);
 }
 
 function scrollToElement(element) {

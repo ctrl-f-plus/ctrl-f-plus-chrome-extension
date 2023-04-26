@@ -5,7 +5,6 @@ import {
   SwitchedActiveTabShowModal,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
-import { deserializeMatchesObj } from '../utils/htmlUtils';
 import {
   getAllStoredTabs,
   getStoredTab,
