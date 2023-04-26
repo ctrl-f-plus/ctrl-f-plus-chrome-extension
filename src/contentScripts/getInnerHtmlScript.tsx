@@ -45,7 +45,7 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
             state.tabId = message.tabId;
             state2.tabId = message.tabId;
 
-            await findAllMatches(state, state2, findValue);
+            await findAllMatches(state2, findValue);
             debugger;
 
             // TODO: UPDATE TO SEND state2 INSTEAD OF state

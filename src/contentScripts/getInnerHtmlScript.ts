@@ -39,7 +39,7 @@ import {
       switch (`${from}:${type}`) {
         case 'background:highlight':
           state.tabId = message.tabId;
-          await findAllMatches(state, state2, message.findValue);
+          await findAllMatches(state2, message.findValue);
 
           sendResponse({
             hasMatch: state.matchesObj[state.tabId].length > 0,

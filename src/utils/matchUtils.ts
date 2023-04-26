@@ -2,10 +2,7 @@
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 
-export async function findAllMatches(state, state2, findValue) {
-  state.matchesObj = {};
-  state.currentIndex = 0;
-
+export async function findAllMatches(state2, findValue) {
   state2.matchesObj = [];
   state2.currentIndex = 0;
 

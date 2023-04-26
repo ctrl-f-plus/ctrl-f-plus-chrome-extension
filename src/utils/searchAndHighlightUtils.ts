@@ -158,15 +158,7 @@ export function searchAndHighlight({
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
 
-  // if (!Array.isArray(matchesObj)) {
-  //   debugger;
-  //   matchesObj = [];
-  // }
-
   textNodesToProcess.forEach((textNode) => {
-    if (!Array.isArray(matchesObj)) {
-      debugger;
-    }
     processTextNode({ textNode, regex, matchesObj, tabId });
   });
 
