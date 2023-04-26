@@ -34,6 +34,7 @@ import {
         case 'background:highlight':
           state.tabId = message.tabId;
           await findAllMatches(state, message.findValue);
+
           sendResponse({
             hasMatch: state.matchesObj[state.tabId].length > 0,
             state: state,
@@ -46,7 +47,6 @@ import {
           previousMatch(state);
           break;
         case 'background:update-highlights':
-          debugger;
           updateHighlights(state, message.prevIndex);
           break;
         default:

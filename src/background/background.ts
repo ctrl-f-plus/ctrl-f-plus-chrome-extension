@@ -71,7 +71,6 @@ async function executeContentScriptOnAllTabs(findValue: string) {
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        // debugger;
         chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',

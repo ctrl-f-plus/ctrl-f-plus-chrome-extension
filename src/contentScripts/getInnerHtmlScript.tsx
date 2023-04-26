@@ -26,6 +26,12 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
       tabId: undefined,
     };
 
+    let state2 = {
+      currentIndex: undefined,
+      matchesObj: [],
+      tabId: undefined,
+    };
+
     console.log(new Date().toLocaleString());
 
     chrome.runtime.onMessage.addListener(
@@ -37,16 +43,19 @@ const GetInnerHtmlScriptComponent: React.FC = () => {
         switch (`${from}:${type}`) {
           case 'background:highlight':
             state.tabId = message.tabId;
+
             await findAllMatches(state, findValue);
             sendResponse({
               hasMatch: state.matchesObj[state.tabId].length > 0,
               state: state,
             });
+            state2 = { ...state };
+            state2.matchesObj = state2.matchesObj[state2.tabId];
+            debugger;
             return true;
           case 'background:next-match':
             debugger;
-            // if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
-            if (state.matchesObj.length > 0) nextMatch(state);
+            if (state2.matchesObj.length > 0) nextMatch(state2);
             debugger;
             break;
           case 'background:prev-match':
