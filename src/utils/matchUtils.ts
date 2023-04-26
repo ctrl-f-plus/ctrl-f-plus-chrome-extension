@@ -5,6 +5,7 @@ import { serializeMatchesObj } from '../utils/htmlUtils';
 export async function findAllMatches(state, findValue) {
   state.matchesObj = {};
   state.currentIndex = 0;
+  const state2 = { ...state };
 
   searchAndHighlight({
     currentIndex: state.currentIndex,
@@ -12,9 +13,8 @@ export async function findAllMatches(state, findValue) {
     matchesObj: state.matchesObj,
     findValue,
     tabId: state.tabId,
+    state2: state2,
     callback: async () => {
-      const state2 = { ...state };
-
       state2.matchesObj = state2.matchesObj[state2.tabId];
 
       const serializedState2 = { ...state2 };

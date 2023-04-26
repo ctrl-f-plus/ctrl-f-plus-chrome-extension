@@ -3,6 +3,7 @@ export interface MatchUtilsBase {
   matches: HTMLElement[];
   matchesObj: MatchesObject;
   tabId: number;
+  state2?: any;
 }
 
 export interface CreateHighlightSpanProps {

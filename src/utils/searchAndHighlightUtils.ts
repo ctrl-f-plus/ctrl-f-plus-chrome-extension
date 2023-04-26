@@ -155,6 +155,7 @@ export function searchAndHighlight({
   matchesObj,
   findValue,
   tabId,
+  state2,
   callback,
 }: SearchAndHighlightProps) {
   const regex = new RegExp(findValue, 'gi');
