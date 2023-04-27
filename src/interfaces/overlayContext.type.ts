@@ -8,6 +8,8 @@ export interface OverlayContextData {
   toggleSearchOverlay: (forceShowOverlay?: boolean) => void;
   searchValue: string;
   setSearchValue: (value: string) => void;
+  showMatches: boolean;
+  setShowMatches: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface OverlayProviderProps {

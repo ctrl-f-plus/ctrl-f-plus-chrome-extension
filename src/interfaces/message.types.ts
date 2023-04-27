@@ -80,9 +80,14 @@ export interface UpdateHighlightsMessage extends BaseMessage {
   state: any; // Replace 'any' with the actual type of the 'state' object
   prevIndex: number;
 }
-export interface SwitchedActiveTabShowModal extends BaseMessage {
+export interface SwitchedActiveTabShowOverlay extends BaseMessage {
   from: 'background';
-  type: 'switched-active-tab-show-modal';
+  type: 'switched-active-tab-show-overlay';
+}
+
+export interface SwitchedActiveTabHideOverlay extends BaseMessage {
+  from: 'background';
+  type: 'switched-active-tab-hide-overlay';
 }
 
 export interface UpdateTabStatesObj extends BaseMessage {
@@ -103,5 +108,6 @@ export type Messages =
   | RemoveAllHighlightMatches
   | SwitchTab
   | UpdateHighlightsMessage
-  | SwitchedActiveTabShowModal
+  | SwitchedActiveTabShowOverlay
+  | SwitchedActiveTabHideOverlay
   | UpdateTabStatesObj;

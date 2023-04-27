@@ -6,6 +6,7 @@ import { setStoredFindValue } from '../utils/storage';
 
 export const useOverlayHandler = () => {
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [showMatches, setShowMatches] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
 
   const { sendMessageToBackground } = useSendMessageToBackground();
@@ -17,6 +18,8 @@ export const useOverlayHandler = () => {
           from: 'content',
           type: 'add-styles-all-tabs',
         });
+
+        setShowMatches(true);
       };
 
       const closeSearchOverlay = (searchValue: string) => {
@@ -26,6 +29,7 @@ export const useOverlayHandler = () => {
           from: 'content',
           type: 'remove-styles-all-tabs',
         });
+        setShowMatches(false);
       };
 
       const newState =
@@ -40,8 +44,10 @@ export const useOverlayHandler = () => {
   return {
     showOverlay,
     setShowOverlay,
+    toggleSearchOverlay,
     searchValue,
     setSearchValue,
-    toggleSearchOverlay,
+    showMatches,
+    setShowMatches,
   };
 };

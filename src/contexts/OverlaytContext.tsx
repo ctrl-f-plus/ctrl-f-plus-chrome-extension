@@ -14,6 +14,8 @@ export const OverlayContext = createContext<OverlayContextData>({
   toggleSearchOverlay: (forceShowOverlay?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
+  showMatches: false,
+  setShowMatches: () => {},
 });
 
 export const OverlayProvider: React.FC<OverlayProviderProps> = ({
@@ -25,6 +27,8 @@ export const OverlayProvider: React.FC<OverlayProviderProps> = ({
     searchValue,
     setSearchValue,
     toggleSearchOverlay,
+    showMatches,
+    setShowMatches,
   } = useOverlayHandler();
 
   return (
@@ -35,6 +39,8 @@ export const OverlayProvider: React.FC<OverlayProviderProps> = ({
         toggleSearchOverlay,
         searchValue,
         setSearchValue,
+        showMatches,
+        setShowMatches,
       }}
     >
       {children}

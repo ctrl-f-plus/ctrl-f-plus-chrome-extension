@@ -17,8 +17,15 @@ import contentStyles from './contentStyles';
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
-  const { searchValue, setSearchValue, showOverlay, toggleSearchOverlay } =
-    useContext(OverlayContext);
+  const {
+    showOverlay,
+    setShowOverlay,
+    toggleSearchOverlay,
+    searchValue,
+    setSearchValue,
+    showMatches,
+    setShowMatches,
+  } = useContext(OverlayContext);
 
   const handleMessage = (
     message: MessageFixMe,
@@ -30,15 +37,22 @@ const App: React.FC<{}> = () => {
     const { type, findValue, command } = message;
 
     switch (type) {
-      case 'switched-active-tab-show-modal':
+      case 'switched-active-tab-show-overlay':
         // TODO:(*99) Alternatively, you can update toggleSearchOverlay() to take an optional argument: toggleSearchOverlay(true)
-        toggleSearchOverlay(true);
+        // toggleSearchOverlay(true);
+        showMatches && setShowOverlay(true);
+        break;
+      case 'switched-active-tab-hide-overlay':
+        // toggleSearchOverlay(false);
+        showMatches && setShowOverlay(false);
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
+        setShowMatches(false);
         break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
+        setShowMatches(true);
         break;
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();
@@ -59,7 +73,7 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showOverlay) {
-        toggleSearchOverlay();
+        toggleSearchOverlay(false);
       }
     };
 
