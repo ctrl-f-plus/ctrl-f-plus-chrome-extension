@@ -37,29 +37,7 @@ import {
       console.log("Rec'd msg:", message);
 
       const { from, type, findValue, tabId, messageId } = message;
-      debugger;
-      // switch (`${from}:${type}`) {
-      //   case 'background:highlight':
-      //     state.tabId = message.tabId;
-      //     await findAllMatches(state2, message.findValue);
 
-      //     sendResponse({
-      //       hasMatch: state.matchesObj[state.tabId].length > 0,
-      //       state: state,
-      //     });
-      //     return true;
-      //   case 'background:next-match':
-      //     if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
-      //     break;
-      //   case 'background:prev-match':
-      //     previousMatch(state);
-      //     break;
-      //   case 'background:update-highlights':
-      //     updateHighlights(state, message.prevIndex);
-      //     break;
-      //   default:
-      //     break;
-      // }
       switch (`${from}:${type}`) {
         case 'background:highlight':
           state2.tabId = message.tabId;
@@ -86,7 +64,6 @@ import {
           previousMatch(state2);
           break;
         case 'background:update-highlights':
-          debugger;
           updateHighlights(state2, message.prevIndex);
           break;
         default:

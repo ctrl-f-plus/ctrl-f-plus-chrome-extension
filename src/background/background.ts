@@ -252,6 +252,12 @@ chrome.runtime.onMessage.addListener(
       const { serializedState2 } = message.payload;
       await setStoredTabs(serializedState2);
 
+      const storedTabs = await getAllStoredTabs();
+
+      // TODO: START HERE => get Match count and send to content scripts to display in overlay
+      // JSON.parse(storedTabs[237549297].matchesObj).length;
+      // debugger;
+
       sendResponse({ status: 'success' });
       return;
     }

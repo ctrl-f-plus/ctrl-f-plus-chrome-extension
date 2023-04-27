@@ -1,6 +1,7 @@
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';
+import { getAllStoredTabs } from './storage';
 
 export async function findAllMatches(state2, findValue) {
   state2.matchesObj = [];
