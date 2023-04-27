@@ -89,16 +89,11 @@ async function executeContentScriptOnAllTabs(findValue: string) {
   }
 }
 
-function executeContentScriptWithMessage(
-  tabId: number,
-  messageType: string,
-  findValue: string
-) {
+function executeContentScriptWithMessage(tabId: number, messageType: string) {
   // ***2.5
   chrome.tabs.sendMessage(tabId, {
     from: 'background',
     type: messageType,
-    findValue,
     tabId,
   });
 }
@@ -172,94 +167,83 @@ async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
+    const { type, payload } = message;
+
     // Receive message from SearchInput component
-    if (message.type === 'get-all-matches-msg') {
-      const findValue = message.payload;
-
-      executeContentScriptOnAllTabs(findValue);
-
-      return;
-    }
-
-    if (message.type === 'next-match' || message.type === 'prev-match') {
-      // ***2
-      executeContentScriptWithMessage(
-        sender.tab.id,
-        message.type,
-        message.findValue
-      );
-      return;
-    }
-
-    if (message.type === 'remove-styles-all-tabs') {
-      chrome.tabs.query({ currentWindow: true }, (tabs) => {
-        tabs.forEach((tab) => {
-          if (tab.id) {
-            chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
-          }
-        });
-      });
-
-      return;
-    }
-
-    if (message.type === 'add-styles-all-tabs') {
-      chrome.tabs.query({ currentWindow: true }, (tabs) => {
-        tabs.forEach((tab) => {
-          if (tab.id) {
-            chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
-          }
-        });
-      });
-
-      return;
-    }
-
-    if (message.type === 'remove-all-highlight-matches') {
-      chrome.tabs.query({ currentWindow: true }, (tabs) => {
-        const tabPromises = tabs.map((tab) => {
-          return new Promise((resolve) => {
+    switch (type) {
+      case 'get-all-matches-msg':
+        const findValue = message.payload;
+        executeContentScriptOnAllTabs(findValue);
+        return;
+      case 'next-match':
+      case 'prev-match':
+        // ***2
+        executeContentScriptWithMessage(sender.tab.id, message.type);
+        return;
+      case 'remove-styles-all-tabs':
+        chrome.tabs.query({ currentWindow: true }, (tabs) => {
+          tabs.forEach((tab) => {
             if (tab.id) {
-              chrome.tabs.sendMessage(
-                tab.id,
-                {
-                  type: 'remove-all-highlight-matches',
-                },
-                (response) => {
-                  resolve(response);
-                }
-              );
-            } else {
-              resolve(null);
+              chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
             }
           });
         });
 
-        Promise.all(tabPromises).then((responses) => {
-          sendResponse(responses);
+        return;
+      case 'add-styles-all-tabs':
+        chrome.tabs.query({ currentWindow: true }, (tabs) => {
+          tabs.forEach((tab) => {
+            if (tab.id) {
+              chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
+            }
+          });
         });
 
-        return true;
-      });
-    }
+        return;
+      case 'remove-all-highlight-matches':
+        chrome.tabs.query({ currentWindow: true }, (tabs) => {
+          const tabPromises = tabs.map((tab) => {
+            return new Promise((resolve) => {
+              if (tab.id) {
+                chrome.tabs.sendMessage(
+                  tab.id,
+                  {
+                    type: 'remove-all-highlight-matches',
+                  },
+                  (response) => {
+                    resolve(response);
+                  }
+                );
+              } else {
+                resolve(null);
+              }
+            });
+          });
 
-    if (message.type === 'switch-tab') {
-      switchTab(message.serializedState2);
-      return;
-    }
+          Promise.all(tabPromises).then((responses) => {
+            sendResponse(responses);
+          });
 
-    if (message.type === 'update-tab-states-obj') {
-      const { serializedState2 } = message.payload;
-      await setStoredTabs(serializedState2);
+          return true;
+        });
+        break;
+      case 'switch-tab':
+        switchTab(message.serializedState2);
+        return;
+      case 'update-tab-states-obj':
+        const { serializedState2 } = message.payload;
+        await setStoredTabs(serializedState2);
 
-      const storedTabs = await getAllStoredTabs();
+        const storedTabs = await getAllStoredTabs();
 
-      // TODO: START HERE => get Match count and send to content scripts to display in overlay
-      // JSON.parse(storedTabs[237549297].matchesObj).length;
-      // debugger;
+        // TODO: START HERE => get Match count and send to content scripts to display in overlay
+        // JSON.parse(storedTabs[237549297].matchesObj).length;
+        // debugger;
 
-      sendResponse({ status: 'success' });
-      return;
+        sendResponse({ status: 'success' });
+        return;
+      default:
+        break;
     }
   }
 );

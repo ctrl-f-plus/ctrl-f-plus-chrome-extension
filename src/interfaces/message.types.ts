@@ -5,6 +5,7 @@ export interface BaseMessage {
   // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
+  serializedState2?: any;
 }
 
 export interface GetAllMatchesMessage extends BaseMessage {
@@ -18,6 +19,7 @@ export interface NextMatchMessage extends BaseMessage {
   from: 'content';
   type: 'next-match';
   findValue?: string;
+  serializedState2?: any;
 }
 
 export interface NextMatchMessageFromBack extends BaseMessage {
@@ -32,6 +34,7 @@ export interface PreviousMatchMessage extends BaseMessage {
   from: 'content';
   type: 'prev-match';
   findValue?: string;
+  serializedState2?: any;
 }
 
 // export interface AllMatchesMessage extends BaseMessage {
