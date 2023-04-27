@@ -123,3 +123,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 - FIX: if intermediary tab doesn't have match, then matching stops. ex:
     - Tab1 has matches, tab2 has NO matches, Tab3 has matches: only tab1's matches are found
+- Fix: if findValue === ' '
+    - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com

@@ -13,14 +13,14 @@ export const useSearchHandler = () => {
   const handleSearch = async (findValue: string) => {
     setStoredFindValue(findValue);
 
-    await clearStoredMatchesObject();
     await clearAllStoredTabs();
 
     await sendMessageToBackground({
       from: 'content',
       type: 'remove-all-highlight-matches',
-      payload: findValue,
     });
+
+    if (findValue === '') return;
 
     sendMessageToBackground({
       from: 'content',
