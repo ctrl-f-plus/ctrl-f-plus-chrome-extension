@@ -159,7 +159,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'remove-styles-all-tabs') {
-      chrome.tabs.query({}, (tabs) => {
+      chrome.tabs.query({ currentWindow: true }, (tabs) => {
         tabs.forEach((tab) => {
           if (tab.id) {
             chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
@@ -171,7 +171,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'add-styles-all-tabs') {
-      chrome.tabs.query({}, (tabs) => {
+      chrome.tabs.query({ currentWindow: true }, (tabs) => {
         tabs.forEach((tab) => {
           if (tab.id) {
             chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
@@ -183,7 +183,7 @@ chrome.runtime.onMessage.addListener(
     }
 
     if (message.type === 'remove-all-highlight-matches') {
-      chrome.tabs.query({}, (tabs) => {
+      chrome.tabs.query({ currentWindow: true }, (tabs) => {
         const tabPromises = tabs.map((tab) => {
           return new Promise((resolve) => {
             if (tab.id) {
@@ -233,7 +233,10 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
 });
 
 chrome.commands.onCommand.addListener((command) => {
+  // TODO:REVIEW `active:currentWindow: true` below:
+  // chrome.tabs.query({}, (tabs) => {
   if (command === 'toggle_search_overlay') {
+    // chrome.tabs.query({ active:currentWindow: true }, (tabs) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
         chrome.tabs.sendMessage(tabs[0].id, { command });

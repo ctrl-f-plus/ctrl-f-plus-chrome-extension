@@ -32,7 +32,7 @@ const App: React.FC<{}> = () => {
     switch (type) {
       case 'switched-active-tab-show-modal':
         // TODO:(*99) Alternatively, you can update toggleSearchOverlay() to take an optional argument: toggleSearchOverlay(true)
-        toggleSearchOverlay();
+        toggleSearchOverlay(true);
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
@@ -59,7 +59,6 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showOverlay) {
-        debugger;
         toggleSearchOverlay();
       }
     };

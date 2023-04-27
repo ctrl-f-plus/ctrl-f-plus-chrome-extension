@@ -1,5 +1,6 @@
 // src/contentScripts/getInnerHtmlScript.ts
 
+import { serializeMatchesObj } from '../utils/htmlUtils';
 import {
   findAllMatches,
   nextMatch,
@@ -16,17 +17,18 @@ import {
   // Set the unique flag to indicate that the content script has been injected
   window.myUniqueExtensionFlag = true;
 
-  const state = {
+  // const state = {
+  //   currentIndex: undefined,
+  //   matchesObj: {},
+  //   tabId: undefined,
+  // };
+
+  const state2 = {
     currentIndex: undefined,
-    matchesObj: {},
+    matchesObj: [] as string | any[],
     tabId: undefined,
   };
 
-  let state2 = {
-    currentIndex: undefined,
-    matchesObj: [],
-    tabId: undefined,
-  };
   console.log(new Date().toLocaleString());
 
   // console.log('Received message:', message, 'Message ID:', message.messageId);
@@ -35,25 +37,57 @@ import {
       console.log("Rec'd msg:", message);
 
       const { from, type, findValue, tabId, messageId } = message;
+      debugger;
+      // switch (`${from}:${type}`) {
+      //   case 'background:highlight':
+      //     state.tabId = message.tabId;
+      //     await findAllMatches(state2, message.findValue);
 
+      //     sendResponse({
+      //       hasMatch: state.matchesObj[state.tabId].length > 0,
+      //       state: state,
+      //     });
+      //     return true;
+      //   case 'background:next-match':
+      //     if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+      //     break;
+      //   case 'background:prev-match':
+      //     previousMatch(state);
+      //     break;
+      //   case 'background:update-highlights':
+      //     updateHighlights(state, message.prevIndex);
+      //     break;
+      //   default:
+      //     break;
+      // }
       switch (`${from}:${type}`) {
         case 'background:highlight':
-          state.tabId = message.tabId;
-          await findAllMatches(state2, message.findValue);
+          state2.tabId = message.tabId;
+
+          await findAllMatches(state2, findValue);
+
+          // TODO: DRY
+          const serializedState2 = { ...state2 };
+
+          serializedState2.matchesObj = serializeMatchesObj(
+            serializedState2.matchesObj
+          );
 
           sendResponse({
-            hasMatch: state.matchesObj[state.tabId].length > 0,
-            state: state,
+            hasMatch: state2.matchesObj.length > 0,
+            serializedState2: serializedState2,
           });
+
           return true;
         case 'background:next-match':
-          if (state.matchesObj[state.tabId].length > 0) nextMatch(state);
+          if (state2.matchesObj.length > 0) nextMatch(state2);
           break;
         case 'background:prev-match':
-          previousMatch(state);
+          previousMatch(state2);
           break;
         case 'background:update-highlights':
-          updateHighlights(state, message.prevIndex);
+          debugger;
+          updateHighlights(state2, message.prevIndex);
           break;
         default:
           break;

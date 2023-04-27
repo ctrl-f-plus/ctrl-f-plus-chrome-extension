@@ -1,4 +1,4 @@
-// src/contexts/Contexts.tsx
+// src/contexts/OverlaytContext.tsx
 
 import React, { createContext } from 'react';
 import { useOverlayHandler } from '../hooks/useOverlayHandler';
@@ -11,7 +11,7 @@ import {
 export const OverlayContext = createContext<OverlayContextData>({
   showOverlay: false,
   setShowOverlay: () => {},
-  toggleSearchOverlay: () => {},
+  toggleSearchOverlay: (forceShowOverlay?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
 });
