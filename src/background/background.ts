@@ -9,6 +9,17 @@ import {
 import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
 const tabStates: { [tabId: number]: any } = {};
+let updatedTabsCount = 0;
+let totalTabs = 0;
+
+//////////////////////////////////
+// async function initialize() {
+//   await updateTotalTabsCount();
+// }
+// initialize();
+//////////////////////////////////
+
+updateTotalTabsCount();
 
 // TODO:DRY these
 function executeContentScript(
@@ -48,16 +59,41 @@ function executeContentScript(
   });
 }
 
+// async function executeContentScriptOnAllTabs(findValue: string) {
+//   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
+//     chrome.tabs.query({ currentWindow: true }, resolve);
+//   });
+
+//   const activeTabIndex = tabs.findIndex((tab) => tab.active);
+//   const orderedTabs = [
+//     ...tabs.slice(activeTabIndex),
+//     ...tabs.slice(0, activeTabIndex),
+//   ];
+
+//   let foundFirstMatch = false;
+
+//   for (const tab of orderedTabs) {
+//     if (tab.id) {
+//       const { hasMatch, state } = await executeContentScript(findValue, tab);
+
+//       if (hasMatch && !foundFirstMatch) {
+//         foundFirstMatch = true;
+
+//         chrome.tabs.sendMessage(tab.id, {
+//           from: 'background',
+//           type: 'update-highlights',
+//           state: tabStates[tab.id],
+//           prevIndex: undefined,
+//         });
+//       }
+//     }
+//   }
+// }
+
 async function executeContentScriptOnAllTabs(findValue: string) {
   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, resolve);
   });
-
-  // const tabIds = (
-  //   await new Promise<chrome.tabs.Tab[]>((resolve) => {
-  //     chrome.tabs.query({ currentWindow: true }, resolve);
-  //   })
-  // ).map((tab) => tab.id).filter((id) => id !== undefined) as number[];
 
   const activeTabIndex = tabs.findIndex((tab) => tab.active);
   const orderedTabs = [
@@ -65,14 +101,10 @@ async function executeContentScriptOnAllTabs(findValue: string) {
     ...tabs.slice(0, activeTabIndex),
   ];
 
-  // const activeTab = tabs.find((tab) => tab.active);
-  // if (!activeTab || !activeTab.id) return;
-  // const orderedTabs = arrangeTabs(tabs, activeTab.id);
-  // const orderedTabs = await getOrderedTabs();
-
   let foundFirstMatch = false;
+
   for (const tab of orderedTabs) {
-    if (tab.id) {
+    if (tab.id && !foundFirstMatch) {
       const { hasMatch, state } = await executeContentScript(findValue, tab);
 
       if (hasMatch && !foundFirstMatch) {
@@ -84,6 +116,16 @@ async function executeContentScriptOnAllTabs(findValue: string) {
           state: tabStates[tab.id],
           prevIndex: undefined,
         });
+
+        // Process remaining tabs asynchronously
+        const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
+        remainingTabs.forEach((remainingTab) => {
+          if (remainingTab.id) {
+            executeContentScript(findValue, remainingTab);
+          }
+        });
+
+        break;
       }
     }
   }
@@ -165,6 +207,35 @@ async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
   });
 }
 
+async function updateMatchesCount() {
+  const storedTabs = await getAllStoredTabs();
+
+  let totalMatchesCount = 0;
+  for (const tabId in storedTabs) {
+    if (storedTabs.hasOwnProperty(tabId)) {
+      totalMatchesCount += storedTabs[tabId].matchesCount;
+    }
+  }
+  const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
+  // debugger;
+  for (const tabId of tabIds) {
+    chrome.tabs.sendMessage(tabId, {
+      from: 'background',
+      type: 'update-matches-count',
+      payload: {
+        totalMatchesCount,
+      },
+    });
+  }
+}
+
+// 'Match X/Y (Total: Z)';
+async function updateTotalTabsCount() {
+  totalTabs = await new Promise<number>((resolve) => {
+    chrome.tabs.query({ currentWindow: true }, (tabs) => resolve(tabs.length));
+  });
+}
+
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     const { type, payload } = message;
@@ -174,6 +245,7 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches-msg':
         const findValue = message.payload;
         executeContentScriptOnAllTabs(findValue);
+
         return;
       case 'next-match':
       case 'prev-match':
@@ -234,11 +306,13 @@ chrome.runtime.onMessage.addListener(
         const { serializedState2 } = message.payload;
         await setStoredTabs(serializedState2);
 
-        const storedTabs = await getAllStoredTabs();
-
-        // TODO: START HERE => get Match count and send to content scripts to display in overlay
-        // JSON.parse(storedTabs[237549297].matchesObj).length;
-        // debugger;
+        updatedTabsCount++;
+        debugger;
+        if (updatedTabsCount === totalTabs) {
+          debugger;
+          updateMatchesCount();
+          updatedTabsCount = 0; // Reset the count for future updates
+        }
 
         sendResponse({ status: 'success' });
         return;
@@ -296,4 +370,14 @@ chrome.commands.onCommand.addListener((command) => {
       }
     });
   }
+});
+
+// chrome.tabs.onCreated.addListener(updateTotalTabsCount);
+chrome.tabs.onCreated.addListener(() => {
+  updateTotalTabsCount();
+});
+
+// chrome.tabs.onRemoved.addListener(updateTotalTabsCount);
+chrome.tabs.onRemoved.addListener(() => {
+  updateTotalTabsCount();
 });

@@ -8,6 +8,7 @@ export const useOverlayHandler = () => {
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [showMatches, setShowMatches] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [totalMatchesCount, setTotalMatchesCount] = useState<number>(0);
 
   const { sendMessageToBackground } = useSendMessageToBackground();
 
@@ -49,5 +50,7 @@ export const useOverlayHandler = () => {
     setSearchValue,
     showMatches,
     setShowMatches,
+    totalMatchesCount,
+    setTotalMatchesCount,
   };
 };

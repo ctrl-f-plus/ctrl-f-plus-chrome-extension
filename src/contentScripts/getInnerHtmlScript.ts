@@ -17,16 +17,14 @@ import {
   // Set the unique flag to indicate that the content script has been injected
   window.myUniqueExtensionFlag = true;
 
-  // const state = {
-  //   currentIndex: undefined,
-  //   matchesObj: {},
-  //   tabId: undefined,
-  // };
-
   const state2 = {
     currentIndex: undefined,
     matchesObj: [] as string | any[],
     tabId: undefined,
+    tabIndex: undefined,
+    // matchesCount: undefined,
+    matchesCount: undefined,
+    curMatchIndex: undefined,
   };
 
   console.log(new Date().toLocaleString());

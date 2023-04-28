@@ -24,8 +24,12 @@ const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
-  const { searchValue, setSearchValue, toggleSearchOverlay } =
-    useContext(OverlayContext);
+  const {
+    searchValue,
+    setSearchValue,
+    toggleSearchOverlay,
+    totalMatchesCount,
+  } = useContext(OverlayContext);
 
   const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
@@ -98,6 +102,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
           />
           <div className="mx-2 my-auto">
             {/* <p className=" bg-red-500 text-right float-right">1/10000</p> */}
+            <p className=" bg-red-500 text-right float-right">
+              {totalMatchesCount}
+            </p>
           </div>
         </div>
 

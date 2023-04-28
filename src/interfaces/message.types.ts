@@ -51,6 +51,7 @@ export interface MessageFixMe {
   type: string;
   findValue?: string;
   command?: string;
+  payload?: any;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {

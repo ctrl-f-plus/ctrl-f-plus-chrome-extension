@@ -25,6 +25,8 @@ const App: React.FC<{}> = () => {
     setSearchValue,
     showMatches,
     setShowMatches,
+    totalMatchesCount,
+    setTotalMatchesCount,
   } = useContext(OverlayContext);
 
   const handleMessage = (
@@ -57,6 +59,9 @@ const App: React.FC<{}> = () => {
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();
         sendResponse({ success: true });
+        break;
+      case 'update-matches-count':
+        setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
       default:
         if (command) {

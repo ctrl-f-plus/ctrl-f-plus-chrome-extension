@@ -82,9 +82,9 @@ function getAllTextNodesToProcess({
 function processTextNode({
   textNode,
   regex,
-
   matchesObj,
   tabId,
+  state2,
 }: ProcessTextNodeProps) {
   const parent = textNode.parentNode;
   if (!parent) {
@@ -115,6 +115,7 @@ function processTextNode({
     // matches.push(span);
 
     updateMatchesObject({ matchesObj, tabId, span });
+    state2.matchesCount += 1;
     fragment.appendChild(span);
   }
 
@@ -159,7 +160,7 @@ export function searchAndHighlight({
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
 
   textNodesToProcess.forEach((textNode) => {
-    processTextNode({ textNode, regex, matchesObj, tabId });
+    processTextNode({ textNode, regex, matchesObj, tabId, state2 });
   });
 
   callback && callback();

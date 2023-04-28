@@ -10,6 +10,8 @@ export interface OverlayContextData {
   setSearchValue: (value: string) => void;
   showMatches: boolean;
   setShowMatches: React.Dispatch<React.SetStateAction<boolean>>;
+  totalMatchesCount: number;
+  setTotalMatchesCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface OverlayProviderProps {
