@@ -77,6 +77,7 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // TODO: Should run on all stored tabs from given window
       if (e.key === 'Escape' && showOverlay) {
         toggleSearchOverlay(false);
       }

@@ -101,9 +101,8 @@ const SearchInput: React.FC<SearchInputProps> = ({
             placeholder="Find on page"
           />
           <div className="mx-2 my-auto">
-            {/* <p className=" bg-red-500 text-right float-right">1/10000</p> */}
             <p className=" bg-red-500 text-right float-right">
-              {totalMatchesCount}
+              {`X/${totalMatchesCount}`}
             </p>
           </div>
         </div>

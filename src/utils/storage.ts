@@ -1,4 +1,5 @@
 // src/utils/storage.ts
+// TODO:Add window specific storage??
 
 export interface Match {
   innerText: string;

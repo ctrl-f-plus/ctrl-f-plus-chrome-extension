@@ -11,6 +11,7 @@ import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 const tabStates: { [tabId: number]: any } = {};
 let updatedTabsCount = 0;
 let totalTabs = 0;
+let lastFocusedWindowId = null;
 
 //////////////////////////////////
 // async function initialize() {
@@ -18,8 +19,6 @@ let totalTabs = 0;
 // }
 // initialize();
 //////////////////////////////////
-
-updateTotalTabsCount();
 
 // TODO:DRY these
 function executeContentScript(
@@ -58,37 +57,6 @@ function executeContentScript(
     );
   });
 }
-
-// async function executeContentScriptOnAllTabs(findValue: string) {
-//   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
-//     chrome.tabs.query({ currentWindow: true }, resolve);
-//   });
-
-//   const activeTabIndex = tabs.findIndex((tab) => tab.active);
-//   const orderedTabs = [
-//     ...tabs.slice(activeTabIndex),
-//     ...tabs.slice(0, activeTabIndex),
-//   ];
-
-//   let foundFirstMatch = false;
-
-//   for (const tab of orderedTabs) {
-//     if (tab.id) {
-//       const { hasMatch, state } = await executeContentScript(findValue, tab);
-
-//       if (hasMatch && !foundFirstMatch) {
-//         foundFirstMatch = true;
-
-//         chrome.tabs.sendMessage(tab.id, {
-//           from: 'background',
-//           type: 'update-highlights',
-//           state: tabStates[tab.id],
-//           prevIndex: undefined,
-//         });
-//       }
-//     }
-//   }
-// }
 
 async function executeContentScriptOnAllTabs(findValue: string) {
   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
@@ -181,19 +149,6 @@ async function switchTab(serializedState2) {
   });
 }
 
-// Utility function to rearrange the tabs
-// function arrangeTabs(tabs: chrome.tabs.Tab[], activeTabId: number) {
-// function arrangeTabs(tabIds: number[], activeTabId: number): number[] {
-//   debugger;
-//   const activeTabIndex = tabIds.indexOf(activeTabId);
-//   const orderedTabIds = [
-//     ...tabIds.slice(activeTabIndex + 1),
-//     ...tabIds.slice(0, activeTabIndex),
-//   ];
-//   // return orderedTabs;
-//   return orderedTabIds;
-// }
-
 async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
   return new Promise<chrome.tabs.Tab[]>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -217,7 +172,7 @@ async function updateMatchesCount() {
     }
   }
   const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
-  // debugger;
+
   for (const tabId of tabIds) {
     chrome.tabs.sendMessage(tabId, {
       from: 'background',
@@ -240,8 +195,8 @@ chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     const { type, payload } = message;
 
-    // Receive message from SearchInput component
     switch (type) {
+      // Receive message from SearchInput component
       case 'get-all-matches-msg':
         const findValue = message.payload;
         executeContentScriptOnAllTabs(findValue);
@@ -307,9 +262,8 @@ chrome.runtime.onMessage.addListener(
         await setStoredTabs(serializedState2);
 
         updatedTabsCount++;
-        debugger;
+
         if (updatedTabsCount === totalTabs) {
-          debugger;
           updateMatchesCount();
           updatedTabsCount = 0; // Reset the count for future updates
         }
@@ -341,6 +295,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // });
 
   const message1: SwitchedActiveTabShowOverlay = {
+    // TODO:reset currentIndex so that when you hit next on the new tab it highlights the first match on that page
     from: 'background',
     type: 'switched-active-tab-show-overlay',
   };
@@ -380,4 +335,20 @@ chrome.tabs.onCreated.addListener(() => {
 // chrome.tabs.onRemoved.addListener(updateTotalTabsCount);
 chrome.tabs.onRemoved.addListener(() => {
   updateTotalTabsCount();
+});
+
+chrome.windows.onFocusChanged.addListener(async (windowId) => {
+  const focusedWindow = await new Promise<chrome.windows.Window>((resolve) => {
+    chrome.windows.get(windowId, resolve);
+  });
+
+  if (
+    lastFocusedWindowId !== windowId &&
+    (focusedWindow as chrome.windows.Window).type === 'normal'
+  ) {
+    updateTotalTabsCount();
+    updatedTabsCount = 0;
+  }
+
+  lastFocusedWindowId = windowId;
 });

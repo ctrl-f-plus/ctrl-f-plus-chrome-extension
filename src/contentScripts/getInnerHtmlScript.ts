@@ -22,14 +22,12 @@ import {
     matchesObj: [] as string | any[],
     tabId: undefined,
     tabIndex: undefined,
-    // matchesCount: undefined,
     matchesCount: undefined,
     curMatchIndex: undefined,
   };
 
   console.log(new Date().toLocaleString());
 
-  // console.log('Received message:', message, 'Message ID:', message.messageId);
   chrome.runtime.onMessage.addListener(
     async (message, sender, sendResponse) => {
       console.log("Rec'd msg:", message);
