@@ -2,13 +2,21 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import '../tailwind.css';
+// import './popup.css';
+import SearchInput from '../components/SearchInput';
 
 const App: React.FC<{}> = () => {
   return (
-    <div>
+    <>
       <h1>Popup!</h1>
-    </div>
+
+      <div id="cntrl-f-extension" className="">
+        <div className="">
+          <SearchInput />
+        </div>
+      </div>
+    </>
   );
 };
 

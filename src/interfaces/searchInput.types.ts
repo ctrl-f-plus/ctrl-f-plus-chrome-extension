@@ -1,3 +1,3 @@
 export interface SearchInputProps {
-  focus: boolean;
+  focus?: boolean;
 }
