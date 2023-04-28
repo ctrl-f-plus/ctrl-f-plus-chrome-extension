@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';

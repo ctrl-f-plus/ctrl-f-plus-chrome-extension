@@ -1,3 +1,4 @@
+//@ts-nocheck
 // src/components/DraggableModal.tsx
 
 import React, { useEffect, useState } from 'react';

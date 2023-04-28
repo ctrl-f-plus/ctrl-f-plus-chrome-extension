@@ -1,5 +1,6 @@
-- the `cntrl-shift-f` keyboard command doesn't work if caps lock is on
-- Add test code:
+//@ts-nocheck
+
+  Add test code:
     - ```js
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { type: 'get-all-matches-req' });
@@ -12,71 +13,8 @@
     - : https://stackoverflow.com/questions/48104433/how-to-import-es6-modules-in-content-script-for-chrome-extension
 
 
-- Review this code:
-```ts
-function handleMessage(message, sender, sendResponse) {
-  const { from, type } = message;
-
-  switch (type) {
-    case 'highlight':
-      if (from === 'background') {
-        state.tabId = message.tabId;
-        findAllMatches(state, message.findValue);
-      }
-      break;
-    case 'get-all-matches-req':
-      break;
-    case 'next-match':
-      handleNextMatch(sendResponse);
-      break;
-    case 'prev-match':
-      previousMatch(state);
-      break;
-    case 'remove_styles':
-      removeStyles(injectedStyle);
-      break;
-    default:
-      break;
-  }
-}
-
-function handleNextMatch(sendResponse) {
-  console.log('getInnerHtmlScript - next-match');
-
-  if (state.matches.length > 0) {
-    nextMatch(state);
-    sendResponse({ hasMatch: true, tabId: state.tabId });
-  } else {
-    sendResponse({ hasMatch: false, tabId: state.tabId });
-  }
-}
-
-chrome.runtime.onMessage.addListener(handleMessage);
-```
-
-
-- Potentially change the serialization of storage objects:
-```ts
-function deserializeMatchesObj(serializedMatchesObj) {
-  const deserializedMatchesObj = {};
-
-  for (const key in serializedMatchesObj) {
-    deserializedMatchesObj[key] = serializedMatchesObj[key].map(
-      (serializedEl) => {
-        const el = document.createElement('div');
-        el.innerText = serializedEl.innerText;
-        el.className = serializedEl.className;
-        el.id = serializedEl.id;
-        return el;
-      }
-    );
-  }
-
-  return deserializedMatchesObj;
-}
-```
-
 - check if you need all of the imported fontawesome icon packages
+
 - Analyze runtime performance: https://developer.chrome.com/docs/devtools/performance/
 
 - https://betterprogramming.pub/building-chrome-extensions-communicating-between-scripts-75e1dbf12bb7
@@ -99,8 +37,6 @@ INSPO FOR PROMO MATERIALS TOO:
 - Look at some boilerplates and make sure everything is organized and designed well
     - https://github.com/lxieyang/chrome-extension-boilerplate-react
 
-- Try React-Icons instead of fontawesome. Also remove unnecesary fontawesome libs
-    - https://react-icons.github.io/react-icons/search?q=angle
 
 - Look into opmtimizing the search algorithm:
     - https://dev.to/akhilpokle/the-algorithm-behind-ctrl-f-3hgh
@@ -119,9 +55,6 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 - FIX: if you have two tabs and you search, but then you close one or move it to its own window, then the next feature doestn' cycle back to the beginning (first match) properly.
 
-- FIX: if the current tab does not have any matches, then we should move to the first tab that does
 
-- FIX: if intermediary tab doesn't have match, then matching stops. ex:
-    - Tab1 has matches, tab2 has NO matches, Tab3 has matches: only tab1's matches are found
 - Fix: if findValue === ' '
     - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com

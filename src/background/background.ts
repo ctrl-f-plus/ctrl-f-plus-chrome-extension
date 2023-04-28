@@ -1,3 +1,4 @@
+//@ts-nocheck
 // src/background/background.ts
 
 import {

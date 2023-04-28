@@ -8,15 +8,6 @@ import {
   updateHighlights,
 } from '../utils/matchUtils';
 
-// (function () {
-// if (window.myUniqueExtensionFlag) {
-//   console.log('Content script already injected. Exiting...');
-//   return;
-// }
-
-// // Set the unique flag to indicate that the content script has been injected
-// window.myUniqueExtensionFlag = true;
-
 const state2 = {
   currentIndex: undefined,
   matchesObj: [] as string | any[],
@@ -29,8 +20,6 @@ const state2 = {
 console.log(new Date().toLocaleString());
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  // console.log("Rec'd msg:", message);
-
   const { from, type, findValue, tabId, messageId } = message;
 
   switch (`${from}:${type}`) {

@@ -8,9 +8,9 @@
     "esModuleInterop": true,
 
     // "lib": ["dom", "es2017"],
-    // "lib": ["dom", "es2019"],
-    "lib": ["dom", "dom.iterable", "esnext"],
-    // "strict": true,
+    "lib": ["dom", "es2019"],
+    // "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": true,
     "sourceMap": true
   },
   "exclude": ["node_modules", ".tmp"]

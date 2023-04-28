@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 import { store } from '../background/background';
 import {
@@ -69,6 +70,10 @@ export async function executeContentScriptOnAllTabs(findValue: string) {
           state: store.tabStates[tab.id],
           prevIndex: undefined,
         });
+
+        if (tabs[activeTabIndex].id !== tab.id) {
+          chrome.tabs.update(tab.id, { active: true });
+        }
 
         // Process remaining tabs asynchronously
         const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);

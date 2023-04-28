@@ -1,5 +1,15 @@
 {
-  "tabStates": {
+  "globalMatchIdx": 0,
+  "totalMatchesCount": 3,
+  "findValue/searchValue": "ben",
+  "lastFocusedWindowId": x,
+  "updatedTabsCount": 0,
+  "totalTabs": 0,
+  "activeTab": 237548747,
+  "overlayPosition": { "x": 0, "y": 0 },
+  "showOverlay": true,
+  "showMatches": true,
+    "tabStates": {
     "237548747": {
       "tabId": 237548747,
       "active": true,
@@ -24,14 +34,4 @@
       ]
     }
   },
-  "globalMatchIdx": 0,
-  "totalMatchesCount": 3,
-  "findValue/searchValue": "ben",
-  "lastFocusedWindowId": x,
-  "updatedTabsCount": 0,
-  "totalTabs": 0,
-  "activeTab": 237548747,
-  "overlayPosition": { "x": 0, "y": 0 },
-  "showOverlay": true,
-  "showMatches": true
 }

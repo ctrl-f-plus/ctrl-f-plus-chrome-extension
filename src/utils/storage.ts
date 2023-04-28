@@ -1,3 +1,4 @@
+//@ts-nocheck
 // src/utils/storage.ts
 // TODO:Add window specific storage??
 
