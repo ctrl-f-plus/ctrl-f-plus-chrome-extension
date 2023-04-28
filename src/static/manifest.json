@@ -35,7 +35,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js", "getInnerHtmlScript.js", "contentStyles.js"],
+      "js": ["contentScript.js", "getInnerHtmlScript.js"],
       "run_at": "document_idle"
     }
   ],

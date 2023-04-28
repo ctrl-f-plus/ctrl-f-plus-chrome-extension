@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { OverlayContext, OverlayProvider } from '../contexts/OverlaytContext';
-// import { TabProvider } from '../contexts/TabContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../interfaces/message.types';
 import '../tailwind.css';
@@ -40,12 +39,9 @@ const App: React.FC<{}> = () => {
 
     switch (type) {
       case 'switched-active-tab-show-overlay':
-        // TODO:(*99) Alternatively, you can update toggleSearchOverlay() to take an optional argument: toggleSearchOverlay(true)
-        // toggleSearchOverlay(true);
         showMatches && setShowOverlay(true);
         break;
       case 'switched-active-tab-hide-overlay':
-        // toggleSearchOverlay(false);
         showMatches && setShowOverlay(false);
         break;
       case 'remove-styles':
@@ -114,9 +110,7 @@ document.body.appendChild(root);
 ReactDOM.render(
   <React.StrictMode>
     <OverlayProvider>
-      {/* <TabProvider> */}
       <App />
-      {/* </TabProvider> */}
     </OverlayProvider>
   </React.StrictMode>,
   root
