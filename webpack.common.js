@@ -65,9 +65,7 @@ module.exports = {
   optimization: {
     splitChunks: {
       chunks(chunk) {
-        return (
-          chunk.name !== 'contentScript' && chunk.name !== 'getInnerHtmlScript'
-        );
+        return chunk.name !== 'contentScript';
       },
     },
   },

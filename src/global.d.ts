@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    myUniqueExtensionFlag?: boolean;
+    // myUniqueExtensionFlag?: boolean;
     // requestIdleCallback: (callback: () => void) => void;
 
     find: (
