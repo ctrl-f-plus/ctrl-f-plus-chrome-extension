@@ -21,7 +21,6 @@ const App: React.FC<{}> = () => {
     setShowOverlay,
     toggleSearchOverlay,
     searchValue,
-    setSearchValue,
     showMatches,
     setShowMatches,
     totalMatchesCount,
@@ -93,10 +92,7 @@ const App: React.FC<{}> = () => {
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
             <Layover>
-              <SearchInput
-                focus={showOverlay}
-                onSearchValueChange={setSearchValue}
-              />
+              <SearchInput focus={showOverlay} />
             </Layover>
           </div>
         </div>

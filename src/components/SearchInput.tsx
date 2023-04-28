@@ -18,10 +18,7 @@ import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 
-const SearchInput: React.FC<SearchInputProps> = ({
-  focus,
-  onSearchValueChange,
-}) => {
+const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
   const {
@@ -43,11 +40,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
 
-      // if (storedFindValue !== findValue && TODO: NOTHING IS HIGHLIGHTED/NO MATCHES EXIST) {
       handleSearch(findValue);
-      // } else {
-      // handleNext();
-      // }
     }
   };
 
@@ -56,13 +49,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
     setSearchValue(newValue);
     setInitialLoad(false);
-    // TODO: check if you still need onSearchValueChange() and compare to setSearchValue():
-    onSearchValueChange(newValue);
   };
-
-  useEffect(() => {
-    onSearchValueChange(searchValue);
-  }, [searchValue, onSearchValueChange]);
 
   useEffect(() => {
     if (focus && searchInputRef.current) {
