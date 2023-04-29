@@ -28,7 +28,6 @@ chrome.runtime.onMessage.addListener(
         const findValue: string = message.payload;
         executeContentScriptOnAllTabs(findValue, store);
 
-        // console.log(store);
         return;
       case 'next-match':
       case 'prev-match':
@@ -43,21 +42,19 @@ chrome.runtime.onMessage.addListener(
 
           if (response.status === 'success') {
             const currentIndex = response.serializedState2.currentIndex;
-            // debugger;
-            // TODO: globalMatchIdx is wrong on switchTab. it is using the old tab globalMatchIdxStart
+
             updateStore(store, {
               globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
               tabStates: {
                 ...store.tabStates,
                 [sender.tab.id]: {
-                  ...tabState, // Spread existing tabState properties
+                  ...tabState,
                   currentIndex,
                 },
               },
             });
           }
         }
-        // console.log(store);
         return;
       case 'remove-styles-all-tabs':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -107,7 +104,6 @@ chrome.runtime.onMessage.addListener(
         });
         break;
       case 'switch-tab':
-        // switchTab(message.serializedState2);
         await switchTab(message.serializedState2);
         console.log(store);
         return;

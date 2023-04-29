@@ -2,11 +2,10 @@
 
 import {
   CreateHighlightSpanProps,
-  UpdateMatchesObjectProps,
   GetAllTextNodesToProcessProps,
   ProcessTextNodeProps,
   SearchAndHighlightProps,
-  MatchesObject,
+  UpdateMatchesObjectProps,
 } from '../interfaces/searchAndHighlight.types';
 
 function isVisible(node: Node): boolean {
