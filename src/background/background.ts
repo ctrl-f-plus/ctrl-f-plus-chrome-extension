@@ -1,4 +1,3 @@
-//@ts-nocheck
 // src/background/background.ts
 
 import {
@@ -15,18 +14,9 @@ import {
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
 import { setStoredTabs } from '../utils/storage';
+import { initStore, updateStore } from './store';
 
-// const tabStates: { [tabId: number]: any } = {};
-// let store.updatedTabsCount = 0;
-// // let totalTabs = 0;
-// let lastFocusedWindowId = null;
-
-export const store = {
-  tabStates: {},
-  updatedTabsCount: 0,
-  totalTabs: 0,
-  lastFocusedWindowId: null,
-};
+export const store = initStore();
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
@@ -35,14 +25,15 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       // Receive message from SearchInput component
       case 'get-all-matches-msg':
-        const findValue = message.payload;
-        executeContentScriptOnAllTabs(findValue);
-
+        const findValue: string = message.payload;
+        executeContentScriptOnAllTabs(findValue, store);
         return;
       case 'next-match':
       case 'prev-match':
         // ***2
-        executeContentScriptWithMessage(sender.tab.id, message.type);
+        if (sender.tab && sender.tab.id) {
+          executeContentScriptWithMessage(sender.tab.id, message.type);
+        }
         return;
       case 'remove-styles-all-tabs':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {

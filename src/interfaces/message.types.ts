@@ -11,7 +11,7 @@ export interface BaseMessage {
 export interface GetAllMatchesMessage extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
-  payload?: string;
+  payload: string;
 }
 
 export interface NextMatchMessage extends BaseMessage {
@@ -82,7 +82,7 @@ export interface UpdateHighlightsMessage extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
   state: any; // Replace 'any' with the actual type of the 'state' object
-  prevIndex: number;
+  prevIndex: number | undefined;
 }
 export interface SwitchedActiveTabShowOverlay extends BaseMessage {
   from: 'background';

@@ -9,21 +9,22 @@ import {
 } from '../utils/matchUtils';
 
 const state2 = {
-  currentIndex: undefined,
-  matchesObj: [] as string | any[],
   tabId: undefined,
-  tabIndex: undefined,
+
+  currentIndex: undefined,
+  // tabIndex: undefined,
   matchesCount: undefined,
-  curMatchIndex: undefined,
+  matchesObj: [] as string | any[],
 };
 
 console.log(new Date().toLocaleString());
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  const { from, type, findValue, tabId, messageId } = message;
+  const { from, type, findValue, tabId, tabState } = message;
 
   switch (`${from}:${type}`) {
     case 'background:highlight':
+      debugger;
       state2.tabId = message.tabId;
 
       await findAllMatches(state2, findValue);
@@ -35,6 +36,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         serializedState2.matchesObj
       );
 
+      debugger;
       sendResponse({
         hasMatch: state2.matchesObj.length > 0,
         serializedState2: serializedState2,

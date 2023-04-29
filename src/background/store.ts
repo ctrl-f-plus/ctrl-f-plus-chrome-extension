@@ -1,4 +1,6 @@
-interface Store {
+// src/background/store.ts
+
+export interface Store {
   globalMatchIdx: number;
   totalMatchesCount: number;
   findValue: string;
@@ -9,9 +11,9 @@ interface Store {
   overlayPosition: { x: number; y: number };
   showOverlay: boolean;
   showMatches: boolean;
-  tabStates?: {
+  tabStates: {
     [tabId: number]: {
-      tabId: chrome.tabs.Tab['id'];
+      tabId: chrome.tabs.Tab['id'] | undefined;
       active: boolean;
       currentIndex: number;
       matchesCount: number;
@@ -38,13 +40,18 @@ export function initStore() {
   return store;
 }
 
-export function updateStore(store: Store, updates: Partial<Store>): Store {
-  return {
-    ...store,
-    ...updates,
-    tabStates: {
-      ...store.tabStates,
-      ...updates.tabStates,
-    },
-  };
+export function updateStore(store: Store, updates: Partial<Store>): void {
+  Object.assign(store, updates);
+
+  if (updates.tabStates) {
+    for (const tabId in updates.tabStates) {
+      if (updates.tabStates.hasOwnProperty(tabId)) {
+        if (!store.tabStates[tabId]) {
+          store.tabStates[tabId] = updates.tabStates[tabId];
+        } else {
+          Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);
+        }
+      }
+    }
+  }
 }
