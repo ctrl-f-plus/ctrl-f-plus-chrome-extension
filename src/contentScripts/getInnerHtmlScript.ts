@@ -21,22 +21,24 @@ console.log(new Date().toLocaleString());
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const { from, type, findValue, tabId, tabState } = message;
+  let serializedState2; // = { ...state2 };
 
   switch (`${from}:${type}`) {
     case 'background:highlight':
-      debugger;
+      // debugger;
       state2.tabId = message.tabId;
 
       await findAllMatches(state2, findValue);
 
       // TODO: DRY
-      const serializedState2 = { ...state2 };
+      // const serializedState2 = { ...state2 };
+      serializedState2 = { ...state2 };
 
       serializedState2.matchesObj = serializeMatchesObj(
         serializedState2.matchesObj
       );
 
-      debugger;
+      // debugger;
       sendResponse({
         hasMatch: state2.matchesObj.length > 0,
         serializedState2: serializedState2,
@@ -44,8 +46,20 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       return true;
     case 'background:next-match':
-      if (state2.matchesObj.length > 0) nextMatch(state2);
-      break;
+      if (state2.matchesObj.length > 0) await nextMatch(state2);
+
+      // TODO: DRY
+      serializedState2 = { ...state2 };
+      serializedState2.matchesObj = serializeMatchesObj(
+        serializedState2.matchesObj
+      );
+
+      sendResponse({
+        serializedState2: serializedState2,
+        status: 'success',
+      });
+
+      return true;
     case 'background:prev-match':
       previousMatch(state2);
       break;

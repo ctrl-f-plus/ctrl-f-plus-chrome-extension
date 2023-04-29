@@ -27,14 +27,37 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches-msg':
         const findValue: string = message.payload;
         executeContentScriptOnAllTabs(findValue, store);
-        console.log(store);
+
+        // console.log(store);
         return;
       case 'next-match':
       case 'prev-match':
         // ***2
         if (sender.tab && sender.tab.id) {
-          executeContentScriptWithMessage(sender.tab.id, message.type);
+          const response = await executeContentScriptWithMessage(
+            sender.tab.id,
+            message.type
+          );
+
+          const tabState = store.tabStates[sender.tab.id];
+
+          if (response.status === 'success') {
+            const currentIndex = response.serializedState2.currentIndex;
+            // debugger;
+            // TODO: globalMatchIdx is wrong on switchTab. it is using the old tab globalMatchIdxStart
+            updateStore(store, {
+              globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+              tabStates: {
+                ...store.tabStates,
+                [sender.tab.id]: {
+                  ...tabState, // Spread existing tabState properties
+                  currentIndex,
+                },
+              },
+            });
+          }
         }
+        // console.log(store);
         return;
       case 'remove-styles-all-tabs':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -84,7 +107,9 @@ chrome.runtime.onMessage.addListener(
         });
         break;
       case 'switch-tab':
-        switchTab(message.serializedState2);
+        // switchTab(message.serializedState2);
+        await switchTab(message.serializedState2);
+        console.log(store);
         return;
       case 'update-tab-states-obj':
         const { serializedState2 } = message.payload;
@@ -110,8 +135,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // const storedTabs = await getAllStoredTabs();
   // const matchesObject = storedTabs;
   // const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-
-  // debugger;
 
   // const orderedTabs = arrangeTabs(tabs, tabId);
   // const orderedTabIds = arrangeTabs(tabIds, tabId);
@@ -166,18 +189,19 @@ chrome.tabs.onRemoved.addListener(() => {
   updateTotalTabsCount();
 });
 
-chrome.windows.onFocusChanged.addListener(async (windowId) => {
-  const focusedWindow = await new Promise<chrome.windows.Window>((resolve) => {
-    chrome.windows.get(windowId, resolve);
-  });
+// TODO: KEEP, but fix errors
+// chrome.windows.onFocusChanged.addListener(async (windowId) => {
+//   const focusedWindow = await new Promise<chrome.windows.Window>((resolve) => {
+//     chrome.windows.get(windowId, resolve);
+//   });
 
-  if (
-    store.lastFocusedWindowId !== windowId &&
-    (focusedWindow as chrome.windows.Window).type === 'normal'
-  ) {
-    updateTotalTabsCount();
-    store.updatedTabsCount = 0;
-  }
+//   if (
+//     store.lastFocusedWindowId !== windowId &&
+//     (focusedWindow as chrome.windows.Window).type === 'normal'
+//   ) {
+//     updateTotalTabsCount();
+//     store.updatedTabsCount = 0;
+//   }
 
-  store.lastFocusedWindowId = windowId;
-});
+//   store.lastFocusedWindowId = windowId;
+// });

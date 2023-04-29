@@ -18,6 +18,7 @@ export interface Store {
       currentIndex: number;
       matchesCount: number;
       serializedMatches: string;
+      globalMatchIdxStart: number;
     };
   };
 }
@@ -43,6 +44,8 @@ export function initStore() {
 export function updateStore(store: Store, updates: Partial<Store>): void {
   Object.assign(store, updates);
 
+  // debugger;
+
   if (updates.tabStates) {
     for (const tabId in updates.tabStates) {
       if (updates.tabStates.hasOwnProperty(tabId)) {
@@ -55,9 +58,6 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
     }
   }
 }
-
-
-
 
 // store: The current store object, which holds the state of your application.
 // updates: An object containing updates to the store. It has the same structure as the Store type, but its properties are optional, allowing you to update only the properties you need.

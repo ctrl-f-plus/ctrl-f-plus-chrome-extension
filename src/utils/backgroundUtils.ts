@@ -43,8 +43,10 @@ function executeContentScript(
           const { tabId, currentIndex, matchesCount } =
             response.serializedState2;
 
+          // debugger;
+
           if (typeof tab.id === 'number') {
-            await updateStore(store, {
+            updateStore(store, {
               totalMatchesCount: store.totalMatchesCount + matchesCount,
               tabStates: {
                 ...store.tabStates,
@@ -54,6 +56,7 @@ function executeContentScript(
                   currentIndex,
                   matchesCount,
                   serializedMatches: response.serializedState2.matchesObj,
+                  globalMatchIdxStart: store.totalMatchesCount,
                 },
               },
             });
@@ -128,12 +131,26 @@ export async function executeContentScriptOnAllTabs(
 export function executeContentScriptWithMessage(
   tabId: number,
   messageType: string
-) {
-  // ***2.5
-  chrome.tabs.sendMessage(tabId, {
-    from: 'background',
-    type: messageType,
-    tabId,
+): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // ***2.5
+    chrome.tabs.sendMessage(
+      tabId,
+      {
+        from: 'background',
+        type: messageType,
+        tabId,
+      },
+      (response) => {
+        // if (chrome.runtime.lastError) {
+        //   console.log(chrome.runtime.lastError);
+        //   reject(chrome.runtime.lastError);
+        // } else {
+        //   resolve(response);
+        // }
+        resolve(response);
+      }
+    );
   });
 }
 
@@ -181,6 +198,10 @@ export async function switchTab(serializedState2: any) {
       type: 'switched-active-tab-show-overlay',
     };
     chrome.tabs.sendMessage(tab.id, message2);
+
+    updateStore(store, {
+      globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
+    });
   });
 }
 
