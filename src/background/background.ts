@@ -27,6 +27,7 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches-msg':
         const findValue: string = message.payload;
         executeContentScriptOnAllTabs(findValue, store);
+        console.log(store);
         return;
       case 'next-match':
       case 'prev-match':

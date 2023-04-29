@@ -45,6 +45,7 @@ function executeContentScript(
 
           if (typeof tab.id === 'number') {
             await updateStore(store, {
+              totalMatchesCount: store.totalMatchesCount + matchesCount,
               tabStates: {
                 ...store.tabStates,
                 [tabId]: {
@@ -72,13 +73,11 @@ export async function executeContentScriptOnAllTabs(
   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, resolve);
   });
-
   const activeTabIndex = tabs.findIndex((tab) => tab.active);
   const orderedTabs = [
     ...tabs.slice(activeTabIndex),
     ...tabs.slice(0, activeTabIndex),
   ];
-
   let foundFirstMatch = false;
 
   for (const tab of orderedTabs) {
@@ -101,7 +100,16 @@ export async function executeContentScriptOnAllTabs(
 
         if (tabs[activeTabIndex].id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
+          // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
+
+        // TODO: review placement of this
+        await updateStore(store, {
+          findValue,
+          activeTab: tab,
+          showOverlay: true,
+          showMatches: true,
+        });
 
         // Process remaining tabs asynchronously
         const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);

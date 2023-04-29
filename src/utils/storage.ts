@@ -120,7 +120,7 @@ export function getStoredTab(tabId): Promise<any> {
 }
 
 export function setStoredTabs(serializedState2: any): Promise<void> {
-  console.log(`setStoredTabs(): `, serializedState2);
+  // console.log(`setStoredTabs(): `, serializedState2);
   // const vals: LocalStorage = { tabs };
   return new Promise((resolve, reject) => {
     const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
