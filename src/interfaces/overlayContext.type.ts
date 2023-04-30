@@ -12,6 +12,8 @@ export interface OverlayContextData {
   setShowMatches: React.Dispatch<React.SetStateAction<boolean>>;
   totalMatchesCount: number;
   setTotalMatchesCount: React.Dispatch<React.SetStateAction<number>>;
+  globalMatchIdx: number;
+  setglobalMatchIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface OverlayProviderProps {

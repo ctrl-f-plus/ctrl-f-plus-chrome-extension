@@ -118,7 +118,7 @@ chrome.runtime.onMessage.addListener(
         break;
       case 'switch-tab':
         await switchTab(message.serializedState2);
-        console.log(store);
+
         return;
       case 'update-tab-states-obj':
         const { serializedState2 } = message.payload;

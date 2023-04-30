@@ -21,12 +21,17 @@ import { useSearchHandler } from '../hooks/useSearchHandler';
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
+
   const {
     searchValue,
     setSearchValue,
     toggleSearchOverlay,
     totalMatchesCount,
+    globalMatchIdx,
   } = useContext(OverlayContext);
+  const [matchingCounts, setMatchingCounts] = useState(
+    `${globalMatchIdx}/${totalMatchesCount}`
+  );
 
   const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
@@ -71,6 +76,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     fetchStoredFindValue();
   }, []);
 
+  useEffect(() => {
+    setMatchingCounts(`${globalMatchIdx}/${totalMatchesCount}`);
+  }, [globalMatchIdx, totalMatchesCount]);
+
   return (
     <>
       {' '}
@@ -88,9 +97,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
             placeholder="Find on page"
           />
           <div className="mx-2 my-auto">
-            <p className=" bg-red-500 text-right float-right">
-              {`X/${totalMatchesCount}`}
-            </p>
+            <p className="text-right float-right">{matchingCounts}</p>
           </div>
         </div>
 

@@ -18,6 +18,8 @@ export const OverlayContext = createContext<OverlayContextData>({
   setShowMatches: () => {},
   totalMatchesCount: 0,
   setTotalMatchesCount: () => {},
+  globalMatchIdx: 0,
+  setglobalMatchIdx: () => {},
 });
 
 export const OverlayProvider: React.FC<OverlayProviderProps> = ({
@@ -33,6 +35,8 @@ export const OverlayProvider: React.FC<OverlayProviderProps> = ({
     setShowMatches,
     totalMatchesCount,
     setTotalMatchesCount,
+    globalMatchIdx,
+    setglobalMatchIdx,
   } = useOverlayHandler();
 
   return (
@@ -47,6 +51,8 @@ export const OverlayProvider: React.FC<OverlayProviderProps> = ({
         setShowMatches,
         totalMatchesCount,
         setTotalMatchesCount,
+        globalMatchIdx,
+        setglobalMatchIdx,
       }}
     >
       {children}

@@ -25,6 +25,8 @@ const App: React.FC<{}> = () => {
     setShowMatches,
     totalMatchesCount,
     setTotalMatchesCount,
+    globalMatchIdx,
+    setglobalMatchIdx,
   } = useContext(OverlayContext);
 
   const handleMessage = (
@@ -57,6 +59,13 @@ const App: React.FC<{}> = () => {
         break;
       case 'update-matches-count':
         setTotalMatchesCount(message.payload.totalMatchesCount);
+        break;
+      case 'store-updated':
+        const { store, tabState } = message.payload;
+        debugger;
+
+        setTotalMatchesCount(store.totalMatchesCount);
+        setglobalMatchIdx(store.globalMatchIdx + 1);
         break;
       default:
         if (command) {

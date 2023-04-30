@@ -58,3 +58,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 - Fix: if findValue === ' '
     - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com
+
+- FIX: restore highlights if single tab reloaded

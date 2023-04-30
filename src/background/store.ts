@@ -57,6 +57,21 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
       }
     }
   }
+  // debugger;
+  const tabIds = Object.keys(store.tabStates).map((key) => parseInt(key, 10));
+
+  for (const tabId of tabIds) {
+    const tabState = store.tabStates[tabId];
+    // FIXME: the payload is redundant
+    chrome.tabs.sendMessage(tabId, {
+      from: 'store',
+      type: 'store-updated',
+      payload: {
+        store,
+        tabState,
+      },
+    });
+  }
 }
 
 // store: The current store object, which holds the state of your application.
