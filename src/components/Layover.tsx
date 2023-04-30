@@ -9,6 +9,7 @@ interface LayoverProps {
 }
 
 const Layover: React.FC<LayoverProps> = ({ children }) => {
+  const nodeRef = React.useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -27,8 +28,8 @@ const Layover: React.FC<LayoverProps> = ({ children }) => {
   };
 
   return (
-    <Draggable position={position} onStop={handleDragStop}>
-      <div className="absolute w-[434px] rounded-lg cursor-move">
+    <Draggable nodeRef={nodeRef} position={position} onStop={handleDragStop}>
+      <div className="absolute w-[434px] rounded-lg cursor-move" ref={nodeRef}>
         {children}
       </div>
     </Draggable>
