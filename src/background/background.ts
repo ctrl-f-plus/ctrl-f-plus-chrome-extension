@@ -66,6 +66,12 @@ chrome.runtime.onMessage.addListener(
           });
         });
 
+        updateStore(store, {
+          showOverlay: false,
+          showMatches: false,
+        });
+
+        console.log(store);
         return;
       case 'add-styles-all-tabs':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -76,6 +82,12 @@ chrome.runtime.onMessage.addListener(
           });
         });
 
+        updateStore(store, {
+          showOverlay: true,
+          showMatches: true,
+        });
+
+        console.log(store);
         return;
       case 'remove-all-highlight-matches':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -178,7 +190,6 @@ chrome.commands.onCommand.addListener((command) => {
 
 // chrome.tabs.onCreated.addListener(updateTotalTabsCount);
 chrome.tabs.onCreated.addListener(() => {
-  console.log('test');
   updateTotalTabsCount(store);
 });
 
