@@ -131,7 +131,6 @@ export function setStoredTabs(serializedState2: any): Promise<void> {
       !matchesObj ||
       !matchesCount
     ) {
-      // debugger;
       reject(new Error('Invalid tab storage object'));
       return;
     }

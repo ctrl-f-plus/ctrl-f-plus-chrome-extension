@@ -62,10 +62,11 @@ const App: React.FC<{}> = () => {
         break;
       case 'store-updated':
         const { store, tabState } = message.payload;
-        debugger;
 
         setTotalMatchesCount(store.totalMatchesCount);
         setglobalMatchIdx(store.globalMatchIdx + 1);
+        setShowOverlay(store.showOverlay);
+        setShowMatches(store.showMatches);
         break;
       default:
         if (command) {

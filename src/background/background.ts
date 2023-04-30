@@ -14,7 +14,7 @@ import {
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
 import { setStoredTabs } from '../utils/storage';
-import { initStore, updateStore } from './store';
+import { initStore, resetStore, updateStore } from './store';
 
 export const store = initStore();
 
@@ -25,6 +25,7 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       // Receive message from SearchInput component
       case 'get-all-matches-msg':
+        resetStore(store);
         const findValue: string = message.payload;
         executeContentScriptOnAllTabs(findValue, store);
 
@@ -119,6 +120,7 @@ chrome.runtime.onMessage.addListener(
       case 'switch-tab':
         await switchTab(message.serializedState2);
 
+        // TODO: NEED TO FIX THIS SO THAT STATE ISN'T UPDATED UNTIL AFTER THIS IS DONE. Currently it updates after next-match is finished and then updates again here, in switch-tab
         return;
       case 'update-tab-states-obj':
         const { serializedState2 } = message.payload;

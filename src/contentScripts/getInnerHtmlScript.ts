@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
   switch (`${from}:${type}`) {
     case 'background:highlight':
-      // debugger;
       state2.tabId = message.tabId;
 
       await findAllMatches(state2, findValue);
@@ -38,7 +37,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         serializedState2.matchesObj
       );
 
-      // debugger;
       sendResponse({
         hasMatch: state2.matchesObj.length > 0,
         serializedState2: serializedState2,

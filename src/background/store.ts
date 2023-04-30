@@ -41,10 +41,13 @@ export function initStore() {
   return store;
 }
 
+export function resetStore(store: Store): void {
+  const initialState = initStore();
+  updateStore(store, initialState);
+}
+
 export function updateStore(store: Store, updates: Partial<Store>): void {
   Object.assign(store, updates);
-
-  // debugger;
 
   if (updates.tabStates) {
     for (const tabId in updates.tabStates) {
@@ -57,7 +60,7 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
       }
     }
   }
-  // debugger;
+
   const tabIds = Object.keys(store.tabStates).map((key) => parseInt(key, 10));
 
   for (const tabId of tabIds) {
