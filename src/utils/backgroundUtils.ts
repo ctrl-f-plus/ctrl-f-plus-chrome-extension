@@ -43,8 +43,6 @@ function executeContentScript(
           const { tabId, currentIndex, matchesCount } =
             response.serializedState2;
 
-          // debugger;
-
           if (typeof tab.id === 'number') {
             updateStore(store, {
               totalMatchesCount: store.totalMatchesCount + matchesCount,
@@ -241,7 +239,7 @@ export async function updateMatchesCount() {
 }
 
 // 'Match X/Y (Total: Z)';
-export async function updateTotalTabsCount() {
+export async function updateTotalTabsCount(store: Store) {
   store.totalTabs = await new Promise<number>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, (tabs) => resolve(tabs.length));
   });

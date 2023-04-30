@@ -55,6 +55,7 @@ chrome.runtime.onMessage.addListener(
             });
           }
         }
+        console.log(store);
         return;
       case 'remove-styles-all-tabs':
         chrome.tabs.query({ currentWindow: true }, (tabs) => {
@@ -177,27 +178,37 @@ chrome.commands.onCommand.addListener((command) => {
 
 // chrome.tabs.onCreated.addListener(updateTotalTabsCount);
 chrome.tabs.onCreated.addListener(() => {
-  updateTotalTabsCount();
+  console.log('test');
+  updateTotalTabsCount(store);
 });
 
 // chrome.tabs.onRemoved.addListener(updateTotalTabsCount);
 chrome.tabs.onRemoved.addListener(() => {
-  updateTotalTabsCount();
+  updateTotalTabsCount(store);
 });
 
 // TODO: KEEP, but fix errors
-// chrome.windows.onFocusChanged.addListener(async (windowId) => {
-//   const focusedWindow = await new Promise<chrome.windows.Window>((resolve) => {
-//     chrome.windows.get(windowId, resolve);
-//   });
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  if (windowId === chrome.windows.WINDOW_ID_NONE) {
+    return;
+  }
 
-//   if (
-//     store.lastFocusedWindowId !== windowId &&
-//     (focusedWindow as chrome.windows.Window).type === 'normal'
-//   ) {
-//     updateTotalTabsCount();
-//     store.updatedTabsCount = 0;
-//   }
+  chrome.windows.get(windowId, (focusedWindow) => {
+    if (chrome.runtime.lastError) {
+      console.error(
+        `checked runtime.lastError: ${chrome.runtime.lastError.message}`
+      );
+      return;
+    }
 
-//   store.lastFocusedWindowId = windowId;
-// });
+    if (
+      store.lastFocusedWindowId !== windowId &&
+      focusedWindow.type === 'normal'
+    ) {
+      updateTotalTabsCount(store);
+      store.updatedTabsCount = 0;
+    }
+
+    store.lastFocusedWindowId = windowId;
+  });
+});
