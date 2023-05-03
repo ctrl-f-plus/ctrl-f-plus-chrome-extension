@@ -3,8 +3,8 @@
 // TODO: Refactor this whole thing?
 
 export type KeyboardCommandHandler = {
-  toggleSearchOverlay?: () => void;
-  closeSearchOverlay?: () => void;
+  toggleSearchLayover?: () => void;
+  closeSearchLayover?: () => void;
 };
 
 export interface HandleKeyboardCommandParams {
@@ -16,12 +16,12 @@ export const handleKeyboardCommand = (
   command: string,
   handlers: KeyboardCommandHandler
 ) => {
-  if (command === 'toggle_search_overlay' && handlers.toggleSearchOverlay) {
-    handlers.toggleSearchOverlay();
+  if (command === 'toggle_search_layover' && handlers.toggleSearchLayover) {
+    handlers.toggleSearchLayover();
   } else if (
-    command === 'close_search_overlay' &&
-    handlers.closeSearchOverlay
+    command === 'close_search_layover' &&
+    handlers.closeSearchLayover
   ) {
-    handlers.closeSearchOverlay();
+    handlers.closeSearchLayover();
   }
 };

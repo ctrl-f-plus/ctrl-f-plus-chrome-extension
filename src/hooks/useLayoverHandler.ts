@@ -1,11 +1,11 @@
-// src/hooks/useOverlayHandler.ts
+// src/hooks/useLayoverHandler.ts
 
-import { useState, useCallback } from 'react';
-import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { useCallback, useState } from 'react';
 import { setStoredFindValue } from '../utils/storage';
+import { useSendMessageToBackground } from './useSendMessageToBackground';
 
-export const useOverlayHandler = () => {
-  const [showOverlay, setShowOverlay] = useState<boolean>(false);
+export const useLayoverHandler = () => {
+  const [showLayover, setShowLayover] = useState<boolean>(false);
   const [showMatches, setShowMatches] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [totalMatchesCount, setTotalMatchesCount] = useState<number>(0);
@@ -13,9 +13,9 @@ export const useOverlayHandler = () => {
 
   const { sendMessageToBackground } = useSendMessageToBackground();
 
-  const toggleSearchOverlay = useCallback(
-    (forceShowOverlay?: boolean) => {
-      const openSearchOverlay = () => {
+  const toggleSearchLayover = useCallback(
+    (forceShowLayover?: boolean) => {
+      const openSearchLayover = () => {
         sendMessageToBackground({
           from: 'content',
           type: 'add-styles-all-tabs',
@@ -24,7 +24,7 @@ export const useOverlayHandler = () => {
         setShowMatches(true);
       };
 
-      const closeSearchOverlay = (searchValue: string) => {
+      const closeSearchLayover = (searchValue: string) => {
         // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
         setStoredFindValue(searchValue);
         sendMessageToBackground({
@@ -35,18 +35,18 @@ export const useOverlayHandler = () => {
       };
 
       const newState =
-        forceShowOverlay === undefined ? !showOverlay : forceShowOverlay;
+        forceShowLayover === undefined ? !showLayover : forceShowLayover;
 
-      newState ? openSearchOverlay() : closeSearchOverlay(searchValue);
-      setShowOverlay(newState);
+      newState ? openSearchLayover() : closeSearchLayover(searchValue);
+      setShowLayover(newState);
     },
     [sendMessageToBackground]
   );
 
   return {
-    showOverlay,
-    setShowOverlay,
-    toggleSearchOverlay,
+    showLayover,
+    setShowLayover,
+    toggleSearchLayover,
     searchValue,
     setSearchValue,
     showMatches,

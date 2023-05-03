@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
-import { OverlayContext, OverlayProvider } from '../contexts/OverlaytContext';
+import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import { MessageFixMe } from '../interfaces/message.types';
 import '../tailwind.css';
@@ -17,9 +17,9 @@ let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const {
-    showOverlay,
-    setShowOverlay,
-    toggleSearchOverlay,
+    showLayover,
+    setShowLayover,
+    toggleSearchLayover,
     searchValue,
     showMatches,
     setShowMatches,
@@ -27,7 +27,7 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount,
     globalMatchIdx,
     setglobalMatchIdx,
-  } = useContext(OverlayContext);
+  } = useContext(LayoverContext);
 
   const handleMessage = (
     message: MessageFixMe,
@@ -39,11 +39,11 @@ const App: React.FC<{}> = () => {
     const { type, findValue, command } = message;
 
     switch (type) {
-      case 'switched-active-tab-show-overlay':
-        showMatches && setShowOverlay(true);
+      case 'switched-active-tab-show-layover':
+        showMatches && setShowLayover(true);
         break;
-      case 'switched-active-tab-hide-overlay':
-        showMatches && setShowOverlay(false);
+      case 'switched-active-tab-hide-layover':
+        showMatches && setShowLayover(false);
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
@@ -65,13 +65,13 @@ const App: React.FC<{}> = () => {
 
         setTotalMatchesCount(store.totalMatchesCount);
         setglobalMatchIdx(store.globalMatchIdx + 1);
-        setShowOverlay(store.showOverlay);
+        setShowLayover(store.showLayover);
         setShowMatches(store.showMatches);
         break;
       default:
         if (command) {
           handleKeyboardCommand(command, {
-            toggleSearchOverlay,
+            toggleSearchLayover,
           });
         }
         break;
@@ -83,8 +83,8 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // TODO: Should run on all stored tabs from given window
-      if (e.key === 'Escape' && showOverlay) {
-        toggleSearchOverlay(false);
+      if (e.key === 'Escape' && showLayover) {
+        toggleSearchLayover(false);
       }
     };
 
@@ -93,16 +93,16 @@ const App: React.FC<{}> = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showOverlay, searchValue]);
+  }, [showLayover, searchValue]);
 
   return (
     <>
-      {showOverlay && (
+      {showLayover && (
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
             <Layover>
-              <SearchInput focus={showOverlay} />
+              <SearchInput focus={showLayover} />
             </Layover>
           </div>
         </div>
@@ -115,9 +115,9 @@ const root = document.createElement('div');
 document.body.appendChild(root);
 ReactDOM.render(
   <React.StrictMode>
-    <OverlayProvider>
+    <LayoverProvider>
       <App />
-    </OverlayProvider>
+    </LayoverProvider>
   </React.StrictMode>,
   root
 );

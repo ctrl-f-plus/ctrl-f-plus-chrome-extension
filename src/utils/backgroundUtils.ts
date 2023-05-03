@@ -3,7 +3,7 @@
 import { store } from '../background/background';
 import { Store, updateStore } from '../background/store';
 import {
-  SwitchedActiveTabShowOverlay,
+  SwitchedActiveTabShowLayover,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
 import { getAllStoredTabs } from '../utils/storage';
@@ -108,7 +108,7 @@ export async function executeContentScriptOnAllTabs(
         await updateStore(store, {
           findValue,
           activeTab: tab,
-          showOverlay: true,
+          showLayover: true,
           showMatches: true,
         });
 
@@ -191,9 +191,9 @@ export async function switchTab(serializedState2: any) {
     };
     chrome.tabs.sendMessage(tab.id, message);
 
-    const message2: SwitchedActiveTabShowOverlay = {
+    const message2: SwitchedActiveTabShowLayover = {
       from: 'background',
-      type: 'switched-active-tab-show-overlay',
+      type: 'switched-active-tab-show-layover',
     };
     chrome.tabs.sendMessage(tab.id, message2);
 

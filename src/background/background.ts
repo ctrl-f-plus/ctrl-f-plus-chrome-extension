@@ -2,8 +2,8 @@
 
 import {
   Messages,
-  SwitchedActiveTabHideOverlay,
-  SwitchedActiveTabShowOverlay,
+  SwitchedActiveTabHideLayover,
+  SwitchedActiveTabShowLayover,
 } from '../interfaces/message.types';
 import {
   executeContentScriptOnAllTabs,
@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(
         });
 
         updateStore(store, {
-          showOverlay: false,
+          showLayover: false,
           showMatches: false,
         });
 
@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener(
         });
 
         updateStore(store, {
-          showOverlay: true,
+          showLayover: true,
           showMatches: true,
         });
 
@@ -157,10 +157,10 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   //   type: 'tab-activated',
   // });
 
-  const message1: SwitchedActiveTabShowOverlay = {
+  const message1: SwitchedActiveTabShowLayover = {
     // TODO:reset currentIndex so that when you hit next on the new tab it highlights the first match on that page
     from: 'background',
-    type: 'switched-active-tab-show-overlay',
+    type: 'switched-active-tab-show-layover',
   };
   chrome.tabs.sendMessage(tabId, message1);
 
@@ -168,9 +168,9 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 
   for (const otherTab of inactiveTabs) {
     if (otherTab.id) {
-      const message2: SwitchedActiveTabHideOverlay = {
+      const message2: SwitchedActiveTabHideLayover = {
         from: 'background',
-        type: 'switched-active-tab-hide-overlay',
+        type: 'switched-active-tab-hide-layover',
       };
       chrome.tabs.sendMessage(otherTab.id, message2);
     }
@@ -180,7 +180,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 chrome.commands.onCommand.addListener((command) => {
   // TODO:REVIEW `active:currentWindow: true` below:
   // chrome.tabs.query({}, (tabs) => {
-  if (command === 'toggle_search_overlay') {
+  if (command === 'toggle_search_layover') {
     // chrome.tabs.query({ active:currentWindow: true }, (tabs) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {

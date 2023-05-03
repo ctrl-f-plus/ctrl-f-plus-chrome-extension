@@ -6,8 +6,8 @@
   "updatedTabsCount": 0,
   "totalTabs": 0,
   "activeTab": 237548747,
-  "overlayPosition": { "x": 0, "y": 0 },
-  "showOverlay": true,
+  "layoverPosition": { "x": 0, "y": 0 },
+  "showLayover": true,
   "showMatches": true,
     "tabStates": {
     "237548747": {

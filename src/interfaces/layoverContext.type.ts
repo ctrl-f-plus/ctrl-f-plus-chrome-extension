@@ -1,11 +1,11 @@
-// src/interfaces/overlayContext.type.ts
+// src/interfaces/layoverContext.type.ts
 
 import { ReactNode } from 'react';
 
-export interface OverlayContextData {
-  showOverlay: boolean;
-  setShowOverlay: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleSearchOverlay: (forceShowOverlay?: boolean) => void;
+export interface LayoverContextData {
+  showLayover: boolean;
+  setShowLayover: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSearchLayover: (forceShowLayover?: boolean) => void;
   searchValue: string;
   setSearchValue: (value: string) => void;
   showMatches: boolean;
@@ -16,6 +16,6 @@ export interface OverlayContextData {
   setglobalMatchIdx: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export interface OverlayProviderProps {
+export interface LayoverProviderProps {
   children: ReactNode;
 }

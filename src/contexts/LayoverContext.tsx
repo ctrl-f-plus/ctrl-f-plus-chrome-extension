@@ -1,17 +1,17 @@
-// src/contexts/OverlaytContext.tsx
+// src/contexts/LayoverContext.tsx
 
 import React, { createContext } from 'react';
-import { useOverlayHandler } from '../hooks/useOverlayHandler';
+import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
-  OverlayContextData,
-  OverlayProviderProps,
-} from '../interfaces/overlayContext.type';
+  LayoverContextData,
+  LayoverProviderProps,
+} from '../interfaces/layoverContext.type';
 
 // TODO: Potentially move searchValue and setSearchValue out of this file
-export const OverlayContext = createContext<OverlayContextData>({
-  showOverlay: false,
-  setShowOverlay: () => {},
-  toggleSearchOverlay: (forceShowOverlay?: boolean) => undefined,
+export const LayoverContext = createContext<LayoverContextData>({
+  showLayover: false,
+  setShowLayover: () => {},
+  toggleSearchLayover: (forceShowLayover?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
   showMatches: false,
@@ -22,29 +22,29 @@ export const OverlayContext = createContext<OverlayContextData>({
   setglobalMatchIdx: () => {},
 });
 
-export const OverlayProvider: React.FC<OverlayProviderProps> = ({
+export const LayoverProvider: React.FC<LayoverProviderProps> = ({
   children,
 }) => {
   const {
-    showOverlay,
-    setShowOverlay,
+    showLayover,
+    setShowLayover,
     searchValue,
     setSearchValue,
-    toggleSearchOverlay,
+    toggleSearchLayover,
     showMatches,
     setShowMatches,
     totalMatchesCount,
     setTotalMatchesCount,
     globalMatchIdx,
     setglobalMatchIdx,
-  } = useOverlayHandler();
+  } = useLayoverHandler();
 
   return (
-    <OverlayContext.Provider
+    <LayoverContext.Provider
       value={{
-        showOverlay,
-        setShowOverlay,
-        toggleSearchOverlay,
+        showLayover,
+        setShowLayover,
+        toggleSearchLayover,
         searchValue,
         setSearchValue,
         showMatches,
@@ -56,6 +56,6 @@ export const OverlayProvider: React.FC<OverlayProviderProps> = ({
       }}
     >
       {children}
-    </OverlayContext.Provider>
+    </LayoverContext.Provider>
   );
 };

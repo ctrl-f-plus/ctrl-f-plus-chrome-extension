@@ -13,10 +13,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { OverlayContext } from '../contexts/OverlaytContext';
+import { LayoverContext } from '../contexts/LayoverContext';
+import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../interfaces/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
-import { useSearchHandler } from '../hooks/useSearchHandler';
 
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -25,10 +25,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const {
     searchValue,
     setSearchValue,
-    toggleSearchOverlay,
+    toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
-  } = useContext(OverlayContext);
+    showMatches,
+    showLayover,
+  } = useContext(LayoverContext);
   const [matchingCounts, setMatchingCounts] = useState(
     `${globalMatchIdx}/${totalMatchesCount}`
   );
@@ -41,9 +43,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     e.preventDefault();
 
     // const storedFindValue = await getStoredFindValue();
+    debugger;
 
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
+
+      // TODO: Start Here: something like
+      // if (findValue === searchValue) &&   showMatches, && showLayover then next-match else hendleSearch
 
       handleSearch(findValue);
     }
@@ -139,8 +145,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </button>
 
           <button
-            // onClick={toggleSearchOverlay}
-            onClick={() => toggleSearchOverlay()}
+            // onClick={toggleSearchLayover}
+            onClick={() => toggleSearchLayover()}
             type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >

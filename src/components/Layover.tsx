@@ -14,9 +14,9 @@ const Layover: React.FC<LayoverProps> = ({ children }) => {
 
   useEffect(() => {
     // TODO: Move this function to storage util
-    chrome.storage.local.get('overlayPosition', (data) => {
-      if (data.overlayPosition) {
-        setPosition(data.overlayPosition);
+    chrome.storage.local.get('layoverPosition', (data) => {
+      if (data.layoverPosition) {
+        setPosition(data.layoverPosition);
       }
     });
   }, []);
@@ -24,7 +24,7 @@ const Layover: React.FC<LayoverProps> = ({ children }) => {
   const handleDragStop = (e, data) => {
     const newPosition = { x: data.x, y: data.y };
     setPosition(newPosition);
-    chrome.storage.local.set({ overlayPosition: newPosition });
+    chrome.storage.local.set({ layoverPosition: newPosition });
   };
 
   return (

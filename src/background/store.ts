@@ -8,8 +8,8 @@ export interface Store {
   updatedTabsCount: number;
   totalTabs: number | undefined;
   activeTab: chrome.tabs.Tab | null;
-  overlayPosition: { x: number; y: number };
-  showOverlay: boolean;
+  layoverPosition: { x: number; y: number };
+  showLayover: boolean;
   showMatches: boolean;
   tabStates: {
     [tabId: number]: {
@@ -32,8 +32,8 @@ export function initStore() {
     updatedTabsCount: 0,
     totalTabs: undefined,
     activeTab: null,
-    overlayPosition: { x: 0, y: 0 },
-    showOverlay: false,
+    layoverPosition: { x: 0, y: 0 },
+    showLayover: false,
     showMatches: false,
     tabStates: {},
   };

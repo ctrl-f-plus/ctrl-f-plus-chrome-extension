@@ -22,11 +22,11 @@
     "unlimitedStorage"
   ],
   "commands": {
-    "toggle_search_overlay": {
+    "toggle_search_layover": {
       "suggested_key": {
         "default": "Ctrl+Shift+F"
       },
-      "description": "Toggle the Cntrl-F search overlay"
+      "description": "Toggle the Cntrl-F search layover"
     }
   },
   "background": {
