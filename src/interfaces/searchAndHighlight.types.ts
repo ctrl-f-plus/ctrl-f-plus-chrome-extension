@@ -1,7 +1,7 @@
 export interface MatchUtilsBase {
   currentIndex?: number;
   matchesObj: MatchesObject;
-  tabId: number;
+  tabId: chrome.tabs.Tab['id'] | undefined;
   state2?: any;
 }
 
@@ -26,10 +26,6 @@ export interface SearchAndHighlightProps extends MatchUtilsBase {
   findValue: string;
   callback?: () => void;
 }
-
-// export type MatchesObject = {
-//   [tabId: number]: HTMLElement[];
-// };
 
 export type MatchesObject =
   | Array<HTMLElement>

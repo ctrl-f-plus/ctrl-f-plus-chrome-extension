@@ -47,11 +47,11 @@ const App: React.FC<{}> = () => {
         break;
       case 'remove-styles':
         removeStyles(injectedStyle);
-        setShowMatches(false);
+        // setShowMatches(false);
         break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
-        setShowMatches(true);
+        // setShowMatches(true);
         break;
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();

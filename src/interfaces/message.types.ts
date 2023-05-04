@@ -37,11 +37,6 @@ export interface PreviousMatchMessage extends BaseMessage {
   serializedState2?: any;
 }
 
-// export interface AllMatchesMessage extends BaseMessage {
-//   type: 'all-matches';
-//   allMatches: any[];
-// }
-
 export interface RemoveStylesMessage extends BaseMessage {
   from: 'background' | 'content';
   type: 'remove_styles';
@@ -74,7 +69,6 @@ export interface SwitchTab extends BaseMessage {
   type: 'switch-tab';
   state?: any; // Replace 'any' with the actual type of the 'state' object
   serializedState2?: any;
-  // matchesObject: any; // Replace 'any' with the actual type of the 'matchesObject'
   prevIndex: number;
 }
 
@@ -95,7 +89,6 @@ export interface SwitchedActiveTabHideLayover extends BaseMessage {
 }
 
 export interface UpdateTabStatesObj extends BaseMessage {
-  // from: 'inner-match-utils';
   from: 'content';
   type: 'update-tab-states-obj';
   payload: any;
@@ -105,7 +98,6 @@ export type Messages =
   | NextMatchMessage
   | PreviousMatchMessage
   | GetAllMatchesMessage
-  // | AllMatchesMessage
   | RemoveStylesMessage
   | RemoveStylesAllTabs
   | AddStylesAllTabs

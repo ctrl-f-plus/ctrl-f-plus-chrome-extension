@@ -8,20 +8,33 @@ import {
   updateHighlights,
 } from '../utils/matchUtils';
 
-const state2 = {
-  tabId: undefined,
+export interface TabState {
+  tabId: chrome.tabs.Tab['id'] | undefined;
+  // active?: boolean;
+  currentIndex: number | undefined;
+  matchesCount: number | undefined;
+  // serializedMatches: string;
+  // globalMatchIdxStart: number;
+  // matchesObj: any[]; // FIXME: specify type
+  // matchesObj: string[];
+  //matchesObj: any[];
+  matchesObj: string | any[]; // Change this line
+}
 
+const state2: TabState = {
+  tabId: undefined,
   currentIndex: undefined,
-  // tabIndex: undefined,
   matchesCount: undefined,
   matchesObj: [] as string | any[],
+  //matchesObj: [],
+  //matchesObj: string | any[]; // Change this line
 };
 
-console.log(new Date().toLocaleString());
+// console.log(new Date().toLocaleString());
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const { from, type, findValue, tabId, tabState } = message;
-  let serializedState2; // = { ...state2 };
+  let serializedState2;
 
   switch (`${from}:${type}`) {
     case 'background:highlight':
@@ -30,7 +43,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       await findAllMatches(state2, findValue);
 
       // TODO: DRY
-      // const serializedState2 = { ...state2 };
       serializedState2 = { ...state2 };
 
       serializedState2.matchesObj = serializeMatchesObj(
@@ -70,4 +82,3 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
   return;
 });
-// })();

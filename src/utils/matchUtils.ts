@@ -1,10 +1,12 @@
-//@ts-nocheck
+//@
+//ts-nocheck
 
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';
+import { TabState } from '../contentScripts/getInnerHtmlScript';
 
-export async function findAllMatches(state2, findValue) {
+export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;
   state2.matchesCount = 0;
   state2.matchesObj = [];
@@ -38,7 +40,7 @@ export async function findAllMatches(state2, findValue) {
 }
 
 export function updateHighlights(
-  state2,
+  state2: TabState,
   prevIndex?: number,
   endOfTab?: boolean
 ) {
@@ -55,14 +57,20 @@ export function updateHighlights(
     return;
   }
 
-  const curMatch = state2.matchesObj[state2.currentIndex];
-  curMatch.classList.add('ctrl-f-highlight-focus');
-  scrollToElement(curMatch);
+  if (typeof state2.currentIndex !== 'undefined') {
+    const curMatch = state2.matchesObj[state2.currentIndex];
+    curMatch.classList.add('ctrl-f-highlight-focus');
+    scrollToElement(curMatch);
+  }
 }
 
-export async function nextMatch(state2) {
+export async function nextMatch(state2: TabState) {
   // ***5
   console.log('getInnerHtmlScript - nextMatch()');
+
+  if (typeof state2.currentIndex === 'undefined') {
+    return;
+  }
   const prevIndex = state2.currentIndex;
 
   state2.currentIndex = (state2.currentIndex + 1) % state2.matchesObj.length;
@@ -90,7 +98,14 @@ export async function nextMatch(state2) {
   }
 }
 
-export function previousMatch(state2) {
+export function previousMatch(state2: TabState) {
+  if (
+    typeof state2.currentIndex === 'undefined' ||
+    typeof state2.tabId === 'undefined'
+  ) {
+    return;
+  }
+
   const prevIndex = state2.currentIndex;
   state2.currentIndex =
     (state2.currentIndex - 1 + state2.matchesObj[state2.tabId].length) %
@@ -99,6 +114,6 @@ export function previousMatch(state2) {
   updateHighlights(state2, prevIndex);
 }
 
-function scrollToElement(element) {
+function scrollToElement(element: HTMLElement) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
