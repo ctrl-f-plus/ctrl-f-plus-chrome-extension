@@ -1,5 +1,6 @@
 // src/contentScripts/findMatchesScript.ts
 
+import { TabState } from '../interfaces/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import {
   findAllMatches,
@@ -8,26 +9,11 @@ import {
   updateHighlights,
 } from '../utils/matchUtils';
 
-export interface TabState {
-  tabId: chrome.tabs.Tab['id'] | undefined;
-  // active?: boolean;
-  currentIndex: number | undefined;
-  matchesCount: number | undefined;
-  // serializedMatches: string;
-  // globalMatchIdxStart: number;
-  // matchesObj: any[]; // FIXME: specify type
-  // matchesObj: string[];
-  //matchesObj: any[];
-  matchesObj: string | any[]; // Change this line
-}
-
 const state2: TabState = {
   tabId: undefined,
   currentIndex: undefined,
   matchesCount: undefined,
   matchesObj: [] as string | any[],
-  //matchesObj: [],
-  //matchesObj: string | any[]; // Change this line
 };
 
 type SerializedMatchesObj = string;

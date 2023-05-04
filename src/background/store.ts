@@ -1,5 +1,7 @@
 // src/background/store.ts
 
+import { TabState } from '../interfaces/tab.types';
+
 export interface Store {
   globalMatchIdx: number;
   totalMatchesCount: number;
@@ -12,14 +14,15 @@ export interface Store {
   showLayover: boolean;
   showMatches: boolean;
   tabStates: {
-    [tabId: number]: {
-      tabId: chrome.tabs.Tab['id'] | undefined;
-      active: boolean;
-      currentIndex: number;
-      matchesCount: number;
-      serializedMatches: string;
-      globalMatchIdxStart: number;
-    };
+    // [tabId: number]: {
+    //   tabId: chrome.tabs.Tab['id'] | undefined;
+    //   active: boolean;
+    //   currentIndex: number;
+    //   matchesCount: number;
+    //   serializedMatches: string;
+    //   globalMatchIdxStart: number;
+    // };
+    [tabId: number]: TabState;
   };
 }
 

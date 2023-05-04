@@ -55,6 +55,7 @@ function executeContentScript(
                   matchesCount,
                   serializedMatches: response.serializedState2.matchesObj,
                   globalMatchIdxStart: store.totalMatchesCount,
+                  matchesObj: [],
                 },
               },
             });
@@ -221,8 +222,9 @@ export async function updateMatchesCount() {
 
   let totalMatchesCount = 0;
   for (const tabId in storedTabs) {
+    // if (storedTabs.hasOwnProperty(tabId)) {
     if (storedTabs.hasOwnProperty(tabId)) {
-      totalMatchesCount += storedTabs[tabId].matchesCount;
+      totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
     }
   }
   const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));

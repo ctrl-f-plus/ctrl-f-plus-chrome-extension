@@ -1,5 +1,6 @@
-// src/utils/storage.ts
+import { TabState } from '../interfaces/tab.types';
 
+// src/utils/storage.ts
 export interface Match {
   innerText: string;
   className: string;
@@ -12,22 +13,12 @@ export interface LayoverPosition {
 }
 
 // FIXME: review for duplicates
-export interface StoredTab {
-  tabId: chrome.tabs.Tab['id'] | undefined;
-  // tabId: number;
-  // active?: boolean;
-
-  currentIndex: number;
-  matchesCount: number;
-  // matchesObj: Match[];
-  matchesObj: string | any[];
-}
 
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
   // matchesObj?: { [tabId: number]: Match[] };
-  tabs?: { [tabId: number]: StoredTab };
+  tabs?: { [tabId: number]: TabState };
   layoverPosition?: LayoverPosition;
 }
 
@@ -91,7 +82,7 @@ export function setStoredFindValue(findValue: string): Promise<void> {
   // });
 }
 
-export function getAllStoredTabs(): Promise<{ [tabId: number]: StoredTab }> {
+export function getAllStoredTabs(): Promise<{ [tabId: number]: TabState }> {
   // const key: LocalStorageKeys[] = ['tabs'];
 
   // return new Promise((resolve, reject) => {
@@ -105,7 +96,7 @@ export function getAllStoredTabs(): Promise<{ [tabId: number]: StoredTab }> {
   return getLocalStorageItem('tabs').then((tabs) => tabs ?? {});
 }
 
-export function getStoredTab(tabId: TabId): Promise<StoredTab> {
+export function getStoredTab(tabId: TabId): Promise<TabState> {
   // const key: LocalStorageKeys[] = ['tabs'];
 
   // return new Promise((resolve, reject) => {

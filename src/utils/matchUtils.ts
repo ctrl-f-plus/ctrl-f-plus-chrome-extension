@@ -4,7 +4,7 @@
 // src/utils/matchUtils.ts
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { serializeMatchesObj } from '../utils/htmlUtils';
-import { TabState } from '../contentScripts/findMatchesScript';
+import { TabState } from '../interfaces/tab.types';
 
 export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;
