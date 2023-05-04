@@ -1,6 +1,4 @@
-//@ts-nocheck
 // src/utils/storage.ts
-// TODO:Add window specific storage??
 
 export interface Match {
   innerText: string;
@@ -8,148 +6,174 @@ export interface Match {
   id: string;
 }
 
+export interface LayoverPosition {
+  x: number;
+  y: number;
+}
+
+// FIXME: review for duplicates
+export interface StoredTab {
+  tabId: number;
+  currentIndex: number;
+  matchesObj: Match[];
+  matchesCount: number;
+}
+
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
   matchesObj?: { [tabId: number]: Match[] };
-  tabs?: {};
+  tabs?: { [tabId: number]: StoredTab };
+  layoverPosition?: LayoverPosition;
 }
 
 export type LocalStorageKeys = keyof LocalStorage;
+export type TabId = chrome.tabs.Tab['id'];
 
-export function clearLocalStorage() {
-  return new Promise<void>((resolve) => {
-    chrome.storage.local.clear(() => {
-      if (chrome.runtime.lastError) {
-        console.error(
-          'Error while clearing local storage:',
-          chrome.runtime.lastError
-        );
-      } else {
-        console.log('Local storage cleared successfully');
-      }
-      resolve();
-    });
-  });
-}
-
-// export function getStoredSearchValue(): Promise<string> {
-export function getStoredFindValue(): Promise<string> {
-  console.log(`getStoredFindValue()`);
-  const key: LocalStorageKeys[] = ['findValue'];
-  // const key: LocalStorageKeys = 'searchValue';
-
+async function getLocalStorageItem<T extends LocalStorageKeys>(
+  key: T
+): Promise<LocalStorage[T]> {
   return new Promise((resolve) => {
     chrome.storage.local.get(key, (res: LocalStorage) => {
-      resolve(res.findValue ?? '');
+      resolve(res[key]);
     });
   });
 }
 
-// export function setStoredSearchValue(searchValue: string): Promise<void> {
-export function setStoredFindValue(findValue: string): Promise<void> {
-  console.log(`setStoredFindValue()`);
-  const val: LocalStorage = { findValue };
-
+async function setLocalStorageItem<T extends LocalStorageKeys>(
+  key: T,
+  value: LocalStorage[T]
+): Promise<void> {
   return new Promise((resolve) => {
-    chrome.storage.local.set(val, () => {
+    chrome.storage.local.set({ [key]: value }, () => {
       resolve();
     });
   });
 }
 
-export async function clearStoredMatchesObject() {
-  return new Promise<void>((resolve) => {
-    chrome.storage.local.get(null, (items) => {
-      const allKeys = Object.keys(items);
+// FIXME: S/b async await instead?
+export function getStoredLayoverPosition(): Promise<LayoverPosition> {
+  const key: LocalStorageKeys = 'layoverPosition';
 
-      // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
-      const matchesObjKeys = allKeys.filter((key) =>
-        key.startsWith('matchesObjOuterHtml_')
-      );
-
-      // Remove the filtered keys from local storage
-      chrome.storage.local.remove(matchesObjKeys, () => {
-        if (chrome.runtime.lastError) {
-          console.error(
-            'Error while clearing local storage:',
-            chrome.runtime.lastError
-          );
-        } else {
-          console.log('Local storage for matchesObj cleared successfully');
-        }
-        resolve();
-      });
-    });
-  });
+  return getLocalStorageItem(key).then(
+    (position) => position ?? { x: 0, y: 0 }
+  );
 }
 
-export function getAllStoredTabs(): Promise<any> {
-  // console.log(`setTabsStorage(${tabId})`);
-  // const key[]: LocalStorage = ['tabs'];
+export function setStoredLayoverPosition(
+  newPosition: LayoverPosition
+): Promise<void> {
+  const key: LocalStorageKeys = 'layoverPosition';
 
-  return new Promise((resolve, reject) => {
-    // if (!tabId) {
-    //   reject(new Error('tabId not stored'));
-    //   return;
-    // }
-
-    chrome.storage.local.get(['tabs'], (res: LocalStorage) => {
-      const tabs = res.tabs || {};
-      resolve(tabs);
-    });
-  });
+  return setLocalStorageItem(key, newPosition);
 }
 
-export function getStoredTab(tabId): Promise<any> {
-  console.log(`getStoredTab(${tabId})`);
-  // const key[]: LocalStorage = ['tabs'];
+export function getStoredFindValue(): Promise<string> {
+  const key: LocalStorageKeys = 'findValue';
 
-  return new Promise((resolve, reject) => {
-    if (!tabId) {
-      reject(new Error('tabId not stored'));
-      return;
+  return getLocalStorageItem(key).then((findValue) => findValue ?? '');
+}
+
+export function setStoredFindValue(findValue: string): Promise<void> {
+  const key: LocalStorageKeys = 'findValue';
+
+  return setLocalStorageItem(key, findValue);
+
+  // const val: LocalStorage = { findValue };
+  // return new Promise((resolve) => {
+  //   chrome.storage.local.set(val, () => {
+  //     resolve();
+  //   });
+  // });
+}
+
+export function getAllStoredTabs(): Promise<{ [tabId: number]: StoredTab }> {
+  // const key: LocalStorageKeys[] = ['tabs'];
+
+  // return new Promise((resolve, reject) => {
+  //   chrome.storage.local.get(key, (res: LocalStorage) => {
+  //     const tabs = res.tabs || {};
+  //     resolve(tabs);
+  //   });
+  // });
+
+  const key: LocalStorageKeys = 'tabs';
+  return getLocalStorageItem('tabs').then((tabs) => tabs ?? {});
+}
+
+export function getStoredTab(tabId: TabId): Promise<StoredTab> {
+  // const key: LocalStorageKeys[] = ['tabs'];
+
+  // return new Promise((resolve, reject) => {
+  //   if (!tabId) {
+  //     reject(new Error('tabId not stored'));
+  //     return;
+  //   }
+
+  //   chrome.storage.local.get(key, (res: LocalStorage) => {
+  //     const tabs = res.tabs || {};
+  //     resolve(tabs[tabId]);
+  //   });
+  // });
+
+  const key: LocalStorageKeys = 'tabs';
+
+  return getLocalStorageItem(key).then((tabs) => {
+    if (!tabId || !tabs || !tabs[tabId]) {
+      throw new Error('tabId not stored');
     }
-
-    chrome.storage.local.get(['tabs'], (res: LocalStorage) => {
-      // chrome.storage.local.get(key, (res: LocalStorage) => {
-      const tabs = res.tabs || {};
-      resolve(tabs[tabId]);
-    });
+    return tabs[tabId];
   });
 }
 
 export function setStoredTabs(serializedState2: any): Promise<void> {
-  // console.log(`setStoredTabs(): `, serializedState2);
   // const vals: LocalStorage = { tabs };
-  return new Promise((resolve, reject) => {
-    const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
+  // return new Promise((resolve, reject) => {
+  // const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
 
-    if (
-      !tabId ||
-      typeof currentIndex === 'undefined' ||
-      !matchesObj ||
-      !matchesCount
-    ) {
-      reject(new Error('Invalid tab storage object'));
-      return;
-    }
+  //   if (
+  //     !tabId ||
+  //     typeof currentIndex === 'undefined' ||
+  //     !matchesObj ||
+  //     !matchesCount
+  //   ) {
+  //     reject(new Error('Invalid tab storage object'));
+  //     return;
+  //   }
 
-    chrome.storage.local.get(['tabs'], (res) => {
-      const currentData = res.tabs || {};
+  //   chrome.storage.local.get(['tabs'], (res) => {
+  //     const currentData = res.tabs || {};
 
-      currentData[tabId] = { tabId, currentIndex, matchesObj, matchesCount };
+  //     currentData[tabId] = { tabId, currentIndex, matchesObj, matchesCount };
 
-      chrome.storage.local.set({ tabs: currentData }, () => {
-        resolve();
-      });
+  //     chrome.storage.local.set({ tabs: currentData }, () => {
+  //       resolve();
+  //     });
+  //   });
+  // });
+
+  const key: LocalStorageKeys = 'tabs';
+  const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
+
+  if (!tabId || !matchesObj || !matchesCount) {
+    throw new Error('Invalid tab storage object');
+  }
+
+  return getLocalStorageItem(key).then((currentData) => {
+    const updatedData = { ...currentData, [tabId]: serializedState2 };
+    return setLocalStorageItem(key, updatedData);
+  });
+}
+
+export function clearLocalStorage() {
+  return new Promise<void>((resolve) => {
+    chrome.storage.local.clear(() => {
+      resolve();
     });
   });
 }
 
-export function clearStoredTab(tabId): Promise<void> {
-  console.log(`clearStoredTabs(${tabId})`);
-
+export function clearStoredTab(tabId: TabId): Promise<void> {
   return new Promise((resolve, reject) => {
     if (!tabId) {
       reject(new Error('tabId not provided'));
@@ -172,11 +196,25 @@ export function clearStoredTab(tabId): Promise<void> {
 }
 
 export function clearAllStoredTabs(): Promise<void> {
-  console.log(`clearAllStoredTabs()`);
+  const key: LocalStorageKeys = 'tabs';
 
-  return new Promise((resolve) => {
-    chrome.storage.local.set({ tabs: {} }, () => {
-      resolve();
+  return setLocalStorageItem(key, {});
+}
+
+export async function clearStoredMatchesObject() {
+  return new Promise<void>((resolve) => {
+    chrome.storage.local.get(null, (items) => {
+      const allKeys = Object.keys(items);
+
+      // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
+      const matchesObjKeys = allKeys.filter((key) =>
+        key.startsWith('matchesObjOuterHtml_')
+      );
+
+      // Remove the filtered keys from local storage
+      chrome.storage.local.remove(matchesObjKeys, () => {
+        resolve();
+      });
     });
   });
 }

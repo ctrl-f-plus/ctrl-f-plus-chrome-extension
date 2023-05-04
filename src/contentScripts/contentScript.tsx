@@ -1,6 +1,6 @@
 // src/contentScript/contentScript.tsx
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
@@ -16,6 +16,7 @@ import contentStyles from './contentStyles';
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
+  const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
   const {
     showLayover,
     setShowLayover,
@@ -67,6 +68,12 @@ const App: React.FC<{}> = () => {
         setglobalMatchIdx(store.globalMatchIdx + 1);
         setShowLayover(store.showLayover);
         setShowMatches(store.showMatches);
+
+        // FIXME: Make sure this value is getting updated in the store
+        if (store.activeTab) {
+          setActiveTabId(store.activeTab.id);
+        }
+
         break;
       default:
         if (command) {
@@ -101,7 +108,7 @@ const App: React.FC<{}> = () => {
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
-            <Layover>
+            <Layover activeTabId={activeTabId}>
               <SearchInput focus={showLayover} />
             </Layover>
           </div>

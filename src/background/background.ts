@@ -13,7 +13,7 @@ import {
   updateMatchesCount,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
-import { setStoredTabs } from '../utils/storage';
+import { clearLocalStorage, setStoredTabs } from '../utils/storage';
 import { initStore, resetStore, updateStore } from './store';
 
 export const store = initStore();
@@ -224,4 +224,10 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 
     store.lastFocusedWindowId = windowId;
   });
+});
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  // if (details.reason === 'update' || details.reason === 'install') {
+  await clearLocalStorage();
+  // }
 });

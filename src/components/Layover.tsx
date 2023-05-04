@@ -1,39 +1,53 @@
-//@ts-nocheck
 // src/components/DraggableModal.tsx
 
+// TODO: There is a bug where the layover position doesn't update on some tab-switches
+
 import React, { useEffect, useState } from 'react';
-import Draggable from 'react-draggable';
+import Draggable, {
+  DraggableData,
+  DraggableEventHandler,
+} from 'react-draggable';
+
+// TODO: update so that the stored Position is coming from the background script's store object
+import {
+  LayoverPosition,
+  TabId,
+  getStoredLayoverPosition,
+  setStoredLayoverPosition,
+} from '../utils/storage';
 
 interface LayoverProps {
   children: React.ReactNode;
+  activeTabId: TabId;
 }
 
-const Layover: React.FC<LayoverProps> = ({ children }) => {
+const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
   const nodeRef = React.useRef(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState<LayoverPosition | null>(null);
 
   useEffect(() => {
-    // TODO: Move this function to storage util
-    chrome.storage.local.get('layoverPosition', (data) => {
-      if (data.layoverPosition) {
-        setPosition(data.layoverPosition);
-      }
-    });
-  }, []);
+    const fetchLayoverPosition = async () => {
+      const storedLayoverPosition = await getStoredLayoverPosition();
+      setPosition(storedLayoverPosition);
+    };
 
-  const handleDragStop = (e, data) => {
+    fetchLayoverPosition();
+  }, [activeTabId]);
+
+  const handleDragStop: DraggableEventHandler = (e, data: DraggableData) => {
     const newPosition = { x: data.x, y: data.y };
     setPosition(newPosition);
-    chrome.storage.local.set({ layoverPosition: newPosition });
+
+    setStoredLayoverPosition(newPosition);
   };
 
-  return (
+  return position ? (
     <Draggable nodeRef={nodeRef} position={position} onStop={handleDragStop}>
       <div className="absolute w-[434px] rounded-lg cursor-move" ref={nodeRef}>
         {children}
       </div>
     </Draggable>
-  );
+  ) : null;
 };
 
 export default Layover;

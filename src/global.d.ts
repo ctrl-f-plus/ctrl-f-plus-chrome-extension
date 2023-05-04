@@ -2,9 +2,6 @@
 
 declare global {
   interface Window {
-    // myUniqueExtensionFlag?: boolean;
-    // requestIdleCallback: (callback: () => void) => void;
-
     find: (
       string: string,
       caseSensitive?: boolean,
