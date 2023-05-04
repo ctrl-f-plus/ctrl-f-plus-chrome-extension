@@ -18,104 +18,120 @@ import { initStore, resetStore, updateStore } from './store';
 
 export const store = initStore();
 
+export async function handleGetAllMatchesMsg(findValue: string) {
+  resetStore(store);
+
+  executeContentScriptOnAllTabs(findValue, store);
+}
+
+export async function handleNextPrevMatch(
+  sender: chrome.runtime.MessageSender,
+  type: string
+) {
+  if (sender.tab && sender.tab.id) {
+    const response = await executeContentScriptWithMessage(sender.tab.id, type);
+
+    const tabState = store.tabStates[sender.tab.id];
+
+    if (response.status === 'success') {
+      const currentIndex = response.serializedState2.currentIndex;
+
+      updateStore(store, {
+        globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+        tabStates: {
+          ...store.tabStates,
+          [sender.tab.id]: {
+            ...tabState,
+            currentIndex,
+          },
+        },
+      });
+    }
+  }
+}
+
+export async function handleToggleStylesAllTabs(addStyles: boolean) {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id) {
+        chrome.tabs.sendMessage(tab.id, {
+          type: addStyles ? 'add-styles' : 'remove-styles',
+        });
+      }
+    });
+  });
+
+  updateStore(store, {
+    showLayover: addStyles,
+    showMatches: addStyles,
+  });
+}
+
+export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    const tabPromises = tabs.map((tab) => {
+      return new Promise((resolve) => {
+        if (tab.id) {
+          chrome.tabs.sendMessage(
+            tab.id,
+            {
+              type: 'remove-all-highlight-matches',
+            },
+            (response) => {
+              resolve(response);
+            }
+          );
+        } else {
+          resolve(null);
+        }
+      });
+    });
+
+    Promise.all(tabPromises).then((responses) => {
+      sendResponse(responses);
+    });
+
+    return true;
+  });
+}
+
+export async function handleUpdateTabStatesObj(
+  payload: any,
+  sendResponse: Function
+) {
+  const { serializedState2 } = payload;
+  await setStoredTabs(serializedState2);
+
+  store.updatedTabsCount++;
+
+  if (store.updatedTabsCount === store.totalTabs) {
+    updateMatchesCount();
+    store.updatedTabsCount = 0;
+  }
+
+  sendResponse({ status: 'success' });
+}
+
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     const { type, payload } = message;
 
     switch (type) {
-      // Receive message from SearchInput component
       case 'get-all-matches-msg':
-        resetStore(store);
-        const findValue: string = message.payload;
-        executeContentScriptOnAllTabs(findValue, store);
-
+        await handleGetAllMatchesMsg(payload);
         return;
       case 'next-match':
       case 'prev-match':
-        // ***2
-        if (sender.tab && sender.tab.id) {
-          const response = await executeContentScriptWithMessage(
-            sender.tab.id,
-            message.type
-          );
-
-          const tabState = store.tabStates[sender.tab.id];
-
-          if (response.status === 'success') {
-            const currentIndex = response.serializedState2.currentIndex;
-
-            updateStore(store, {
-              globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-              tabStates: {
-                ...store.tabStates,
-                [sender.tab.id]: {
-                  ...tabState,
-                  currentIndex,
-                },
-              },
-            });
-          }
-        }
-        console.log(store);
+        await handleNextPrevMatch(sender, type);
         return;
       case 'remove-styles-all-tabs':
-        chrome.tabs.query({ currentWindow: true }, (tabs) => {
-          tabs.forEach((tab) => {
-            if (tab.id) {
-              chrome.tabs.sendMessage(tab.id, { type: 'remove-styles' });
-            }
-          });
-        });
-
-        updateStore(store, {
-          showLayover: false,
-          showMatches: false,
-        });
-
-        console.log(store);
+        await handleToggleStylesAllTabs(false);
         return;
       case 'add-styles-all-tabs':
-        chrome.tabs.query({ currentWindow: true }, (tabs) => {
-          tabs.forEach((tab) => {
-            if (tab.id) {
-              chrome.tabs.sendMessage(tab.id, { type: 'add-styles' });
-            }
-          });
-        });
-
-        updateStore(store, {
-          showLayover: true,
-          showMatches: true,
-        });
-
-        console.log(store);
+        await handleToggleStylesAllTabs(true);
         return;
       case 'remove-all-highlight-matches':
-        chrome.tabs.query({ currentWindow: true }, (tabs) => {
-          const tabPromises = tabs.map((tab) => {
-            return new Promise((resolve) => {
-              if (tab.id) {
-                chrome.tabs.sendMessage(
-                  tab.id,
-                  {
-                    type: 'remove-all-highlight-matches',
-                  },
-                  (response) => {
-                    resolve(response);
-                  }
-                );
-              } else {
-                resolve(null);
-              }
-            });
-          });
-
-          Promise.all(tabPromises).then((responses) => {
-            sendResponse(responses);
-          });
-
-          return true;
-        });
+        await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
         await switchTab(message.serializedState2);
@@ -123,17 +139,7 @@ chrome.runtime.onMessage.addListener(
         // TODO: NEED TO FIX THIS SO THAT STATE ISN'T UPDATED UNTIL AFTER THIS IS DONE. Currently it updates after next-match is finished and then updates again here, in switch-tab
         return;
       case 'update-tab-states-obj':
-        const { serializedState2 } = message.payload;
-        await setStoredTabs(serializedState2);
-
-        store.updatedTabsCount++;
-
-        if (store.updatedTabsCount === store.totalTabs) {
-          updateMatchesCount();
-          store.updatedTabsCount = 0; // Reset the count for future updates
-        }
-
-        sendResponse({ status: 'success' });
+        await handleUpdateTabStatesObj(payload, sendResponse);
         return;
       default:
         break;
@@ -227,7 +233,5 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  // if (details.reason === 'update' || details.reason === 'install') {
   await clearLocalStorage();
-  // }
 });

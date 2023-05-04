@@ -132,7 +132,6 @@ export function executeContentScriptWithMessage(
   messageType: string
 ): Promise<any> {
   return new Promise((resolve, reject) => {
-    // ***2.5
     chrome.tabs.sendMessage(
       tabId,
       {
@@ -141,12 +140,6 @@ export function executeContentScriptWithMessage(
         tabId,
       },
       (response) => {
-        // if (chrome.runtime.lastError) {
-        //   console.log(chrome.runtime.lastError);
-        //   reject(chrome.runtime.lastError);
-        // } else {
-        //   resolve(response);
-        // }
         resolve(response);
       }
     );

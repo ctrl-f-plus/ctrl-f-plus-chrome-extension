@@ -1,3 +1,5 @@
+// // src/hooks/useContentScriptState.ts
+
 // import { useContext, useEffect } from 'react';
 
 // export const useContentScriptState = () => {
