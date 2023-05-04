@@ -1,4 +1,4 @@
-// src/contentScripts/getInnerHtmlScript.ts
+// src/contentScripts/findMatchesScript.ts
 
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import {

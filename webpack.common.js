@@ -11,9 +11,7 @@ module.exports = {
     options: path.resolve('src/options/options.tsx'),
     background: path.resolve('src/background/background.ts'),
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
-    getInnerHtmlScript: path.resolve(
-      'src/contentScripts/getInnerHtmlScript.ts'
-    ),
+    getInnerHtmlScript: path.resolve('src/contentScripts/findMatchesScript.ts'),
   },
   module: {
     rules: [
