@@ -30,6 +30,8 @@ const state2: TabState = {
   //matchesObj: string | any[]; // Change this line
 };
 
+type SerializedMatchesObj = string;
+
 // console.log(new Date().toLocaleString());
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {

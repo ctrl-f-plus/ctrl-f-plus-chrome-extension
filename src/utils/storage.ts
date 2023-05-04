@@ -13,16 +13,20 @@ export interface LayoverPosition {
 
 // FIXME: review for duplicates
 export interface StoredTab {
-  tabId: number;
+  tabId: chrome.tabs.Tab['id'] | undefined;
+  // tabId: number;
+  // active?: boolean;
+
   currentIndex: number;
-  matchesObj: Match[];
   matchesCount: number;
+  // matchesObj: Match[];
+  matchesObj: string | any[];
 }
 
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
-  matchesObj?: { [tabId: number]: Match[] };
+  // matchesObj?: { [tabId: number]: Match[] };
   tabs?: { [tabId: number]: StoredTab };
   layoverPosition?: LayoverPosition;
 }
@@ -201,20 +205,20 @@ export function clearAllStoredTabs(): Promise<void> {
   return setLocalStorageItem(key, {});
 }
 
-export async function clearStoredMatchesObject() {
-  return new Promise<void>((resolve) => {
-    chrome.storage.local.get(null, (items) => {
-      const allKeys = Object.keys(items);
+// export async function clearStoredMatchesObject() {
+//   return new Promise<void>((resolve) => {
+//     chrome.storage.local.get(null, (items) => {
+//       const allKeys = Object.keys(items);
 
-      // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
-      const matchesObjKeys = allKeys.filter((key) =>
-        key.startsWith('matchesObjOuterHtml_')
-      );
+//       // Filter the keys to only include those that start with 'matchesObjOuterHtml_'
+//       const matchesObjKeys = allKeys.filter((key) =>
+//         key.startsWith('matchesObjOuterHtml_')
+//       );
 
-      // Remove the filtered keys from local storage
-      chrome.storage.local.remove(matchesObjKeys, () => {
-        resolve();
-      });
-    });
-  });
-}
+//       // Remove the filtered keys from local storage
+//       chrome.storage.local.remove(matchesObjKeys, () => {
+//         resolve();
+//       });
+//     });
+//   });
+// }
