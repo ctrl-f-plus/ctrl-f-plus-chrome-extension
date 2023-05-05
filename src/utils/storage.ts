@@ -1,4 +1,4 @@
-import { TabState } from '../interfaces/tab.types';
+import { TabId, TabState } from '../interfaces/tab.types';
 
 // src/utils/storage.ts
 export interface Match {
@@ -13,7 +13,6 @@ export interface LayoverPosition {
 }
 
 // FIXME: review for duplicates
-
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
@@ -23,7 +22,6 @@ export interface LocalStorage {
 }
 
 export type LocalStorageKeys = keyof LocalStorage;
-export type TabId = chrome.tabs.Tab['id'];
 
 async function getLocalStorageItem<T extends LocalStorageKeys>(
   key: T
@@ -196,6 +194,8 @@ export function clearAllStoredTabs(): Promise<void> {
   return setLocalStorageItem(key, {});
 }
 
+
+export { TabId };
 // export async function clearStoredMatchesObject() {
 //   return new Promise<void>((resolve) => {
 //     chrome.storage.local.get(null, (items) => {

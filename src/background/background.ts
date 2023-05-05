@@ -6,111 +6,20 @@ import {
   SwitchedActiveTabShowLayover,
 } from '../interfaces/message.types';
 import {
-  executeContentScriptOnAllTabs,
-  executeContentScriptWithMessage,
   getOrderedTabs,
+  handleGetAllMatchesMsg,
+  handleNextPrevMatch,
+  handleRemoveAllHighlightMatches,
+  handleToggleStylesAllTabs,
+  handleUpdateTabStatesObj,
+  sendTabMessage,
   switchTab,
-  updateMatchesCount,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
-import { clearLocalStorage, setStoredTabs } from '../utils/storage';
-import { initStore, resetStore, updateStore } from './store';
+import { clearLocalStorage } from '../utils/storage';
+import { initStore } from './store';
 
 export const store = initStore();
-
-export async function handleGetAllMatchesMsg(findValue: string) {
-  resetStore(store);
-
-  executeContentScriptOnAllTabs(findValue, store);
-}
-
-export async function handleNextPrevMatch(
-  sender: chrome.runtime.MessageSender,
-  type: string
-) {
-  if (sender.tab && sender.tab.id) {
-    const response = await executeContentScriptWithMessage(sender.tab.id, type);
-
-    const tabState = store.tabStates[sender.tab.id];
-
-    if (response.status === 'success') {
-      const currentIndex = response.serializedState2.currentIndex;
-
-      updateStore(store, {
-        globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-        tabStates: {
-          ...store.tabStates,
-          [sender.tab.id]: {
-            ...tabState,
-            currentIndex,
-          },
-        },
-      });
-    }
-  }
-}
-
-export async function handleToggleStylesAllTabs(addStyles: boolean) {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    tabs.forEach((tab) => {
-      if (tab.id) {
-        chrome.tabs.sendMessage(tab.id, {
-          type: addStyles ? 'add-styles' : 'remove-styles',
-        });
-      }
-    });
-  });
-
-  updateStore(store, {
-    showLayover: addStyles,
-    showMatches: addStyles,
-  });
-}
-
-export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    const tabPromises = tabs.map((tab) => {
-      return new Promise((resolve) => {
-        if (tab.id) {
-          chrome.tabs.sendMessage(
-            tab.id,
-            {
-              type: 'remove-all-highlight-matches',
-            },
-            (response) => {
-              resolve(response);
-            }
-          );
-        } else {
-          resolve(null);
-        }
-      });
-    });
-
-    Promise.all(tabPromises).then((responses) => {
-      sendResponse(responses);
-    });
-
-    return true;
-  });
-}
-
-export async function handleUpdateTabStatesObj(
-  payload: any,
-  sendResponse: Function
-) {
-  const { serializedState2 } = payload;
-  await setStoredTabs(serializedState2);
-
-  store.updatedTabsCount++;
-
-  if (store.updatedTabsCount === store.totalTabs) {
-    updateMatchesCount();
-    store.updatedTabsCount = 0;
-  }
-
-  sendResponse({ status: 'success' });
-}
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
@@ -158,17 +67,13 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // TODO:(***101): Here
   const orderedTabs = await getOrderedTabs();
 
-  // chrome.tabs.sendMessage(tabId, {
-  //   from: 'background',
-  //   type: 'tab-activated',
-  // });
-
   const message1: SwitchedActiveTabShowLayover = {
     // TODO:reset currentIndex so that when you hit next on the new tab it highlights the first match on that page
     from: 'background',
     type: 'switched-active-tab-show-layover',
   };
-  chrome.tabs.sendMessage(tabId, message1);
+
+  sendTabMessage(tabId, message1);
 
   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
@@ -178,7 +83,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
         from: 'background',
         type: 'switched-active-tab-hide-layover',
       };
-      chrome.tabs.sendMessage(otherTab.id, message2);
+      sendTabMessage(otherTab.id, message2);
     }
   }
 });
@@ -190,7 +95,7 @@ chrome.commands.onCommand.addListener((command) => {
     // chrome.tabs.query({ active:currentWindow: true }, (tabs) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { command });
+        sendTabMessage(tabs[0].id, { command });
       }
     });
   }

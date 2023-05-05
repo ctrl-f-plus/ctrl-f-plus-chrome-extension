@@ -1,15 +1,27 @@
 // src/utils/backgroundUtils.ts
 
 import { store } from '../background/background';
-import { Store, updateStore } from '../background/store';
+import { Store, resetStore, updateStore } from '../background/store';
 import {
   SwitchedActiveTabShowLayover,
   UpdateHighlightsMessage,
 } from '../interfaces/message.types';
-import { getAllStoredTabs } from '../utils/storage';
+import { TabId, getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
-// TODO:DRY these
-function executeContentScript(
+/* Utility/Helper Functions: */
+export function sendTabMessage(tabId: TabId, message: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId as number, message, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(response);
+      }
+    });
+  });
+}
+
+async function executeContentScript(
   findValue: string,
   tab: chrome.tabs.Tab,
   store: Store
@@ -17,57 +29,100 @@ function executeContentScript(
   hasMatch: boolean;
   state: any;
 }> {
-  return new Promise<{ hasMatch: boolean; state: any }>((resolve, reject) => {
-    if (tab.id === undefined) {
-      console.warn('executeContentScript: Tab ID is undefined:', tab);
-      reject({ hasMatch: false, state: null });
-      return;
-    }
-
-    const tabId = tab.id as number;
-
-    chrome.tabs.sendMessage(
-      tabId,
-      {
-        from: 'background',
-        type: 'highlight',
-        findValue: findValue,
-        tabId: tab.id,
-        tabState: {},
-      },
-      async (response) => {
-        if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError);
-          reject({ hasMatch: false, state: null });
-        } else {
-          const { tabId, currentIndex, matchesCount } =
-            response.serializedState2;
-
-          if (typeof tab.id === 'number') {
-            updateStore(store, {
-              totalMatchesCount: store.totalMatchesCount + matchesCount,
-              tabStates: {
-                ...store.tabStates,
-                [tabId]: {
-                  tabId,
-                  active: false, //FIXME:
-                  currentIndex,
-                  matchesCount,
-                  serializedMatches: response.serializedState2.matchesObj,
-                  globalMatchIdxStart: store.totalMatchesCount,
-                  matchesObj: [],
-                },
-              },
-            });
-          }
-
-          resolve(response);
-        }
+  return new Promise<{ hasMatch: boolean; state: any }>(
+    async (resolve, reject) => {
+      if (tab.id === undefined) {
+        console.warn('executeContentScript: Tab ID is undefined:', tab);
+        reject({ hasMatch: false, state: null });
+        return;
       }
-    );
+
+      const tabId: TabId = tab.id as number;
+
+      try {
+        const response = await sendTabMessage(tabId, {
+          from: 'background',
+          type: 'highlight',
+          findValue: findValue,
+          tabId: tab.id,
+          tabState: {},
+        });
+
+        const {
+          tabId: responseTabId,
+          currentIndex,
+          matchesCount,
+        } = response.serializedState2;
+
+        if (typeof tab.id === 'number') {
+          updateStore(store, {
+            totalMatchesCount: store.totalMatchesCount + matchesCount,
+            tabStates: {
+              ...store.tabStates,
+              [tabId]: {
+                tabId,
+                active: false, //FIXME:
+                currentIndex,
+                matchesCount,
+                serializedMatches: response.serializedState2.matchesObj,
+                globalMatchIdxStart: store.totalMatchesCount,
+                matchesObj: [],
+              },
+            },
+          });
+        }
+
+        resolve(response);
+      } catch (error) {
+        reject({ hasMatch: false, state: null });
+      }
+    }
+  );
+}
+
+export async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
+  return new Promise<chrome.tabs.Tab[]>((resolve) => {
+    chrome.tabs.query({ currentWindow: true }, (tabs) => {
+      const activeTabIndex = tabs.findIndex((tab) => tab.active);
+      const orderedTabs = [
+        ...tabs.slice(activeTabIndex + 1),
+        ...tabs.slice(0, activeTabIndex),
+      ];
+      resolve(orderedTabs);
+    });
   });
 }
 
+export async function updateMatchesCount() {
+  const storedTabs = await getAllStoredTabs();
+
+  let totalMatchesCount = 0;
+  for (const tabId in storedTabs) {
+    if (storedTabs.hasOwnProperty(tabId)) {
+      totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
+    }
+  }
+  const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
+
+  for (const tabId of tabIds) {
+    sendTabMessage(tabId, {
+      from: 'background',
+      type: 'update-matches-count',
+      payload: {
+        totalMatchesCount,
+      },
+    });
+  }
+}
+
+// 'Match X/Y (Total: Z)';
+export async function updateTotalTabsCount(store: Store) {
+  store.totalTabs = await new Promise<number>((resolve) => {
+    chrome.tabs.query({ currentWindow: true }, (tabs) => resolve(tabs.length));
+  });
+}
+
+/* Main Functions: */
 export async function executeContentScriptOnAllTabs(
   findValue: string,
   store: Store
@@ -75,7 +130,9 @@ export async function executeContentScriptOnAllTabs(
   const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
     chrome.tabs.query({ currentWindow: true }, resolve);
   });
+
   const activeTabIndex = tabs.findIndex((tab) => tab.active);
+
   const orderedTabs = [
     ...tabs.slice(activeTabIndex),
     ...tabs.slice(0, activeTabIndex),
@@ -93,7 +150,7 @@ export async function executeContentScriptOnAllTabs(
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        chrome.tabs.sendMessage(tab.id, {
+        await sendTabMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
           state: store.tabStates[tab.id],
@@ -127,23 +184,22 @@ export async function executeContentScriptOnAllTabs(
   }
 }
 
-export function executeContentScriptWithMessage(
+export async function executeContentScriptWithMessage(
   tabId: number,
   messageType: string
 ): Promise<any> {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.sendMessage(
+  try {
+    const response = await sendTabMessage(tabId, {
+      from: 'background',
+      type: messageType,
       tabId,
-      {
-        from: 'background',
-        type: messageType,
-        tabId,
-      },
-      (response) => {
-        resolve(response);
-      }
-    );
-  });
+    });
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
 export async function switchTab(serializedState2: any) {
@@ -152,17 +208,6 @@ export async function switchTab(serializedState2: any) {
     return;
   }
 
-  //, prevIndex) {
-  // if (serializedState2.tab.id === undefined) {
-  //   console.warn('switchTab: Tab ID is undefined:', serializedState2.tab);
-  //   return;
-  // }
-
-  // TODO: START HERE!! =>
-  //    1) Clean this up (storedTabs vs matchesObject var naming)
-  // //    2) Clean up all old references to matchesObj[tabId]
-  //    3) Consolidate state/state2 naming convention into one name
-  //    4) matchesObj isn't actually an object? check this and potentially update name
   const storedTabs = await getAllStoredTabs();
   const matchesObject = storedTabs;
 
@@ -183,13 +228,15 @@ export async function switchTab(serializedState2: any) {
       state: serializedState2,
       prevIndex: undefined,
     };
-    chrome.tabs.sendMessage(tab.id, message);
+
+    await sendTabMessage(tab.id, message);
 
     const message2: SwitchedActiveTabShowLayover = {
       from: 'background',
       type: 'switched-active-tab-show-layover',
     };
-    chrome.tabs.sendMessage(tab.id, message2);
+
+    await sendTabMessage(tab.id, message2);
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
@@ -197,45 +244,90 @@ export async function switchTab(serializedState2: any) {
   });
 }
 
-export async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
-  return new Promise<chrome.tabs.Tab[]>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
-      const activeTabIndex = tabs.findIndex((tab) => tab.active);
-      const orderedTabs = [
-        ...tabs.slice(activeTabIndex + 1),
-        ...tabs.slice(0, activeTabIndex),
-      ];
-      resolve(orderedTabs);
-    });
-  });
+/* Event Handling Functions */
+export async function handleGetAllMatchesMsg(findValue: string) {
+  resetStore(store);
+
+  executeContentScriptOnAllTabs(findValue, store);
 }
 
-export async function updateMatchesCount() {
-  const storedTabs = await getAllStoredTabs();
+export async function handleNextPrevMatch(
+  sender: chrome.runtime.MessageSender,
+  type: string
+) {
+  if (sender.tab && sender.tab.id) {
+    const response = await executeContentScriptWithMessage(sender.tab.id, type);
 
-  let totalMatchesCount = 0;
-  for (const tabId in storedTabs) {
-    // if (storedTabs.hasOwnProperty(tabId)) {
-    if (storedTabs.hasOwnProperty(tabId)) {
-      totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
+    const tabState = store.tabStates[sender.tab.id];
+
+    if (response.status === 'success') {
+      const currentIndex = response.serializedState2.currentIndex;
+
+      updateStore(store, {
+        globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+        tabStates: {
+          ...store.tabStates,
+          [sender.tab.id]: {
+            ...tabState,
+            currentIndex,
+          },
+        },
+      });
     }
   }
-  const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
-
-  for (const tabId of tabIds) {
-    chrome.tabs.sendMessage(tabId, {
-      from: 'background',
-      type: 'update-matches-count',
-      payload: {
-        totalMatchesCount,
-      },
-    });
-  }
 }
 
-// 'Match X/Y (Total: Z)';
-export async function updateTotalTabsCount(store: Store) {
-  store.totalTabs = await new Promise<number>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => resolve(tabs.length));
+export async function handleToggleStylesAllTabs(addStyles: boolean) {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
+    tabs.forEach((tab) => {
+      if (tab.id) {
+        sendTabMessage(tab.id, {
+          type: addStyles ? 'add-styles' : 'remove-styles',
+        });
+      }
+    });
   });
+
+  updateStore(store, {
+    showLayover: addStyles,
+    showMatches: addStyles,
+  });
+}
+
+export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+  const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
+    chrome.tabs.query({ currentWindow: true }, resolve);
+  });
+
+  const tabPromises = tabs.map((tab) => {
+    if (tab.id) {
+      return sendTabMessage(tab.id, {
+        type: 'remove-all-highlight-matches',
+      });
+    } else {
+      return Promise.resolve(null);
+    }
+  });
+
+  const responses = await Promise.all(tabPromises);
+  sendResponse(responses);
+
+  return true;
+}
+
+export async function handleUpdateTabStatesObj(
+  payload: any,
+  sendResponse: Function
+) {
+  const { serializedState2 } = payload;
+  await setStoredTabs(serializedState2);
+
+  store.updatedTabsCount++;
+
+  if (store.updatedTabsCount === store.totalTabs) {
+    updateMatchesCount();
+    store.updatedTabsCount = 0;
+  }
+
+  sendResponse({ status: 'success' });
 }
