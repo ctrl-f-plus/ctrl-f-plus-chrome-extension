@@ -1,13 +1,13 @@
 // src/contentScript/contentScript.tsx
 
 import React, { useContext, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
-import { MessageFixMe } from '../types/message.types';
 import '../tailwind.css';
+import { MessageFixMe } from '../types/message.types';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
@@ -120,11 +120,13 @@ const App: React.FC<{}> = () => {
 
 const root = document.createElement('div');
 document.body.appendChild(root);
-ReactDOM.render(
+
+const reactRoot = createRoot(root);
+
+reactRoot.render(
   <React.StrictMode>
     <LayoverProvider>
       <App />
     </LayoverProvider>
-  </React.StrictMode>,
-  root
+  </React.StrictMode>
 );

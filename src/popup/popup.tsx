@@ -1,7 +1,7 @@
 // src/popup/popup.tsx
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import '../tailwind.css';
 // import './popup.css';
 import SearchInput from '../components/SearchInput';
@@ -22,4 +22,6 @@ const App: React.FC<{}> = () => {
 
 const root = document.createElement('div');
 document.body.appendChild(root);
-ReactDOM.render(<App />, root);
+
+const reactRoot = createRoot(root);
+reactRoot.render(<App />);
