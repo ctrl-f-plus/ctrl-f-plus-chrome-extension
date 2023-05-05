@@ -16,7 +16,7 @@ const state2: TabState = {
   matchesObj: [] as string | any[],
 };
 
-function callSerializedState(state2: TabState): SerializedTabState {
+export function callSerializedState(state2: TabState): SerializedTabState {
   const serializedState2 = { ...state2 };
   serializedState2.matchesObj = serializeMatchesObj(
     serializedState2.matchesObj

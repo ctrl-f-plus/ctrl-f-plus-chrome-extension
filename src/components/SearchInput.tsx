@@ -42,20 +42,9 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // const storedFindValue = await getStoredFindValue();
-    // debugger;
-
     if (searchInputRef.current) {
       const findValue = searchInputRef.current.value;
-      // debugger;
-
-      // // TODO: Start Here: something like
-      // if (storedFindValue === searchValue && showMatches && showLayover) {
-      //   //  then next-match else hendleSearch
-      //   handleNext();
-      // } else {
       handleSearch(findValue);
-      // }
     }
   };
 

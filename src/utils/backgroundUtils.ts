@@ -9,7 +9,9 @@ import {
 import { TabId } from '../types/tab.types';
 import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
-/* Utility/Helper Functions: */
+/**
+ *  Utility/Helper Functions:
+ */
 export function sendTabMessage(tabId: TabId, message: any): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
@@ -123,7 +125,9 @@ export async function updateTotalTabsCount(store: Store) {
   });
 }
 
-/* Main Functions: */
+/**
+ *  Main Functions:
+ */
 export async function executeContentScriptOnAllTabs(
   findValue: string,
   store: Store
@@ -246,7 +250,9 @@ export async function switchTab(serializedState2: any) {
   });
 }
 
-/* Event Handling Functions */
+/**
+ * Event Handling Functions
+ */
 export async function handleGetAllMatchesMsg(findValue: string) {
   resetStore(store);
 

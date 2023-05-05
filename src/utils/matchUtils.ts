@@ -1,9 +1,7 @@
-//@
-//ts-nocheck
-
 // src/utils/matchUtils.ts
+import { callSerializedState } from '../contentScripts/findMatchesScript';
+import { SwitchTabMessage } from '../types/message.types';
 import { TabState } from '../types/tab.types';
-import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
 
 export async function findAllMatches(state2: TabState, findValue: string) {
@@ -17,10 +15,7 @@ export async function findAllMatches(state2: TabState, findValue: string) {
     tabId: state2.tabId,
     state2: state2,
     callback: async () => {
-      const serializedState2 = { ...state2 };
-      serializedState2.matchesObj = serializeMatchesObj(
-        serializedState2.matchesObj
-      );
+      const serializedState2 = callSerializedState(state2);
 
       // FIXME: REVIEW this message
       chrome.runtime.sendMessage(
@@ -33,8 +28,6 @@ export async function findAllMatches(state2: TabState, findValue: string) {
         },
         function (response) {}
       );
-
-      console.log(state2.matchesObj);
     },
   });
 }
@@ -65,28 +58,21 @@ export function updateHighlights(
 }
 
 export async function nextMatch(state2: TabState) {
-  // ***5
-  console.log('getInnerHtmlScript - nextMatch()');
-
   if (typeof state2.currentIndex === 'undefined') {
     return;
   }
-  const prevIndex = state2.currentIndex;
 
+  const prevIndex = state2.currentIndex;
   state2.currentIndex = (state2.currentIndex + 1) % state2.matchesObj.length;
 
   if (state2.currentIndex === 0) {
     const endOfTab: boolean = true;
-
     updateHighlights(state2, prevIndex, endOfTab);
-
-    const serializedState2 = { ...state2 };
-    serializedState2.matchesObj = serializeMatchesObj(
-      serializedState2.matchesObj
-    );
+    const serializedState2 = callSerializedState(state2);
 
     // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
-    const message = {
+    const message: SwitchTabMessage = {
+      from: 'content-script-match-utils',
       type: 'switch-tab',
       serializedState2: serializedState2,
       prevIndex: undefined,

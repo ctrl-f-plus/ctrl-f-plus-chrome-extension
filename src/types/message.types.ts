@@ -1,7 +1,12 @@
 // src/interfaces/message.types.ts
 
 export interface BaseMessage {
-  from: 'background' | 'content' | 'match-utils' | 'inner-match-utils';
+  from:
+    | 'background'
+    | 'content'
+    | 'match-utils'
+    | 'inner-match-utils'
+    | 'content-script-match-utils';
   // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
@@ -64,12 +69,12 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
   type: 'remove-all-highlight-matches';
 }
 
-export interface SwitchTab extends BaseMessage {
-  from: 'match-utils';
+export interface SwitchTabMessage extends BaseMessage {
+  from: 'content-script-match-utils';
   type: 'switch-tab';
   state?: any; // Replace 'any' with the actual type of the 'state' object
   serializedState2?: any;
-  prevIndex: number;
+  prevIndex: number | undefined;
 }
 
 export interface UpdateHighlightsMessage extends BaseMessage {
@@ -102,7 +107,7 @@ export type Messages =
   | RemoveStylesAllTabs
   | AddStylesAllTabs
   | RemoveAllHighlightMatches
-  | SwitchTab
+  | SwitchTabMessage
   | UpdateHighlightsMessage
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
