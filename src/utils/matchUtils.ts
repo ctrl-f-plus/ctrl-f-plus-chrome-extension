@@ -2,9 +2,9 @@
 //ts-nocheck
 
 // src/utils/matchUtils.ts
-import { searchAndHighlight } from './searchAndHighlightUtils';
-import { serializeMatchesObj } from '../utils/htmlUtils';
 import { TabState } from '../types/tab.types';
+import { serializeMatchesObj } from '../utils/htmlUtils';
+import { searchAndHighlight } from './searchAndHighlightUtils';
 
 export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;

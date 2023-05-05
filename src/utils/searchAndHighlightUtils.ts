@@ -110,8 +110,6 @@ function processTextNode({
     }
 
     const span = createHighlightSpan({ matchText });
-    // TODO: HERE!
-    // matches.push(span);
 
     updateMatchesObject({ matchesObj, tabId, span });
     state2.matchesCount += 1;

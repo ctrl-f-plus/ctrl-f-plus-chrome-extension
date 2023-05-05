@@ -1,15 +1,42 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useReducer } from 'react';
 import { setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { LayoverAction, LayoverState } from '../types/layoverContext.types';
+
+const initialState: LayoverState = {
+  showLayover: false,
+  showMatches: false,
+  searchValue: '',
+  totalMatchesCount: 0,
+  globalMatchIdx: 0,
+};
+
+const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
+  switch (action.type) {
+    case 'SET_SHOW_LAYOVER':
+      return { ...state, showLayover: action.payload };
+    case 'SET_SHOW_MATCHES':
+      return { ...state, showMatches: action.payload };
+    case 'SET_SEARCH_VALUE':
+      return { ...state, searchValue: action.payload };
+    case 'SET_TOTAL_MATCHES_COUNT':
+      return { ...state, totalMatchesCount: action.payload };
+    case 'SET_GLOBAL_MATCH_IDX':
+      return { ...state, globalMatchIdx: action.payload };
+    default:
+      return state;
+  }
+};
 
 export const useLayoverHandler = () => {
-  const [showLayover, setShowLayover] = useState<boolean>(false);
-  const [showMatches, setShowMatches] = useState<boolean>(false);
-  const [searchValue, setSearchValue] = useState<string>('');
-  const [totalMatchesCount, setTotalMatchesCount] = useState<number>(0);
-  const [globalMatchIdx, setglobalMatchIdx] = useState<number>(0);
+  // const [showLayover, setShowLayover] = useState<boolean>(false);
+  // const [showMatches, setShowMatches] = useState<boolean>(false);
+  // const [searchValue, setSearchValue] = useState<string>('');
+  // const [totalMatchesCount, setTotalMatchesCount] = useState<number>(0);
+  // const [globalMatchIdx, setglobalMatchIdx] = useState<number>(0);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const { sendMessageToBackground } = useSendMessageToBackground();
 
@@ -21,7 +48,8 @@ export const useLayoverHandler = () => {
           type: 'add-styles-all-tabs',
         });
 
-        setShowMatches(true);
+        // setShowMatches(true);
+        dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
       };
 
       const closeSearchLayover = (searchValue: string) => {
@@ -31,29 +59,38 @@ export const useLayoverHandler = () => {
           from: 'content',
           type: 'remove-styles-all-tabs',
         });
-        setShowMatches(false);
+
+        dispatch({ type: 'SET_SHOW_MATCHES', payload: false });
       };
 
-      const newState =
-        forceShowLayover === undefined ? !showLayover : forceShowLayover;
+      // const newState =
+      //   forceShowLayover === undefined ? !showLayover : forceShowLayover;
 
-      newState ? openSearchLayover() : closeSearchLayover(searchValue);
-      setShowLayover(newState);
+      const newState =
+        forceShowLayover === undefined ? !state.showLayover : forceShowLayover;
+
+      newState ? openSearchLayover() : closeSearchLayover(state.searchValue);
+      dispatch({ type: 'SET_SHOW_LAYOVER', payload: newState });
     },
-    [sendMessageToBackground]
+    // [sendMessageToBackground]
+    [sendMessageToBackground, state.showLayover, state.searchValue]
   );
 
+  const setSearchValue = (value: string) => {
+    dispatch({ type: 'SET_SEARCH_VALUE', payload: value });
+  };
+
   return {
-    showLayover,
-    setShowLayover,
-    toggleSearchLayover,
-    searchValue,
+    ...state,
     setSearchValue,
-    showMatches,
-    setShowMatches,
-    totalMatchesCount,
-    setTotalMatchesCount,
-    globalMatchIdx,
-    setglobalMatchIdx,
+    setShowLayover: (value: boolean) =>
+      dispatch({ type: 'SET_SHOW_LAYOVER', payload: value }),
+    toggleSearchLayover,
+    setShowMatches: (value: boolean) =>
+      dispatch({ type: 'SET_SHOW_MATCHES', payload: value }),
+    setTotalMatchesCount: (value: number) =>
+      dispatch({ type: 'SET_TOTAL_MATCHES_COUNT', payload: value }),
+    setglobalMatchIdx: (value: number) =>
+      dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
   };
 };
