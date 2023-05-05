@@ -1,44 +1,47 @@
 // src/hooks/useSearchHandler.ts
 
+import { useCallback } from 'react';
 import { clearAllStoredTabs, setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
 
 export const useSearchHandler = () => {
   const { sendMessageToBackground } = useSendMessageToBackground();
 
-  const handleSearch = async (findValue: string) => {
-    setStoredFindValue(findValue);
+  const handleSearch = useCallback(
+    async (findValue: string): Promise<void> => {
+      setStoredFindValue(findValue);
 
-    await clearAllStoredTabs();
+      await clearAllStoredTabs();
 
-    await sendMessageToBackground({
-      from: 'content',
-      type: 'remove-all-highlight-matches',
-    });
+      await sendMessageToBackground({
+        from: 'content',
+        type: 'remove-all-highlight-matches',
+      });
 
-    if (findValue === '') return;
+      if (findValue === '') return;
 
-    sendMessageToBackground({
-      from: 'content',
-      type: 'get-all-matches-msg',
-      payload: findValue,
-    });
-  };
+      sendMessageToBackground({
+        from: 'content',
+        type: 'get-all-matches-msg',
+        payload: findValue,
+      });
+    },
+    [sendMessageToBackground]
+  );
 
-  // ***1
-  const handleNext = () => {
+  const handleNext = useCallback((): void => {
     sendMessageToBackground({
       from: 'content',
       type: 'next-match',
     });
-  };
+  }, [sendMessageToBackground]);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback((): void => {
     sendMessageToBackground({
       from: 'content',
       type: 'prev-match',
     });
-  };
+  }, [sendMessageToBackground]);
 
   return {
     handleSearch,

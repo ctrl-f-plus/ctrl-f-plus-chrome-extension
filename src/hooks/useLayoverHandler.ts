@@ -31,11 +31,6 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
 };
 
 export const useLayoverHandler = () => {
-  // const [showLayover, setShowLayover] = useState<boolean>(false);
-  // const [showMatches, setShowMatches] = useState<boolean>(false);
-  // const [searchValue, setSearchValue] = useState<string>('');
-  // const [totalMatchesCount, setTotalMatchesCount] = useState<number>(0);
-  // const [globalMatchIdx, setglobalMatchIdx] = useState<number>(0);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { sendMessageToBackground } = useSendMessageToBackground();
@@ -48,7 +43,6 @@ export const useLayoverHandler = () => {
           type: 'add-styles-all-tabs',
         });
 
-        // setShowMatches(true);
         dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
       };
 
@@ -63,16 +57,13 @@ export const useLayoverHandler = () => {
         dispatch({ type: 'SET_SHOW_MATCHES', payload: false });
       };
 
-      // const newState =
-      //   forceShowLayover === undefined ? !showLayover : forceShowLayover;
-
       const newState =
         forceShowLayover === undefined ? !state.showLayover : forceShowLayover;
 
       newState ? openSearchLayover() : closeSearchLayover(state.searchValue);
       dispatch({ type: 'SET_SHOW_LAYOVER', payload: newState });
     },
-    // [sendMessageToBackground]
+
     [sendMessageToBackground, state.showLayover, state.searchValue]
   );
 

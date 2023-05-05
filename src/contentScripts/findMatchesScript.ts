@@ -1,6 +1,6 @@
 // src/contentScripts/findMatchesScript.ts
 
-import { TabState } from '../types/tab.types';
+import { SerializedTabState, TabId, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import {
   findAllMatches,
@@ -10,53 +10,62 @@ import {
 } from '../utils/matchUtils';
 
 const state2: TabState = {
-  tabId: undefined,
+  tabId: undefined as TabId | undefined,
   currentIndex: undefined,
   matchesCount: undefined,
   matchesObj: [] as string | any[],
 };
 
-type SerializedMatchesObj = string;
+function callSerializedState(state2: TabState): SerializedTabState {
+  const serializedState2 = { ...state2 };
+  serializedState2.matchesObj = serializeMatchesObj(
+    serializedState2.matchesObj
+  );
 
-// console.log(new Date().toLocaleString());
+  return serializedState2;
+}
+
+async function handleHighlight(
+  state2: TabState,
+  findValue: string,
+  tabId: TabId,
+  sendResponse: Function
+): Promise<void> {
+  state2.tabId = tabId;
+
+  await findAllMatches(state2, findValue);
+
+  const serializedState2 = callSerializedState(state2);
+
+  sendResponse({
+    hasMatch: state2.matchesObj.length > 0,
+    serializedState2: serializedState2,
+  });
+}
+
+async function handleNextMatch(
+  state2: TabState,
+  sendResponse: Function
+): Promise<void> {
+  if (state2.matchesObj.length > 0) await nextMatch(state2);
+
+  const serializedState2 = callSerializedState(state2);
+
+  sendResponse({
+    serializedState2: serializedState2,
+    status: 'success',
+  });
+}
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const { from, type, findValue, tabId, tabState } = message;
-  let serializedState2;
 
   switch (`${from}:${type}`) {
     case 'background:highlight':
-      state2.tabId = message.tabId;
-
-      await findAllMatches(state2, findValue);
-
-      // TODO: DRY
-      serializedState2 = { ...state2 };
-
-      serializedState2.matchesObj = serializeMatchesObj(
-        serializedState2.matchesObj
-      );
-
-      sendResponse({
-        hasMatch: state2.matchesObj.length > 0,
-        serializedState2: serializedState2,
-      });
-
+      await handleHighlight(state2, findValue, tabId, sendResponse);
       return true;
     case 'background:next-match':
-      if (state2.matchesObj.length > 0) await nextMatch(state2);
-
-      // TODO: DRY
-      serializedState2 = { ...state2 };
-      serializedState2.matchesObj = serializeMatchesObj(
-        serializedState2.matchesObj
-      );
-
-      sendResponse({
-        serializedState2: serializedState2,
-        status: 'success',
-      });
-
+      handleNextMatch(state2, sendResponse);
       return true;
     case 'background:prev-match':
       previousMatch(state2);

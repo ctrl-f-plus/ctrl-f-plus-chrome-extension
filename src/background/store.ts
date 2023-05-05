@@ -14,9 +14,6 @@ export interface Store {
   layoverPosition: LayoverPosition;
   showLayover: boolean;
   showMatches: boolean;
-  // tabStates: {
-  //   [tabId: number]: TabState;
-  // };
   tabStates: Record<ValidTabId, TabState>;
 }
 

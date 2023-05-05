@@ -8,7 +8,6 @@ export const useMessageHandler = (messageHandler: MessageHandler) => {
   useEffect(() => {
     chrome.runtime.onMessage.addListener(messageHandler);
 
-    // Cleanup the event listener on unmount
     return () => {
       chrome.runtime.onMessage.removeListener(messageHandler);
     };
