@@ -1,6 +1,6 @@
 // src/contentScripts/findMatchesScript.ts
 
-import { TabState } from '../interfaces/tab.types';
+import { TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import {
   findAllMatches,

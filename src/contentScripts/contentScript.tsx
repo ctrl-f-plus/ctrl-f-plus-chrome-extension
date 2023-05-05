@@ -6,7 +6,7 @@ import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
-import { MessageFixMe } from '../interfaces/message.types';
+import { MessageFixMe } from '../types/message.types';
 import '../tailwind.css';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';

@@ -10,11 +10,15 @@ import Draggable, {
 
 // TODO: update so that the stored Position is coming from the background script's store object
 import {
-  LayoverPosition,
   TabId,
   getStoredLayoverPosition,
   setStoredLayoverPosition,
 } from '../utils/storage';
+
+export interface LayoverPosition {
+  x: number;
+  y: number;
+}
 
 interface LayoverProps {
   children: React.ReactNode;

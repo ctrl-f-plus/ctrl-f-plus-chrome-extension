@@ -1,4 +1,5 @@
-import { TabId, TabState } from '../interfaces/tab.types';
+import { LayoverPosition } from '../components/Layover';
+import { TabId, TabState } from '../types/tab.types';
 
 // src/utils/storage.ts
 export interface Match {
@@ -7,16 +8,10 @@ export interface Match {
   id: string;
 }
 
-export interface LayoverPosition {
-  x: number;
-  y: number;
-}
-
 // FIXME: review for duplicates
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
-  // matchesObj?: { [tabId: number]: Match[] };
   tabs?: { [tabId: number]: TabState };
   layoverPosition?: LayoverPosition;
 }
@@ -193,7 +188,6 @@ export function clearAllStoredTabs(): Promise<void> {
 
   return setLocalStorageItem(key, {});
 }
-
 
 export { TabId };
 // export async function clearStoredMatchesObject() {

@@ -15,7 +15,7 @@ import React, {
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { useSearchHandler } from '../hooks/useSearchHandler';
-import { SearchInputProps } from '../interfaces/searchInput.types';
+import { SearchInputProps } from '../types/searchInput.types';
 import { getStoredFindValue } from '../utils/storage';
 
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {

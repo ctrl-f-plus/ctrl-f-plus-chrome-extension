@@ -4,7 +4,7 @@ import {
   Messages,
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
-} from '../interfaces/message.types';
+} from '../types/message.types';
 import {
   getOrderedTabs,
   handleGetAllMatchesMsg,

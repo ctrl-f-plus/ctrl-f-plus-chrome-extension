@@ -6,7 +6,7 @@ import {
   ProcessTextNodeProps,
   SearchAndHighlightProps,
   UpdateMatchesObjectProps,
-} from '../interfaces/searchAndHighlight.types';
+} from '../types/searchAndHighlight.types';
 
 function isVisible(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {

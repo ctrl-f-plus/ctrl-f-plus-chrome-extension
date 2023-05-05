@@ -5,7 +5,7 @@ import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
-} from '../interfaces/layoverContext.type';
+} from '../types/layoverContext.type';
 
 // TODO: Potentially move searchValue and setSearchValue out of this file
 export const LayoverContext = createContext<LayoverContextData>({

@@ -5,7 +5,7 @@ import { Store, resetStore, updateStore } from '../background/store';
 import {
   SwitchedActiveTabShowLayover,
   UpdateHighlightsMessage,
-} from '../interfaces/message.types';
+} from '../types/message.types';
 import { TabId, getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
 /* Utility/Helper Functions: */
