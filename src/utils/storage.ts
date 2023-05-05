@@ -1,7 +1,8 @@
+// src/utils/storage.ts
+
 import { LayoverPosition } from '../components/Layover';
 import { TabId, TabState } from '../types/tab.types';
 
-// src/utils/storage.ts
 export interface Match {
   innerText: string;
   className: string;
@@ -189,7 +190,6 @@ export function clearAllStoredTabs(): Promise<void> {
   return setLocalStorageItem(key, {});
 }
 
-export { TabId };
 // export async function clearStoredMatchesObject() {
 //   return new Promise<void>((resolve) => {
 //     chrome.storage.local.get(null, (items) => {

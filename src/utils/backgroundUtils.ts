@@ -6,7 +6,8 @@ import {
   SwitchedActiveTabShowLayover,
   UpdateHighlightsMessage,
 } from '../types/message.types';
-import { TabId, getAllStoredTabs, setStoredTabs } from '../utils/storage';
+import { TabId } from '../types/tab.types';
+import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
 /* Utility/Helper Functions: */
 export function sendTabMessage(tabId: TabId, message: any): Promise<any> {
@@ -150,7 +151,8 @@ export async function executeContentScriptOnAllTabs(
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        await sendTabMessage(tab.id, {
+        // FIXME: Cannot use sendTabMessage here for some reason
+        chrome.tabs.sendMessage(tab.id, {
           from: 'background',
           type: 'update-highlights',
           state: store.tabStates[tab.id],

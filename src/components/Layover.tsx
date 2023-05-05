@@ -10,10 +10,10 @@ import Draggable, {
 
 // TODO: update so that the stored Position is coming from the background script's store object
 import {
-  TabId,
   getStoredLayoverPosition,
   setStoredLayoverPosition,
 } from '../utils/storage';
+import { TabId } from '../types/tab.types';
 
 export interface LayoverPosition {
   x: number;
