@@ -3,7 +3,7 @@
 import { store } from '../background/background';
 import { Store, resetStore, updateStore } from '../background/store';
 import { UpdateHighlightsMessage } from '../types/message.types';
-import { TabId } from '../types/tab.types';
+import { SerializedTabState, TabId } from '../types/tab.types';
 import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
 /**
@@ -66,7 +66,6 @@ async function executeContentScript(
                 matchesCount,
                 serializedMatches: response.serializedState2.matchesObj,
                 globalMatchIdxStart: store.totalMatchesCount,
-                matchesObj: [],
               },
             },
           });
@@ -206,7 +205,9 @@ export async function executeContentScriptWithMessage(
   }
 }
 
-export async function switchTab(serializedState2: any): Promise<void> {
+export async function switchTab(
+  serializedState2: SerializedTabState
+): Promise<void> {
   if (serializedState2.tabId === undefined) {
     console.warn('switchTab: Tab ID is undefined:', serializedState2);
     return;

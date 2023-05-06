@@ -1,7 +1,7 @@
 // src/utils/storage.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { TabId, TabState } from '../types/tab.types';
+import { TabId, SerializedTabState } from '../types/tab.types';
 
 export interface Match {
   innerText: string;
@@ -13,7 +13,7 @@ export interface Match {
 export interface LocalStorage {
   findValue?: string;
   allMatches?: Match[];
-  tabs?: { [tabId: number]: TabState };
+  tabs?: { [tabId: number]: SerializedTabState };
   layoverPosition?: LayoverPosition;
 }
 
@@ -76,7 +76,9 @@ export function setStoredFindValue(findValue: string): Promise<void> {
   // });
 }
 
-export function getAllStoredTabs(): Promise<{ [tabId: number]: TabState }> {
+export function getAllStoredTabs(): Promise<{
+  [tabId: number]: SerializedTabState;
+}> {
   // const key: LocalStorageKeys[] = ['tabs'];
 
   // return new Promise((resolve, reject) => {
@@ -90,7 +92,7 @@ export function getAllStoredTabs(): Promise<{ [tabId: number]: TabState }> {
   return getLocalStorageItem('tabs').then((tabs) => tabs ?? {});
 }
 
-export function getStoredTab(tabId: TabId): Promise<TabState> {
+export function getStoredTab(tabId: TabId): Promise<SerializedTabState> {
   // const key: LocalStorageKeys[] = ['tabs'];
 
   // return new Promise((resolve, reject) => {
@@ -115,7 +117,9 @@ export function getStoredTab(tabId: TabId): Promise<TabState> {
   });
 }
 
-export function setStoredTabs(serializedState2: any): Promise<void> {
+export function setStoredTabs(
+  serializedState2: SerializedTabState
+): Promise<void> {
   // const vals: LocalStorage = { tabs };
   // return new Promise((resolve, reject) => {
   // const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
@@ -142,9 +146,10 @@ export function setStoredTabs(serializedState2: any): Promise<void> {
   // });
 
   const key: LocalStorageKeys = 'tabs';
-  const { tabId, currentIndex, matchesObj, matchesCount } = serializedState2;
+  const { tabId, currentIndex, serializedMatches, matchesCount } =
+    serializedState2;
 
-  if (!tabId || !matchesObj || !matchesCount) {
+  if (!tabId || !serializedMatches || !matchesCount) {
     throw new Error('Invalid tab storage object');
   }
 

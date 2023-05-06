@@ -1,7 +1,7 @@
 // src/utils/matchUtils.ts
-import { callSerializedState } from '../contentScripts/findMatchesScript';
 import { SwitchTabMessage } from '../types/message.types';
-import { TabState } from '../types/tab.types';
+import { SerializedTabState, TabState } from '../types/tab.types';
+import { serializeMatchesObj } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
 import { sendMessageToBackground } from './sendMessageToBackground';
 
@@ -16,7 +16,9 @@ export async function findAllMatches(state2: TabState, findValue: string) {
     tabId: state2.tabId,
     state2: state2,
     callback: async () => {
-      const serializedState2 = callSerializedState(state2);
+      const serializedState2: SerializedTabState = serializeMatchesObj({
+        ...state2,
+      });
 
       // FIXME: REVIEW this message
       chrome.runtime.sendMessage(
@@ -71,7 +73,9 @@ export async function nextMatch(state2: TabState): Promise<void> {
   if (state2.currentIndex === 0) {
     const endOfTab: boolean = true;
     await updateHighlights(state2, prevIndex, endOfTab);
-    const serializedState2 = callSerializedState(state2);
+    const serializedState2: SerializedTabState = serializeMatchesObj({
+      ...state2,
+    });
 
     // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
     const msg: SwitchTabMessage = {

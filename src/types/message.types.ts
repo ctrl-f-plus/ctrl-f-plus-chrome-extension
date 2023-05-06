@@ -1,6 +1,6 @@
 // src/interfaces/message.types.ts
 
-import { TabState } from './tab.types';
+import { TabState, SerializedTabState } from './tab.types';
 
 export interface BaseMessage {
   from:
@@ -82,7 +82,7 @@ export interface SwitchTabMessage extends BaseMessage {
 export interface UpdateHighlightsMessage extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
-  state?: TabState;
+  state?: SerializedTabState;
   prevIndex: number | undefined;
 }
 export interface SwitchedActiveTabShowLayover extends BaseMessage {

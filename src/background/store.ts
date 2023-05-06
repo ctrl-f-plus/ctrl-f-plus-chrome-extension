@@ -1,7 +1,7 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { TabState, ValidTabId } from '../types/tab.types';
+import { SerializedTabState, TabState, ValidTabId } from '../types/tab.types';
 
 export interface Store {
   globalMatchIdx: number;
@@ -14,7 +14,7 @@ export interface Store {
   layoverPosition: LayoverPosition;
   showLayover: boolean;
   showMatches: boolean;
-  tabStates: Record<ValidTabId, TabState>;
+  tabStates: Record<ValidTabId, SerializedTabState>;
 }
 
 export function initStore() {

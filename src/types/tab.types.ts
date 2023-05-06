@@ -13,11 +13,10 @@ export interface BaseTab {
 // FIXME: remove serializedMatches from TabState
 export interface TabState extends BaseTab {
   matchesObj: string | any[];
-  serializedMatches?: string;
 }
 
 export interface SerializedTabState extends BaseTab {
-  serializedMatches?: string;
+  serializedMatches: string;
 }
 
 // type SerializedMatchesObj = string;

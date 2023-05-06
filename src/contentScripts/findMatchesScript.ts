@@ -17,10 +17,11 @@ const state2: TabState = {
 };
 
 export function callSerializedState(state2: TabState): SerializedTabState {
-  const serializedState2 = { ...state2 };
-  serializedState2.matchesObj = serializeMatchesObj(
-    serializedState2.matchesObj
-  );
+  debugger;
+  const serializedState2: SerializedTabState = serializeMatchesObj({
+    ...state2,
+  });
+  debugger;
 
   return serializedState2;
 }
@@ -35,7 +36,9 @@ async function handleHighlight(
 
   await findAllMatches(state2, findValue);
 
-  const serializedState2 = callSerializedState(state2);
+  const serializedState2: SerializedTabState = serializeMatchesObj({
+    ...state2,
+  });
 
   sendResponse({
     hasMatch: state2.matchesObj.length > 0,
@@ -49,7 +52,9 @@ async function handleNextMatch(
 ): Promise<void> {
   if (state2.matchesObj.length > 0) await nextMatch(state2);
 
-  const serializedState2 = callSerializedState(state2);
+  const serializedState2: SerializedTabState = serializeMatchesObj({
+    ...state2,
+  });
 
   sendResponse({
     serializedState2: serializedState2,

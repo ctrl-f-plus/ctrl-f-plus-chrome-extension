@@ -1,4 +1,7 @@
 //@ts-nocheck
+// src/utils/htmlUtils.ts
+
+import { SerializedTabState, TabState } from '../types/tab.types';
 
 export function getXPath(element) {
   if (element.id !== '') {
@@ -88,13 +91,35 @@ export function restoreHighlightSpans(xpathObj) {
 //   // return serializedXPaths;
 // }
 
-export function serializeMatchesObj(matchesObj) {
-  // const matchesObj = state.matchesObj;
-  const xpaths = generateXPaths(matchesObj);
-  const serializedXPaths = JSON.stringify(xpaths);
+///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 
-  return serializedXPaths;
+// export function serializeMatchesObj(matchesObj) {
+//   // const matchesObj = state.matchesObj;
+//   const xpaths = generateXPaths(matchesObj);
+//   const serializedXPaths = JSON.stringify(xpaths);
+
+//   return serializedXPaths;
+// }
+
+export type JSONString = string;
+
+export function serializeMatchesObj(
+  shallowStateObject: TabState
+): SerializedTabState {
+  const { matchesObj, ...otherProperties } = shallowStateObject;
+  const xpaths = generateXPaths(matchesObj);
+  const serializedXPaths: JSONString = JSON.stringify(xpaths);
+
+  const serializedState2: SerializedTabState = {
+    ...otherProperties,
+    serializedMatches: serializedXPaths,
+  };
+  return serializedState2;
 }
+
+///////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 
 export function deserializeMatchesObj(matchesObj) {
   // const serializedStoredXPaths = localStorage.getItem('storedXPaths');
