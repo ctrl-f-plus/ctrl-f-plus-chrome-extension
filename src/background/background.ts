@@ -103,17 +103,14 @@ chrome.commands.onCommand.addListener((command) => {
   }
 });
 
-// chrome.tabs.onCreated.addListener(updateTotalTabsCount);
 chrome.tabs.onCreated.addListener(() => {
   updateTotalTabsCount(store);
 });
 
-// chrome.tabs.onRemoved.addListener(updateTotalTabsCount);
 chrome.tabs.onRemoved.addListener(() => {
   updateTotalTabsCount(store);
 });
 
-// TODO: KEEP, but fix errors
 chrome.windows.onFocusChanged.addListener((windowId) => {
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     return;

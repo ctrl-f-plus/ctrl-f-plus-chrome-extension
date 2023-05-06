@@ -9,11 +9,11 @@ import Draggable, {
 } from 'react-draggable';
 
 // TODO: update so that the stored Position is coming from the background script's store object
+import { TabId } from '../types/tab.types';
 import {
   getStoredLayoverPosition,
   setStoredLayoverPosition,
 } from '../utils/storage';
-import { TabId } from '../types/tab.types';
 
 export interface LayoverPosition {
   x: number;

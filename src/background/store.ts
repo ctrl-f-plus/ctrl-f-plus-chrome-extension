@@ -1,7 +1,7 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { TabId, TabState, ValidTabId } from '../types/tab.types';
+import { TabState, ValidTabId } from '../types/tab.types';
 
 export interface Store {
   globalMatchIdx: number;

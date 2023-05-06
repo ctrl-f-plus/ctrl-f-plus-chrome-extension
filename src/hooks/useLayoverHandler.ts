@@ -1,9 +1,9 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useState, useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
+import { LayoverAction, LayoverState } from '../types/layoverContext.types';
 import { setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
-import { LayoverAction, LayoverState } from '../types/layoverContext.types';
 
 const initialState: LayoverState = {
   showLayover: false,
