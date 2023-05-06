@@ -1,5 +1,7 @@
 // src/interfaces/message.types.ts
 
+import { TabState } from './tab.types';
+
 export interface BaseMessage {
   from:
     | 'background'
@@ -72,7 +74,7 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
 export interface SwitchTabMessage extends BaseMessage {
   from: 'content-script-match-utils';
   type: 'switch-tab';
-  state?: any; // Replace 'any' with the actual type of the 'state' object
+  state?: TabState;
   serializedState2?: any;
   prevIndex: number | undefined;
 }
@@ -80,7 +82,7 @@ export interface SwitchTabMessage extends BaseMessage {
 export interface UpdateHighlightsMessage extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
-  state: any; // Replace 'any' with the actual type of the 'state' object
+  state?: TabState;
   prevIndex: number | undefined;
 }
 export interface SwitchedActiveTabShowLayover extends BaseMessage {

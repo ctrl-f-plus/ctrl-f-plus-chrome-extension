@@ -28,28 +28,30 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       case 'get-all-matches-msg':
         await handleGetAllMatchesMsg(payload);
-        return;
+        console.log('get-all-matches-msg', store);
+        return true;
       case 'next-match':
       case 'prev-match':
         await handleNextPrevMatch(sender, type);
-        return;
+        console.log('next-match', store);
+        return true;
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
-        return;
+        return true;
       case 'add-styles-all-tabs':
         await handleToggleStylesAllTabs(true);
-        return;
+        return true;
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
         await switchTab(message.serializedState2);
-
-        // TODO: NEED TO FIX THIS SO THAT STATE ISN'T UPDATED UNTIL AFTER THIS IS DONE. Currently it updates after next-match is finished and then updates again here, in switch-tab
-        return;
+        console.log('switch-tab', store);
+        return true;
       case 'update-tab-states-obj':
+        console.log('update-tab-states-obj', store);
         await handleUpdateTabStatesObj(payload, sendResponse);
-        return;
+        return true;
       default:
         break;
     }

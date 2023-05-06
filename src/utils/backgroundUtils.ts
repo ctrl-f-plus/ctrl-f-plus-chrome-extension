@@ -2,10 +2,7 @@
 
 import { store } from '../background/background';
 import { Store, resetStore, updateStore } from '../background/store';
-import {
-  SwitchedActiveTabShowLayover,
-  UpdateHighlightsMessage,
-} from '../types/message.types';
+import { UpdateHighlightsMessage } from '../types/message.types';
 import { TabId } from '../types/tab.types';
 import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 
@@ -204,11 +201,12 @@ export async function executeContentScriptWithMessage(
     return response;
   } catch (error) {
     console.log(error);
-    return null;
+    const response = { status: 'failed' };
+    return response;
   }
 }
 
-export async function switchTab(serializedState2: any) {
+export async function switchTab(serializedState2: any): Promise<void> {
   if (serializedState2.tabId === undefined) {
     console.warn('switchTab: Tab ID is undefined:', serializedState2);
     return;
@@ -223,11 +221,12 @@ export async function switchTab(serializedState2: any) {
   );
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
+
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     if (tab === undefined || tab.id === undefined) return;
+
     serializedState2.tabId = tab.id;
 
-    serializedState2.currentIndex = 0;
     const message: UpdateHighlightsMessage = {
       from: 'background',
       type: 'update-highlights',
@@ -235,14 +234,7 @@ export async function switchTab(serializedState2: any) {
       prevIndex: undefined,
     };
 
-    await sendTabMessage(tab.id, message);
-
-    const message2: SwitchedActiveTabShowLayover = {
-      from: 'background',
-      type: 'switched-active-tab-show-layover',
-    };
-
-    await sendTabMessage(tab.id, message2);
+    sendTabMessage(tab.id, message);
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
@@ -273,6 +265,18 @@ export async function handleNextPrevMatch(
 
       updateStore(store, {
         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+        tabStates: {
+          ...store.tabStates,
+          [sender.tab.id]: {
+            ...tabState,
+            currentIndex,
+          },
+        },
+      });
+    } else {
+      // TODO: Review to see if you actually need this:
+      const currentIndex = tabState.globalMatchIdxStart;
+      updateStore(store, {
         tabStates: {
           ...store.tabStates,
           [sender.tab.id]: {

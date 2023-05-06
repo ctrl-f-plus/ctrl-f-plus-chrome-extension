@@ -3,10 +3,10 @@
 import { Messages } from '../types/message.types';
 
 export const useSendMessageToBackground = () => {
-  const sendMessageToBackground = async (message: Messages) => {
+  const sendMessageToBackground = async (message: Messages): Promise<any> => {
     return new Promise((resolve) => {
       chrome.runtime.sendMessage(message, (response) => {
-        resolve(response);
+        return resolve(response);
       });
     });
   };

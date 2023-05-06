@@ -29,8 +29,8 @@ export const useSearchHandler = () => {
     [sendMessageToBackground]
   );
 
-  const handleNext = useCallback((): void => {
-    sendMessageToBackground({
+  const handleNext = useCallback(async (): Promise<void> => {
+    const response = await sendMessageToBackground({
       from: 'content',
       type: 'next-match',
     });

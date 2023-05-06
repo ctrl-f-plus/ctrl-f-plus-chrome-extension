@@ -3,6 +3,7 @@ import { callSerializedState } from '../contentScripts/findMatchesScript';
 import { SwitchTabMessage } from '../types/message.types';
 import { TabState } from '../types/tab.types';
 import { searchAndHighlight } from './searchAndHighlightUtils';
+import { sendMessageToBackground } from './sendMessageToBackground';
 
 export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;
@@ -32,13 +33,13 @@ export async function findAllMatches(state2: TabState, findValue: string) {
   });
 }
 
-export function updateHighlights(
+export async function updateHighlights(
   state2: TabState,
   prevIndex?: number,
   endOfTab?: boolean
-) {
+): Promise<void> {
   if (!state2.matchesObj.length) {
-    return;
+    return Promise.resolve();
   }
 
   if (typeof prevIndex === 'number') {
@@ -47,7 +48,7 @@ export function updateHighlights(
   }
 
   if (endOfTab) {
-    return;
+    return; // Promise.resolve();
   }
 
   if (typeof state2.currentIndex !== 'undefined') {
@@ -55,9 +56,11 @@ export function updateHighlights(
     curMatch.classList.add('ctrl-f-highlight-focus');
     scrollToElement(curMatch);
   }
+
+  return Promise.resolve();
 }
 
-export async function nextMatch(state2: TabState) {
+export async function nextMatch(state2: TabState): Promise<void> {
   if (typeof state2.currentIndex === 'undefined') {
     return;
   }
@@ -67,20 +70,26 @@ export async function nextMatch(state2: TabState) {
 
   if (state2.currentIndex === 0) {
     const endOfTab: boolean = true;
-    updateHighlights(state2, prevIndex, endOfTab);
+    await updateHighlights(state2, prevIndex, endOfTab);
     const serializedState2 = callSerializedState(state2);
 
     // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
-    const message: SwitchTabMessage = {
+    const msg: SwitchTabMessage = {
       from: 'content-script-match-utils',
       type: 'switch-tab',
       serializedState2: serializedState2,
       prevIndex: undefined,
     };
 
-    chrome.runtime.sendMessage(message);
+    await sendMessageToBackground(msg)
+      .then((response) => {
+        console.log('Response from background:', response);
+      })
+      .catch((error) => {
+        console.error('Error sending message:', error);
+      });
   } else {
-    updateHighlights(state2, prevIndex);
+    await updateHighlights(state2, prevIndex);
   }
 }
 
