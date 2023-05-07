@@ -98,19 +98,17 @@ export async function nextMatch(state2: TabState): Promise<void> {
 }
 
 export function previousMatch(state2: TabState) {
-  if (
-    typeof state2.currentIndex === 'undefined' ||
-    typeof state2.tabId === 'undefined'
-  ) {
-    return;
-  }
-
-  const prevIndex = state2.currentIndex;
-  state2.currentIndex =
-    (state2.currentIndex - 1 + state2.matchesObj[state2.tabId].length) %
-    state2.matchesObj[state2.tabId].length;
-
-  updateHighlights(state2, prevIndex);
+  // if (
+  //   typeof state2.currentIndex === 'undefined' ||
+  //   typeof state2.tabId === 'undefined'
+  // ) {
+  //   return;
+  // }
+  // const prevIndex = state2.currentIndex;
+  // state2.currentIndex =
+  //   (state2.currentIndex - 1 + state2.matchesObj[state2.tabId].length) %
+  //   state2.matchesObj[state2.tabId].length;
+  // updateHighlights(state2, prevIndex);
 }
 
 function scrollToElement(element: HTMLElement) {

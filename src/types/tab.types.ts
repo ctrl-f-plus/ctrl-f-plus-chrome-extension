@@ -13,7 +13,7 @@ export interface BaseTab {
 }
 // FIXME: remove serializedMatches from TabState
 export interface TabState extends BaseTab {
-  matchesObj: any[];
+  matchesObj: HTMLSpanElement[];
 }
 
 export interface SerializedTabState extends BaseTab {
