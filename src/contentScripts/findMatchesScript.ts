@@ -13,18 +13,8 @@ const state2: TabState = {
   tabId: undefined as TabId | undefined,
   currentIndex: undefined,
   matchesCount: undefined,
-  matchesObj: [] as string | any[],
+  matchesObj: [],
 };
-
-export function callSerializedState(state2: TabState): SerializedTabState {
-  debugger;
-  const serializedState2: SerializedTabState = serializeMatchesObj({
-    ...state2,
-  });
-  debugger;
-
-  return serializedState2;
-}
 
 async function handleHighlight(
   state2: TabState,

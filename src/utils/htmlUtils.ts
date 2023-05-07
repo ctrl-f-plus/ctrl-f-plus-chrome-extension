@@ -1,8 +1,8 @@
-//@ts-nocheck
 // src/utils/htmlUtils.ts
 
-import { SerializedTabState, TabState } from '../types/tab.types';
+import { JSONString, SerializedTabState, TabState } from '../types/tab.types';
 
+// @ts-ignore
 export function getXPath(element) {
   if (element.id !== '') {
     return `//*[@id="${element.id}"]`;
@@ -26,6 +26,7 @@ export function getXPath(element) {
   return `${getXPath(element.parentNode)}/${element.tagName}[${siblingIndex}]`;
 }
 
+// @ts-ignore
 export function getElementByXPath(xpath) {
   return document.evaluate(
     xpath,
@@ -36,6 +37,7 @@ export function getElementByXPath(xpath) {
   ).singleNodeValue;
 }
 
+// @ts-ignore
 export function wrapTextWithHighlight(element, text, spanClasses) {
   const textNodeIndex = Array.prototype.slice
     .call(element.childNodes)
@@ -56,11 +58,13 @@ export function wrapTextWithHighlight(element, text, spanClasses) {
   range.surroundContents(span);
 }
 
+// @ts-ignore
 export function generateXPaths(matchesObj) {
   // const xpaths = {};
   // for (const tabId in matchesObj) {
   // xpaths[tabId] = matchesObj[tabId].map((el) => {
   // xpaths[tabId] = matchesObj.map((el) => {
+  // @ts-ignore
   const xpaths = matchesObj.map((el) => {
     const xpath = getXPath(el.parentNode);
     const text = el.textContent;
@@ -71,9 +75,11 @@ export function generateXPaths(matchesObj) {
   return xpaths;
 }
 
+// @ts-ignore
 export function restoreHighlightSpans(xpathObj) {
   Object.keys(xpathObj).forEach((tabId) => {
     const tabXPaths = xpathObj[tabId];
+    // @ts-ignore
     tabXPaths.forEach(({ xpath, text, spanClasses }) => {
       const element = getElementByXPath(xpath);
       if (element) {
@@ -82,27 +88,6 @@ export function restoreHighlightSpans(xpathObj) {
     });
   });
 }
-
-// export function serializeMatchesObj(state) {
-//   const matchesObj = state.matchesObj;
-//   const xpaths = generateXPaths(state.matchesObj);
-//   const serializedXPaths = JSON.stringify(xpaths);
-//   state.matchesObj = serializedXPaths;
-//   // return serializedXPaths;
-// }
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-// export function serializeMatchesObj(matchesObj) {
-//   // const matchesObj = state.matchesObj;
-//   const xpaths = generateXPaths(matchesObj);
-//   const serializedXPaths = JSON.stringify(xpaths);
-
-//   return serializedXPaths;
-// }
-
-export type JSONString = string;
 
 export function serializeMatchesObj(
   shallowStateObject: TabState
@@ -118,17 +103,20 @@ export function serializeMatchesObj(
   return serializedState2;
 }
 
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
+export function deserializeMatchesObj(
+  shallowStateObject: SerializedTabState
+): TabState {
+  const { serializedMatches, ...otherProperties } = shallowStateObject;
 
-export function deserializeMatchesObj(matchesObj) {
-  // const serializedStoredXPaths = localStorage.getItem('storedXPaths');
-
-  const serializedXPaths = matchesObj;
+  const serializedXPaths = serializedMatches;
   const deSerializedXPaths = JSON.parse(serializedXPaths);
 
   // return restoreHighlightSpans(deSerializedXPaths);
-  return deSerializedXPaths;
+  const state2: TabState = {
+    ...otherProperties,
+    matchesObj: deSerializedXPaths,
+  };
+  return state2;
 }
 
 // Example use

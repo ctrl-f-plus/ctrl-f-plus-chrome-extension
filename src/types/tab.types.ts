@@ -2,6 +2,7 @@
 
 export type TabId = chrome.tabs.Tab['id'] | number;
 export type ValidTabId = Exclude<TabId, undefined>;
+export type JSONString = string;
 
 export interface BaseTab {
   tabId: TabId;
@@ -12,11 +13,11 @@ export interface BaseTab {
 }
 // FIXME: remove serializedMatches from TabState
 export interface TabState extends BaseTab {
-  matchesObj: string | any[];
+  matchesObj: any[];
 }
 
 export interface SerializedTabState extends BaseTab {
-  serializedMatches: string;
+  serializedMatches: JSONString;
 }
 
 // type SerializedMatchesObj = string;
