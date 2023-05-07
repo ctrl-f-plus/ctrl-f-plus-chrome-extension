@@ -14,12 +14,14 @@ export const LayoverContext = createContext<LayoverContextData>({
   toggleSearchLayover: (forceShowLayover?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
+  lastSearchValue: '',
+  setLastSearchValue: () => {},
   showMatches: false,
   setShowMatches: () => {},
   totalMatchesCount: 0,
   setTotalMatchesCount: () => {},
   globalMatchIdx: 0,
-  setglobalMatchIdx: () => {},
+  setGlobalMatchIdx: () => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
@@ -28,6 +30,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
   const {
     showLayover,
     setShowLayover,
+    lastSearchValue,
+    setLastSearchValue,
     searchValue,
     setSearchValue,
     toggleSearchLayover,
@@ -36,7 +40,7 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     totalMatchesCount,
     setTotalMatchesCount,
     globalMatchIdx,
-    setglobalMatchIdx,
+    setGlobalMatchIdx,
   } = useLayoverHandler();
 
   return (
@@ -47,12 +51,14 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         toggleSearchLayover,
         searchValue,
         setSearchValue,
+        lastSearchValue,
+        setLastSearchValue,
         showMatches,
         setShowMatches,
         totalMatchesCount,
         setTotalMatchesCount,
         globalMatchIdx,
-        setglobalMatchIdx,
+        setGlobalMatchIdx,
       }}
     >
       {children}

@@ -27,7 +27,7 @@ const App: React.FC<{}> = () => {
     totalMatchesCount,
     setTotalMatchesCount,
     globalMatchIdx,
-    setglobalMatchIdx,
+    setGlobalMatchIdx,
   } = useContext(LayoverContext);
 
   const handleMessage = (
@@ -65,7 +65,7 @@ const App: React.FC<{}> = () => {
         const { store, tabState } = message.payload;
 
         setTotalMatchesCount(store.totalMatchesCount);
-        setglobalMatchIdx(store.globalMatchIdx + 1);
+        setGlobalMatchIdx(store.globalMatchIdx + 1);
         setShowLayover(store.showLayover);
         setShowMatches(store.showMatches);
 

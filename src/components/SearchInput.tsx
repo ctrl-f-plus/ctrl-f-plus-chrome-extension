@@ -16,7 +16,7 @@ import React, {
 import { LayoverContext } from '../contexts/LayoverContext';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
-import { getStoredFindValue } from '../utils/storage';
+import { getStoredFindValue, getStoredLastSearchValue } from '../utils/storage';
 
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -25,11 +25,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const {
     searchValue,
     setSearchValue,
+    lastSearchValue,
+    setLastSearchValue,
     toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
-    showMatches,
-    showLayover,
   } = useContext(LayoverContext);
 
   const [matchingCounts, setMatchingCounts] = useState(
@@ -44,8 +44,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     e.preventDefault();
 
     if (searchInputRef.current) {
-      const findValue = searchInputRef.current.value;
-      handleSearch(findValue);
+      if (searchValue === lastSearchValue) {
+        handleNext();
+      } else {
+        handleSearch(searchValue);
+      }
     }
   };
 
@@ -73,7 +76,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       setSearchValue(storedFindValue);
     };
 
+    const fetchStoredLastSearchValue = async () => {
+      const storedLastSearchValue = await getStoredLastSearchValue();
+      setLastSearchValue(storedLastSearchValue);
+    };
+
     fetchStoredFindValue();
+    fetchStoredLastSearchValue();
   }, []);
 
   useEffect(() => {

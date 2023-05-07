@@ -22,26 +22,19 @@ export interface GetAllMatchesMessage extends BaseMessage {
 }
 
 export interface NextMatchMessage extends BaseMessage {
-  // TODO: check to see if you ever pass findValue or if you can get rid of it here
   from: 'content';
   type: 'next-match';
-  findValue?: string;
-  serializedState2?: any;
+  serializedState2?: SerializedTabState ;
+}
+export interface PreviousMatchMessage extends BaseMessage {
+  from: 'content';
+  type: 'prev-match';
+  serializedState2?: SerializedTabState ;
 }
 
 export interface NextMatchMessageFromBack extends BaseMessage {
-  // TODO: check to see if you ever pass findValue or if you can get rid of it here
   from: 'background';
   type: 'next-match';
-  findValue?: string;
-}
-
-export interface PreviousMatchMessage extends BaseMessage {
-  // TODO: check to see if you ever pass findValue or if you can get rid of it here
-  from: 'content';
-  type: 'prev-match';
-  findValue?: string;
-  serializedState2?: any;
 }
 
 export interface RemoveStylesMessage extends BaseMessage {

@@ -2,13 +2,14 @@
 
 import { useCallback, useReducer } from 'react';
 import { LayoverAction, LayoverState } from '../types/layoverContext.types';
-import { setStoredFindValue } from '../utils/storage';
+import { setStoredLastSearchValue, setStoredFindValue } from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
 
 const initialState: LayoverState = {
   showLayover: false,
   showMatches: false,
   searchValue: '',
+  lastSearchValue: '',
   totalMatchesCount: 0,
   globalMatchIdx: 0,
 };
@@ -21,6 +22,8 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
       return { ...state, showMatches: action.payload };
     case 'SET_SEARCH_VALUE':
       return { ...state, searchValue: action.payload };
+    case 'SET_LAST_SEARCH_VALUE':
+      return { ...state, lastSearchValue: action.payload };
     case 'SET_TOTAL_MATCHES_COUNT':
       return { ...state, totalMatchesCount: action.payload };
     case 'SET_GLOBAL_MATCH_IDX':
@@ -49,6 +52,8 @@ export const useLayoverHandler = () => {
       const closeSearchLayover = (searchValue: string) => {
         // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
         setStoredFindValue(searchValue);
+        setStoredLastSearchValue(searchValue);
+
         sendMessageToBackground({
           from: 'content',
           type: 'remove-styles-all-tabs',
@@ -71,9 +76,14 @@ export const useLayoverHandler = () => {
     dispatch({ type: 'SET_SEARCH_VALUE', payload: value });
   };
 
+  const setLastSearchValue = (value: string) => {
+    dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
+  };
+
   return {
     ...state,
     setSearchValue,
+    setLastSearchValue,
     setShowLayover: (value: boolean) =>
       dispatch({ type: 'SET_SHOW_LAYOVER', payload: value }),
     toggleSearchLayover,
@@ -81,7 +91,7 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_SHOW_MATCHES', payload: value }),
     setTotalMatchesCount: (value: number) =>
       dispatch({ type: 'SET_TOTAL_MATCHES_COUNT', payload: value }),
-    setglobalMatchIdx: (value: number) =>
+    setGlobalMatchIdx: (value: number) =>
       dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
   };
 };

@@ -1,15 +1,25 @@
 // src/hooks/useSearchHandler.ts
 
-import { useCallback } from 'react';
-import { clearAllStoredTabs, setStoredFindValue } from '../utils/storage';
+import { useCallback, useContext } from 'react';
+import {
+  clearAllStoredTabs,
+  setStoredFindValue,
+  setStoredLastSearchValue,
+} from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { LayoverContext } from '../contexts/LayoverContext';
 
 export const useSearchHandler = () => {
   const { sendMessageToBackground } = useSendMessageToBackground();
+  const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(
     async (findValue: string): Promise<void> => {
       setStoredFindValue(findValue);
+
+      setStoredLastSearchValue(findValue);
+      // setSearchValue(findValue);
+      setLastSearchValue(findValue);
 
       await clearAllStoredTabs();
 

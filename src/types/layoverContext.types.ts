@@ -8,12 +8,14 @@ export interface LayoverContextData {
   toggleSearchLayover: (forceShowLayover?: boolean) => void;
   searchValue: string;
   setSearchValue: (value: string) => void;
+  lastSearchValue: string;
+  setLastSearchValue: (value: string) => void;
   showMatches: boolean;
   setShowMatches: (value: boolean) => void;
   totalMatchesCount: number;
   setTotalMatchesCount: (value: number) => void;
   globalMatchIdx: number;
-  setglobalMatchIdx: (value: number) => void;
+  setGlobalMatchIdx: (value: number) => void;
 }
 
 export interface LayoverProviderProps {
@@ -24,6 +26,7 @@ export interface LayoverState {
   showLayover: boolean;
   showMatches: boolean;
   searchValue: string;
+  lastSearchValue: string;
   totalMatchesCount: number;
   globalMatchIdx: number;
 }
@@ -32,5 +35,6 @@ export type LayoverAction =
   | { type: 'SET_SHOW_LAYOVER'; payload: boolean }
   | { type: 'SET_SHOW_MATCHES'; payload: boolean }
   | { type: 'SET_SEARCH_VALUE'; payload: string }
+  | { type: 'SET_LAST_SEARCH_VALUE'; payload: string }
   | { type: 'SET_TOTAL_MATCHES_COUNT'; payload: number }
   | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number };

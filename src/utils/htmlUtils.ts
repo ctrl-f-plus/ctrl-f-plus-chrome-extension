@@ -42,9 +42,7 @@ export function getXPath(element: Node): string {
 
 function generateXPaths(matchesObj: HTMLSpanElement[]): XPathMatchObject[] {
   const xpaths: XPathMatchObject[] = matchesObj.map((el) => {
-    debugger;
     const xpath: string = getXPath(el.parentNode as Node);
-    debugger;
     const text = el.textContent || '';
     const spanClasses = Array.from(el.classList);
     return { xpath, text, spanClasses };

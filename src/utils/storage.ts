@@ -12,6 +12,7 @@ export interface Match {
 // FIXME: review for duplicates
 export interface LocalStorage {
   findValue?: string;
+  lastSearchValue?: string;
   allMatches?: Match[];
   tabs?: { [tabId: number]: SerializedTabState };
   layoverPosition?: LayoverPosition;
@@ -75,6 +76,25 @@ export function setStoredFindValue(findValue: string): Promise<void> {
   //   });
   // });
 }
+
+//////////////////////////////////////////
+export function getStoredLastSearchValue(): Promise<string> {
+  const key: LocalStorageKeys = 'lastSearchValue';
+
+  return getLocalStorageItem(key).then(
+    (lastSearchValue) => lastSearchValue ?? ''
+  );
+}
+
+export function setStoredLastSearchValue(
+  lastSearchValue: string
+): Promise<void> {
+  const key: LocalStorageKeys = 'lastSearchValue';
+
+  return setLocalStorageItem(key, lastSearchValue);
+}
+
+//////////////////////////////////////////
 
 export function getAllStoredTabs(): Promise<{
   [tabId: number]: SerializedTabState;

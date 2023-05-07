@@ -77,7 +77,6 @@ export async function nextMatch(state2: TabState): Promise<void> {
       ...state2,
     });
 
-    // TODO:(*99) Fix this so that `switch-tab` is only run when the targetTab != currentTab
     const msg: SwitchTabMessage = {
       from: 'content-script-match-utils',
       type: 'switch-tab',
@@ -85,13 +84,7 @@ export async function nextMatch(state2: TabState): Promise<void> {
       prevIndex: undefined,
     };
 
-    await sendMessageToBackground(msg)
-      .then((response) => {
-        console.log('Response from background:', response);
-      })
-      .catch((error) => {
-        console.error('Error sending message:', error);
-      });
+    await sendMessageToBackground(msg);
   } else {
     await updateHighlights(state2, prevIndex);
   }

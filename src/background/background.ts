@@ -91,10 +91,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 });
 
 chrome.commands.onCommand.addListener((command) => {
-  // TODO:REVIEW `active:currentWindow: true` below:
-  // chrome.tabs.query({}, (tabs) => {
   if (command === 'toggle_search_layover') {
-    // chrome.tabs.query({ active:currentWindow: true }, (tabs) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
         sendTabMessage(tabs[0].id, { command });
