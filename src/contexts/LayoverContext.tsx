@@ -1,11 +1,13 @@
 // src/contexts/LayoverContext.tsx
 
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
+  LayoverState,
 } from '../types/layoverContext.types';
+import { LayoverPosition } from '../components/Layover';
 
 // TODO: Potentially move searchValue and setSearchValue out of this file
 export const LayoverContext = createContext<LayoverContextData>({
@@ -22,11 +24,15 @@ export const LayoverContext = createContext<LayoverContextData>({
   setTotalMatchesCount: () => {},
   globalMatchIdx: 0,
   setGlobalMatchIdx: () => {},
+  layoverPosition: null,
+  setLayoverPosition: (value: LayoverPosition | null) => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
   children,
 }) => {
+  // Code to fetch the initial state from the background store and set it to `store` using `setStore`
+
   const {
     showLayover,
     setShowLayover,
@@ -41,6 +47,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setTotalMatchesCount,
     globalMatchIdx,
     setGlobalMatchIdx,
+    layoverPosition,
+    setLayoverPosition,
   } = useLayoverHandler();
 
   return (
@@ -59,6 +67,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         setTotalMatchesCount,
         globalMatchIdx,
         setGlobalMatchIdx,
+        layoverPosition,
+        setLayoverPosition,
       }}
     >
       {children}

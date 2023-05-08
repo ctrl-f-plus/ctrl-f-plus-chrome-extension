@@ -2,9 +2,14 @@
 
 import { store } from '../background/background';
 import { Store, resetStore, updateStore } from '../background/store';
+import { LayoverPosition } from '../components/Layover';
 import { UpdateHighlightsMessage } from '../types/message.types';
 import { SerializedTabState, TabId } from '../types/tab.types';
-import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
+import {
+  getAllStoredTabs,
+  setStoredLayoverPosition,
+  setStoredTabs,
+} from '../utils/storage';
 
 /**
  *  Utility/Helper Functions:
@@ -343,4 +348,15 @@ export async function handleUpdateTabStatesObj(
   }
 
   sendResponse({ status: 'success' });
+}
+
+export async function handleUpdateLayoverPosition(
+  store: Store,
+  newPosition: LayoverPosition
+) {
+  setStoredLayoverPosition(newPosition);
+
+  updateStore(store, {
+    layoverPosition: newPosition,
+  });
 }

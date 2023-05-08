@@ -7,6 +7,8 @@ export interface Store {
   globalMatchIdx: number;
   totalMatchesCount: number;
   findValue: string;
+  searchValue: string;
+  lastSearchValue: string;
   lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
   updatedTabsCount: number;
   totalTabs: number | undefined;
@@ -22,6 +24,8 @@ export function initStore() {
     globalMatchIdx: 0,
     totalMatchesCount: 0,
     findValue: '',
+    searchValue: '',
+    lastSearchValue: '',
     lastFocusedWindowId: undefined,
     updatedTabsCount: 0,
     totalTabs: undefined,
@@ -71,6 +75,25 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
   }
 }
 
+export function sendStoreToContentScripts(store: Store): void {
+  const msg = {
+    from: 'background:store',
+    type: 'initialize-store',
+    payload: {
+      store,
+    },
+  };
+
+  debugger;
+  chrome.tabs.query({}, (tabs) => {
+    for (const tab of tabs) {
+      if (tab.id) {
+        chrome.tabs.sendMessage(tab.id, msg);
+      }
+    }
+  });
+}
+
 // store: The current store object, which holds the state of your application.
 // updates: An object containing updates to the store. It has the same structure as the Store type, but its properties are optional, allowing you to update only the properties you need.
 // The updateStore function updates the store object with the provided updates. Here's a breakdown of the code:
@@ -88,78 +111,3 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
 // else { ... }: If the current tabId is already present in the store.tabStates object, then we need to update it with the new state. We do this using Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);, which merges the updated tab state into the existing tab state, mutating the existing tab state in the process.
 
 // This function updates the store object in-place with the provided updates. By updating the store object directly, the changes will be reflected in the outer scope where the store object was originally created, solving the issue you were experiencing.
-
-// src/background/store.ts
-
-// import { LayoverPosition } from '../components/Layover';
-// import { TabId, TabState, ValidTabId } from '../types/tab.types';
-
-// export interface RequiredStore {
-//   globalMatchIdx: number;
-//   totalMatchesCount: number;
-//   findValue: string;
-//   lastFocusedWindowId: chrome.windows.Window['id'];
-//   updatedTabsCount: number;
-//   totalTabs: number;
-//   activeTab: chrome.tabs.Tab;
-//   layoverPosition: LayoverPosition;
-//   showLayover: boolean;
-//   showMatches: boolean;
-//   tabStates: Record<ValidTabId, TabState>;
-// }
-
-// export type Store = Partial<RequiredStore>;
-
-// export function initStore(): Store {
-//   const store: Store = {
-//     globalMatchIdx: 0,
-//     totalMatchesCount: 0,
-//     findValue: '',
-//     lastFocusedWindowId: undefined,
-//     updatedTabsCount: 0,
-//     totalTabs: undefined,
-//     activeTab: undefined,
-//     layoverPosition: { x: 0, y: 0 },
-//     showLayover: false,
-//     showMatches: false,
-//     tabStates: {},
-//   };
-
-//   return store;
-// }
-
-// export function resetStore(store: Store): void {
-//   const initialState = initStore();
-//   updateStore(store, initialState);
-// }
-
-// export function updateStore(store: Store, updates: Partial<Store>): void {
-//   Object.assign(store, updates);
-
-//   if (updates.tabStates) {
-//     for (const tabId in updates.tabStates) {
-//       if (updates.tabStates.hasOwnProperty(tabId)) {
-//         if (!store.tabStates[tabId]) {
-//           store.tabStates[tabId] = updates.tabStates[tabId];
-//         } else {
-//           Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);
-//         }
-//       }
-//     }
-//   }
-
-//   const tabIds = Object.keys(store.tabStates).map((key) => parseInt(key, 10));
-
-//   for (const tabId of tabIds) {
-//     const tabState = store.tabStates[tabId];
-//     // FIXME: the payload is redundant
-//     chrome.tabs.sendMessage(tabId, {
-//       from: 'store',
-//       type: 'store-updated',
-//       payload: {
-//         store,
-//         tabState,
-//       },
-//     });
-//   }
-// }

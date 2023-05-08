@@ -1,9 +1,14 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { LayoverAction, LayoverState } from '../types/layoverContext.types';
-import { setStoredLastSearchValue, setStoredFindValue } from '../utils/storage';
+import {
+  setStoredLastSearchValue,
+  setStoredFindValue,
+  getStoredLayoverPosition,
+} from '../utils/storage';
 import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { LayoverPosition } from '../components/Layover';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -12,10 +17,13 @@ const initialState: LayoverState = {
   lastSearchValue: '',
   totalMatchesCount: 0,
   globalMatchIdx: 0,
+  layoverPosition: null,
 };
 
 const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
   switch (action.type) {
+    case 'INITIALIZE_STATE':
+      return action.payload;
     case 'SET_SHOW_LAYOVER':
       return { ...state, showLayover: action.payload };
     case 'SET_SHOW_MATCHES':
@@ -28,6 +36,8 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
       return { ...state, totalMatchesCount: action.payload };
     case 'SET_GLOBAL_MATCH_IDX':
       return { ...state, globalMatchIdx: action.payload };
+    case 'SET_LAYOVER_POSITION':
+      return { ...state, layoverPosition: action.payload };
     default:
       return state;
   }
@@ -52,6 +62,8 @@ export const useLayoverHandler = () => {
       const closeSearchLayover = (searchValue: string) => {
         // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
         setStoredFindValue(searchValue);
+
+        // FIXME: There is a bug here. where we incorrectly call handle next when no matches are highlighted
         setStoredLastSearchValue(searchValue);
 
         sendMessageToBackground({
@@ -93,5 +105,7 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_TOTAL_MATCHES_COUNT', payload: value }),
     setGlobalMatchIdx: (value: number) =>
       dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
+    setLayoverPosition: (value: LayoverPosition | null) =>
+      dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
   };
 };

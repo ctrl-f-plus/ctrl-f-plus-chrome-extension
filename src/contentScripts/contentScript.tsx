@@ -12,23 +12,46 @@ import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { Store } from '../background/store';
+import { LayoverState } from '../types/layoverContext.types';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
+
   const {
     showLayover,
     setShowLayover,
     toggleSearchLayover,
     searchValue,
+    setSearchValue,
+    lastSearchValue,
+    setLastSearchValue,
     showMatches,
     setShowMatches,
     totalMatchesCount,
     setTotalMatchesCount,
     globalMatchIdx,
     setGlobalMatchIdx,
+    setLayoverPosition,
   } = useContext(LayoverContext);
+
+  const updateContextFromStore = (store: Store) => {
+    setSearchValue(store.searchValue);
+    setLastSearchValue(store.lastSearchValue);
+
+    setShowLayover(store.showLayover);
+    setShowMatches(store.showMatches);
+    setTotalMatchesCount(store.totalMatchesCount);
+    setGlobalMatchIdx(store.globalMatchIdx + 1);
+    setLayoverPosition(store.layoverPosition);
+
+    // TODO: Make sure this value is getting updated in the store
+    if (store.activeTab) {
+      setActiveTabId(store.activeTab.id);
+    }
+  };
 
   const handleMessage = (
     message: MessageFixMe,
@@ -37,7 +60,7 @@ const App: React.FC<{}> = () => {
   ) => {
     console.log('Received message:', message);
 
-    const { type, findValue, command } = message;
+    const { type, command } = message;
 
     switch (type) {
       case 'switched-active-tab-show-layover':
@@ -61,19 +84,10 @@ const App: React.FC<{}> = () => {
       case 'update-matches-count':
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
+      case 'initialize-store':
       case 'store-updated':
-        const { store, tabState } = message.payload;
-
-        setTotalMatchesCount(store.totalMatchesCount);
-        setGlobalMatchIdx(store.globalMatchIdx + 1);
-        setShowLayover(store.showLayover);
-        setShowMatches(store.showMatches);
-
-        // FIXME: Make sure this value is getting updated in the store
-        if (store.activeTab) {
-          setActiveTabId(store.activeTab.id);
-        }
-
+        const { store } = message.payload;
+        updateContextFromStore(store);
         break;
       default:
         if (command) {

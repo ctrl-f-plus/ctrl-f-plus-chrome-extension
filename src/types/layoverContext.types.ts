@@ -1,6 +1,7 @@
 // src/interfaces/layoverContext.types.ts
 
 import { ReactNode } from 'react';
+import { LayoverPosition } from '../components/Layover';
 
 export interface LayoverContextData {
   showLayover: boolean;
@@ -16,6 +17,10 @@ export interface LayoverContextData {
   setTotalMatchesCount: (value: number) => void;
   globalMatchIdx: number;
   setGlobalMatchIdx: (value: number) => void;
+  // layoverPosition: LayoverPosition;
+  // setLayoverPosition: (value: LayoverPosition) => void;
+  layoverPosition: LayoverPosition | null;
+  setLayoverPosition: (value: LayoverPosition | null) => void;
 }
 
 export interface LayoverProviderProps {
@@ -29,12 +34,19 @@ export interface LayoverState {
   lastSearchValue: string;
   totalMatchesCount: number;
   globalMatchIdx: number;
+  // layoverPosition: LayoverPosition;
+  layoverPosition: LayoverPosition | null;
 }
 
 export type LayoverAction =
+  | {
+      type: 'INITIALIZE_STATE';
+      payload: LayoverState;
+    }
   | { type: 'SET_SHOW_LAYOVER'; payload: boolean }
   | { type: 'SET_SHOW_MATCHES'; payload: boolean }
   | { type: 'SET_SEARCH_VALUE'; payload: string }
   | { type: 'SET_LAST_SEARCH_VALUE'; payload: string }
   | { type: 'SET_TOTAL_MATCHES_COUNT'; payload: number }
-  | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number };
+  | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number }
+  | { type: 'SET_LAYOVER_POSITION'; payload: LayoverPosition | null };

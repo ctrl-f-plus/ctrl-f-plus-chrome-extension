@@ -1,5 +1,6 @@
 // src/interfaces/message.types.ts
 
+import { LayoverPosition } from '../components/Layover';
 import { TabState, SerializedTabState } from './tab.types';
 
 export interface BaseMessage {
@@ -8,7 +9,8 @@ export interface BaseMessage {
     | 'content'
     | 'match-utils'
     | 'inner-match-utils'
-    | 'content-script-match-utils';
+    | 'content-script-match-utils'
+    | 'content:layover-component';
   // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
@@ -24,12 +26,12 @@ export interface GetAllMatchesMessage extends BaseMessage {
 export interface NextMatchMessage extends BaseMessage {
   from: 'content';
   type: 'next-match';
-  serializedState2?: SerializedTabState ;
+  serializedState2?: SerializedTabState;
 }
 export interface PreviousMatchMessage extends BaseMessage {
   from: 'content';
   type: 'prev-match';
-  serializedState2?: SerializedTabState ;
+  serializedState2?: SerializedTabState;
 }
 
 export interface NextMatchMessageFromBack extends BaseMessage {
@@ -94,6 +96,14 @@ export interface UpdateTabStatesObj extends BaseMessage {
   payload: any;
 }
 
+export interface UpdateLayoverPositionMessage extends BaseMessage {
+  from: 'content:layover-component';
+  type: 'update-layover-position';
+  payload: {
+    newPosition: LayoverPosition;
+  };
+}
+
 export type Messages =
   | NextMatchMessage
   | PreviousMatchMessage
@@ -106,4 +116,5 @@ export type Messages =
   | UpdateHighlightsMessage
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
-  | UpdateTabStatesObj;
+  | UpdateTabStatesObj
+  | UpdateLayoverPositionMessage;

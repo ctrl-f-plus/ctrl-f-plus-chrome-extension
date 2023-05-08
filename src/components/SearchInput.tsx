@@ -30,6 +30,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
+    showLayover,
+    showMatches,
   } = useContext(LayoverContext);
 
   const [matchingCounts, setMatchingCounts] = useState(

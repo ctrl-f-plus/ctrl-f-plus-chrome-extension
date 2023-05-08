@@ -2,18 +2,17 @@
 
 // TODO: There is a bug where the layover position doesn't update on some tab-switches
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Draggable, {
   DraggableData,
   DraggableEventHandler,
 } from 'react-draggable';
+import { sendMessageToBackground } from '../utils/sendMessageToBackground';
 
-// TODO: update so that the stored Position is coming from the background script's store object
+// TODO: update so that the stored Position is coming from context store object. Need to make sure background script is sending out the new store on each update
+import { LayoverContext } from '../contexts/LayoverContext';
+import { UpdateLayoverPositionMessage } from '../types/message.types';
 import { TabId } from '../types/tab.types';
-import {
-  getStoredLayoverPosition,
-  setStoredLayoverPosition,
-} from '../utils/storage';
 
 export interface LayoverPosition {
   x: number;
@@ -27,26 +26,28 @@ interface LayoverProps {
 
 const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
   const nodeRef = React.useRef(null);
-  const [position, setPosition] = useState<LayoverPosition | null>(null);
 
-  useEffect(() => {
-    const fetchLayoverPosition = async () => {
-      const storedLayoverPosition = await getStoredLayoverPosition();
-      setPosition(storedLayoverPosition);
-    };
-
-    fetchLayoverPosition();
-  }, [activeTabId]);
+  const { layoverPosition } = useContext(LayoverContext);
 
   const handleDragStop: DraggableEventHandler = (e, data: DraggableData) => {
-    const newPosition = { x: data.x, y: data.y };
-    setPosition(newPosition);
+    const newPosition: LayoverPosition = { x: data.x, y: data.y };
 
-    setStoredLayoverPosition(newPosition);
+    const msg: UpdateLayoverPositionMessage = {
+      from: 'content:layover-component',
+      type: 'update-layover-position',
+      payload: {
+        newPosition,
+      },
+    };
+    sendMessageToBackground(msg);
   };
 
-  return position ? (
-    <Draggable nodeRef={nodeRef} position={position} onStop={handleDragStop}>
+  return layoverPosition ? (
+    <Draggable
+      nodeRef={nodeRef}
+      position={layoverPosition}
+      onStop={handleDragStop}
+    >
       <div className="absolute w-[434px] rounded-lg cursor-move" ref={nodeRef}>
         {children}
       </div>

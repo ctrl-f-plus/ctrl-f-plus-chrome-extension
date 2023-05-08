@@ -61,3 +61,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 - FIX: restore highlights if single tab reloaded
 - Fix: if you search a value and you aren't on the very first tab, then the globalIndex value should not show 1, it should show the starting point for that tab
+
+- FIX: if no matches are found, the searchLayover just closes. this should not happen

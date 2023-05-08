@@ -11,15 +11,17 @@ import {
   handleNextPrevMatch,
   handleRemoveAllHighlightMatches,
   handleToggleStylesAllTabs,
+  handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
   sendTabMessage,
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
 import { clearLocalStorage } from '../utils/storage';
-import { initStore } from './store';
+import { initStore, sendStoreToContentScripts } from './store';
 
 export const store = initStore();
+sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
@@ -52,6 +54,10 @@ chrome.runtime.onMessage.addListener(
         console.log('update-tab-states-obj', store);
         await handleUpdateTabStatesObj(payload, sendResponse);
         return true;
+      case 'update-layover-position':
+        console.log('update-layover-position', store);
+        await handleUpdateLayoverPosition(store, payload.newPosition);
+        return;
       default:
         break;
     }
@@ -88,6 +94,8 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
       sendTabMessage(otherTab.id, message2);
     }
   }
+
+  sendStoreToContentScripts(store);
 });
 
 chrome.commands.onCommand.addListener((command) => {
@@ -102,10 +110,12 @@ chrome.commands.onCommand.addListener((command) => {
 
 chrome.tabs.onCreated.addListener(() => {
   updateTotalTabsCount(store);
+  sendStoreToContentScripts(store);
 });
 
 chrome.tabs.onRemoved.addListener(() => {
   updateTotalTabsCount(store);
+  sendStoreToContentScripts(store);
 });
 
 chrome.windows.onFocusChanged.addListener((windowId) => {
@@ -127,6 +137,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
     ) {
       updateTotalTabsCount(store);
       store.updatedTabsCount = 0;
+      sendStoreToContentScripts(store);
     }
 
     store.lastFocusedWindowId = windowId;
@@ -135,4 +146,8 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   await clearLocalStorage();
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  sendStoreToContentScripts(store);
 });
