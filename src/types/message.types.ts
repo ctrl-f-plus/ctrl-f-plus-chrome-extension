@@ -127,5 +127,4 @@ export type Messages =
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObj
   | UpdateStoreMessage
-  | InitializeStoreMessage
   | UpdateLayoverPositionMessage;
