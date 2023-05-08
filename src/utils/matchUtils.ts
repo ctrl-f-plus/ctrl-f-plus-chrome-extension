@@ -3,7 +3,7 @@ import { SwitchTabMessage } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from './htmlUtils';
 import { searchAndHighlight } from './searchAndHighlightUtils';
-import { sendMessageToBackground } from './sendMessageToBackground';
+import { sendMessageToBackground } from './messageUtils/sendMessageToBackground';
 
 export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;

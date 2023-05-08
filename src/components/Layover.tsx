@@ -7,7 +7,7 @@ import Draggable, {
   DraggableData,
   DraggableEventHandler,
 } from 'react-draggable';
-import { sendMessageToBackground } from '../utils/sendMessageToBackground';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 // TODO: update so that the stored Position is coming from context store object. Need to make sure background script is sending out the new store on each update
 import { LayoverContext } from '../contexts/LayoverContext';

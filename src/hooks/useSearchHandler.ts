@@ -6,11 +6,10 @@ import {
   setStoredFindValue,
   setStoredLastSearchValue,
 } from '../utils/storage';
-import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { LayoverContext } from '../contexts/LayoverContext';
 
 export const useSearchHandler = () => {
-  const { sendMessageToBackground } = useSendMessageToBackground();
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(

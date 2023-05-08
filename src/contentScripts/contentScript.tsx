@@ -2,6 +2,7 @@
 
 import React, { useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Store } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
@@ -12,8 +13,6 @@ import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { Store } from '../background/store';
-import { LayoverState } from '../types/layoverContext.types';
 
 let injectedStyle: HTMLStyleElement;
 

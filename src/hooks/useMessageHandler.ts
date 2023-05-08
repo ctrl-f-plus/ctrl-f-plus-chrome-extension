@@ -13,17 +13,3 @@ export const useMessageHandler = (messageHandler: MessageHandler) => {
     };
   }, [messageHandler]);
 };
-
-// ///////////////////////////////////////////
-
-// useEffect(() => {
-//   const processMessage = (message: any, sender: any, sendResponse: any) => {
-//     messageHandler(message, sender, sendResponse);
-//   };
-
-//   chrome.runtime.onMessage.addListener(processMessage);
-
-//   return () => {
-//     chrome.runtime.onMessage.removeListener(processMessage);
-//   };
-// }, [messageHandler]);

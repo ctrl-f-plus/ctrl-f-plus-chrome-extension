@@ -1,14 +1,10 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useEffect, useReducer } from 'react';
-import { LayoverAction, LayoverState } from '../types/layoverContext.types';
-import {
-  setStoredLastSearchValue,
-  setStoredFindValue,
-  getStoredLayoverPosition,
-} from '../utils/storage';
-import { useSendMessageToBackground } from './useSendMessageToBackground';
+import { useCallback, useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
+import { LayoverAction, LayoverState } from '../types/layoverContext.types';
+import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -45,8 +41,6 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
 
 export const useLayoverHandler = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const { sendMessageToBackground } = useSendMessageToBackground();
 
   const toggleSearchLayover = useCallback(
     (forceShowLayover?: boolean) => {

@@ -1,17 +1,18 @@
 // src/interfaces/message.types.ts
 
+import { Store } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import { TabState, SerializedTabState } from './tab.types';
 
 export interface BaseMessage {
   from:
     | 'background'
+    | 'background:store'
     | 'content'
     | 'match-utils'
     | 'inner-match-utils'
     | 'content-script-match-utils'
     | 'content:layover-component';
-  // from?: 'content' | 'background' | 'popup';
   type: string;
   payload?: any;
   serializedState2?: any;
@@ -96,6 +97,22 @@ export interface UpdateTabStatesObj extends BaseMessage {
   payload: any;
 }
 
+export interface UpdateStoreMessage extends BaseMessage {
+  from: 'background:store';
+  type: 'store-updated';
+  payload: {
+    store: Store;
+  };
+}
+
+export interface InitializeStoreMessage extends BaseMessage {
+  from: 'background:store';
+  type: 'initialize-store';
+  payload: {
+    store: Store;
+  };
+}
+
 export interface UpdateLayoverPositionMessage extends BaseMessage {
   from: 'content:layover-component';
   type: 'update-layover-position';
@@ -117,4 +134,6 @@ export type Messages =
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObj
+  | UpdateStoreMessage
+  | InitializeStoreMessage
   | UpdateLayoverPositionMessage;

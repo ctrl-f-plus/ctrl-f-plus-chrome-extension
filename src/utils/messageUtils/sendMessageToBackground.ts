@@ -1,6 +1,6 @@
 // src/utils/sendMessageToBackground.ts
 
-import { Messages } from '../types/message.types';
+import { Messages } from '../../types/message.types';
 
 export const sendMessageToBackground = async (
   message: Messages

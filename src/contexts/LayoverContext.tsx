@@ -1,13 +1,12 @@
 // src/contexts/LayoverContext.tsx
 
-import React, { createContext, useState } from 'react';
+import React, { createContext } from 'react';
+import { LayoverPosition } from '../components/Layover';
 import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
-  LayoverState,
 } from '../types/layoverContext.types';
-import { LayoverPosition } from '../components/Layover';
 
 // TODO: Potentially move searchValue and setSearchValue out of this file
 export const LayoverContext = createContext<LayoverContextData>({
