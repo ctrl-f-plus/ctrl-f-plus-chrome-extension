@@ -1,10 +1,16 @@
-// src/utils/matchUtils.ts
-import { SwitchTabMessage } from '../types/message.types';
-import { SerializedTabState, TabState } from '../types/tab.types';
-import { serializeMatchesObj } from './htmlUtils';
-import { searchAndHighlight } from './searchAndHighlightUtils';
-import { sendMessageToBackground } from './messageUtils/sendMessageToBackground';
+// src/utils/matchUtils/findMatchesUtils.ts
+// src/utils/matchUtils/matchController.ts
 
+import {
+  SwitchTabMessage,
+  UpdateTabStatesObjMsg,
+} from '../../types/message.types';
+import { SerializedTabState, TabState } from '../../types/tab.types';
+import { serializeMatchesObj } from '../htmlUtils';
+import { searchAndHighlight } from './highlightUtils';
+import { sendMessageToBackground } from '../messageUtils/sendMessageToBackground';
+
+// - `findAllMatches()`, `updateHighlights()`, `nextMatch()`, and `previousMatch()` are only called from within `findMatchesScript.ts`
 export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;
   state2.matchesCount = 0;
@@ -16,21 +22,18 @@ export async function findAllMatches(state2: TabState, findValue: string) {
     tabId: state2.tabId,
     state2: state2,
     callback: async () => {
-      const serializedState2: SerializedTabState = serializeMatchesObj({
+      const serializedState: SerializedTabState = serializeMatchesObj({
         ...state2,
       });
 
-      // FIXME: REVIEW this message
-      chrome.runtime.sendMessage(
-        {
-          from: 'content',
-          type: 'update-tab-states-obj',
-          payload: {
-            serializedState2,
-          },
+      const msg: UpdateTabStatesObjMsg = {
+        from: 'content:match-utils',
+        type: 'update-tab-states-obj',
+        payload: {
+          serializedState,
         },
-        function (response) {}
-      );
+      };
+      sendMessageToBackground(msg);
     },
   });
 }
@@ -50,7 +53,7 @@ export async function updateHighlights(
   }
 
   if (endOfTab) {
-    return; // Promise.resolve();
+    return;
   }
 
   if (typeof state2.currentIndex !== 'undefined') {
@@ -104,6 +107,7 @@ export function previousMatch(state2: TabState) {
   // updateHighlights(state2, prevIndex);
 }
 
+// src/utils/scrollUtils.ts
 function scrollToElement(element: HTMLElement) {
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }

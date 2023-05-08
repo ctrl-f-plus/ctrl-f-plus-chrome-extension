@@ -10,7 +10,7 @@ import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { MessageFixMe } from '../types/message.types';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { removeAllHighlightMatches } from '../utils/searchAndHighlightUtils';
+import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 

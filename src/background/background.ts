@@ -30,12 +30,10 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       case 'get-all-matches-msg':
         await handleGetAllMatchesMsg(payload);
-        console.log('get-all-matches-msg', store);
         return true;
       case 'next-match':
       case 'prev-match':
         await handleNextPrevMatch(sender, type);
-        console.log('next-match', store);
         return true;
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
@@ -48,18 +46,15 @@ chrome.runtime.onMessage.addListener(
         break;
       case 'switch-tab':
         await switchTab(message.serializedState2);
-        console.log('switch-tab', store);
         return true;
       case 'update-tab-states-obj':
-        console.log('update-tab-states-obj', store);
         await handleUpdateTabStatesObj(payload, sendResponse);
         return true;
       case 'update-layover-position':
-        console.log('update-layover-position', store);
         await handleUpdateLayoverPosition(store, payload.newPosition);
         return;
       default:
-        break;
+        return;
     }
   }
 );

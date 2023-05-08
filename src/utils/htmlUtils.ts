@@ -8,7 +8,7 @@ export interface XPathMatchObject {
   spanClasses: string[];
 }
 
-export function getXPath(element: Node): string {
+function getXPath(element: Node): string {
   if (element.nodeType !== Node.ELEMENT_NODE) {
     return '';
   }
@@ -103,7 +103,7 @@ restoreHighlightSpans(storedXPaths);
  */
 
 // @ts-ignore
-export function getElementByXPath(xpath) {
+function getElementByXPath(xpath) {
   return document.evaluate(
     xpath,
     document,

@@ -1,4 +1,4 @@
-// src/utils/searchAndHighlightUtils.ts
+// src/utils/matchUtils/highlightUtils.ts
 
 import {
   CreateHighlightSpanProps,
@@ -6,7 +6,7 @@ import {
   ProcessTextNodeProps,
   SearchAndHighlightProps,
   UpdateMatchesObjectProps,
-} from '../types/searchAndHighlight.types';
+} from '../../types/searchAndHighlight.types';
 
 function isVisible(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
@@ -49,15 +49,8 @@ function createHighlightSpan({
   return span;
 }
 
-function updateMatchesObject({
-  matchesObj,
-  tabId,
-  span,
-}: UpdateMatchesObjectProps) {
-  // TODO:Remove object version
-  if (Array.isArray(matchesObj)) {
-    matchesObj.push(span);
-  }
+function updateMatchesObject({ matchesObj, span }: UpdateMatchesObjectProps) {
+  matchesObj.push(span);
 }
 
 function getAllTextNodesToProcess({
@@ -124,6 +117,25 @@ function processTextNode({
   parent.replaceChild(fragment, textNode);
 }
 
+// `searchAndHighlight()` is only called from within `matchUtils.ts`
+export function searchAndHighlight({
+  matchesObj,
+  findValue,
+  tabId,
+  state2,
+  callback,
+}: SearchAndHighlightProps) {
+  const regex = new RegExp(findValue, 'gi');
+  const textNodesToProcess = getAllTextNodesToProcess({ regex });
+
+  textNodesToProcess.forEach((textNode) => {
+    processTextNode({ textNode, regex, matchesObj, tabId, state2 });
+  });
+
+  callback && callback();
+}
+
+//  TODO: maybe move to contentScript as `removeAllHighlightMatches()` is only called from within `contentScript.tsx`
 export function removeAllHighlightMatches() {
   const highlightElements = document.querySelectorAll(
     '.ctrl-f-highlight, .ctrl-f-highlight-focus'
@@ -144,21 +156,4 @@ export function removeAllHighlightMatches() {
     const textNode = document.createTextNode(textContent);
     parent.replaceChild(textNode, elem);
   });
-}
-
-export function searchAndHighlight({
-  matchesObj,
-  findValue,
-  tabId,
-  state2,
-  callback,
-}: SearchAndHighlightProps) {
-  const regex = new RegExp(findValue, 'gi');
-  const textNodesToProcess = getAllTextNodesToProcess({ regex });
-
-  textNodesToProcess.forEach((textNode) => {
-    processTextNode({ textNode, regex, matchesObj, tabId, state2 });
-  });
-
-  callback && callback();
 }

@@ -5,6 +5,7 @@ import { UpdateStoreMessage } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { sendMessageToContentScripts } from '../utils/messageUtils/sendMessageToContentScripts';
 
+// Store Interface
 export interface Store {
   globalMatchIdx: number;
   totalMatchesCount: number;
@@ -21,6 +22,7 @@ export interface Store {
   tabStates: Record<ValidTabId, SerializedTabState>;
 }
 
+// Store utility functions
 function createUpdateStoreMessage(store: Store): UpdateStoreMessage {
   return {
     from: 'background:store',
@@ -31,6 +33,7 @@ function createUpdateStoreMessage(store: Store): UpdateStoreMessage {
   };
 }
 
+// Store lifecycle functions
 export function initStore() {
   const store: Store = {
     globalMatchIdx: 0,
@@ -56,6 +59,7 @@ export function resetStore(store: Store): void {
   updateStore(store, initialState);
 }
 
+// Store update functions
 export function updateStore(store: Store, updates: Partial<Store>): void {
   Object.assign(store, updates);
 

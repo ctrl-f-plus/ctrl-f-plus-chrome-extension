@@ -27,8 +27,8 @@ export interface SearchAndHighlightProps extends MatchUtilsBase {
   callback?: () => void;
 }
 
-export type MatchesObject =
-  | Array<HTMLElement>
-  | {
-      [tabId: number]: Array<HTMLElement>;
-    };
+export type MatchesObject = Array<HTMLElement>;
+// | Array<HTMLElement>
+// | {
+//     [tabId: number]: Array<HTMLElement>;
+//   };

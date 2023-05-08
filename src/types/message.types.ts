@@ -9,6 +9,7 @@ export interface BaseMessage {
     | 'background'
     | 'background:store'
     | 'content'
+    | 'content:match-utils'
     | 'match-utils'
     | 'inner-match-utils'
     | 'content-script-match-utils'
@@ -91,8 +92,8 @@ export interface SwitchedActiveTabHideLayover extends BaseMessage {
   type: 'switched-active-tab-hide-layover';
 }
 
-export interface UpdateTabStatesObj extends BaseMessage {
-  from: 'content';
+export interface UpdateTabStatesObjMsg extends BaseMessage {
+  from: 'content:match-utils';
   type: 'update-tab-states-obj';
   payload: any;
 }
@@ -125,6 +126,6 @@ export type Messages =
   | UpdateHighlightsMessage
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
-  | UpdateTabStatesObj
+  | UpdateTabStatesObjMsg
   | UpdateStoreMessage
   | UpdateLayoverPositionMessage;

@@ -7,7 +7,7 @@ import {
   nextMatch,
   previousMatch,
   updateHighlights,
-} from '../utils/matchUtils';
+} from '../utils/matchUtils/findMatchesUtils';
 
 const state2: TabState = {
   tabId: undefined as TabId | undefined,
