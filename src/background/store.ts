@@ -1,13 +1,9 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
+import { UpdateStoreMessage } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { sendMessageToContentScripts } from '../utils/messageUtils/sendMessageToContentScripts';
-import {
-  InitializeStoreMessage,
-  Messages,
-  UpdateStoreMessage,
-} from '../types/message.types';
 
 export interface Store {
   globalMatchIdx: number;
@@ -23,6 +19,16 @@ export interface Store {
   showLayover: boolean;
   showMatches: boolean;
   tabStates: Record<ValidTabId, SerializedTabState>;
+}
+
+function createUpdateStoreMessage(store: Store): UpdateStoreMessage {
+  return {
+    from: 'background:store',
+    type: 'store-updated',
+    payload: {
+      store,
+    },
+  };
 }
 
 export function initStore() {
@@ -66,27 +72,11 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
   }
 
   const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
-
-  const msg: UpdateStoreMessage = {
-    from: 'background:store',
-    type: 'store-updated',
-    payload: {
-      store,
-    },
-  };
-
+  const msg = createUpdateStoreMessage(store);
   sendMessageToContentScripts(msg, tabIds);
 }
 
 export function sendStoreToContentScripts(store: Store): void {
-  const msg: InitializeStoreMessage = {
-    // const msg: Messages = {
-    from: 'background:store',
-    type: 'initialize-store',
-    payload: {
-      store,
-    },
-  };
-
+  const msg = createUpdateStoreMessage(store);
   sendMessageToContentScripts(msg);
 }

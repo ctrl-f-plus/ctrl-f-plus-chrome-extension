@@ -105,14 +105,6 @@ export interface UpdateStoreMessage extends BaseMessage {
   };
 }
 
-export interface InitializeStoreMessage extends BaseMessage {
-  from: 'background:store';
-  type: 'initialize-store';
-  payload: {
-    store: Store;
-  };
-}
-
 export interface UpdateLayoverPositionMessage extends BaseMessage {
   from: 'content:layover-component';
   type: 'update-layover-position';

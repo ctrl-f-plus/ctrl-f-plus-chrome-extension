@@ -83,7 +83,6 @@ const App: React.FC<{}> = () => {
       case 'update-matches-count':
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
-      case 'initialize-store':
       case 'store-updated':
         const { store } = message.payload;
         updateContextFromStore(store);
