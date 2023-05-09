@@ -59,7 +59,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     case 'background:highlight':
       await handleHighlight(state2, findValue, tabId, sendResponse);
       return true;
-    case 'background:next-match':
+    // case 'background:next-match':
+    case 'background:backgroundUtils:next-match':
       await handleNextMatch(state2, sendResponse);
       return true;
     case 'background:prev-match':

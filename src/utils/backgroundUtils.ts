@@ -10,7 +10,14 @@ import {
   setStoredLayoverPosition,
   setStoredTabs,
 } from '../utils/storage';
-import { createUpdateHighlightsMsg } from './messageUtils/createMessages';
+import {
+  createHighlightMsg,
+  createNextMatchMsg,
+  createPrevMatchMsg,
+  createRemoveAllHighlightMatchesMsg,
+  createToggleStylesMsg,
+  createUpdateHighlightsMsg,
+} from './messageUtils/createMessages';
 import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
 
 /**
@@ -36,13 +43,10 @@ async function executeContentScript(
       const tabId: ValidTabId = tab.id as number;
 
       try {
-        const response = await sendMessageToTab(tabId, {
-          from: 'background',
-          type: 'highlight',
-          findValue: findValue,
-          tabId: tab.id,
-          tabState: {},
-        });
+        const response = await sendMessageToTab(
+          tabId,
+          createHighlightMsg(findValue, tabId)
+        );
 
         const { currentIndex, matchesCount, matchesObj } =
           response.serializedState;
@@ -174,11 +178,17 @@ export async function executeContentScriptWithMessage(
   messageType: string
 ): Promise<any> {
   try {
-    const response = await sendMessageToTab(tabId, {
-      from: 'background',
-      type: messageType,
-      tabId,
-    });
+    let msg;
+
+    if (messageType === 'next-match') {
+      msg = createNextMatchMsg();
+    } else if (messageType === 'prev-match') {
+      msg = createPrevMatchMsg();
+    } else {
+      throw new Error('Unsupported message type');
+    }
+
+    const response = await sendMessageToTab(tabId, msg);
 
     return response;
   } catch (error) {
@@ -270,9 +280,7 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
       if (tab.id) {
-        sendMessageToTab(tab.id, {
-          type: addStyles ? 'add-styles' : 'remove-styles',
-        });
+        sendMessageToTab(tab.id, createToggleStylesMsg(addStyles));
       }
     });
   });
@@ -290,9 +298,7 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {
-      return sendMessageToTab(tab.id, {
-        type: 'remove-all-highlight-matches',
-      });
+      return sendMessageToTab(tab.id, createRemoveAllHighlightMatchesMsg());
     } else {
       return Promise.resolve(null);
     }
