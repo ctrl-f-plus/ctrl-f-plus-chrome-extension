@@ -13,6 +13,7 @@ import {
   handleToggleStylesAllTabs,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
+  queryCurrentWindowTabs,
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
@@ -64,7 +65,7 @@ chrome.runtime.onMessage.addListener(
 // - Could maybe be improved by using the `active-tab` field in the store
 // - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  const orderedTabs = await getOrderedTabs();
+  const orderedTabs = await getOrderedTabs(false);
 
   const msg: SwitchedActiveTabShowLayover = {
     from: 'background',
@@ -89,13 +90,12 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   sendStoreToContentScripts(store);
 });
 
-chrome.commands.onCommand.addListener((command) => {
+chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0].id) {
-        sendMessageToTab(tabs[0].id, { command });
-      }
-    });
+    const tabs = await queryCurrentWindowTabs(true);
+    if (tabs[0].id) {
+      sendMessageToTab(tabs[0].id, { command });
+    }
   }
 });
 

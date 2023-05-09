@@ -31,6 +31,15 @@ import {
 /**
  *  Utility/Helper Functions:
  */
+export async function queryCurrentWindowTabs(
+  // activeTab: boolean = true
+  activeTab: boolean | undefined = undefined
+): Promise<chrome.tabs.Tab[]> {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ active: activeTab, currentWindow: true }, resolve);
+  });
+}
+
 async function executeContentScript(
   findValue: string,
   tab: chrome.tabs.Tab,
@@ -79,17 +88,18 @@ async function executeContentScript(
   );
 }
 
-export async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
-  return new Promise<chrome.tabs.Tab[]>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => {
-      const activeTabIndex = tabs.findIndex((tab) => tab.active);
-      const orderedTabs = [
-        ...tabs.slice(activeTabIndex + 1),
-        ...tabs.slice(0, activeTabIndex),
-      ];
-      resolve(orderedTabs);
-    });
-  });
+export async function getOrderedTabs(
+  includeActiveTab: boolean = true
+): Promise<chrome.tabs.Tab[]> {
+  const tabs = await queryCurrentWindowTabs();
+  const activeTabIndex = tabs.findIndex((tab) => tab.active);
+  const startSliceIdx = includeActiveTab ? activeTabIndex : activeTabIndex + 1;
+
+  const orderedTabs = [
+    ...tabs.slice(startSliceIdx),
+    ...tabs.slice(0, activeTabIndex),
+  ];
+  return orderedTabs;
 }
 
 // FIXME: Figure out if/when this actually ever gets called, then remove debugger
@@ -110,12 +120,10 @@ export async function updateMatchesCount() {
   });
 }
 
-// FIXME: you should be able to DRY `chrome.tabs.query({ currentWindow: true }, (tabs)`
 // 'Match X/Y (Total: Z)';
 export async function updateTotalTabsCount(store: Store) {
-  store.totalTabs = await new Promise<number>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, (tabs) => resolve(tabs.length));
-  });
+  const tabs = await queryCurrentWindowTabs();
+  store.totalTabs = tabs.length;
 }
 
 /**
@@ -125,16 +133,8 @@ export async function executeContentScriptOnAllTabs(
   findValue: string,
   store: Store
 ) {
-  const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, resolve);
-  });
+  const orderedTabs = await getOrderedTabs();
 
-  const activeTabIndex = tabs.findIndex((tab) => tab.active);
-
-  const orderedTabs = [
-    ...tabs.slice(activeTabIndex),
-    ...tabs.slice(0, activeTabIndex),
-  ];
   let foundFirstMatch = false;
 
   for (const tab of orderedTabs) {
@@ -150,9 +150,11 @@ export async function executeContentScriptOnAllTabs(
 
         //FIXME: need to add await if you handle errors in `sendMessageToTab() (**354)
         const msg = createUpdateHighlightsMsg(tab.id);
-        await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+        sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
-        if (tabs[activeTabIndex].id !== tab.id) {
+        const activeTab = orderedTabs[0];
+        if (activeTab.id !== tab.id) {
+          // if (tabs[activeTabIndex].id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
@@ -284,13 +286,13 @@ export async function handleNextPrevMatch(
 }
 
 export async function handleToggleStylesAllTabs(addStyles: boolean) {
-  chrome.tabs.query({ currentWindow: true }, (tabs) => {
-    tabs.forEach((tab) => {
-      if (tab.id) {
-        const msg = createToggleStylesMsg(addStyles);
-        sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-      }
-    });
+  const tabs = await queryCurrentWindowTabs();
+
+  tabs.forEach((tab) => {
+    if (tab.id) {
+      const msg = createToggleStylesMsg(addStyles);
+      sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
+    }
   });
 
   updateStore(store, {
@@ -300,9 +302,7 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
 }
 
 export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
-  const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
-    chrome.tabs.query({ currentWindow: true }, resolve);
-  });
+  const tabs = await queryCurrentWindowTabs();
 
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {

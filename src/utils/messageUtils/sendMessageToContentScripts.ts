@@ -2,12 +2,14 @@
 
 import { Messages } from '../../types/message.types';
 import { TabId, ValidTabId } from '../../types/tab.types';
+import { queryCurrentWindowTabs } from '../backgroundUtils';
 
 export const sendMessageToContentScripts = async (
   msg: Messages,
   tabIds: ValidTabId[] = []
 ): Promise<any> => {
   if (tabIds.length === 0) {
+    // const tabs = await queryCurrentWindowTabs();
     const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
       chrome.tabs.query({ currentWindow: true }, resolve);
     });

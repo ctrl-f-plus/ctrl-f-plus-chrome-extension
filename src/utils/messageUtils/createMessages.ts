@@ -33,7 +33,6 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   };
 }
 
-// TODO: need to create message type
 export function createToggleStylesMsg(addStyles: boolean): ToggleStylesMsg {
   return {
     from: 'background:backgroundUtils',
@@ -41,7 +40,6 @@ export function createToggleStylesMsg(addStyles: boolean): ToggleStylesMsg {
   };
 }
 
-// TODO: need to update/copy existing message type to a new message type
 export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesMsg {
   return {
     from: 'background:backgroundUtils',
