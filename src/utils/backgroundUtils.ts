@@ -270,32 +270,6 @@ export async function handleNextPrevMatch(
   }
 }
 
-//       updateStore(store, {
-//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-//         tabStates: {
-//           ...store.tabStates,
-//           [sender.tab.id]: {
-//             ...tabState,
-//             currentIndex,
-//           },
-//         },
-//       });
-//     } else {
-//       // TODO: Review to see if you actually need this:
-//       const currentIndex = tabState.globalMatchIdxStart;
-//       updateStore(store, {
-//         tabStates: {
-//           ...store.tabStates,
-//           [sender.tab.id]: {
-//             ...tabState,
-//             currentIndex,
-//           },
-//         },
-//       });
-//     }
-//   }
-// }
-
 export async function handleToggleStylesAllTabs(addStyles: boolean) {
   const tabs = await queryCurrentWindowTabs();
 
