@@ -23,16 +23,12 @@ import {
   createToggleStylesMsg,
   createUpdateHighlightsMsg,
 } from './messageUtils/createMessages';
-import {
-  sendMessageToTab,
-  sendMsgToTab,
-} from './messageUtils/sendMessageToContentScripts';
+import { sendMsgToTab } from './messageUtils/sendMessageToContentScripts';
 
 /**
  *  Utility/Helper Functions:
  */
 export async function queryCurrentWindowTabs(
-  // activeTab: boolean = true
   activeTab: boolean | undefined = undefined
 ): Promise<chrome.tabs.Tab[]> {
   return new Promise((resolve) => {
@@ -154,7 +150,6 @@ export async function executeContentScriptOnAllTabs(
 
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tab.id) {
-          // if (tabs[activeTabIndex].id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
@@ -243,7 +238,6 @@ export async function switchTab(
  */
 export async function handleGetAllMatchesMsg(findValue: string) {
   resetStore(store);
-
   executeContentScriptOnAllTabs(findValue, store);
 }
 
@@ -253,26 +247,17 @@ export async function handleNextPrevMatch(
 ) {
   if (sender.tab && sender.tab.id) {
     const response = await executeContentScriptWithMessage(sender.tab.id, type);
-
     const tabState = store.tabStates[sender.tab.id];
 
-    if (response.status === 'success') {
-      const currentIndex = response.serializedState2.currentIndex;
+    let currentIndex = tabState.globalMatchIdxStart;
 
+    if (response.status === 'success') {
+      currentIndex = response.serializedState2.currentIndex;
+    }
+
+    if (tabState.globalMatchIdxStart && currentIndex) {
       updateStore(store, {
         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-        tabStates: {
-          ...store.tabStates,
-          [sender.tab.id]: {
-            ...tabState,
-            currentIndex,
-          },
-        },
-      });
-    } else {
-      // TODO: Review to see if you actually need this:
-      const currentIndex = tabState.globalMatchIdxStart;
-      updateStore(store, {
         tabStates: {
           ...store.tabStates,
           [sender.tab.id]: {
@@ -284,6 +269,32 @@ export async function handleNextPrevMatch(
     }
   }
 }
+
+//       updateStore(store, {
+//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+//         tabStates: {
+//           ...store.tabStates,
+//           [sender.tab.id]: {
+//             ...tabState,
+//             currentIndex,
+//           },
+//         },
+//       });
+//     } else {
+//       // TODO: Review to see if you actually need this:
+//       const currentIndex = tabState.globalMatchIdxStart;
+//       updateStore(store, {
+//         tabStates: {
+//           ...store.tabStates,
+//           [sender.tab.id]: {
+//             ...tabState,
+//             currentIndex,
+//           },
+//         },
+//       });
+//     }
+//   }
+// }
 
 export async function handleToggleStylesAllTabs(addStyles: boolean) {
   const tabs = await queryCurrentWindowTabs();
