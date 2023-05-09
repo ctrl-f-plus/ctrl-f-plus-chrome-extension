@@ -131,6 +131,16 @@ export interface HighlightMsg extends BaseMessage {
   tabState: {};
 }
 
+export interface ToggleStylesMsg extends BaseMessage {
+  from: 'background:backgroundUtils';
+  type: 'add-styles' | 'remove-styles';
+}
+
+export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
+  from: 'background:backgroundUtils';
+  type: 'remove-all-highlight-matches';
+}
+
 export type Messages =
   | GetAllMatchesMessage
   | NextMatchMsg
@@ -148,4 +158,6 @@ export type Messages =
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
-  | UpdateLayoverPositionMessage;
+  | UpdateLayoverPositionMessage
+  | ToggleStylesMsg
+  | RemoveAllHighlightMatchesMsg;

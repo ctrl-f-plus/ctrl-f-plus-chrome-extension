@@ -4,6 +4,8 @@ import {
   HighlightMsg,
   NextMatchMsg,
   PrevMatchMsg,
+  RemoveAllHighlightMatchesMsg,
+  ToggleStylesMsg,
   UpdateHighlightsMsg,
   UpdateStoreMsg,
 } from '../../types/message.types';
@@ -32,7 +34,7 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
 }
 
 // TODO: need to create message type
-export function createToggleStylesMsg(addStyles: boolean) {
+export function createToggleStylesMsg(addStyles: boolean): ToggleStylesMsg {
   return {
     from: 'background:backgroundUtils',
     type: addStyles ? 'add-styles' : 'remove-styles',
@@ -40,7 +42,7 @@ export function createToggleStylesMsg(addStyles: boolean) {
 }
 
 // TODO: need to update/copy existing message type to a new message type
-export function createRemoveAllHighlightMatchesMsg() {
+export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesMsg {
   return {
     from: 'background:backgroundUtils',
     type: 'remove-all-highlight-matches',

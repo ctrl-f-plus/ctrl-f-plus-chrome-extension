@@ -41,13 +41,13 @@ export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
 }
 
 // UPDATED VERSION
-// export function sendMessageToTab<T extends Messages>(
-//   tabId: TabId,
-//   message: T
-// ): Promise<any> {
-//   return new Promise((resolve, reject) => {
-//     chrome.tabs.sendMessage(tabId as number, message, (response) => {
-//       resolve(response);
-//     });
-//   });
-// }
+export function sendMsgToTab<T extends Messages>(
+  tabId: TabId,
+  message: T
+): Promise<any> {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId as number, message, (response) => {
+      resolve(response);
+    });
+  });
+}

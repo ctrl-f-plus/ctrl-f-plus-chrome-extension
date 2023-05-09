@@ -3,7 +3,12 @@
 import { store } from '../background/background';
 import { Store, resetStore, updateStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { UpdateHighlightsMsg } from '../types/message.types';
+import {
+  HighlightMsg,
+  RemoveAllHighlightMatchesMsg,
+  ToggleStylesMsg,
+  UpdateHighlightsMsg,
+} from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import {
   getAllStoredTabs,
@@ -18,12 +23,14 @@ import {
   createToggleStylesMsg,
   createUpdateHighlightsMsg,
 } from './messageUtils/createMessages';
-import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
+import {
+  sendMessageToTab,
+  sendMsgToTab,
+} from './messageUtils/sendMessageToContentScripts';
 
 /**
  *  Utility/Helper Functions:
  */
-
 async function executeContentScript(
   findValue: string,
   tab: chrome.tabs.Tab,
@@ -43,10 +50,8 @@ async function executeContentScript(
       const tabId: ValidTabId = tab.id as number;
 
       try {
-        const response = await sendMessageToTab(
-          tabId,
-          createHighlightMsg(findValue, tabId)
-        );
+        const msg = createHighlightMsg(findValue, tabId);
+        const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
 
         const { currentIndex, matchesCount, matchesObj } =
           response.serializedState;
@@ -143,8 +148,9 @@ export async function executeContentScriptOnAllTabs(
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        //FIXME: need to add await if you handle errors in `snedMessageToTab() (**354)
-        sendMessageToTab(tab.id, createUpdateHighlightsMsg(tab.id));
+        //FIXME: need to add await if you handle errors in `sendMessageToTab() (**354)
+        const msg = createUpdateHighlightsMsg(tab.id);
+        await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
         if (tabs[activeTabIndex].id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
@@ -188,7 +194,7 @@ export async function executeContentScriptWithMessage(
       throw new Error('Unsupported message type');
     }
 
-    const response = await sendMessageToTab(tabId, msg);
+    const response = await sendMsgToTab(tabId, msg);
 
     return response;
   } catch (error) {
@@ -221,7 +227,8 @@ export async function switchTab(
 
     serializedState2.tabId = tab.id;
 
-    sendMessageToTab(tab.id, createUpdateHighlightsMsg(tab.id));
+    const msg = createUpdateHighlightsMsg(tab.id);
+    await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
@@ -280,7 +287,8 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
       if (tab.id) {
-        sendMessageToTab(tab.id, createToggleStylesMsg(addStyles));
+        const msg = createToggleStylesMsg(addStyles);
+        sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
       }
     });
   });
@@ -298,7 +306,8 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {
-      return sendMessageToTab(tab.id, createRemoveAllHighlightMatchesMsg());
+      const msg = createRemoveAllHighlightMatchesMsg();
+      return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
     } else {
       return Promise.resolve(null);
     }
