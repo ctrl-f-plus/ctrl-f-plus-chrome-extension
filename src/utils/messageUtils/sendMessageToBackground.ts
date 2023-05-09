@@ -1,4 +1,4 @@
-// src/utils/sendMessageToBackground.ts
+// src/utils/messageUtils/sendMessageToBackground.ts
 
 import { Messages } from '../../types/message.types';
 
@@ -11,4 +11,3 @@ export const sendMessageToBackground = async (
     });
   });
 };
-

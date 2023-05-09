@@ -76,10 +76,9 @@ export interface SwitchTabMessage extends BaseMessage {
   prevIndex: number | undefined;
 }
 
-export interface UpdateHighlightsMessage extends BaseMessage {
+export interface UpdateHighlightsMsg extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
-  state?: SerializedTabState;
   prevIndex: number | undefined;
 }
 export interface SwitchedActiveTabShowLayover extends BaseMessage {
@@ -98,7 +97,7 @@ export interface UpdateTabStatesObjMsg extends BaseMessage {
   payload: any;
 }
 
-export interface UpdateStoreMessage extends BaseMessage {
+export interface UpdateStoreMsg extends BaseMessage {
   from: 'background:store';
   type: 'store-updated';
   payload: {
@@ -123,9 +122,9 @@ export type Messages =
   | AddStylesAllTabs
   | RemoveAllHighlightMatches
   | SwitchTabMessage
-  | UpdateHighlightsMessage
+  | UpdateHighlightsMsg
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg
-  | UpdateStoreMessage
+  | UpdateStoreMsg
   | UpdateLayoverPositionMessage;

@@ -1,8 +1,9 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { UpdateStoreMessage } from '../types/message.types';
+import { UpdateStoreMsg } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
+import { createUpdateStoreMsg } from '../utils/messageUtils/createMessages';
 import { sendMessageToContentScripts } from '../utils/messageUtils/sendMessageToContentScripts';
 
 // Store Interface
@@ -23,15 +24,7 @@ export interface Store {
 }
 
 // Store utility functions
-function createUpdateStoreMessage(store: Store): UpdateStoreMessage {
-  return {
-    from: 'background:store',
-    type: 'store-updated',
-    payload: {
-      store,
-    },
-  };
-}
+// TODO: Add utility functions
 
 // Store lifecycle functions
 export function initStore() {
@@ -76,11 +69,11 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
   }
 
   const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
-  const msg = createUpdateStoreMessage(store);
+  const msg = createUpdateStoreMsg(store);
   sendMessageToContentScripts(msg, tabIds);
 }
 
 export function sendStoreToContentScripts(store: Store): void {
-  const msg = createUpdateStoreMessage(store);
+  const msg = createUpdateStoreMsg(store);
   sendMessageToContentScripts(msg);
 }

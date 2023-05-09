@@ -13,10 +13,10 @@ import {
   handleToggleStylesAllTabs,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
-  sendTabMessage,
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
+import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import { initStore, sendStoreToContentScripts } from './store';
 
@@ -59,34 +59,30 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
+// FIXME:
+// - could maybe use sendMessageToContentScripts() instead, but need to message active tab first
+// - Could maybe be improved by using the `active-tab` field in the store
+// - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  // TODO:(***101):This would be better if it only ran on stored tabs
-  // const storedTabs = await getAllStoredTabs();
-  // const matchesObject = storedTabs;
-  // const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-
-  // const orderedTabs = arrangeTabs(tabs, tabId);
-  // const orderedTabIds = arrangeTabs(tabIds, tabId);
-  // TODO:(***101): Here
   const orderedTabs = await getOrderedTabs();
 
-  const message1: SwitchedActiveTabShowLayover = {
-    // TODO:reset currentIndex so that when you hit next on the new tab it highlights the first match on that page
+  const msg: SwitchedActiveTabShowLayover = {
     from: 'background',
     type: 'switched-active-tab-show-layover',
   };
 
-  sendTabMessage(tabId, message1);
+  sendMessageToTab(tabId, msg);
 
   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
+  const msg2: SwitchedActiveTabHideLayover = {
+    from: 'background',
+    type: 'switched-active-tab-hide-layover',
+  };
+
   for (const otherTab of inactiveTabs) {
     if (otherTab.id) {
-      const message2: SwitchedActiveTabHideLayover = {
-        from: 'background',
-        type: 'switched-active-tab-hide-layover',
-      };
-      sendTabMessage(otherTab.id, message2);
+      sendMessageToTab(otherTab.id, msg2);
     }
   }
 
@@ -97,7 +93,7 @@ chrome.commands.onCommand.addListener((command) => {
   if (command === 'toggle_search_layover') {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
-        sendTabMessage(tabs[0].id, { command });
+        sendMessageToTab(tabs[0].id, { command });
       }
     });
   }

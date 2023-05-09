@@ -26,13 +26,13 @@ async function handleHighlight(
 
   await findAllMatches(state2, findValue);
 
-  const serializedState2: SerializedTabState = serializeMatchesObj({
+  const serializedState: SerializedTabState = serializeMatchesObj({
     ...state2,
   });
 
   sendResponse({
     hasMatch: state2.matchesObj.length > 0,
-    serializedState2: serializedState2,
+    serializedState: serializedState,
   });
 }
 

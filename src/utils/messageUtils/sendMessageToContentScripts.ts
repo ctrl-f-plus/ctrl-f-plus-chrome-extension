@@ -1,7 +1,7 @@
-// src/utils/sendMessageToContentScripts.ts
+// src/utils/messageUtils/sendMessageToContentScripts.ts
 
 import { Messages } from '../../types/message.types';
-import { ValidTabId } from '../../types/tab.types';
+import { TabId, ValidTabId } from '../../types/tab.types';
 
 export const sendMessageToContentScripts = async (
   msg: Messages,
@@ -23,3 +23,18 @@ export const sendMessageToContentScripts = async (
     }
   });
 };
+
+// FIXME: (**354)
+export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId as number, message, (response) => {
+      // if (chrome.runtime.lastError) {
+      //   debugger;
+      //   reject(chrome.runtime.lastError);
+      // } else {
+      //   debugger;
+      resolve(response);
+      // }
+    });
+  });
+}

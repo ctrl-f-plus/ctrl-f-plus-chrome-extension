@@ -3,28 +3,19 @@
 import { store } from '../background/background';
 import { Store, resetStore, updateStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { UpdateHighlightsMessage } from '../types/message.types';
-import { SerializedTabState, TabId } from '../types/tab.types';
+import { UpdateHighlightsMsg } from '../types/message.types';
+import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import {
   getAllStoredTabs,
   setStoredLayoverPosition,
   setStoredTabs,
 } from '../utils/storage';
+import { createUpdateHighlightsMsg } from './messageUtils/createMessages';
+import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
 
 /**
  *  Utility/Helper Functions:
  */
-export function sendTabMessage(tabId: TabId, message: any): Promise<any> {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.sendMessage(tabId as number, message, (response) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(response);
-      }
-    });
-  });
-}
 
 async function executeContentScript(
   findValue: string,
@@ -42,10 +33,10 @@ async function executeContentScript(
         return;
       }
 
-      const tabId: TabId = tab.id as number;
+      const tabId: ValidTabId = tab.id as number;
 
       try {
-        const response = await sendTabMessage(tabId, {
+        const response = await sendMessageToTab(tabId, {
           from: 'background',
           type: 'highlight',
           findValue: findValue,
@@ -53,28 +44,23 @@ async function executeContentScript(
           tabState: {},
         });
 
-        const {
-          tabId: responseTabId,
-          currentIndex,
-          matchesCount,
-        } = response.serializedState2;
+        const { currentIndex, matchesCount, matchesObj } =
+          response.serializedState;
 
-        if (typeof tab.id === 'number') {
-          updateStore(store, {
-            totalMatchesCount: store.totalMatchesCount + matchesCount,
-            tabStates: {
-              ...store.tabStates,
-              [tabId]: {
-                tabId,
-                active: false, //FIXME:
-                currentIndex,
-                matchesCount,
-                serializedMatches: response.serializedState2.matchesObj,
-                globalMatchIdxStart: store.totalMatchesCount,
-              },
+        updateStore(store, {
+          totalMatchesCount: store.totalMatchesCount + matchesCount,
+          tabStates: {
+            ...store.tabStates,
+            [tabId]: {
+              tabId,
+              active: false, //FIXME:
+              currentIndex,
+              matchesCount,
+              serializedMatches: matchesObj,
+              globalMatchIdxStart: store.totalMatchesCount,
             },
-          });
-        }
+          },
+        });
 
         resolve(response);
       } catch (error) {
@@ -97,6 +83,7 @@ export async function getOrderedTabs(): Promise<chrome.tabs.Tab[]> {
   });
 }
 
+// FIXME: Figure out if/when this actually ever gets called, then remove debugger
 export async function updateMatchesCount() {
   const storedTabs = await getAllStoredTabs();
 
@@ -106,19 +93,15 @@ export async function updateMatchesCount() {
       totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
     }
   }
-  const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
 
-  for (const tabId of tabIds) {
-    sendTabMessage(tabId, {
-      from: 'background',
-      type: 'update-matches-count',
-      payload: {
-        totalMatchesCount,
-      },
-    });
-  }
+  debugger;
+
+  updateStore(store, {
+    totalMatchesCount,
+  });
 }
 
+// FIXME: you should be able to DRY `chrome.tabs.query({ currentWindow: true }, (tabs)`
 // 'Match X/Y (Total: Z)';
 export async function updateTotalTabsCount(store: Store) {
   store.totalTabs = await new Promise<number>((resolve) => {
@@ -156,13 +139,8 @@ export async function executeContentScriptOnAllTabs(
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        // FIXME: Cannot use sendTabMessage here for some reason
-        chrome.tabs.sendMessage(tab.id, {
-          from: 'background',
-          type: 'update-highlights',
-          state: store.tabStates[tab.id],
-          prevIndex: undefined,
-        });
+        //FIXME: need to add await if you handle errors in `snedMessageToTab() (**354)
+        sendMessageToTab(tab.id, createUpdateHighlightsMsg(tab.id));
 
         if (tabs[activeTabIndex].id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
@@ -196,7 +174,7 @@ export async function executeContentScriptWithMessage(
   messageType: string
 ): Promise<any> {
   try {
-    const response = await sendTabMessage(tabId, {
+    const response = await sendMessageToTab(tabId, {
       from: 'background',
       type: messageType,
       tabId,
@@ -233,14 +211,7 @@ export async function switchTab(
 
     serializedState2.tabId = tab.id;
 
-    const message: UpdateHighlightsMessage = {
-      from: 'background',
-      type: 'update-highlights',
-      state: serializedState2,
-      prevIndex: undefined,
-    };
-
-    sendTabMessage(tab.id, message);
+    sendMessageToTab(tab.id, createUpdateHighlightsMsg(tab.id));
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
@@ -299,7 +270,7 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
   chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
       if (tab.id) {
-        sendTabMessage(tab.id, {
+        sendMessageToTab(tab.id, {
           type: addStyles ? 'add-styles' : 'remove-styles',
         });
       }
@@ -319,7 +290,7 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {
-      return sendTabMessage(tab.id, {
+      return sendMessageToTab(tab.id, {
         type: 'remove-all-highlight-matches',
       });
     } else {
