@@ -25,6 +25,7 @@ export const sendMessageToContentScripts = async (
 };
 
 // FIXME: (**354)
+// OLD VERSION
 export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
@@ -38,3 +39,15 @@ export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
     });
   });
 }
+
+// UPDATED VERSION
+// export function sendMessageToTab<T extends Messages>(
+//   tabId: TabId,
+//   message: T
+// ): Promise<any> {
+//   return new Promise((resolve, reject) => {
+//     chrome.tabs.sendMessage(tabId as number, message, (response) => {
+//       resolve(response);
+//     });
+//   });
+// }

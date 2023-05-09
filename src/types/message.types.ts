@@ -2,7 +2,7 @@
 
 import { Store } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { TabState, SerializedTabState } from './tab.types';
+import { TabState, SerializedTabState, ValidTabId } from './tab.types';
 
 export interface BaseMessage {
   from:
@@ -13,6 +13,7 @@ export interface BaseMessage {
     | 'match-utils'
     | 'inner-match-utils'
     | 'content-script-match-utils'
+    | 'background:backgroundUtils'
     | 'content:layover-component';
   type: string;
   payload?: any;
@@ -23,6 +24,15 @@ export interface GetAllMatchesMessage extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
   payload: string;
+}
+export interface NextMatchMsg extends BaseMessage {
+  from: 'background:backgroundUtils';
+  type: 'next-match';
+}
+
+export interface PrevMatchMsg extends BaseMessage {
+  from: 'background:backgroundUtils';
+  type: 'prev-match';
 }
 
 export interface NextMatchMessage extends BaseMessage {
@@ -113,16 +123,27 @@ export interface UpdateLayoverPositionMessage extends BaseMessage {
   };
 }
 
+export interface HighlightMsg extends BaseMessage {
+  from: 'background';
+  type: 'highlight';
+  findValue: string;
+  tabId: ValidTabId;
+  tabState: {};
+}
+
 export type Messages =
+  | GetAllMatchesMessage
+  | NextMatchMsg
+  | PrevMatchMsg
   | NextMatchMessage
   | PreviousMatchMessage
-  | GetAllMatchesMessage
   | RemoveStylesMessage
   | RemoveStylesAllTabs
   | AddStylesAllTabs
   | RemoveAllHighlightMatches
   | SwitchTabMessage
   | UpdateHighlightsMsg
+  | HighlightMsg
   | SwitchedActiveTabShowLayover
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg

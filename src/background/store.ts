@@ -1,7 +1,6 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { UpdateStoreMsg } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { createUpdateStoreMsg } from '../utils/messageUtils/createMessages';
 import { sendMessageToContentScripts } from '../utils/messageUtils/sendMessageToContentScripts';
