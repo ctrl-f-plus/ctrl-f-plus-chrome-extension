@@ -37,8 +37,8 @@ const App: React.FC<{}> = () => {
   } = useContext(LayoverContext);
 
   const updateContextFromStore = (store: Store) => {
-    setSearchValue(store.searchValue);
-    setLastSearchValue(store.lastSearchValue);
+    // setSearchValue(store.searchValue);
+    // setLastSearchValue(store.lastSearchValue);
 
     setShowLayover(store.showLayover);
     setShowMatches(store.showMatches);

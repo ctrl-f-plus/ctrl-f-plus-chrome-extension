@@ -337,8 +337,8 @@ export async function handleUpdateTabStatesObj(
   payload: any,
   sendResponse: Function
 ) {
-  const { serializedState2 } = payload;
-  await setStoredTabs(serializedState2);
+  const { serializedState } = payload;
+  await setStoredTabs(serializedState);
 
   store.updatedTabsCount++;
 

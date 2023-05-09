@@ -1,3 +1,4 @@
+// src/types/searchAndHighlight.types.ts
 export interface MatchUtilsBase {
   currentIndex?: number;
   matchesObj: MatchesObject;
