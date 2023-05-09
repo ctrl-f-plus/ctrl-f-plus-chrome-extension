@@ -1,10 +1,6 @@
 // src/background/background.ts
 
-import {
-  Messages,
-  SwitchedActiveTabHideLayover,
-  SwitchedActiveTabShowLayover,
-} from '../types/message.types';
+import { Messages } from '../types/message.types';
 import {
   getOrderedTabs,
   handleGetAllMatchesMsg,
@@ -17,6 +13,10 @@ import {
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
+import {
+  createSwitchedActiveTabHideLayoverMsg,
+  createSwitchedActiveTabShowLayoverMsg,
+} from '../utils/messageUtils/createMessages';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import { initStore, sendStoreToContentScripts } from './store';
@@ -67,19 +67,12 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   const orderedTabs = await getOrderedTabs(false);
 
-  const msg: SwitchedActiveTabShowLayover = {
-    from: 'background',
-    type: 'switched-active-tab-show-layover',
-  };
-
+  const msg = createSwitchedActiveTabShowLayoverMsg();
   sendMessageToTab(tabId, msg);
 
   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-  const msg2: SwitchedActiveTabHideLayover = {
-    from: 'background',
-    type: 'switched-active-tab-hide-layover',
-  };
+  const msg2 = createSwitchedActiveTabHideLayoverMsg();
 
   for (const otherTab of inactiveTabs) {
     if (otherTab.id) {
@@ -93,6 +86,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const tabs = await queryCurrentWindowTabs(true);
+
     if (tabs[0].id) {
       sendMessageToTab(tabs[0].id, { command });
     }

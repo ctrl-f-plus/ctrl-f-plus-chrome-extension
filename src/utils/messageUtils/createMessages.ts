@@ -5,6 +5,8 @@ import {
   NextMatchMsg,
   PrevMatchMsg,
   RemoveAllHighlightMatchesMsg,
+  SwitchedActiveTabHideLayover,
+  SwitchedActiveTabShowLayover,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
   UpdateStoreMsg,
@@ -71,5 +73,19 @@ export function createHighlightMsg(
     findValue: findValue,
     tabId: tabId,
     tabState: {},
+  };
+}
+
+export function createSwitchedActiveTabShowLayoverMsg(): SwitchedActiveTabShowLayover {
+  return {
+    from: 'background',
+    type: 'switched-active-tab-show-layover',
+  };
+}
+
+export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLayover {
+  return {
+    from: 'background',
+    type: 'switched-active-tab-hide-layover',
   };
 }

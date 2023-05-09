@@ -125,6 +125,7 @@ export async function updateTotalTabsCount(store: Store) {
 /**
  *  Main Functions:
  */
+// TODO: Refactor and separate out a processTab() function
 export async function executeContentScriptOnAllTabs(
   findValue: string,
   store: Store
@@ -135,6 +136,7 @@ export async function executeContentScriptOnAllTabs(
 
   for (const tab of orderedTabs) {
     if (tab.id && !foundFirstMatch) {
+      // TODO: implment processTab() here
       const { hasMatch, state } = await executeContentScript(
         findValue,
         tab,
