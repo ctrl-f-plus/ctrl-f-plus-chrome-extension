@@ -1,4 +1,6 @@
-/* body {
-  background-color: #1c1c1c;
+/* src/popup/popup.css */
+
+body {
+  background-color: red !important;
   margin: 0 !important;
-} */
+}

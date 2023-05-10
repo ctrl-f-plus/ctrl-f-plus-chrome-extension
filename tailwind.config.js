@@ -1,3 +1,5 @@
+// tailwind.config.js;
+
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false,
@@ -11,6 +13,6 @@ module.exports = {
       opacity: ['disabled'],
     },
   },
-  plugins: [],
+  // plugins: [require('@tailwindcss/forms')],
   important: true,
 };
