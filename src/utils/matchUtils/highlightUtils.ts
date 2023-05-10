@@ -49,8 +49,8 @@ function createHighlightSpan({
   return span;
 }
 
-function updateMatchesObject({ matchesObj, span }: UpdateMatchesObjectProps) {
-  matchesObj.push(span);
+function updateMatchesObject({ state2, span }: UpdateMatchesObjectProps) {
+  state2.matchesObj.push(span);
 }
 
 function getAllTextNodesToProcess({
@@ -71,13 +71,7 @@ function getAllTextNodesToProcess({
   return textNodesToProcess;
 }
 
-function processTextNode({
-  textNode,
-  regex,
-  matchesObj,
-  tabId,
-  state2,
-}: ProcessTextNodeProps) {
+function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
   const parent = textNode.parentNode;
   if (!parent) {
     console.warn(
@@ -104,7 +98,7 @@ function processTextNode({
 
     const span = createHighlightSpan({ matchText });
 
-    updateMatchesObject({ matchesObj, tabId, span });
+    updateMatchesObject({ state2, span });
     state2.matchesCount += 1;
     fragment.appendChild(span);
   }
@@ -119,17 +113,15 @@ function processTextNode({
 
 // `searchAndHighlight()` is only called from within `matchUtils.ts`
 export function searchAndHighlight({
-  matchesObj,
-  findValue,
-  tabId,
   state2,
+  findValue,
   callback,
 }: SearchAndHighlightProps) {
   const regex = new RegExp(findValue, 'gi');
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
 
   textNodesToProcess.forEach((textNode) => {
-    processTextNode({ textNode, regex, matchesObj, tabId, state2 });
+    processTextNode({ textNode, regex, state2 });
   });
 
   callback && callback();

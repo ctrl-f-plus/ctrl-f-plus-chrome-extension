@@ -5,13 +5,15 @@ import {
   NextMatchMsg,
   PrevMatchMsg,
   RemoveAllHighlightMatchesMsg,
+  SwitchTabMsg,
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
   UpdateStoreMsg,
+  UpdateTabStatesObjMsg,
 } from '../../types/message.types';
-import { ValidTabId } from '../../types/tab.types';
+import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 
 /**
  * FROM: Background
@@ -87,5 +89,33 @@ export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLa
   return {
     from: 'background',
     type: 'switched-active-tab-hide-layover',
+  };
+}
+
+/**
+ * FROM: Content
+ * TO: Background
+ */
+export function createSwitchTabMsg(
+  serializedState: SerializedTabState,
+  prevIndex: number | undefined = undefined
+): SwitchTabMsg {
+  return {
+    from: 'content-script-match-utils',
+    type: 'switch-tab',
+    serializedState: serializedState,
+    prevIndex: prevIndex,
+  };
+}
+
+export function createUpdateTabStatesObjMsg(
+  serializedState: SerializedTabState
+): UpdateTabStatesObjMsg {
+  return {
+    from: 'content:match-utils',
+    type: 'update-tab-states-obj',
+    payload: {
+      serializedState,
+    },
   };
 }

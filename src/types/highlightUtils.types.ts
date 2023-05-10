@@ -1,8 +1,10 @@
+import { TabState } from './tab.types';
+
 // src/types/searchAndHighlight.types.ts
 export interface MatchUtilsBase {
   currentIndex?: number;
-  matchesObj: MatchesObject;
-  tabId: chrome.tabs.Tab['id'] | undefined;
+  // matchesObj: MatchesObject;
+  // tabId: chrome.tabs.Tab['id'] | undefined;
   state2?: any;
 }
 
@@ -24,6 +26,9 @@ export interface ProcessTextNodeProps extends MatchUtilsBase {
 }
 
 export interface SearchAndHighlightProps extends MatchUtilsBase {
+  // findValue: string;
+  // callback?: () => void;
+  state2: TabState;
   findValue: string;
   callback?: () => void;
 }

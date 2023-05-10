@@ -42,13 +42,23 @@ export function initStore() {
     showMatches: false,
     tabStates: {},
   };
-
   return store;
 }
 
 export function resetStore(store: Store): void {
   const initialState = initStore();
   updateStore(store, initialState);
+}
+
+export function resetPartialStore(store: Store): void {
+  const partialInitialState = {
+    globalMatchIdx: 0,
+    totalMatchesCount: 0,
+    findValue: '',
+    searchValue: '',
+    lastSearchValue: '',
+  };
+  updateStore(store, partialInitialState);
 }
 
 // Store update functions

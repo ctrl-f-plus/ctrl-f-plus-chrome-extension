@@ -1,7 +1,12 @@
 // src/utils/backgroundUtils.ts
 
 import { store } from '../background/background';
-import { Store, resetStore, updateStore } from '../background/store';
+import {
+  Store,
+  resetPartialStore,
+  resetStore,
+  updateStore,
+} from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
@@ -109,8 +114,6 @@ export async function updateMatchesCount() {
     }
   }
 
-  debugger;
-
   updateStore(store, {
     totalMatchesCount,
   });
@@ -204,10 +207,10 @@ export async function executeContentScriptWithMessage(
 }
 
 export async function switchTab(
-  serializedState2: SerializedTabState
+  serializedState: SerializedTabState
 ): Promise<void> {
-  if (serializedState2.tabId === undefined) {
-    console.warn('switchTab: Tab ID is undefined:', serializedState2);
+  if (serializedState.tabId === undefined) {
+    console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
 
@@ -216,7 +219,7 @@ export async function switchTab(
 
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
   const currentTabIndex = tabIds.findIndex(
-    (tabId) => tabId === serializedState2.tabId
+    (tabId) => tabId === serializedState.tabId
   );
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
@@ -224,7 +227,7 @@ export async function switchTab(
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     if (tab === undefined || tab.id === undefined) return;
 
-    serializedState2.tabId = tab.id;
+    serializedState.tabId = tab.id;
 
     const msg = createUpdateHighlightsMsg(tab.id);
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
@@ -239,7 +242,8 @@ export async function switchTab(
  * Event Handling Functions
  */
 export async function handleGetAllMatchesMsg(findValue: string) {
-  resetStore(store);
+  resetPartialStore(store);
+  console.log(store);
   executeContentScriptOnAllTabs(findValue, store);
 }
 

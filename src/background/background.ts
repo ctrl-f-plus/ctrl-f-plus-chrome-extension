@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
         await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
-        await switchTab(message.serializedState2);
+        await switchTab(message.serializedState);
         return true;
       case 'update-tab-states-obj':
         await handleUpdateTabStatesObj(payload, sendResponse);

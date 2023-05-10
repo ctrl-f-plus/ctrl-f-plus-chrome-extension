@@ -1,7 +1,5 @@
 // src/components/DraggableModal.tsx
 
-// TODO: There is a bug where the layover position doesn't update on some tab-switches
-
 import React, { useContext } from 'react';
 import Draggable, {
   DraggableData,

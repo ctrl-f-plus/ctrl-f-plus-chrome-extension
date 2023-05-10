@@ -18,6 +18,7 @@ export interface BaseMessage {
   type: string;
   payload?: any;
   serializedState2?: any;
+  serializedState?: any;
 }
 
 export interface GetAllMatchesMessage extends BaseMessage {
@@ -78,11 +79,10 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
   type: 'remove-all-highlight-matches';
 }
 
-export interface SwitchTabMessage extends BaseMessage {
+export interface SwitchTabMsg extends BaseMessage {
   from: 'content-script-match-utils';
   type: 'switch-tab';
-  state?: TabState;
-  serializedState2?: any;
+  serializedState: SerializedTabState;
   prevIndex: number | undefined;
 }
 
@@ -151,7 +151,7 @@ export type Messages =
   | RemoveStylesAllTabs
   | AddStylesAllTabs
   | RemoveAllHighlightMatches
-  | SwitchTabMessage
+  | SwitchTabMsg
   | UpdateHighlightsMsg
   | HighlightMsg
   | SwitchedActiveTabShowLayover
