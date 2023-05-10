@@ -5,10 +5,11 @@ import Draggable, {
   DraggableData,
   DraggableEventHandler,
 } from 'react-draggable';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 // TODO: update so that the stored Position is coming from context store object. Need to make sure background script is sending out the new store on each update
 import { LayoverContext } from '../contexts/LayoverContext';
+import { UpdateLayoverPositionMsg } from '../types/message.types';
 import { TabId } from '../types/tab.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 
@@ -31,7 +32,7 @@ const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
     const newPosition: LayoverPosition = { x: data.x, y: data.y };
 
     const msg = createUpdateLayoverPositionMsg(newPosition);
-    sendMessageToBackground(msg);
+    sendMsgToBackground<UpdateLayoverPositionMsg>(msg);
   };
 
   return layoverPosition ? (

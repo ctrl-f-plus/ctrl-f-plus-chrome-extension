@@ -4,12 +4,12 @@
 import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../../types/message.types';
 import { SerializedTabState, TabState } from '../../types/tab.types';
 import { serializeMatchesObj } from '../htmlUtils';
-import { searchAndHighlight } from './highlightUtils';
-import { sendMessageToBackground } from '../messageUtils/sendMessageToBackground';
 import {
   createSwitchTabMsg,
   createUpdateTabStatesObjMsg,
 } from '../messageUtils/createMessages';
+import { sendMsgToBackground } from '../messageUtils/sendMessageToBackground';
+import { searchAndHighlight } from './highlightUtils';
 
 // - `findAllMatches()`, `updateHighlights()`, `nextMatch()`, and `previousMatch()` are only called from within `findMatchesScript.ts`
 export async function findAllMatches(state2: TabState, findValue: string) {
@@ -26,9 +26,8 @@ export async function findAllMatches(state2: TabState, findValue: string) {
         ...state2,
       });
 
-      const msg: UpdateTabStatesObjMsg =
-        createUpdateTabStatesObjMsg(serializedState);
-      sendMessageToBackground(msg);
+      const msg = createUpdateTabStatesObjMsg(serializedState);
+      sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
     },
   });
 }
@@ -75,8 +74,8 @@ export async function nextMatch(state2: TabState): Promise<void> {
       ...state2,
     });
 
-    const msg: SwitchTabMsg = createSwitchTabMsg(serializedState);
-    await sendMessageToBackground(msg);
+    const msg = createSwitchTabMsg(serializedState);
+    await sendMsgToBackground<SwitchTabMsg>(msg);
   } else {
     await updateHighlights(state2, prevIndex);
   }

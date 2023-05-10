@@ -2,14 +2,19 @@
 import { Store } from '../../background/store';
 import { LayoverPosition } from '../../components/Layover';
 import {
+  GetAllMatchesMsg,
   HighlightMsg,
   NextMatchMsg,
+  NextMatch_msg,
   PrevMatchMsg,
+  PrevMatch_msg,
   RemoveAllHighlightMatchesMsg,
+  RemoveAllHighlightMatches_msg,
   SwitchTabMsg,
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
   ToggleSearchLayoverMsg,
+  ToggleStylesAllTabs,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
   UpdateLayoverPositionMsg,
@@ -139,5 +144,47 @@ export function createUpdateLayoverPositionMsg(
     payload: {
       newPosition,
     },
+  };
+}
+
+// TODO: consolidate with `createToggleStylesMsg()`??
+export function createToggleStylesAllTabsMsg(
+  addStlyes: boolean
+): ToggleStylesAllTabs {
+  debugger;
+  return {
+    from: 'content',
+    type: addStlyes ? 'add-styles-all-tabs' : 'remove-styles-all-tabs',
+  };
+}
+
+// export const createGetAllMatchesMsg = (findValue: string): GetAllMatchesMsg => {
+export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
+  return {
+    from: 'content',
+    type: 'get-all-matches-msg',
+    payload: findValue,
+  };
+}
+
+// FIXME:consoliate?
+export function createRemoveAllHighlightMatches_msg(): RemoveAllHighlightMatches_msg {
+  return {
+    from: 'content',
+    type: 'remove-all-highlight-matches',
+  };
+}
+
+export function createNextMatch_msg(): NextMatch_msg {
+  return {
+    from: 'content',
+    type: 'next-match',
+  };
+}
+
+export function createPrevMatch_msg(): PrevMatch_msg {
+  return {
+    from: 'content',
+    type: 'prev-match',
   };
 }

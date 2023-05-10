@@ -3,8 +3,8 @@
 import { useCallback, useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import { LayoverAction, LayoverState } from '../types/layoverContext.types';
-import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -60,6 +60,7 @@ export const useLayoverHandler = () => {
         // FIXME: There is a bug here. where we incorrectly call handle next when no matches are highlighted
         setStoredLastSearchValue(searchValue);
 
+        // src/hooks/useLayoverHandler.ts
         sendMessageToBackground({
           from: 'content',
           type: 'remove-styles-all-tabs',

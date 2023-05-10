@@ -74,14 +74,12 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   const orderedTabs = await getOrderedTabs(false);
 
-  const msg: SwitchedActiveTabShowLayover =
-    createSwitchedActiveTabShowLayoverMsg();
+  const msg = createSwitchedActiveTabShowLayoverMsg();
   sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
 
   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-  const msg2: SwitchedActiveTabHideLayover =
-    createSwitchedActiveTabHideLayoverMsg();
+  const msg2 = createSwitchedActiveTabHideLayoverMsg();
 
   for (const otherTab of inactiveTabs) {
     if (otherTab.id) {

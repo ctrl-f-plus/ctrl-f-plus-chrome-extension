@@ -21,7 +21,7 @@ export interface BaseMessage {
   serializedState?: any;
 }
 
-export interface GetAllMatchesMessage extends BaseMessage {
+export interface GetAllMatchesMsg extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
   payload: string;
@@ -37,6 +37,17 @@ export interface PrevMatchMsg extends BaseMessage {
 }
 
 export interface NextMatchMessage extends BaseMessage {
+  from: 'content';
+  type: 'next-match';
+  serializedState2?: SerializedTabState;
+}
+
+export interface PrevMatch_msg extends BaseMessage {
+  from: 'content';
+  type: 'prev-match';
+}
+
+export interface NextMatch_msg extends BaseMessage {
   from: 'content';
   type: 'next-match';
   serializedState2?: SerializedTabState;
@@ -73,8 +84,17 @@ export interface AddStylesAllTabs extends BaseMessage {
   from: 'content';
   type: 'add-styles-all-tabs';
 }
+export interface ToggleStylesAllTabs extends BaseMessage {
+  from: 'content';
+  type: 'add-styles-all-tabs' | 'remove-styles-all-tabs';
+}
 
 export interface RemoveAllHighlightMatches extends BaseMessage {
+  from: 'content';
+  type: 'remove-all-highlight-matches';
+}
+
+export interface RemoveAllHighlightMatches_msg extends BaseMessage {
   from: 'content';
   type: 'remove-all-highlight-matches';
 }
@@ -147,15 +167,20 @@ export interface ToggleSearchLayoverMsg extends BaseMessage {
 }
 
 export type Messages =
-  | GetAllMatchesMessage
+  | GetAllMatchesMsg
   | NextMatchMsg
   | PrevMatchMsg
   | NextMatchMessage
+  | PrevMatch_msg
+  | NextMatch_msg
   | PreviousMatchMessage
   | RemoveStylesMessage
   | RemoveStylesAllTabs
   | AddStylesAllTabs
   | RemoveAllHighlightMatches
+  | ToggleStylesAllTabs
+  | RemoveAllHighlightMatchesMsg
+  | RemoveAllHighlightMatches_msg
   | SwitchTabMsg
   | UpdateHighlightsMsg
   | HighlightMsg
@@ -166,4 +191,5 @@ export type Messages =
   | UpdateLayoverPositionMsg
   | ToggleStylesMsg
   | RemoveAllHighlightMatchesMsg
+  | RemoveAllHighlightMatches_msg
   | ToggleSearchLayoverMsg;

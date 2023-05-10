@@ -11,3 +11,13 @@ export const sendMessageToBackground = async (
     });
   });
 };
+
+export const sendMsgToBackground = <T extends Messages>(
+  message: T
+): Promise<any> => {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      return resolve(response);
+    });
+  });
+};
