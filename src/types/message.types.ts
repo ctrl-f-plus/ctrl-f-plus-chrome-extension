@@ -115,7 +115,7 @@ export interface UpdateStoreMsg extends BaseMessage {
   };
 }
 
-export interface UpdateLayoverPositionMessage extends BaseMessage {
+export interface UpdateLayoverPositionMsg extends BaseMessage {
   from: 'content:layover-component';
   type: 'update-layover-position';
   payload: {
@@ -141,6 +141,11 @@ export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
   type: 'remove-all-highlight-matches';
 }
 
+export interface ToggleSearchLayoverMsg extends BaseMessage {
+  from: 'background';
+  type: 'toggle_search_layover';
+}
+
 export type Messages =
   | GetAllMatchesMessage
   | NextMatchMsg
@@ -158,6 +163,7 @@ export type Messages =
   | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
-  | UpdateLayoverPositionMessage
+  | UpdateLayoverPositionMsg
   | ToggleStylesMsg
-  | RemoveAllHighlightMatchesMsg;
+  | RemoveAllHighlightMatchesMsg
+  | ToggleSearchLayoverMsg;

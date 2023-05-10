@@ -1,5 +1,6 @@
 // src/utils/messageUtils/createMessages.ts
 import { Store } from '../../background/store';
+import { LayoverPosition } from '../../components/Layover';
 import {
   HighlightMsg,
   NextMatchMsg,
@@ -8,8 +9,10 @@ import {
   SwitchTabMsg,
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
+  ToggleSearchLayoverMsg,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
+  UpdateLayoverPositionMsg,
   UpdateStoreMsg,
   UpdateTabStatesObjMsg,
 } from '../../types/message.types';
@@ -92,6 +95,13 @@ export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLa
   };
 }
 
+export function createToggleSearchLayoverMsg(): ToggleSearchLayoverMsg {
+  return {
+    from: 'background',
+    type: 'toggle_search_layover',
+  };
+}
+
 /**
  * FROM: Content
  * TO: Background
@@ -116,6 +126,18 @@ export function createUpdateTabStatesObjMsg(
     type: 'update-tab-states-obj',
     payload: {
       serializedState,
+    },
+  };
+}
+
+export function createUpdateLayoverPositionMsg(
+  newPosition: LayoverPosition
+): UpdateLayoverPositionMsg {
+  return {
+    from: 'content:layover-component',
+    type: 'update-layover-position',
+    payload: {
+      newPosition,
     },
   };
 }

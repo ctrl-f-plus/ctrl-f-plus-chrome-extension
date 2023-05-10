@@ -149,7 +149,7 @@ export async function executeContentScriptOnAllTabs(
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
-        //FIXME: need to add await if you handle errors in `sendMessageToTab() (**354)
+        //FIXME: need to add await if you handle errors in `sendMsgToTab() (**354)
         const msg = createUpdateHighlightsMsg(tab.id);
         sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 

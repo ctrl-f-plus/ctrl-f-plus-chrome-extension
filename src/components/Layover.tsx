@@ -9,8 +9,8 @@ import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBack
 
 // TODO: update so that the stored Position is coming from context store object. Need to make sure background script is sending out the new store on each update
 import { LayoverContext } from '../contexts/LayoverContext';
-import { UpdateLayoverPositionMessage } from '../types/message.types';
 import { TabId } from '../types/tab.types';
+import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 
 export interface LayoverPosition {
   x: number;
@@ -30,13 +30,7 @@ const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
   const handleDragStop: DraggableEventHandler = (e, data: DraggableData) => {
     const newPosition: LayoverPosition = { x: data.x, y: data.y };
 
-    const msg: UpdateLayoverPositionMessage = {
-      from: 'content:layover-component',
-      type: 'update-layover-position',
-      payload: {
-        newPosition,
-      },
-    };
+    const msg = createUpdateLayoverPositionMsg(newPosition);
     sendMessageToBackground(msg);
   };
 

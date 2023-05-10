@@ -16,7 +16,7 @@ export async function findAllMatches(state2: TabState, findValue: string) {
   state2.currentIndex = 0;
   state2.matchesCount = 0;
   state2.matchesObj = [];
-  // state2.reset();
+  // state2.reset(); //TODO: create state class?
 
   searchAndHighlight({
     state2: state2,

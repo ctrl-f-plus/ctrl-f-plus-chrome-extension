@@ -1,6 +1,11 @@
 // src/background/background.ts
 
-import { Messages } from '../types/message.types';
+import {
+  Messages,
+  SwitchedActiveTabHideLayover,
+  SwitchedActiveTabShowLayover,
+  ToggleSearchLayoverMsg,
+} from '../types/message.types';
 import {
   getOrderedTabs,
   handleGetAllMatchesMsg,
@@ -16,7 +21,9 @@ import {
 import {
   createSwitchedActiveTabHideLayoverMsg,
   createSwitchedActiveTabShowLayoverMsg,
+  createToggleSearchLayoverMsg,
 } from '../utils/messageUtils/createMessages';
+import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import { initStore, sendStoreToContentScripts } from './store';
@@ -67,27 +74,32 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   const orderedTabs = await getOrderedTabs(false);
 
-  const msg = createSwitchedActiveTabShowLayoverMsg();
-  sendMessageToTab(tabId, msg);
+  const msg: SwitchedActiveTabShowLayover =
+    createSwitchedActiveTabShowLayoverMsg();
+  sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
 
   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-  const msg2 = createSwitchedActiveTabHideLayoverMsg();
+  const msg2: SwitchedActiveTabHideLayover =
+    createSwitchedActiveTabHideLayoverMsg();
 
   for (const otherTab of inactiveTabs) {
     if (otherTab.id) {
-      sendMessageToTab(otherTab.id, msg2);
+      sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
     }
   }
 
   sendStoreToContentScripts(store);
 });
 
+// FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const tabs = await queryCurrentWindowTabs(true);
 
     if (tabs[0].id) {
+      // const msg = createToggleSearchLayoverMsg();
+      // sendMsgToTab<ToggleSearchLayoverMsg>(tabs[0].id, msg);
       sendMessageToTab(tabs[0].id, { command });
     }
   }

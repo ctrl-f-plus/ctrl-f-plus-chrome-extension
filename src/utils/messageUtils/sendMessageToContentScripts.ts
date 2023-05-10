@@ -9,10 +9,7 @@ export const sendMessageToContentScripts = async (
   tabIds: ValidTabId[] = []
 ): Promise<any> => {
   if (tabIds.length === 0) {
-    // const tabs = await queryCurrentWindowTabs();
-    const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
-      chrome.tabs.query({ currentWindow: true }, resolve);
-    });
+    const tabs = await queryCurrentWindowTabs();
 
     tabIds = tabs
       .map((tab) => tab.id)
@@ -26,7 +23,6 @@ export const sendMessageToContentScripts = async (
   });
 };
 
-// FIXME: (**354)
 // OLD VERSION
 export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -42,6 +38,7 @@ export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
   });
 }
 
+// FIXME: (**354)
 // UPDATED VERSION
 export function sendMsgToTab<T extends Messages>(
   tabId: TabId,
@@ -49,7 +46,13 @@ export function sendMsgToTab<T extends Messages>(
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
+      // if (chrome.runtime.lastError) {
+      //   debugger;
+      //   reject(chrome.runtime.lastError);
+      // } else {
+      //   debugger;
       resolve(response);
+      // }
     });
   });
 }
