@@ -38,17 +38,17 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
-  // TODO: ADD FUNCTIONALITY TO HIGHLIGHT ALL MATCHES ON CURRENT PAGE AS THE USER TYPES
+  // TODO: cleanup and add debounce
 
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (searchInputRef.current) {
-      if (searchValue === lastSearchValue) {
-        handleNext();
-      } else {
-        handleSearch(searchValue);
-      }
+      // if (searchValue === lastSearchValue) {
+      handleNext();
+      // } else {
+      //   handleSearch(searchValue);
+      // }
     }
   };
 
@@ -57,6 +57,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     setSearchValue(newValue);
     setInitialLoad(false);
+    handleSearch(newValue);
   };
 
   useEffect(() => {
@@ -94,6 +95,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       {' '}
       <form
         onSubmit={handleSearchSubmit}
+        // onSubmit={handleNext}
         className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
       >
         <div className="col-span-3 grid grid-cols-6 gap-0 ">

@@ -60,9 +60,12 @@ DOM ELEMENTS TO LOCAL STORAGE:
     - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com
 
 - FIX: restore highlights if single tab reloaded
+- FIX: if new tab is created automatically update the search count
 - Fix: if you search a value and you aren't on the very first tab, then the globalIndex value should not show 1, it should show the starting point for that tab
 
 - FIX: if no matches are found, the searchLayover just closes. this should not happen
 
 - FIX: match total should be window specific. probably need to fix the context
 - fix: when no matches or when search string === "", be sure to set count to 0
+- FIX: there are some bugs around the style being injected or not - might be better to leave style injected and remove spans instead of removing style and leaving spans. this will fix any weird spacing that could occur as well.
+- FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="cntrl-f-extension"` which we don't need to do

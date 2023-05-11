@@ -83,7 +83,7 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
     );
     return;
   }
-  debugger;
+
   const textNodeAsText = textNode as Text;
   let match;
   let lastIndex = 0;
@@ -129,7 +129,6 @@ export function searchAndHighlight({
   const regex = new RegExp(findValueWithSpaceOrNBSP, 'gi');
 
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
-  debugger;
 
   textNodesToProcess.forEach((textNode) => {
     processTextNode({ textNode, regex, state2 });
