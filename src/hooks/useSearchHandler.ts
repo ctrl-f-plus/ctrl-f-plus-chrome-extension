@@ -88,13 +88,13 @@ import { GetAllMatchesMsg } from '../types/message.types';
 
 // import { createGetAllMatchesMsg } from '../utils/messageUtils/createMessages';
 
-export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
-  return {
-    from: 'content',
-    type: 'get-all-matches-msg',
-    payload: findValue,
-  };
-}
+// export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
+//   return {
+//     from: 'content',
+//     type: 'get-all-matches-msg',
+//     payload: findValue,
+//   };
+// }
 
 export const useSearchHandler = () => {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
@@ -117,14 +117,14 @@ export const useSearchHandler = () => {
 
       if (findValue === '') return;
 
-      // sendMessageToBackground({
-      //   from: 'content',
-      //   type: 'get-all-matches-msg',
-      //   payload: findValue,
-      // });
+      sendMessageToBackground({
+        from: 'content',
+        type: 'get-all-matches-msg',
+        payload: findValue,
+      });
 
-      const getAllMatchesMsg = createGetAllMatchesMsg(findValue);
-      sendMsgToBackground<GetAllMatchesMsg>(getAllMatchesMsg);
+      // const getAllMatchesMsg = createGetAllMatchesMsg(findValue);
+      // sendMsgToBackground<GetAllMatchesMsg>(getAllMatchesMsg);
     },
     [sendMessageToBackground, sendMsgToBackground]
   );

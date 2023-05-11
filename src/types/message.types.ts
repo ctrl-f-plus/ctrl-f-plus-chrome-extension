@@ -190,6 +190,5 @@ export type Messages =
   | UpdateStoreMsg
   | UpdateLayoverPositionMsg
   | ToggleStylesMsg
-  | RemoveAllHighlightMatchesMsg
   | RemoveAllHighlightMatches_msg
   | ToggleSearchLayoverMsg;

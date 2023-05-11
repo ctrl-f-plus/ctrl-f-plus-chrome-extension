@@ -65,3 +65,4 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - FIX: if no matches are found, the searchLayover just closes. this should not happen
 
 - FIX: match total should be window specific. probably need to fix the context
+- fix: when no matches or when search string === "", be sure to set count to 0

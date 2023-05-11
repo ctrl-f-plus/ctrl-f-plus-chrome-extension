@@ -83,7 +83,7 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
     );
     return;
   }
-
+  debugger;
   const textNodeAsText = textNode as Text;
   let match;
   let lastIndex = 0;
@@ -120,15 +120,16 @@ export function searchAndHighlight({
   findValue,
   callback,
 }: SearchAndHighlightProps) {
+  // const regex = new RegExp(findValue, 'gi');
+
   const normalizedFindValue = findValue.replace(/\s+/g, ' ');
   const findValueWithSpaceOrNBSP = normalizedFindValue
     .split(' ')
     .join('( |\\u00A0)');
-
-  // const regex = new RegExp(findValue, 'gi');
   const regex = new RegExp(findValueWithSpaceOrNBSP, 'gi');
 
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
+  debugger;
 
   textNodesToProcess.forEach((textNode) => {
     processTextNode({ textNode, regex, state2 });
@@ -144,18 +145,14 @@ export function removeAllHighlightMatches() {
   );
 
   highlightElements.forEach((elem) => {
-    const parent = elem.parentNode;
     const textContent = elem.textContent;
 
-    if (!parent || !textContent) {
-      console.warn(
-        'removeAllHighlights: Missing parent Node or textContent for elem:',
-        elem
-      );
+    if (!textContent) {
+      console.warn('removeAllHighlights: Missing textContent for elem:', elem);
       return;
     }
 
-    const textNode = document.createTextNode(textContent);
-    parent.replaceChild(textNode, elem);
+    // Replace the innerHTML of the element with its textContent
+    elem.outerHTML = textContent;
   });
 }
