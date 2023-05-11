@@ -113,7 +113,7 @@ export const useSearchHandler = () => {
         from: 'content',
         type: 'remove-all-highlight-matches',
       });
-      debugger;
+      // debugger;
 
       if (findValue === '') return;
 

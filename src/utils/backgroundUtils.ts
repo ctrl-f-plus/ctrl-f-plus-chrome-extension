@@ -105,6 +105,7 @@ export async function getOrderedTabs(
 
 // FIXME: Figure out if/when this actually ever gets called, then remove debugger
 export async function updateMatchesCount() {
+  debugger;
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;

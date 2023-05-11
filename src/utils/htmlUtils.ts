@@ -115,7 +115,8 @@ function getElementByXPath(xpath) {
 
 // @ts-ignore
 export function wrapTextWithHighlight(element, text, spanClasses) {
-  debugger;
+  // debugger;
+  const normalizedText = text.replace(/\u00A0/g, ' ');
 
   const textNodeIndex = Array.prototype.slice
     .call(element.childNodes)
@@ -139,7 +140,7 @@ export function wrapTextWithHighlight(element, text, spanClasses) {
 // FIXME: Add types
 // @ts-ignore
 export function restoreHighlightSpans(xpathObj) {
-  debugger;
+  // debugger;
   Object.keys(xpathObj).forEach((tabId) => {
     const tabXPaths = xpathObj[tabId];
     // @ts-ignore

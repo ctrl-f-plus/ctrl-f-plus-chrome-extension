@@ -1,3 +1,4 @@
+//@ts-nocheck
 // src/utils/matchUtils/highlightUtils.ts
 
 import {
@@ -29,7 +30,8 @@ function createCustomTreeWalker() {
           node.nodeName !== 'STYLE' &&
           // TODO: REVIEW IF YOU NEED `SVG` OR NOT  - ALSO MAKE SURE YOU ARE NOT EXCLUDING TOO MUCH
           node.nodeName !== 'SVG' &&
-          isVisible(node)
+          isVisible(node) &&
+          node.textContent?.trim() !== ''
         ) {
           return NodeFilter.FILTER_ACCEPT;
         }
@@ -45,6 +47,7 @@ function createHighlightSpan({
   const span = document.createElement('span');
   span.className = 'ctrl-f-highlight';
   span.textContent = matchText;
+  // span.innerHTML = matchText.replace(/\u00A0/g, '&nbsp;');
 
   return span;
 }
@@ -117,7 +120,14 @@ export function searchAndHighlight({
   findValue,
   callback,
 }: SearchAndHighlightProps) {
-  const regex = new RegExp(findValue, 'gi');
+  const normalizedFindValue = findValue.replace(/\s+/g, ' ');
+  const findValueWithSpaceOrNBSP = normalizedFindValue
+    .split(' ')
+    .join('( |\\u00A0)');
+
+  // const regex = new RegExp(findValue, 'gi');
+  const regex = new RegExp(findValueWithSpaceOrNBSP, 'gi');
+
   const textNodesToProcess = getAllTextNodesToProcess({ regex });
 
   textNodesToProcess.forEach((textNode) => {

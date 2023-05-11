@@ -151,7 +151,7 @@ export function createUpdateLayoverPositionMsg(
 export function createToggleStylesAllTabsMsg(
   addStlyes: boolean
 ): ToggleStylesAllTabs {
-  debugger;
+  // debugger;
   return {
     from: 'content',
     type: addStlyes ? 'add-styles-all-tabs' : 'remove-styles-all-tabs',
