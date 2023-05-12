@@ -107,7 +107,7 @@ export const useSearchHandler = () => {
       // setSearchValue(findValue);
       setLastSearchValue(findValue);
 
-      await clearAllStoredTabs();
+      await clearAllStoredTabs(); //FIXME: review a) if you need this and b) its location
 
       await sendMessageToBackground({
         from: 'content',
@@ -115,7 +115,7 @@ export const useSearchHandler = () => {
       });
       // debugger;
 
-      if (findValue === '') return;
+      if (findValue === '') return; //TODO: need to update count to 0 though
 
       sendMessageToBackground({
         from: 'content',

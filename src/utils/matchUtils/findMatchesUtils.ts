@@ -35,7 +35,8 @@ export async function findAllMatches(state2: TabState, findValue: string) {
 export async function updateHighlights(
   state2: TabState,
   prevIndex?: number,
-  endOfTab?: boolean
+  endOfTab?: boolean,
+  sendResponse?: Function
 ): Promise<void> {
   if (!state2.matchesObj.length) {
     return Promise.resolve();
@@ -56,6 +57,16 @@ export async function updateHighlights(
     scrollToElement(curMatch);
   }
 
+  if (sendResponse) {
+    const serializedState: SerializedTabState = serializeMatchesObj({
+      ...state2,
+    });
+
+    sendResponse({
+      serializedState: serializedState,
+      status: 'success',
+    });
+  }
   return Promise.resolve();
 }
 

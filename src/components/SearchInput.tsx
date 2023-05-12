@@ -38,17 +38,20 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
-  // TODO: cleanup and add debounce
-
+  // TODO: CLEANUP:
+  //  - Add debounce
+  //  - remove lastSearchValue and all realted code
+  //  - try adding e.preventDefault to handleNext()
+  //  - update searchInput count
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (searchInputRef.current) {
-      // if (searchValue === lastSearchValue) {
-      handleNext();
-      // } else {
-      //   handleSearch(searchValue);
-      // }
+      if (searchValue === lastSearchValue) {
+        handleNext();
+      } else {
+        handleSearch(searchValue);
+      }
     }
   };
 
@@ -57,7 +60,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     setSearchValue(newValue);
     setInitialLoad(false);
-    handleSearch(newValue);
+    // handleSearch(newValue);
   };
 
   useEffect(() => {

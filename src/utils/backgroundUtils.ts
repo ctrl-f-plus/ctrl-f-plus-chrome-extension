@@ -63,7 +63,7 @@ async function executeContentScript(
         const msg = createHighlightMsg(findValue, tabId);
         const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
 
-        const { currentIndex, matchesCount, matchesObj } =
+        const { currentIndex, matchesCount, serializedMatches } =
           response.serializedState;
 
         updateStore(store, {
@@ -75,7 +75,7 @@ async function executeContentScript(
               active: false, //FIXME:
               currentIndex,
               matchesCount,
-              serializedMatches: matchesObj,
+              serializedMatches,
               globalMatchIdxStart: store.totalMatchesCount,
             },
           },
@@ -105,7 +105,7 @@ export async function getOrderedTabs(
 
 // FIXME: Figure out if/when this actually ever gets called, then remove debugger
 export async function updateMatchesCount() {
-  debugger;
+  // debugger;
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
@@ -140,6 +140,7 @@ export async function executeContentScriptOnAllTabs(
 
   for (const tab of orderedTabs) {
     if (tab.id && !foundFirstMatch) {
+      const tabId: ValidTabId = tab.id as number;
       // TODO: implment processTab() here
       const { hasMatch, state } = await executeContentScript(
         findValue,
@@ -152,7 +153,17 @@ export async function executeContentScriptOnAllTabs(
 
         //FIXME: need to add await if you handle errors in `sendMsgToTab() (**354)
         const msg = createUpdateHighlightsMsg(tab.id);
-        sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+        const response = await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+
+        // export function createUpdateHighlightsMsg(
+        //   tabId: number
+        // ): UpdateHighlightsMsg {
+        //   return {
+        //     from: 'background',
+        //     type: 'update-highlights',
+        //     prevIndex: undefined,
+        //   };
+        // }
 
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tab.id) {
@@ -160,12 +171,21 @@ export async function executeContentScriptOnAllTabs(
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
 
+        // debugger;
+
         // TODO: review placement of this
-        await updateStore(store, {
+        updateStore(store, {
           findValue,
           activeTab: tab,
           showLayover: true,
           showMatches: true,
+          tabStates: {
+            ...store.tabStates,
+            [tabId]: {
+              ...store.tabStates[tabId],
+              serializedMatches: response.serializedState.serializedMatches,
+            },
+          },
         });
 
         // Process remaining tabs asynchronously
@@ -244,7 +264,7 @@ export async function switchTab(
  */
 export async function handleGetAllMatchesMsg(findValue: string) {
   resetPartialStore(store);
-  console.log(store);
+  // console.log(store);
   executeContentScriptOnAllTabs(findValue, store);
 }
 
@@ -281,10 +301,16 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
   const tabs = await queryCurrentWindowTabs();
 
   tabs.forEach((tab) => {
-    if (tab.id) {
-      const msg = createToggleStylesMsg(addStyles);
-      sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-    }
+    // const tabId: ValidTabId = tab.id
+    const tabId: ValidTabId = tab.id as number;
+    // //
+    //     if (tabId) {
+    // console.log(store);
+    // debugger;
+    const payload = { store, tabId };
+    const msg = createToggleStylesMsg(addStyles, payload);
+    sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
+    // }
   });
 
   updateStore(store, {

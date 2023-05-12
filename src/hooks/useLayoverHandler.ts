@@ -53,7 +53,7 @@ export const useLayoverHandler = () => {
         dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
       };
 
-      const closeSearchLayover = (searchValue: string) => {
+      const closeSearchLayover = async (searchValue: string) => {
         // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
         setStoredFindValue(searchValue);
 
@@ -64,6 +64,11 @@ export const useLayoverHandler = () => {
         sendMessageToBackground({
           from: 'content',
           type: 'remove-styles-all-tabs',
+        });
+
+        await sendMessageToBackground({
+          from: 'content',
+          type: 'remove-all-highlight-matches',
         });
 
         dispatch({ type: 'SET_SHOW_MATCHES', payload: false });

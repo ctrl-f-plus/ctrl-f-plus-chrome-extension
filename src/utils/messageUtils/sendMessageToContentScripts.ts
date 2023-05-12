@@ -18,6 +18,7 @@ export const sendMessageToContentScripts = async (
 
   return new Promise((resolve) => {
     for (const tabId of tabIds) {
+      msg.payload.tabId = tabId;
       chrome.tabs.sendMessage(tabId, msg);
     }
   });
@@ -27,13 +28,13 @@ export const sendMessageToContentScripts = async (
 export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
-      // if (chrome.runtime.lastError) {
-      //   debugger;
-      //   reject(chrome.runtime.lastError);
-      // } else {
-      //   debugger;
-      resolve(response);
-      // }
+      if (chrome.runtime.lastError) {
+        // debugger;
+        reject(chrome.runtime.lastError);
+      } else {
+        // debugger;
+        resolve(response);
+      }
     });
   });
 }

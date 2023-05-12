@@ -13,6 +13,11 @@ import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import {
+  deserializeMatchesObj,
+  restoreHighlightSpans,
+} from '../utils/htmlUtils';
+import { SerializedTabState, TabState } from '../types/tab.types';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -60,6 +65,9 @@ const App: React.FC<{}> = () => {
     console.log('Received message:', message);
 
     const { type, command } = message;
+    // const { store, tabId } = message.payload;
+    let serializedtabState: SerializedTabState;
+    let tabState: TabState;
 
     switch (type) {
       case 'switched-active-tab-show-layover':
@@ -68,15 +76,29 @@ const App: React.FC<{}> = () => {
       case 'switched-active-tab-hide-layover':
         showMatches && setShowLayover(false);
         break;
-      case 'remove-styles':
-        removeStyles(injectedStyle);
-        setShowMatches(false);
-        break;
+      // case 'remove-styles':
+      // removeStyles(injectedStyle);
+      // setShowMatches(false);
+      // break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
         setShowMatches(true);
+        serializedtabState =
+          message.payload.store.tabStates[message.payload.tabId];
+
+        debugger;
+        deserializeMatchesObj(serializedtabState);
+        tabState = deserializeMatchesObj({
+          ...serializedtabState,
+        });
+        console.log(tabState);
+        restoreHighlightSpans(tabState);
+        debugger;
+        // FIXME: working here
+
         break;
       case 'remove-all-highlight-matches':
+        // debugger;
         removeAllHighlightMatches();
         sendResponse({ success: true });
         break;
@@ -85,7 +107,21 @@ const App: React.FC<{}> = () => {
         break;
       case 'store-updated':
         const { store } = message.payload;
+        // const { store, tabId } = message.payload;
         updateContextFromStore(store);
+
+        // serializedtabState =
+        //   message.payload.store.tabStates[message.payload.tabId];
+
+        // debugger;
+        // deserializeMatchesObj(serializedtabState);
+        // tabState = deserializeMatchesObj({
+        //   ...serializedtabState,
+        // });
+        // console.log(tabState);
+        // restoreHighlightSpans(tabState);
+        // debugger;
+        // // FIXME: working here
         break;
       default:
         if (command) {

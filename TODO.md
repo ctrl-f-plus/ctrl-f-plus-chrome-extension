@@ -52,6 +52,7 @@ DOM ELEMENTS TO LOCAL STORAGE:
     - https://support.google.com/chrome_webstore/answer/1050673?visit_id=638174638501656455-168292003&p=cws_badges&rd=1#cws_badges&zippy=%2Cunderstand-chrome-web-store-badges
     - https://developer.chrome.com/docs/webstore/best_practices/
 
+<!-- //- FIX: if no matches are found, the searchLayover just closes. this should not happen -->
 
 - FIX: if you have two tabs and you search, but then you close one or move it to its own window, then the next feature doestn' cycle back to the beginning (first match) properly.
 
@@ -62,9 +63,6 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - FIX: restore highlights if single tab reloaded
 - FIX: if new tab is created automatically update the search count
 - Fix: if you search a value and you aren't on the very first tab, then the globalIndex value should not show 1, it should show the starting point for that tab
-
-- FIX: if no matches are found, the searchLayover just closes. this should not happen
-
 - FIX: match total should be window specific. probably need to fix the context
 - fix: when no matches or when search string === "", be sure to set count to 0
 - FIX: there are some bugs around the style being injected or not - might be better to leave style injected and remove spans instead of removing style and leaving spans. this will fix any weird spacing that could occur as well.

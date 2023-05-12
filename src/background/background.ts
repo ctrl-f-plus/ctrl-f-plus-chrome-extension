@@ -44,6 +44,14 @@ chrome.runtime.onMessage.addListener(
         await handleNextPrevMatch(sender, type);
         return true;
       case 'remove-styles-all-tabs':
+        // debugger;
+        // debugger;
+        // debugger;
+        // // JUST CHECKING IF THIS EVER GETS CALLED ANYMORE
+        // debugger;
+        // debugger;
+        // debugger;
+
         await handleToggleStylesAllTabs(false);
         return true;
       case 'add-styles-all-tabs':
@@ -71,35 +79,37 @@ chrome.runtime.onMessage.addListener(
 // - could maybe use sendMessageToContentScripts() instead, but need to message active tab first
 // - Could maybe be improved by using the `active-tab` field in the store
 // - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
-chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  const orderedTabs = await getOrderedTabs(false);
+// chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+//   const orderedTabs = await getOrderedTabs(false);
 
-  const msg = createSwitchedActiveTabShowLayoverMsg();
-  sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
+//   const msg = createSwitchedActiveTabShowLayoverMsg();
+//   sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
 
-  const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
+//   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-  const msg2 = createSwitchedActiveTabHideLayoverMsg();
+//   const msg2 = createSwitchedActiveTabHideLayoverMsg();
 
-  for (const otherTab of inactiveTabs) {
-    if (otherTab.id) {
-      sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
-    }
-  }
+//   for (const otherTab of inactiveTabs) {
+//     if (otherTab.id) {
+//       sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
+//     }
+//   }
 
-  sendStoreToContentScripts(store);
-});
+//   sendStoreToContentScripts(store);
+// });
 
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const tabs = await queryCurrentWindowTabs(true);
 
+    // for (const tabId of tabIds) {
     if (tabs[0].id) {
       // const msg = createToggleSearchLayoverMsg();
       // sendMsgToTab<ToggleSearchLayoverMsg>(tabs[0].id, msg);
       sendMessageToTab(tabs[0].id, { command });
     }
+    // }
   }
 });
 
@@ -145,4 +155,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   sendStoreToContentScripts(store);
+
+  // export function createToggleStylesMsg(
+  //   addStyles: boolean,
+  //   payload: any
+  // ): ToggleStylesMsg {
+  //   return {
+  //     from: 'background:backgroundUtils',
+  //     type: addStyles ? 'add-styles' : 'remove-styles',
+  //     payload,
+  //   };
+  // }
 });

@@ -45,10 +45,14 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   };
 }
 
-export function createToggleStylesMsg(addStyles: boolean): ToggleStylesMsg {
+export function createToggleStylesMsg(
+  addStyles: boolean,
+  payload: any
+): ToggleStylesMsg {
   return {
     from: 'background:backgroundUtils',
     type: addStyles ? 'add-styles' : 'remove-styles',
+    payload,
   };
 }
 
@@ -151,7 +155,6 @@ export function createUpdateLayoverPositionMsg(
 export function createToggleStylesAllTabsMsg(
   addStlyes: boolean
 ): ToggleStylesAllTabs {
-  // debugger;
   return {
     from: 'content',
     type: addStlyes ? 'add-styles-all-tabs' : 'remove-styles-all-tabs',

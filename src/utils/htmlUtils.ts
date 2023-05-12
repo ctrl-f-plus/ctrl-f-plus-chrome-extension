@@ -2,7 +2,7 @@
 
 import { JSONString, SerializedTabState, TabState } from '../types/tab.types';
 
-export interface XPathMatchObject {
+interface XPathMatchObject {
   text: string;
   xpath: string;
   spanClasses: string[];
@@ -65,6 +65,75 @@ export function serializeMatchesObj(
   return serializedState;
 }
 
+/**
+ *
+ * UTILS FOR RESTORING MATCHES HTML
+ */
+// @ts-ignore
+function getElementByXPath(xpath) {
+  return document.evaluate(
+    xpath,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  ).singleNodeValue;
+}
+
+// @ts-ignore
+export function wrapTextWithHighlight(element, text, spanClasses) {
+  const textNodeIndex = Array.prototype.slice
+    .call(element.childNodes)
+    .findIndex(
+      (node) =>
+        node.nodeType === Node.TEXT_NODE && node.textContent.includes(text)
+    );
+
+  if (textNodeIndex === -1) return;
+
+  const textNode = element.childNodes[textNodeIndex];
+  const range = document.createRange();
+  const span = document.createElement('span');
+
+  span.classList.add(...spanClasses);
+  range.setStart(textNode, textNode.textContent.indexOf(text));
+  range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
+  range.surroundContents(span);
+}
+
+// FIXME: Add types
+// @ts-ignore
+// export function restoreHighlightSpans(xpathObj) {
+//   // debugger;
+//   Object.keys(xpathObj).forEach((tabId) => {
+//     const tabXPaths = xpathObj[tabId];
+//     // @ts-ignore
+//     tabXPaths.forEach(({ xpath, text, spanClasses }) => {
+//       const element = getElementByXPath(xpath);
+//       if (element) {
+//         wrapTextWithHighlight(element, text, spanClasses);
+//       }
+//     });
+//   });
+// }
+
+export function restoreHighlightSpans(tabState: TabState) {
+  // debugger;
+  const tabXPaths = tabState.matchesObj;
+
+  // Object.keys(xpathObj).forEach((tabId) => {
+  // @ts-ignore
+  // const tabXPaths = xpathObj[tabId];
+  // @ts-ignore
+  tabXPaths.forEach(({ xpath, text, spanClasses }) => {
+    const element = getElementByXPath(xpath);
+    if (element) {
+      wrapTextWithHighlight(element, text, spanClasses);
+    }
+  });
+  // });
+}
+
 export function deserializeMatchesObj(
   shallowStateObject: SerializedTabState
 ): TabState {
@@ -73,7 +142,6 @@ export function deserializeMatchesObj(
   const serializedXPaths = serializedMatches;
   const deserializedXPaths = JSON.parse(serializedXPaths);
 
-  // return restoreHighlightSpans(deSerializedXPaths);
   const deserializedState: TabState = {
     ...otherProperties,
     matchesObj: deserializedXPaths,
@@ -101,54 +169,3 @@ const serializedStoredXPaths = localStorage.getItem('storedXPaths');
 const storedXPaths = JSON.parse(serializedStoredXPaths);
 restoreHighlightSpans(storedXPaths);
  */
-
-// @ts-ignore
-function getElementByXPath(xpath) {
-  return document.evaluate(
-    xpath,
-    document,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null
-  ).singleNodeValue;
-}
-
-// @ts-ignore
-export function wrapTextWithHighlight(element, text, spanClasses) {
-  // debugger;
-  const normalizedText = text.replace(/\u00A0/g, ' ');
-
-  const textNodeIndex = Array.prototype.slice
-    .call(element.childNodes)
-    .findIndex(
-      (node) =>
-        node.nodeType === Node.TEXT_NODE && node.textContent.includes(text)
-    );
-
-  if (textNodeIndex === -1) return;
-
-  const textNode = element.childNodes[textNodeIndex];
-  const range = document.createRange();
-  const span = document.createElement('span');
-
-  span.classList.add(...spanClasses);
-  range.setStart(textNode, textNode.textContent.indexOf(text));
-  range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
-  range.surroundContents(span);
-}
-
-// FIXME: Add types
-// @ts-ignore
-export function restoreHighlightSpans(xpathObj) {
-  // debugger;
-  Object.keys(xpathObj).forEach((tabId) => {
-    const tabXPaths = xpathObj[tabId];
-    // @ts-ignore
-    tabXPaths.forEach(({ xpath, text, spanClasses }) => {
-      const element = getElementByXPath(xpath);
-      if (element) {
-        wrapTextWithHighlight(element, text, spanClasses);
-      }
-    });
-  });
-}

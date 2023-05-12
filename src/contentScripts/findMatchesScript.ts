@@ -67,8 +67,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       previousMatch(state2);
       break;
     case 'background:update-highlights':
-      updateHighlights(state2, message.prevIndex);
-      break;
+      await updateHighlights(state2, message.prevIndex, false, sendResponse);
+      return true;
+    // break;
     default:
       break;
   }
