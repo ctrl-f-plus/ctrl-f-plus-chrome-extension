@@ -155,23 +155,11 @@ export async function executeContentScriptOnAllTabs(
         const msg = createUpdateHighlightsMsg(tab.id);
         const response = await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
-        // export function createUpdateHighlightsMsg(
-        //   tabId: number
-        // ): UpdateHighlightsMsg {
-        //   return {
-        //     from: 'background',
-        //     type: 'update-highlights',
-        //     prevIndex: undefined,
-        //   };
-        // }
-
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
-
-        // debugger;
 
         // TODO: review placement of this
         updateStore(store, {
@@ -264,7 +252,6 @@ export async function switchTab(
  */
 export async function handleGetAllMatchesMsg(findValue: string) {
   resetPartialStore(store);
-  // console.log(store);
   executeContentScriptOnAllTabs(findValue, store);
 }
 
@@ -301,16 +288,10 @@ export async function handleToggleStylesAllTabs(addStyles: boolean) {
   const tabs = await queryCurrentWindowTabs();
 
   tabs.forEach((tab) => {
-    // const tabId: ValidTabId = tab.id
     const tabId: ValidTabId = tab.id as number;
-    // //
-    //     if (tabId) {
-    // console.log(store);
-    // debugger;
     const payload = { store, tabId };
     const msg = createToggleStylesMsg(addStyles, payload);
     sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-    // }
   });
 
   updateStore(store, {

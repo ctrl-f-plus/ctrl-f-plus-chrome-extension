@@ -29,10 +29,10 @@ export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
       if (chrome.runtime.lastError) {
-        // debugger;
+        //   debugger;
         reject(chrome.runtime.lastError);
       } else {
-        // debugger;
+        //   debugger;
         resolve(response);
       }
     });

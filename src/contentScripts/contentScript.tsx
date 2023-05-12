@@ -65,7 +65,6 @@ const App: React.FC<{}> = () => {
     console.log('Received message:', message);
 
     const { type, command } = message;
-    // const { store, tabId } = message.payload;
     let serializedtabState: SerializedTabState;
     let tabState: TabState;
 
@@ -77,28 +76,25 @@ const App: React.FC<{}> = () => {
         showMatches && setShowLayover(false);
         break;
       // case 'remove-styles':
-      // removeStyles(injectedStyle);
-      // setShowMatches(false);
-      // break;
+      //   removeStyles(injectedStyle);
+      //   setShowMatches(false);
+      //   break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
         setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
 
-        debugger;
+        // debugger;
         deserializeMatchesObj(serializedtabState);
         tabState = deserializeMatchesObj({
           ...serializedtabState,
         });
         console.log(tabState);
         restoreHighlightSpans(tabState);
-        debugger;
-        // FIXME: working here
-
+        // debugger;
         break;
       case 'remove-all-highlight-matches':
-        // debugger;
         removeAllHighlightMatches();
         sendResponse({ success: true });
         break;
@@ -107,21 +103,7 @@ const App: React.FC<{}> = () => {
         break;
       case 'store-updated':
         const { store } = message.payload;
-        // const { store, tabId } = message.payload;
         updateContextFromStore(store);
-
-        // serializedtabState =
-        //   message.payload.store.tabStates[message.payload.tabId];
-
-        // debugger;
-        // deserializeMatchesObj(serializedtabState);
-        // tabState = deserializeMatchesObj({
-        //   ...serializedtabState,
-        // });
-        // console.log(tabState);
-        // restoreHighlightSpans(tabState);
-        // debugger;
-        // // FIXME: working here
         break;
       default:
         if (command) {

@@ -103,13 +103,11 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const tabs = await queryCurrentWindowTabs(true);
 
-    // for (const tabId of tabIds) {
     if (tabs[0].id) {
       // const msg = createToggleSearchLayoverMsg();
       // sendMsgToTab<ToggleSearchLayoverMsg>(tabs[0].id, msg);
       sendMessageToTab(tabs[0].id, { command });
     }
-    // }
   }
 });
 

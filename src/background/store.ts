@@ -77,7 +77,6 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
     }
   }
 
-  
   const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
   const msg = createUpdateStoreMsg(store);
   sendMessageToContentScripts(msg, tabIds);
