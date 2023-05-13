@@ -2,7 +2,7 @@
 
 import { Store } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { TabState, SerializedTabState, ValidTabId } from './tab.types';
+import { TabState, SerializedTabState, ValidTabId, TabId } from './tab.types';
 
 export interface BaseMessage {
   from:
@@ -73,6 +73,8 @@ export interface MessageFixMe {
   findValue?: string;
   command?: string;
   payload?: any;
+  prevIndex?: number;
+  tabId?: TabId;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {

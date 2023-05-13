@@ -138,7 +138,7 @@ export function getStoredTab(tabId: TabId): Promise<SerializedTabState> {
 }
 
 export function setStoredTabs(
-  serializedState2: SerializedTabState
+  serializedState: SerializedTabState
 ): Promise<void> {
   // const vals: LocalStorage = { tabs };
   // return new Promise((resolve, reject) => {
@@ -164,17 +164,17 @@ export function setStoredTabs(
   //     });
   //   });
   // });
-
+  debugger;
   const key: LocalStorageKeys = 'tabs';
   const { tabId, currentIndex, serializedMatches, matchesCount } =
-    serializedState2;
+    serializedState;
 
   if (!tabId || !serializedMatches || !matchesCount) {
     throw new Error('Invalid tab storage object');
   }
 
   return getLocalStorageItem(key).then((currentData) => {
-    const updatedData = { ...currentData, [tabId]: serializedState2 };
+    const updatedData = { ...currentData, [tabId]: serializedState };
     return setLocalStorageItem(key, updatedData);
   });
 }

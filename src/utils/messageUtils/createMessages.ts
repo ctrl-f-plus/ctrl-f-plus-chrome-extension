@@ -21,7 +21,7 @@ import {
   UpdateStoreMsg,
   UpdateTabStatesObjMsg,
 } from '../../types/message.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
+import { SerializedTabState, TabId, ValidTabId } from '../../types/tab.types';
 
 /**
  * FROM: Background
@@ -63,10 +63,11 @@ export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesM
   };
 }
 
-export function createNextMatchMsg(): NextMatchMsg {
+export function createNextMatchMsg(tabId: TabId): NextMatchMsg {
   return {
     from: 'background:backgroundUtils',
     type: 'next-match',
+    payload: { tabId },
   };
 }
 

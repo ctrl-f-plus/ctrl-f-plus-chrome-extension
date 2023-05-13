@@ -100,6 +100,7 @@ export async function getOrderedTabs(
     ...tabs.slice(startSliceIdx),
     ...tabs.slice(0, activeTabIndex),
   ];
+
   return orderedTabs;
 }
 
@@ -142,28 +143,23 @@ export async function executeContentScriptOnAllTabs(
     if (tab.id && !foundFirstMatch) {
       const tabId: ValidTabId = tab.id as number;
       // TODO: implment processTab() here
-      debugger;
       const { hasMatch, state } = await executeContentScript(
         findValue,
         tab,
         store
       );
-
       debugger;
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
         //FIXME: need to add await if you handle errors in `sendMsgToTab() (**354)
         const msg = createUpdateHighlightsMsg(tab.id);
-        debugger;
         const response = await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
-        debugger;
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
-        debugger;
 
         // TODO: review placement of this
         updateStore(store, {
@@ -202,7 +198,7 @@ export async function executeContentScriptWithMessage(
     let msg;
 
     if (messageType === 'next-match') {
-      msg = createNextMatchMsg();
+      msg = createNextMatchMsg(tabId);
     } else if (messageType === 'prev-match') {
       msg = createPrevMatchMsg();
     } else {
@@ -229,11 +225,11 @@ export async function switchTab(
 
   const storedTabs = await getAllStoredTabs();
   const matchesObject = storedTabs;
-
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
   const currentTabIndex = tabIds.findIndex(
     (tabId) => tabId === serializedState.tabId
   );
+
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
   const nextTabId = tabIds[nextTabIndex];
 
@@ -241,8 +237,9 @@ export async function switchTab(
     if (tab === undefined || tab.id === undefined) return;
 
     serializedState.tabId = tab.id;
-
+    debugger;
     const msg = createUpdateHighlightsMsg(tab.id);
+    debugger;
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
@@ -328,6 +325,7 @@ export async function handleUpdateTabStatesObj(
   sendResponse: Function
 ) {
   const { serializedState } = payload;
+  debugger;
   await setStoredTabs(serializedState);
 
   store.updatedTabsCount++;

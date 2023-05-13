@@ -21,20 +21,12 @@ import {
   serializeMatchesObj,
 } from '../utils/htmlUtils';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import {
-  findAllMatches,
-  updateHighlights,
-} from '../utils/matchUtils/findMatchesUtils';
+import { useFindMatches } from '../hooks/useFindMatches';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-// import { useFindMatches } from '../hooks/useFindMatches';
-// import {
-//   previousMatch,
-//   updateHighlights,
-// } from '../utils/matchUtils/findMatchesUtils';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -60,7 +52,7 @@ const App: React.FC<{}> = () => {
     setState2Context,
   } = useContext(LayoverContext);
 
-  // const { handleHighlight, handleNextMatch } = useFindMatches();
+  const { findAllMatches, updateHighlights, nextMatch } = useFindMatches();
 
   const updateContextFromStore = (store: Store, tabId: ValidTabId) => {
     // setSearchValue(store.searchValue);
@@ -86,23 +78,58 @@ const App: React.FC<{}> = () => {
     }
   };
 
+  // async function handleHighlight(
+  //   state2: TabState,
+  //   findValue: string,
+  //   tabId: TabId,
+  //   sendResponse: Function
+  // ): Promise<void> {
+  //   state2.tabId = tabId;
+  //   debugger;
+
+  //   await findAllMatches(state2, findValue);
+
+  //   const serializedState: SerializedTabState = serializeMatchesObj({
+  //     ...state2,
+  //   });
+
+  //   sendResponse({
+  //     hasMatch: state2.matchesObj.length > 0,
+  //     serializedState: serializedState,
+  //   });
+  // }
+
   async function handleHighlight(
     state2: TabState,
     findValue: string,
-    tabId: TabId,
-    sendResponse: Function
-  ): Promise<void> {
+    tabId: TabId
+  ): Promise<any> {
     state2.tabId = tabId;
-
     await findAllMatches(state2, findValue);
 
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...state2,
     });
-    // debugger;
-    sendResponse({
+
+    return {
       hasMatch: state2.matchesObj.length > 0,
       serializedState: serializedState,
+    };
+  }
+
+  async function handleNextMatch(
+    state2: TabState,
+    sendResponse: Function
+  ): Promise<void> {
+    if (state2.matchesObj.length > 0) await nextMatch(state2);
+
+    const serializedState2: SerializedTabState = serializeMatchesObj({
+      ...state2,
+    });
+
+    sendResponse({
+      serializedState2: serializedState2,
+      status: 'success',
     });
   }
 
@@ -118,6 +145,8 @@ const App: React.FC<{}> = () => {
     let tabState: TabState;
     let findValue;
     let state2;
+    let tabId;
+    let response;
 
     switch (type) {
       case 'switched-active-tab-show-layover':
@@ -158,19 +187,33 @@ const App: React.FC<{}> = () => {
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
       case 'store-updated':
-        const { store, tabId } = message.payload;
+        const { store } = message.payload;
+        tabId = message.payload.tabId;
         updateContextFromStore(store, tabId);
         break;
       case 'highlight':
-        state2 = { ...state2Context };
+        tabId = message.tabId;
+        state2 = { ...state2Context, tabId: tabId };
         findValue = message.findValue as string;
-        await handleHighlight(state2, findValue, tabId, sendResponse);
+        response = await handleHighlight(state2, findValue, tabId);
+        sendResponse(response);
         return true;
       case 'update-highlights':
-        state2 = { ...state2Context };
-        debugger;
+        state2 = { ...state2Context, tabId: tabId };
         // await updateHighlights(state2, message.prevIndex, false, sendResponse);
-        await updateHighlights(state2, undefined, false, sendResponse);
+        response = await updateHighlights(
+          state2,
+          message.prevIndex,
+          false,
+          sendResponse
+        );
+        sendResponse(response);
+        return true;
+      case 'next-match':
+        state2 = { ...state2Context, tabId: message.payload.tabId };
+        debugger;
+        await handleNextMatch(state2, sendResponse);
+
         return true;
       default:
         if (command) {
@@ -183,37 +226,6 @@ const App: React.FC<{}> = () => {
   };
 
   useMessageHandler(handleMessage);
-
-  // chrome.runtime.onMessage.addListener(
-  //   async (message, sender, sendResponse) => {
-  //     const { from, type, findValue, tabId, tabState } = message;
-
-  //     switch (`${from}:${type}`) {
-  //       case 'background:highlight':
-  //         console.log('background:highlight', message, state2);
-  //         await handleHighlight(state2, findValue, tabId, sendResponse);
-  //         return true;
-
-  //       case 'background:backgroundUtils:next-match':
-  //         console.log('background:backgroundUtils:next-match', message, state2);
-  //         await handleNextMatch(state2, sendResponse);
-  //         return true;
-  //       case 'background:prev-match':
-  //         console.log('background:prev-match', message, state2);
-  //         previousMatch(state2);
-  //         break;
-  //       case 'background:update-highlights':
-  //         console.log('background:update-highlights', message, state2);
-
-  //         return true;
-  //       // break;
-  //       default:
-  //         break;
-  //     }
-
-  //     return;
-  //   }
-  // );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

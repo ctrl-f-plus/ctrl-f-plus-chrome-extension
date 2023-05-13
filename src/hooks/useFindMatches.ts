@@ -1,56 +1,118 @@
-// import { useContext } from 'react';
-// import { SerializedTabState, TabId, TabState } from '../types/tab.types';
-// import { serializeMatchesObj } from '../utils/htmlUtils';
-// import {
-//   findAllMatches,
-//   nextMatch,
-// } from '../utils/matchUtils/findMatchesUtils';
-// import { LayoverContext } from '../contexts/LayoverContext';
+// src/hooks/useFindMatches.ts
 
-// export const useFindMatches = () => {
-//   const { state2, setState2 } = useContext(LayoverContext);
+import { useContext } from 'react';
+import { SerializedTabState, TabState } from '../types/tab.types';
+import { serializeMatchesObj } from '../utils/htmlUtils';
+import { LayoverContext } from '../contexts/LayoverContext';
+import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
+import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
+import {
+  createSwitchTabMsg,
+  createUpdateTabStatesObjMsg,
+} from '../utils/messageUtils/createMessages';
+import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
-//   async function handleHighlight(
-//     state2: TabState,
-//     findValue: string,
-//     tabId: TabId,
-//     sendResponse: Function
-//   ): Promise<void> {
-//     // state2.tabId = tabId;
+export const useFindMatches = () => {
+  const { state2Context, setState2Context } = useContext(LayoverContext);
 
-//     const newState2 = { ...state2, tabId: tabId };
+  // - `findAllMatches()`, `updateHighlights()`, `nextMatch()`, and `previousMatch()` are only called from within `findMatchesScript.ts`
+  async function findAllMatches(state2: TabState, findValue: string) {
+    state2.currentIndex = 0;
+    state2.matchesCount = 0;
+    state2.matchesObj = [];
+    // state2.reset(); //TODO: create state class?
+    try {
+      await searchAndHighlight({
+        state2: state2,
+        findValue,
+      });
 
-//     await findAllMatches(newState2, findValue);
+      const serializedState: SerializedTabState = serializeMatchesObj({
+        ...state2,
+      });
+      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+      const msg = createUpdateTabStatesObjMsg(serializedState);
+      sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-//     const serializedState: SerializedTabState = serializeMatchesObj({
-//       ...newState2,
-//     });
+  async function updateHighlights(
+    state2: TabState,
+    prevIndex?: number,
+    endOfTab?: boolean,
+    sendResponse?: Function
+  ): Promise<any> {
+    if (!state2.matchesObj.length) {
+      return Promise.resolve();
+    }
 
-//     // const newState2 = { ...state2, tabId: tabId };
-//     sendResponse({
-//       hasMatch: newState2.matchesObj.length > 0,
-//       serializedState: serializedState,
-//     });
-//   }
+    if (typeof prevIndex === 'number') {
+      const prevMatch = state2.matchesObj[prevIndex];
+      prevMatch.classList.remove('ctrl-f-highlight-focus');
+    }
 
-//   async function handleNextMatch(
-//     state2: TabState,
-//     sendResponse: Function
-//   ): Promise<void> {
-//     if (state2.matchesObj.length > 0) await nextMatch(state2);
+    if (!endOfTab && typeof state2.currentIndex !== 'undefined') {
+      const curMatch = state2.matchesObj[state2.currentIndex];
+      curMatch.classList.add('ctrl-f-highlight-focus');
+      scrollToElement(curMatch);
+    }
 
-//     const serializedState2: SerializedTabState = serializeMatchesObj({
-//       ...state2,
-//     });
+    if (sendResponse) {
+      const serializedState: SerializedTabState = serializeMatchesObj({
+        ...state2,
+      });
+      return {
+        serializedState: serializedState,
+        status: 'success',
+      };
+    }
 
-//     sendResponse({
-//       serializedState2: serializedState2,
-//       status: 'success',
-//     });
-//   }
+    setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+    return Promise.resolve();
+  }
 
-//   return {
-//     handleHighlight,
-//     handleNextMatch,
-//   };
-// };
+  async function nextMatch(state2: TabState): Promise<void> {
+    if (typeof state2.currentIndex === 'undefined') {
+      return;
+    }
+
+    const prevIndex = state2.currentIndex;
+    state2.currentIndex = (state2.currentIndex + 1) % state2.matchesObj.length;
+
+    // TODO: START HERE// TODO: START HERE// TODO: START HERE// TODO: START HERE
+    // look at currentIndex not being updated in time?
+    if (state2.currentIndex === 0) {
+      const endOfTab: boolean = true;
+      await updateHighlights(state2, prevIndex, endOfTab);
+      const serializedState: SerializedTabState = serializeMatchesObj({
+        ...state2,
+      });
+      debugger;
+      // FIXME: serializedState.tabId is undefined..
+      const msg = createSwitchTabMsg(serializedState);
+      debugger;
+      await sendMsgToBackground<SwitchTabMsg>(msg);
+    } else {
+      await updateHighlights(state2, prevIndex);
+    }
+
+    setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+  }
+
+  function previousMatch(state2: TabState) {
+    // TODO
+  }
+
+  // src/utils/scrollUtils.ts
+  function scrollToElement(element: HTMLElement) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  return {
+    findAllMatches,
+    updateHighlights,
+    nextMatch,
+  };
+};
