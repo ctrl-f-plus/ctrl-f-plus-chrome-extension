@@ -318,6 +318,7 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
   return true;
 }
 
+// FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(
   payload: any,
   sendResponse: Function
@@ -331,6 +332,16 @@ export async function handleUpdateTabStatesObj(
     updateMatchesCount();
     store.updatedTabsCount = 0;
   }
+
+  updateStore(store, {
+    tabStates: {
+      ...store.tabStates,
+      [payload.serializedState.tabId]: {
+        ...store.tabStates[payload.serializedState.tabId],
+        serializedMatches: payload.serializedState.serializedMatches,
+      },
+    },
+  });
 
   sendResponse({ status: 'success' });
 }

@@ -44,14 +44,6 @@ chrome.runtime.onMessage.addListener(
         await handleNextPrevMatch(sender, type);
         return true;
       case 'remove-styles-all-tabs':
-        // debugger;
-        // debugger;
-        // debugger;
-        // // JUST CHECKING IF THIS EVER GETS CALLED ANYMORE
-        // debugger;
-        // debugger;
-        // debugger;
-
         await handleToggleStylesAllTabs(false);
         return true;
       case 'add-styles-all-tabs':

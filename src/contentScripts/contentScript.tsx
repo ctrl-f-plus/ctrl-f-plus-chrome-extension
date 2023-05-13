@@ -8,7 +8,7 @@ import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { MessageFixMe } from '../types/message.types';
+import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
 import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { injectStyles, removeStyles } from '../utils/styleUtils';
@@ -16,8 +16,16 @@ import contentStyles from './contentStyles';
 import {
   deserializeMatchesObj,
   restoreHighlightSpans,
+  serializeMatchesObj,
 } from '../utils/htmlUtils';
-import { SerializedTabState, TabState } from '../types/tab.types';
+import {
+  SerializedTabState,
+  TabId,
+  TabState,
+  ValidTabId,
+} from '../types/tab.types';
+import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
+import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -39,9 +47,10 @@ const App: React.FC<{}> = () => {
     globalMatchIdx,
     setGlobalMatchIdx,
     setLayoverPosition,
+    setState2,
   } = useContext(LayoverContext);
 
-  const updateContextFromStore = (store: Store) => {
+  const updateContextFromStore = (store: Store, tabId: ValidTabId) => {
     // setSearchValue(store.searchValue);
     // setLastSearchValue(store.lastSearchValue);
 
@@ -50,6 +59,12 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount(store.totalMatchesCount);
     setGlobalMatchIdx(store.globalMatchIdx + 1);
     setLayoverPosition(store.layoverPosition);
+
+    // FIXME: DRY THIS CODE
+    const serializedMatches = store.tabStates[tabId].serializedMatches;
+    let tabState = deserializeMatchesObj(store.tabStates[tabId]);
+    tabState = restoreHighlightSpans(tabState);
+    setState2({ type: 'SET_STATE2', payload: tabState });
 
     // TODO: Make sure this value is getting updated in the store
     if (store.activeTab) {
@@ -85,8 +100,15 @@ const App: React.FC<{}> = () => {
         tabState = deserializeMatchesObj({
           ...serializedtabState,
         });
-        console.log(tabState);
+
         tabState = restoreHighlightSpans(tabState);
+        //FIXME: DRY and/or REFACTOR AS RESPONSE:
+        const serializedState: SerializedTabState = serializeMatchesObj({
+          ...tabState,
+        });
+
+        const msg = createUpdateTabStatesObjMsg(serializedState);
+        sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
         break;
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();
@@ -96,9 +118,12 @@ const App: React.FC<{}> = () => {
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
       case 'store-updated':
-        const { store } = message.payload;
-        updateContextFromStore(store);
+        const { store, tabId } = message.payload;
+        updateContextFromStore(store, tabId);
         break;
+      // case 'background:highlight':
+      //   await handleHighlight(state2, findValue, tabId, sendResponse);
+      //   return true;
       default:
         if (command) {
           handleKeyboardCommand(command, {

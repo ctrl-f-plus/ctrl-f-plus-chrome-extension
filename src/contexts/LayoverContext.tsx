@@ -6,6 +6,7 @@ import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
+  SetState2Action,
 } from '../types/layoverContext.types';
 
 // TODO: Potentially move searchValue and setSearchValue out of this file
@@ -25,6 +26,15 @@ export const LayoverContext = createContext<LayoverContextData>({
   setGlobalMatchIdx: () => {},
   layoverPosition: null,
   setLayoverPosition: (value: LayoverPosition | null) => {},
+  state2: {
+    tabId: undefined,
+    currentIndex: undefined,
+    matchesCount: undefined,
+    matchesObj: [],
+  },
+  // setState2: (value: TabState) => {},
+  // setState2: (value: TabState | ((prevState2: TabState) => TabState)) => {},
+  setState2: (value: SetState2Action) => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
@@ -48,6 +58,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setGlobalMatchIdx,
     layoverPosition,
     setLayoverPosition,
+    state2,
+    setState2,
   } = useLayoverHandler();
 
   return (
@@ -68,6 +80,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         setGlobalMatchIdx,
         layoverPosition,
         setLayoverPosition,
+        state2,
+        setState2,
       }}
     >
       {children}

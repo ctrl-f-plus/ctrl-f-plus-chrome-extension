@@ -2,9 +2,14 @@
 
 import { useCallback, useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
-import { LayoverAction, LayoverState } from '../types/layoverContext.types';
+import {
+  LayoverAction,
+  LayoverState,
+  SetState2Action,
+} from '../types/layoverContext.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
+import { TabId, TabState } from '../types/tab.types';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -14,9 +19,19 @@ const initialState: LayoverState = {
   totalMatchesCount: 0,
   globalMatchIdx: 0,
   layoverPosition: null,
+  state2: {
+    tabId: undefined as TabId | undefined,
+    currentIndex: undefined,
+    matchesCount: undefined,
+    matchesObj: [],
+  },
 };
 
-const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
+// const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
+const reducer = (
+  state: LayoverState,
+  action: LayoverAction | SetState2Action
+): LayoverState => {
   switch (action.type) {
     case 'INITIALIZE_STATE':
       return action.payload;
@@ -34,6 +49,17 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
       return { ...state, globalMatchIdx: action.payload };
     case 'SET_LAYOVER_POSITION':
       return { ...state, layoverPosition: action.payload };
+    // case 'SET_STATE2':
+    //   return { ...state, state2: action.payload };
+    case 'SET_STATE2':
+      if (typeof action.payload === 'function') {
+        const updaterFunction = action.payload as (
+          prevState2: TabState
+        ) => TabState;
+        return { ...state, state2: updaterFunction(state.state2) };
+      } else {
+        return { ...state, state2: action.payload as TabState };
+      }
     default:
       return state;
   }
@@ -92,6 +118,15 @@ export const useLayoverHandler = () => {
     dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
   };
 
+  // const setState2 = (
+  //   value: TabState | ((prevState2: TabState) => TabState)
+  // ) => {
+  //   dispatch({ type: 'SET_STATE2', payload: value });
+  // };
+  const setState2 = (value: SetState2Action) => {
+    dispatch(value);
+  };
+
   return {
     ...state,
     setSearchValue,
@@ -107,5 +142,8 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
     setLayoverPosition: (value: LayoverPosition | null) =>
       dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
+    // setState2: (value: TabState) =>
+    //   dispatch({ type: 'SET_STATE2', payload: value }),
+    setState2,
   };
 };
