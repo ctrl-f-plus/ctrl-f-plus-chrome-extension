@@ -26,7 +26,7 @@ export const LayoverContext = createContext<LayoverContextData>({
   setGlobalMatchIdx: () => {},
   layoverPosition: null,
   setLayoverPosition: (value: LayoverPosition | null) => {},
-  state2: {
+  state2Context: {
     tabId: undefined,
     currentIndex: undefined,
     matchesCount: undefined,
@@ -34,7 +34,7 @@ export const LayoverContext = createContext<LayoverContextData>({
   },
   // setState2: (value: TabState) => {},
   // setState2: (value: TabState | ((prevState2: TabState) => TabState)) => {},
-  setState2: (value: SetState2Action) => {},
+  setState2Context: (value: SetState2Action) => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
@@ -58,8 +58,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setGlobalMatchIdx,
     layoverPosition,
     setLayoverPosition,
-    state2,
-    setState2,
+    state2Context,
+    setState2Context,
   } = useLayoverHandler();
 
   return (
@@ -80,8 +80,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         setGlobalMatchIdx,
         layoverPosition,
         setLayoverPosition,
-        state2,
-        setState2,
+        state2Context,
+        setState2Context,
       }}
     >
       {children}

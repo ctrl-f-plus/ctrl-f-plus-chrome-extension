@@ -9,23 +9,32 @@ import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
-import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
-import { injectStyles, removeStyles } from '../utils/styleUtils';
-import contentStyles from './contentStyles';
-import {
-  deserializeMatchesObj,
-  restoreHighlightSpans,
-  serializeMatchesObj,
-} from '../utils/htmlUtils';
 import {
   SerializedTabState,
   TabId,
   TabState,
   ValidTabId,
 } from '../types/tab.types';
+import {
+  deserializeMatchesObj,
+  restoreHighlightSpans,
+  serializeMatchesObj,
+} from '../utils/htmlUtils';
+import { handleKeyboardCommand } from '../utils/keyboardCommands';
+import {
+  findAllMatches,
+  updateHighlights,
+} from '../utils/matchUtils/findMatchesUtils';
+import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { injectStyles } from '../utils/styleUtils';
+import contentStyles from './contentStyles';
+// import { useFindMatches } from '../hooks/useFindMatches';
+// import {
+//   previousMatch,
+//   updateHighlights,
+// } from '../utils/matchUtils/findMatchesUtils';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -47,8 +56,11 @@ const App: React.FC<{}> = () => {
     globalMatchIdx,
     setGlobalMatchIdx,
     setLayoverPosition,
-    setState2,
+    state2Context,
+    setState2Context,
   } = useContext(LayoverContext);
+
+  // const { handleHighlight, handleNextMatch } = useFindMatches();
 
   const updateContextFromStore = (store: Store, tabId: ValidTabId) => {
     // setSearchValue(store.searchValue);
@@ -61,10 +73,12 @@ const App: React.FC<{}> = () => {
     setLayoverPosition(store.layoverPosition);
 
     // FIXME: DRY THIS CODE
-    const serializedMatches = store.tabStates[tabId].serializedMatches;
-    let tabState = deserializeMatchesObj(store.tabStates[tabId]);
-    tabState = restoreHighlightSpans(tabState);
-    setState2({ type: 'SET_STATE2', payload: tabState });
+    if (store.tabStates[tabId]) {
+      const serializedMatches = store.tabStates[tabId].serializedMatches;
+      let tabState = deserializeMatchesObj(store.tabStates[tabId]);
+      tabState = restoreHighlightSpans(tabState);
+      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+    }
 
     // TODO: Make sure this value is getting updated in the store
     if (store.activeTab) {
@@ -72,16 +86,38 @@ const App: React.FC<{}> = () => {
     }
   };
 
-  const handleMessage = (
+  async function handleHighlight(
+    state2: TabState,
+    findValue: string,
+    tabId: TabId,
+    sendResponse: Function
+  ): Promise<void> {
+    state2.tabId = tabId;
+
+    await findAllMatches(state2, findValue);
+
+    const serializedState: SerializedTabState = serializeMatchesObj({
+      ...state2,
+    });
+    // debugger;
+    sendResponse({
+      hasMatch: state2.matchesObj.length > 0,
+      serializedState: serializedState,
+    });
+  }
+
+  const handleMessage = async (
     message: MessageFixMe,
     sender: any,
     sendResponse: any
   ) => {
-    console.log('Received message:', message);
+    console.log('Received message:', message, state2Context);
 
     const { type, command } = message;
     let serializedtabState: SerializedTabState;
     let tabState: TabState;
+    let findValue;
+    let state2;
 
     switch (type) {
       case 'switched-active-tab-show-layover':
@@ -95,6 +131,10 @@ const App: React.FC<{}> = () => {
         setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
+
+        if (serializedtabState === undefined) {
+          break;
+        }
 
         deserializeMatchesObj(serializedtabState);
         tabState = deserializeMatchesObj({
@@ -121,9 +161,17 @@ const App: React.FC<{}> = () => {
         const { store, tabId } = message.payload;
         updateContextFromStore(store, tabId);
         break;
-      // case 'background:highlight':
-      //   await handleHighlight(state2, findValue, tabId, sendResponse);
-      //   return true;
+      case 'highlight':
+        state2 = { ...state2Context };
+        findValue = message.findValue as string;
+        await handleHighlight(state2, findValue, tabId, sendResponse);
+        return true;
+      case 'update-highlights':
+        state2 = { ...state2Context };
+        debugger;
+        // await updateHighlights(state2, message.prevIndex, false, sendResponse);
+        await updateHighlights(state2, undefined, false, sendResponse);
+        return true;
       default:
         if (command) {
           handleKeyboardCommand(command, {
@@ -135,6 +183,37 @@ const App: React.FC<{}> = () => {
   };
 
   useMessageHandler(handleMessage);
+
+  // chrome.runtime.onMessage.addListener(
+  //   async (message, sender, sendResponse) => {
+  //     const { from, type, findValue, tabId, tabState } = message;
+
+  //     switch (`${from}:${type}`) {
+  //       case 'background:highlight':
+  //         console.log('background:highlight', message, state2);
+  //         await handleHighlight(state2, findValue, tabId, sendResponse);
+  //         return true;
+
+  //       case 'background:backgroundUtils:next-match':
+  //         console.log('background:backgroundUtils:next-match', message, state2);
+  //         await handleNextMatch(state2, sendResponse);
+  //         return true;
+  //       case 'background:prev-match':
+  //         console.log('background:prev-match', message, state2);
+  //         previousMatch(state2);
+  //         break;
+  //       case 'background:update-highlights':
+  //         console.log('background:update-highlights', message, state2);
+
+  //         return true;
+  //       // break;
+  //       default:
+  //         break;
+  //     }
+
+  //     return;
+  //   }
+  // );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

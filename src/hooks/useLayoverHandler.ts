@@ -19,7 +19,7 @@ const initialState: LayoverState = {
   totalMatchesCount: 0,
   globalMatchIdx: 0,
   layoverPosition: null,
-  state2: {
+  state2Context: {
     tabId: undefined as TabId | undefined,
     currentIndex: undefined,
     matchesCount: undefined,
@@ -51,14 +51,17 @@ const reducer = (
       return { ...state, layoverPosition: action.payload };
     // case 'SET_STATE2':
     //   return { ...state, state2: action.payload };
-    case 'SET_STATE2':
+    case 'SET_STATE2_CONTEXT':
       if (typeof action.payload === 'function') {
         const updaterFunction = action.payload as (
           prevState2: TabState
         ) => TabState;
-        return { ...state, state2: updaterFunction(state.state2) };
+        return {
+          ...state,
+          state2Context: updaterFunction(state.state2Context),
+        };
       } else {
-        return { ...state, state2: action.payload as TabState };
+        return { ...state, state2Context: action.payload as TabState };
       }
     default:
       return state;
@@ -123,7 +126,7 @@ export const useLayoverHandler = () => {
   // ) => {
   //   dispatch({ type: 'SET_STATE2', payload: value });
   // };
-  const setState2 = (value: SetState2Action) => {
+  const setState2Context = (value: SetState2Action) => {
     dispatch(value);
   };
 
@@ -144,6 +147,6 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
     // setState2: (value: TabState) =>
     //   dispatch({ type: 'SET_STATE2', payload: value }),
-    setState2,
+    setState2Context,
   };
 };

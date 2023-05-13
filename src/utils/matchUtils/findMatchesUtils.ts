@@ -21,14 +21,15 @@ export async function findAllMatches(state2: TabState, findValue: string) {
   searchAndHighlight({
     state2: state2,
     findValue,
-    callback: async () => {
-      const serializedState: SerializedTabState = serializeMatchesObj({
-        ...state2,
-      });
+    // callback: async () => {
+    //   const serializedState: SerializedTabState = serializeMatchesObj({
+    //     ...state2,
+    //   });
 
-      const msg = createUpdateTabStatesObjMsg(serializedState);
-      sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
-    },
+    //   debugger;
+    //   const msg = createUpdateTabStatesObjMsg(serializedState);
+    //   sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+    // },
   });
 }
 
@@ -39,29 +40,33 @@ export async function updateHighlights(
   sendResponse?: Function
 ): Promise<void> {
   if (!state2.matchesObj.length) {
+    debugger;
     return Promise.resolve();
   }
-
+  debugger;
   if (typeof prevIndex === 'number') {
+    debugger;
+    // FIXME: check if this is ever hit
     const prevMatch = state2.matchesObj[prevIndex];
     prevMatch.classList.remove('ctrl-f-highlight-focus');
   }
-
+  debugger;
   if (endOfTab) {
     return;
   }
-
+  debugger;
   if (typeof state2.currentIndex !== 'undefined') {
     const curMatch = state2.matchesObj[state2.currentIndex];
     curMatch.classList.add('ctrl-f-highlight-focus');
     scrollToElement(curMatch);
   }
 
+  debugger;
   if (sendResponse) {
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...state2,
     });
-
+    debugger;
     sendResponse({
       serializedState: serializedState,
       status: 'success',

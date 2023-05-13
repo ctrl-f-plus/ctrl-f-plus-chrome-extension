@@ -54,11 +54,12 @@ async function handleNextMatch(
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const { from, type, findValue, tabId, tabState } = message;
+  console.log('Received message:', message, state2);
 
   switch (`${from}:${type}`) {
-    case 'background:highlight':
-      await handleHighlight(state2, findValue, tabId, sendResponse);
-      return true;
+    // case 'background:highlight':
+    //   await handleHighlight(state2, findValue, tabId, sendResponse);
+    //   return true;
     // case 'background:next-match':
     case 'background:backgroundUtils:next-match':
       await handleNextMatch(state2, sendResponse);
@@ -66,9 +67,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     case 'background:prev-match':
       previousMatch(state2);
       break;
-    case 'background:update-highlights':
-      await updateHighlights(state2, message.prevIndex, false, sendResponse);
-      return true;
+    // case 'background:update-highlights':
+    //   debugger;
+    //   await updateHighlights(state2, message.prevIndex, false, sendResponse);
+    //   return true;
     // break;
     default:
       break;

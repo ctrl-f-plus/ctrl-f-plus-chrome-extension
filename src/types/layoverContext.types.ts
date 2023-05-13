@@ -5,7 +5,7 @@ import { LayoverPosition } from '../components/Layover';
 import { TabState } from './tab.types';
 
 export interface SetState2Action {
-  type: 'SET_STATE2';
+  type: 'SET_STATE2_CONTEXT';
   payload: TabState | ((prevState2: TabState) => TabState);
 }
 
@@ -29,12 +29,12 @@ export interface LayoverContextData {
   // setLayoverPosition: (value: LayoverPosition) => void;
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
-  state2: TabState;
+  state2Context: TabState;
   // setState2: (value: TabState) => void;
   // setState2: React.Dispatch<TabState | ((prevState2: TabState) => TabState)>;
   // setState2: React.Dispatch<SetState2Action>;
 
-  setState2: (value: SetState2Action) => void;
+  setState2Context: (value: SetState2Action) => void;
 }
 
 export interface LayoverProviderProps {
@@ -50,7 +50,7 @@ export interface LayoverState {
   globalMatchIdx: number;
   // layoverPosition: LayoverPosition;
   layoverPosition: LayoverPosition | null;
-  state2: TabState;
+  state2Context: TabState;
 }
 
 export type LayoverAction =
@@ -65,4 +65,4 @@ export type LayoverAction =
   | { type: 'SET_TOTAL_MATCHES_COUNT'; payload: number }
   | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number }
   | { type: 'SET_LAYOVER_POSITION'; payload: LayoverPosition | null }
-  | { type: 'SET_STATE2'; payload: TabState };
+  | { type: 'SET_STATE2_CONTEXT'; payload: TabState };

@@ -142,24 +142,28 @@ export async function executeContentScriptOnAllTabs(
     if (tab.id && !foundFirstMatch) {
       const tabId: ValidTabId = tab.id as number;
       // TODO: implment processTab() here
+      debugger;
       const { hasMatch, state } = await executeContentScript(
         findValue,
         tab,
         store
       );
 
+      debugger;
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
         //FIXME: need to add await if you handle errors in `sendMsgToTab() (**354)
         const msg = createUpdateHighlightsMsg(tab.id);
+        debugger;
         const response = await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
-
+        debugger;
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tab.id) {
           chrome.tabs.update(tab.id, { active: true });
           // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
         }
+        debugger;
 
         // TODO: review placement of this
         updateStore(store, {
@@ -333,15 +337,15 @@ export async function handleUpdateTabStatesObj(
     store.updatedTabsCount = 0;
   }
 
-  updateStore(store, {
-    tabStates: {
-      ...store.tabStates,
-      [payload.serializedState.tabId]: {
-        ...store.tabStates[payload.serializedState.tabId],
-        serializedMatches: payload.serializedState.serializedMatches,
-      },
-    },
-  });
+  // updateStore(store, {
+  //   tabStates: {
+  //     ...store.tabStates,
+  //     [payload.serializedState.tabId]: {
+  //       ...store.tabStates[payload.serializedState.tabId],
+  //       serializedMatches: payload.serializedState.serializedMatches,
+  //     },
+  //   },
+  // });
 
   sendResponse({ status: 'success' });
 }
