@@ -256,6 +256,35 @@ export async function handleGetAllMatchesMsg(findValue: string) {
   executeContentScriptOnAllTabs(findValue, store);
 }
 
+// export async function handleNextPrevMatch(
+//   sender: chrome.runtime.MessageSender,
+//   type: string
+// ) {
+//   if (sender.tab && sender.tab.id) {
+//     const response = await executeContentScriptWithMessage(sender.tab.id, type);
+//     const tabState = store.tabStates[sender.tab.id];
+
+//     let currentIndex = tabState.globalMatchIdxStart;
+
+//     if (response.status === 'success') {
+//       currentIndex = response.serializedState2.currentIndex;
+//     }
+
+//     if (tabState.globalMatchIdxStart && currentIndex) {
+//       updateStore(store, {
+//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+//         tabStates: {
+//           ...store.tabStates,
+//           [sender.tab.id]: {
+//             ...tabState,
+//             currentIndex,
+//           },
+//         },
+//       });
+//     }
+//   }
+// }
+
 export async function handleNextPrevMatch(
   sender: chrome.runtime.MessageSender,
   type: string
@@ -264,15 +293,25 @@ export async function handleNextPrevMatch(
     const response = await executeContentScriptWithMessage(sender.tab.id, type);
     const tabState = store.tabStates[sender.tab.id];
 
-    let currentIndex = tabState.globalMatchIdxStart;
+    // let currentIndex = tabState.globalMatchIdxStart;
 
     if (response.status === 'success') {
-      currentIndex = response.serializedState2.currentIndex;
-    }
+      const currentIndex = response.serializedState2.currentIndex;
 
-    if (tabState.globalMatchIdxStart && currentIndex) {
       updateStore(store, {
         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+        tabStates: {
+          ...store.tabStates,
+          [sender.tab.id]: {
+            ...tabState,
+            currentIndex,
+          },
+        },
+      });
+    } else {
+      // TODO: Review to see if you actually need this:
+      const currentIndex = tabState.globalMatchIdxStart;
+      updateStore(store, {
         tabStates: {
           ...store.tabStates,
           [sender.tab.id]: {
