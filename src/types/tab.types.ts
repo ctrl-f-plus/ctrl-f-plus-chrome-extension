@@ -11,9 +11,20 @@ export interface BaseTab {
   matchesCount: number | undefined;
   globalMatchIdxStart?: number;
 }
+
+export interface XPathMatchObject {
+  text: string;
+  xpath: string;
+  spanClasses: string[];
+}
+
 // FIXME: remove serializedMatches from TabState
 export interface TabState extends BaseTab {
   matchesObj: HTMLSpanElement[];
+}
+
+export interface XPathTabState extends BaseTab {
+  matchesObj: XPathMatchObject[];
 }
 
 export interface SerializedTabState extends BaseTab {

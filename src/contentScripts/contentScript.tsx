@@ -75,24 +75,18 @@ const App: React.FC<{}> = () => {
       case 'switched-active-tab-hide-layover':
         showMatches && setShowLayover(false);
         break;
-      // case 'remove-styles':
-      //   removeStyles(injectedStyle);
-      //   setShowMatches(false);
-      //   break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
         setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
 
-        // debugger;
         deserializeMatchesObj(serializedtabState);
         tabState = deserializeMatchesObj({
           ...serializedtabState,
         });
         console.log(tabState);
-        restoreHighlightSpans(tabState);
-        // debugger;
+        tabState = restoreHighlightSpans(tabState);
         break;
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();
