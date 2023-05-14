@@ -33,15 +33,16 @@ sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
-    const { type, payload } = message;
+    const { type, payload, transactionId } = message;
 
     switch (type) {
       case 'get-all-matches-msg':
         await handleGetAllMatchesMsg(payload);
         return true;
       case 'next-match':
-      case 'prev-match':
-        await handleNextPrevMatch(sender, type);
+        debugger;
+        transactionId &&
+          (await handleNextPrevMatch(sender, type, transactionId));
         return true;
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
@@ -98,7 +99,10 @@ chrome.commands.onCommand.addListener(async (command) => {
     if (tabs[0].id) {
       // const msg = createToggleSearchLayoverMsg();
       // sendMsgToTab<ToggleSearchLayoverMsg>(tabs[0].id, msg);
-      sendMessageToTab(tabs[0].id, { command });
+      sendMessageToTab(tabs[0].id, {
+        async: false,
+        command: 'toggle_search_layover',
+      });
     }
   }
 });

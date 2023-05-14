@@ -25,19 +25,18 @@ export const sendMessageToContentScripts = async (
 };
 
 // OLD VERSION
-export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.sendMessage(tabId as number, message, (response) => {
-      if (chrome.runtime.lastError) {
-        //   debugger;
-        reject(chrome.runtime.lastError);
-      } else {
-        //   debugger;
-        resolve(response);
-      }
-    });
-  });
-}
+// export function sendMessageToTab(tabId: TabId, message: any): Promise<any> {
+//   return new Promise((resolve, reject) => {
+//     chrome.tabs.sendMessage(tabId as number, message, (response) => {
+//       if (chrome.runtime.lastError) {
+//         reject(chrome.runtime.lastError);
+//         console.log(message);
+//       } else {
+//         resolve(response);
+//       }
+//     });
+//   });
+// }
 
 // FIXME: (**354)
 // UPDATED VERSION
@@ -47,13 +46,31 @@ export function sendMsgToTab<T extends Messages>(
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
-      // if (chrome.runtime.lastError) {
-      //   debugger;
-      //   reject(chrome.runtime.lastError);
-      // } else {
-      //   debugger;
-      resolve(response);
-      // }
+      if (chrome.runtime.lastError) {
+        console.log(message);
+        // debugger;
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(response);
+      }
     });
+  });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+export function sendMessageToTab(tabId: number, message: any): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const callback = (response: any) => {
+      if (chrome.runtime.lastError) {
+        console.log(message);
+        // debugger;
+        // reject(new Error(chrome.runtime.lastError.message));
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(response);
+      }
+    };
+
+    chrome.tabs.sendMessage(tabId as number, message, callback);
   });
 }

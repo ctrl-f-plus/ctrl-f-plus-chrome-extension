@@ -10,6 +10,7 @@ import {
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
+  TransactionId,
   RemoveAllHighlightMatchesMsg,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
@@ -192,13 +193,14 @@ export async function executeContentScriptOnAllTabs(
 
 export async function executeContentScriptWithMessage(
   tabId: number,
-  messageType: string
+  messageType: string,
+  transactionId: TransactionId
 ): Promise<any> {
   try {
     let msg;
 
     if (messageType === 'next-match') {
-      msg = createNextMatchMsg(tabId);
+      msg = createNextMatchMsg(tabId, transactionId);
     } else if (messageType === 'prev-match') {
       msg = createPrevMatchMsg();
     } else {
@@ -206,6 +208,7 @@ export async function executeContentScriptWithMessage(
     }
 
     const response = await sendMsgToTab(tabId, msg);
+    debugger;
 
     return response;
   } catch (error) {
@@ -256,41 +259,23 @@ export async function handleGetAllMatchesMsg(findValue: string) {
   executeContentScriptOnAllTabs(findValue, store);
 }
 
-// export async function handleNextPrevMatch(
-//   sender: chrome.runtime.MessageSender,
-//   type: string
-// ) {
-//   if (sender.tab && sender.tab.id) {
-//     const response = await executeContentScriptWithMessage(sender.tab.id, type);
-//     const tabState = store.tabStates[sender.tab.id];
-
-//     let currentIndex = tabState.globalMatchIdxStart;
-
-//     if (response.status === 'success') {
-//       currentIndex = response.serializedState2.currentIndex;
-//     }
-
-//     if (tabState.globalMatchIdxStart && currentIndex) {
-//       updateStore(store, {
-//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-//         tabStates: {
-//           ...store.tabStates,
-//           [sender.tab.id]: {
-//             ...tabState,
-//             currentIndex,
-//           },
-//         },
-//       });
-//     }
-//   }
-// }
-
 export async function handleNextPrevMatch(
   sender: chrome.runtime.MessageSender,
-  type: string
+  type: string,
+  transactionId: TransactionId
 ) {
   if (sender.tab && sender.tab.id) {
-    const response = await executeContentScriptWithMessage(sender.tab.id, type);
+    const response = await executeContentScriptWithMessage(
+      sender.tab.id,
+      type,
+      transactionId
+    );
+
+    debugger;
+
+    if (response.transactionId !== transactionId) {
+      throw new Error('transactionId mismatch');
+    }
     const tabState = store.tabStates[sender.tab.id];
 
     // let currentIndex = tabState.globalMatchIdxStart;
@@ -327,11 +312,13 @@ export async function handleNextPrevMatch(
 export async function handleToggleStylesAllTabs(addStyles: boolean) {
   const tabs = await queryCurrentWindowTabs();
 
-  tabs.forEach((tab) => {
+  tabs.forEach(async (tab) => {
     const tabId: ValidTabId = tab.id as number;
     const payload = { store, tabId };
     const msg = createToggleStylesMsg(addStyles, payload);
     sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
+    // await sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
+
   });
 
   updateStore(store, {

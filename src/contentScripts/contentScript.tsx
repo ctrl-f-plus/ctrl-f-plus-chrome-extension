@@ -8,7 +8,11 @@ import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
+import {
+  MessageFixMe,
+  TransactionId,
+  UpdateTabStatesObjMsg,
+} from '../types/message.types';
 import {
   SerializedTabState,
   TabId,
@@ -54,7 +58,7 @@ const App: React.FC<{}> = () => {
 
   const { findAllMatches, updateHighlights, nextMatch } = useFindMatches();
 
-  const updateContextFromStore = (store: Store, tabId: ValidTabId) => {
+  const updateContextFromStore = async (store: Store, tabId: ValidTabId) => {
     // setSearchValue(store.searchValue);
     // setLastSearchValue(store.lastSearchValue);
 
@@ -66,8 +70,8 @@ const App: React.FC<{}> = () => {
 
     // FIXME: DRY THIS CODE
     if (store.tabStates[tabId]) {
-      const serializedMatches = store.tabStates[tabId].serializedMatches;
-      let tabState = deserializeMatchesObj(store.tabStates[tabId]);
+      const serializedTabState = store.tabStates[tabId];
+      let tabState = deserializeMatchesObj(serializedTabState);
       tabState = restoreHighlightSpans(tabState);
       setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
     }
@@ -77,27 +81,6 @@ const App: React.FC<{}> = () => {
       setActiveTabId(store.activeTab.id);
     }
   };
-
-  // async function handleHighlight(
-  //   state2: TabState,
-  //   findValue: string,
-  //   tabId: TabId,
-  //   sendResponse: Function
-  // ): Promise<void> {
-  //   state2.tabId = tabId;
-  //   debugger;
-
-  //   await findAllMatches(state2, findValue);
-
-  //   const serializedState: SerializedTabState = serializeMatchesObj({
-  //     ...state2,
-  //   });
-
-  //   sendResponse({
-  //     hasMatch: state2.matchesObj.length > 0,
-  //     serializedState: serializedState,
-  //   });
-  // }
 
   async function handleHighlight(
     state2: TabState,
@@ -119,20 +102,22 @@ const App: React.FC<{}> = () => {
 
   async function handleNextMatch(
     state2: TabState,
-    sendResponse: Function
-  ): Promise<void> {
+    transactionId: TransactionId
+  ): Promise<any> {
     if (state2.matchesObj.length > 0) await nextMatch(state2);
 
     const serializedState2: SerializedTabState = serializeMatchesObj({
       ...state2,
     });
 
-    sendResponse({
+    return {
+      transactionId: transactionId,
       serializedState2: serializedState2,
       status: 'success',
-    });
+    };
   }
 
+  let lastProcessedTransactionId = '0';
   const handleMessage = async (
     message: MessageFixMe,
     sender: any,
@@ -140,7 +125,13 @@ const App: React.FC<{}> = () => {
   ) => {
     console.log('Received message:', message, state2Context);
 
-    const { type, command } = message;
+    const { type, command, transactionId } = message;
+
+    if (transactionId && transactionId <= lastProcessedTransactionId) {
+      console.log('Ignoring message:', message);
+      return;
+    }
+
     let serializedtabState: SerializedTabState;
     let tabState: TabState;
     let findValue;
@@ -161,7 +152,10 @@ const App: React.FC<{}> = () => {
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
 
+        response = { status: 'success' };
+
         if (serializedtabState === undefined) {
+          sendResponse(response);
           break;
         }
 
@@ -178,6 +172,7 @@ const App: React.FC<{}> = () => {
 
         const msg = createUpdateTabStatesObjMsg(serializedState);
         sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+        sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
         break;
       case 'remove-all-highlight-matches':
         removeAllHighlightMatches();
@@ -210,10 +205,13 @@ const App: React.FC<{}> = () => {
         sendResponse(response);
         return true;
       case 'next-match':
-        state2 = { ...state2Context, tabId: message.payload.tabId };
         debugger;
-        await handleNextMatch(state2, sendResponse);
-
+        state2 = { ...state2Context, tabId: message.payload.tabId };
+        transactionId &&
+          (response = await handleNextMatch(state2, transactionId));
+        // response = await handleNextMatch(state2, transactionId);
+        debugger;
+        sendResponse(response);
         return true;
       default:
         if (command) {
@@ -221,8 +219,10 @@ const App: React.FC<{}> = () => {
             toggleSearchLayover,
           });
         }
+        sendResponse({ status: 'success' });
         break;
     }
+    return true;
   };
 
   useMessageHandler(handleMessage);

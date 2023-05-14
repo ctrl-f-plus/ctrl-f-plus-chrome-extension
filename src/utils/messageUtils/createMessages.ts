@@ -1,9 +1,11 @@
 // src/utils/messageUtils/createMessages.ts
+
 import { Store } from '../../background/store';
 import { LayoverPosition } from '../../components/Layover';
 import {
   GetAllMatchesMsg,
   HighlightMsg,
+  TransactionId,
   NextMatchMsg,
   NextMatch_msg,
   PrevMatchMsg,
@@ -63,11 +65,15 @@ export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesM
   };
 }
 
-export function createNextMatchMsg(tabId: TabId): NextMatchMsg {
+export function createNextMatchMsg(
+  tabId: TabId,
+  transactionId: TransactionId
+): NextMatchMsg {
   return {
     from: 'background:backgroundUtils',
     type: 'next-match',
     payload: { tabId },
+    transactionId: transactionId,
   };
 }
 

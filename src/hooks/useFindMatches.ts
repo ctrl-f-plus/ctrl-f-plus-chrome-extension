@@ -81,8 +81,6 @@ export const useFindMatches = () => {
     const prevIndex = state2.currentIndex;
     state2.currentIndex = (state2.currentIndex + 1) % state2.matchesObj.length;
 
-    // TODO: START HERE// TODO: START HERE// TODO: START HERE// TODO: START HERE
-    // look at currentIndex not being updated in time?
     if (state2.currentIndex === 0) {
       const endOfTab: boolean = true;
       await updateHighlights(state2, prevIndex, endOfTab);

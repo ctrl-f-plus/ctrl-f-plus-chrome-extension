@@ -32,8 +32,6 @@ export const LayoverContext = createContext<LayoverContextData>({
     matchesCount: undefined,
     matchesObj: [],
   },
-  // setState2: (value: TabState) => {},
-  // setState2: (value: TabState | ((prevState2: TabState) => TabState)) => {},
   setState2Context: (value: SetState2Action) => {},
 });
 

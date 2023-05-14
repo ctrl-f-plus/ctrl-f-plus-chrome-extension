@@ -4,6 +4,8 @@ import { Store } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import { TabState, SerializedTabState, ValidTabId, TabId } from './tab.types';
 
+export type TransactionId = Exclude<string, undefined>;
+
 export interface BaseMessage {
   from:
     | 'background'
@@ -15,10 +17,13 @@ export interface BaseMessage {
     | 'content-script-match-utils'
     | 'background:backgroundUtils'
     | 'content:layover-component';
+  async?: boolean | true;
   type: string;
   payload?: any;
   serializedState2?: any;
   serializedState?: any;
+  // transactionId?: string;
+  transactionId?: TransactionId;
 }
 
 export interface GetAllMatchesMsg extends BaseMessage {
@@ -69,12 +74,14 @@ export interface RemoveStylesMessage extends BaseMessage {
 }
 
 export interface MessageFixMe {
+  async: boolean | true;
   type: string;
   findValue?: string;
   command?: string;
   payload?: any;
   prevIndex?: number;
   tabId?: TabId;
+  transactionId?: TransactionId;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {
