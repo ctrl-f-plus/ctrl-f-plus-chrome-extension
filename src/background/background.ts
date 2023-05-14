@@ -26,7 +26,7 @@ import {
 import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
-import { initStore, sendStoreToContentScripts } from './store';
+import { initStore, sendStoreToContentScripts, updateStore } from './store';
 
 export const store = initStore();
 sendStoreToContentScripts(store);
@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(
         await handleGetAllMatchesMsg(payload);
         return true;
       case 'next-match':
-        debugger;
+        // debugger;
         transactionId &&
           (await handleNextPrevMatch(sender, type, transactionId));
         return true;
@@ -94,16 +94,25 @@ chrome.runtime.onMessage.addListener(
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
-    const tabs = await queryCurrentWindowTabs(true);
+    // sendStoreToContentScripts;
+    // const tabs = await queryCurrentWindowTabs(true);
+    // const tabs = await queryCurrentWindowTabs();
 
-    if (tabs[0].id) {
-      // const msg = createToggleSearchLayoverMsg();
-      // sendMsgToTab<ToggleSearchLayoverMsg>(tabs[0].id, msg);
-      sendMessageToTab(tabs[0].id, {
-        async: false,
-        command: 'toggle_search_layover',
-      });
-    }
+    const addStyles = !store.showLayover;
+    await handleToggleStylesAllTabs(addStyles);
+    // debugger;
+    // updateStore(store, {
+    //   showLayover: addStyles,
+    //   showMatches: addStyles,
+    // });
+    // sendStoreToContentScripts(store);
+
+    // if (tabs[0].id) {
+    //   sendMessageToTab(tabs[0].id, {
+    //     async: false,
+    //     command: 'toggle_search_layover',
+    //   });
+    // }
   }
 });
 

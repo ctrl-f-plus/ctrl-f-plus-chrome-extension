@@ -89,10 +89,10 @@ export interface RemoveStylesAllTabs extends BaseMessage {
   type: 'remove-styles-all-tabs';
 }
 
-export interface AddStylesAllTabs extends BaseMessage {
-  from: 'content';
-  type: 'add-styles-all-tabs';
-}
+// export interface AddStylesAllTabs extends BaseMessage {
+//   from: 'content';
+//   type: 'add-styles-all-tabs';
+// }
 export interface ToggleStylesAllTabs extends BaseMessage {
   from: 'content';
   type: 'add-styles-all-tabs' | 'remove-styles-all-tabs';
@@ -185,7 +185,7 @@ export type Messages =
   | PreviousMatchMessage
   | RemoveStylesMessage
   | RemoveStylesAllTabs
-  | AddStylesAllTabs
+  // | AddStylesAllTabs
   | RemoveAllHighlightMatches
   | ToggleStylesAllTabs
   | RemoveAllHighlightMatchesMsg

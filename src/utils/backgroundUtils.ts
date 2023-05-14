@@ -149,7 +149,7 @@ export async function executeContentScriptOnAllTabs(
         tab,
         store
       );
-      debugger;
+      // debugger;
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 
@@ -208,7 +208,6 @@ export async function executeContentScriptWithMessage(
     }
 
     const response = await sendMsgToTab(tabId, msg);
-    debugger;
 
     return response;
   } catch (error) {
@@ -240,9 +239,9 @@ export async function switchTab(
     if (tab === undefined || tab.id === undefined) return;
 
     serializedState.tabId = tab.id;
-    debugger;
+
     const msg = createUpdateHighlightsMsg(tab.id);
-    debugger;
+
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
@@ -271,10 +270,13 @@ export async function handleNextPrevMatch(
       transactionId
     );
 
-    debugger;
-
     if (response.transactionId !== transactionId) {
-      throw new Error('transactionId mismatch');
+      throw new Error(
+        'transactionId mismatch. transactionId: ' +
+          transactionId +
+          'response.transactionId: ' +
+          response.transactionId
+      );
     }
     const tabState = store.tabStates[sender.tab.id];
 
@@ -309,18 +311,20 @@ export async function handleNextPrevMatch(
   }
 }
 
-export async function handleToggleStylesAllTabs(addStyles: boolean) {
+export async function handleToggleStylesAllTabs(
+  addStyles: boolean
+  // tabs?: chrome.tabs.Tab[]
+) {
+  // FIXME: you should be able to replace this message by injecting styles into the DOM
   const tabs = await queryCurrentWindowTabs();
-
   tabs.forEach(async (tab) => {
     const tabId: ValidTabId = tab.id as number;
     const payload = { store, tabId };
     const msg = createToggleStylesMsg(addStyles, payload);
     sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
     // await sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-
   });
-
+  // debugger;
   updateStore(store, {
     showLayover: addStyles,
     showMatches: addStyles,
@@ -351,7 +355,7 @@ export async function handleUpdateTabStatesObj(
   sendResponse: Function
 ) {
   const { serializedState } = payload;
-  debugger;
+  // debugger;
   await setStoredTabs(serializedState);
 
   store.updatedTabsCount++;

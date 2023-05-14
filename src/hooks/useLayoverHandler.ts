@@ -74,12 +74,11 @@ export const useLayoverHandler = () => {
   const toggleSearchLayover = useCallback(
     (forceShowLayover?: boolean) => {
       const openSearchLayover = () => {
-        sendMessageToBackground({
-          from: 'content',
-          type: 'add-styles-all-tabs',
-        });
-
-        dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
+        // sendMessageToBackground({
+        //   from: 'content',
+        //   type: 'add-styles-all-tabs',
+        // });
+        // dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
       };
 
       const closeSearchLayover = async (searchValue: string) => {

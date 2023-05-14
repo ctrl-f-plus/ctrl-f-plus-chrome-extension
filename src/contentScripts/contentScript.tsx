@@ -72,8 +72,8 @@ const App: React.FC<{}> = () => {
     if (store.tabStates[tabId]) {
       const serializedTabState = store.tabStates[tabId];
       let tabState = deserializeMatchesObj(serializedTabState);
-      tabState = restoreHighlightSpans(tabState);
-      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+      // tabState = restoreHighlightSpans(tabState);
+      // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
     }
 
     // TODO: Make sure this value is getting updated in the store
@@ -117,7 +117,7 @@ const App: React.FC<{}> = () => {
     };
   }
 
-  let lastProcessedTransactionId = '0';
+  let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
   const handleMessage = async (
     message: MessageFixMe,
     sender: any,
@@ -148,7 +148,7 @@ const App: React.FC<{}> = () => {
         break;
       case 'add-styles':
         injectedStyle = injectStyles(contentStyles);
-        setShowMatches(true);
+        // setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
 
@@ -170,7 +170,7 @@ const App: React.FC<{}> = () => {
           ...tabState,
         });
 
-        const msg = createUpdateTabStatesObjMsg(serializedState);
+        const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
         sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
         sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
         break;
@@ -205,21 +205,20 @@ const App: React.FC<{}> = () => {
         sendResponse(response);
         return true;
       case 'next-match':
-        debugger;
         state2 = { ...state2Context, tabId: message.payload.tabId };
         transactionId &&
           (response = await handleNextMatch(state2, transactionId));
         // response = await handleNextMatch(state2, transactionId);
-        debugger;
+
         sendResponse(response);
         return true;
       default:
-        if (command) {
-          handleKeyboardCommand(command, {
-            toggleSearchLayover,
-          });
-        }
-        sendResponse({ status: 'success' });
+        // if (command) {
+        //   handleKeyboardCommand(command, {
+        //     toggleSearchLayover,
+        //   });
+        // }
+        // sendResponse({ status: 'success' });
         break;
     }
     return true;

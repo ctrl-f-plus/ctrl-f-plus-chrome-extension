@@ -164,7 +164,7 @@ export function setStoredTabs(
   //     });
   //   });
   // });
-  debugger;
+  // debugger;
   const key: LocalStorageKeys = 'tabs';
   const { tabId, currentIndex, serializedMatches, matchesCount } =
     serializedState;
