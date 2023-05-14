@@ -100,13 +100,17 @@ export const useLayoverHandler = () => {
         });
 
         dispatch({ type: 'SET_SHOW_MATCHES', payload: false });
+        dispatch({ type: 'SET_SHOW_LAYOVER', payload: false });
       };
+      closeSearchLayover(state.searchValue);
 
-      const newState =
-        forceShowLayover === undefined ? !state.showLayover : forceShowLayover;
+      // const newState =
+      //   forceShowLayover === undefined ? !state.showLayover : forceShowLayover;
 
-      newState ? openSearchLayover() : closeSearchLayover(state.searchValue);
-      dispatch({ type: 'SET_SHOW_LAYOVER', payload: newState });
+      // debugger;
+
+      // newState ? openSearchLayover() : closeSearchLayover(state.searchValue);
+      // dispatch({ type: 'SET_SHOW_LAYOVER', payload: newState });
     },
 
     [sendMessageToBackground, state.showLayover, state.searchValue]

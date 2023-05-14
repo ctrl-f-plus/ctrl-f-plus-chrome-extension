@@ -28,7 +28,10 @@ import { handleKeyboardCommand } from '../utils/keyboardCommands';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
-import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import {
+  sendMessageToBackground,
+  sendMsgToBackground,
+} from '../utils/messageUtils/sendMessageToBackground';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
@@ -240,6 +243,19 @@ const App: React.FC<{}> = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [showLayover, searchValue]);
+
+  useEffect(() => {
+    const rmvHltMatches = async () => {
+      await sendMessageToBackground({
+        from: 'content',
+        type: 'remove-all-highlight-matches',
+      });
+    };
+
+    return () => {
+      showMatches && rmvHltMatches();
+    };
+  }, [showMatches]);
 
   return (
     <>
