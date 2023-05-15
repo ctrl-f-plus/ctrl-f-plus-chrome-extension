@@ -26,10 +26,19 @@ interface LayoverProps {
 const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
   const nodeRef = React.useRef(null);
 
-  const { layoverPosition } = useContext(LayoverContext);
+  const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);
 
   const handleDragStop: DraggableEventHandler = (e, data: DraggableData) => {
     const newPosition: LayoverPosition = { x: data.x, y: data.y };
+
+    setLayoverPosition(newPosition);
+    if (
+      layoverPosition &&
+      layoverPosition.x === newPosition.x &&
+      layoverPosition.y === newPosition.y
+    ) {
+      return;
+    }
 
     const msg = createUpdateLayoverPositionMsg(newPosition);
     sendMsgToBackground<UpdateLayoverPositionMsg>(msg);
