@@ -71,6 +71,12 @@ export function sendMessageToTab(tabId: number, message: any): Promise<any> {
       }
     };
 
-    chrome.tabs.sendMessage(tabId as number, message, callback);
+    debugger;
+    if (message.async) {
+      chrome.tabs.sendMessage(tabId as number, message, callback);
+    } else {
+      chrome.tabs.sendMessage(tabId as number, message);
+      resolve(true);
+    }
   });
 }

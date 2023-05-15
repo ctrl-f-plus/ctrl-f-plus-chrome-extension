@@ -149,7 +149,7 @@ export async function executeContentScriptOnAllTabs(
         tab,
         store
       );
-      // debugger;
+
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
 

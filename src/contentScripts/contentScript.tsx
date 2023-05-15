@@ -6,6 +6,7 @@ import { Store } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
+import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import {
@@ -24,8 +25,6 @@ import {
   restoreHighlightSpans,
   serializeMatchesObj,
 } from '../utils/htmlUtils';
-import { handleKeyboardCommand } from '../utils/keyboardCommands';
-import { useFindMatches } from '../hooks/useFindMatches';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
 import {
@@ -39,7 +38,7 @@ let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
-
+  injectStyles(contentStyles);
   const {
     showLayover,
     setShowLayover,
@@ -61,27 +60,27 @@ const App: React.FC<{}> = () => {
 
   const { findAllMatches, updateHighlights, nextMatch } = useFindMatches();
 
-  const updateContextFromStore = async (store: Store, tabId: ValidTabId) => {
+  const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
     // setSearchValue(store.searchValue);
     // setLastSearchValue(store.lastSearchValue);
-
-    setShowLayover(store.showLayover);
-    setShowMatches(store.showMatches);
-    setTotalMatchesCount(store.totalMatchesCount);
-    setGlobalMatchIdx(store.globalMatchIdx + 1);
-    setLayoverPosition(store.layoverPosition);
+    debugger;
+    setShowLayover(tabStore.showLayover);
+    setShowMatches(tabStore.showMatches);
+    setTotalMatchesCount(tabStore.totalMatchesCount);
+    setGlobalMatchIdx(tabStore.globalMatchIdx + 1);
+    setLayoverPosition(tabStore.layoverPosition);
 
     // FIXME: DRY THIS CODE
-    if (store.tabStates[tabId]) {
-      const serializedTabState = store.tabStates[tabId];
-      let tabState = deserializeMatchesObj(serializedTabState);
-      // tabState = restoreHighlightSpans(tabState);
+    if (tabStore.tabStates[tabId]) {
+      // const serializedTabState = tabStore.tabStates[tabId];
+      // let tabState = deserializeMatchesObj(serializedTabState);
+      // tabState = retabStoreHighlightSpans(tabState);
       // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
     }
 
-    // TODO: Make sure this value is getting updated in the store
-    if (store.activeTab) {
-      setActiveTabId(store.activeTab.id);
+    // TODO: Make sure this value is getting updated in the tabStore
+    if (tabStore.activeTab) {
+      setActiveTabId(tabStore.activeTab.id);
     }
   };
 
@@ -150,7 +149,7 @@ const App: React.FC<{}> = () => {
         showMatches && setShowLayover(false);
         break;
       case 'add-styles':
-        injectedStyle = injectStyles(contentStyles);
+        // injectedStyle = injectStyles(contentStyles);
         // setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
@@ -185,9 +184,11 @@ const App: React.FC<{}> = () => {
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
       case 'store-updated':
-        const { store } = message.payload;
+        const { store, tabStore } = message.payload;
         tabId = message.payload.tabId;
-        updateContextFromStore(store, tabId);
+        // debugger;
+        // updateContextFromStore(store, tabId);
+        updateContextFromStore(tabStore, tabId);
         break;
       case 'highlight':
         tabId = message.tabId;

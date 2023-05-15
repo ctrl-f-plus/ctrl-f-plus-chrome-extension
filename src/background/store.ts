@@ -1,15 +1,19 @@
-//@
-// ts-nocheck
 // src/background/store.ts
 
-import _ from 'lodash';
+import _ from 'lodash'; // FIXME: remove lodash package if you don't end up using it
 import { LayoverPosition } from '../components/Layover';
+import { UpdateStoreMsg } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
+import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
 import { createUpdateStoreMsg } from '../utils/messageUtils/createMessages';
-import { sendMessageToContentScripts } from '../utils/messageUtils/sendMessageToContentScripts';
+import {
+  sendMessageToContentScripts,
+  sendMessageToTab,
+  sendMsgToTab,
+} from '../utils/messageUtils/sendMessageToContentScripts';
 
 // Store Interface
-export interface BaseStore {
+export interface SharedStore {
   totalMatchesCount: number;
   layoverPosition: LayoverPosition;
   showLayover: boolean;
@@ -25,22 +29,77 @@ export interface BaseStore {
   activeTab: chrome.tabs.Tab | null;
 }
 
-export interface Store extends BaseStore {
+export interface Store extends SharedStore {
   lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
   updatedTabsCount: number;
   totalTabs: number | undefined;
   tabStates: Record<ValidTabId, SerializedTabState>;
 }
 
-export interface TabStore extends BaseStore {
+export interface TabStore extends SharedStore {
   tabId: ValidTabId;
   serializedTabState: SerializedTabState;
 }
 
-// Store utility functions
-// TODO: Add utility functions
+// const sharedStore: SharedStore = initSharedStore();
 
-// Store lifecycle functions
+// // Store utility functions
+// // TODO: Add utility functions
+
+// // Store lifecycle functions
+// export function initSharedStore(): SharedStore {
+//   return {
+//     totalMatchesCount: 0,
+//     layoverPosition: { x: 0, y: 0 },
+//     showLayover: false,
+//     showMatches: false,
+//     findValue: '',
+//     searchValue: '',
+//     lastSearchValue: '',
+//     globalMatchIdx: 0,
+//     activeTab: null,
+//   };
+// }
+
+// // Initialize Store
+// export function initStore(): Store {
+//   return {
+//     ...sharedStore,
+//     lastFocusedWindowId: undefined,
+//     updatedTabsCount: 0,
+//     totalTabs: undefined,
+//     tabStates: {},
+//   };
+// }
+
+// // Initialize TabStore
+// export function initTabStore(
+//   tabId: ValidTabId,
+//   serializedTabState: SerializedTabState
+// ): TabStore {
+//   return {
+//     ...sharedStore,
+//     tabId,
+//     serializedTabState,
+//   };
+// }
+
+// export interface Store {
+//   globalMatchIdx: number;
+//   totalMatchesCount: number;
+//   findValue: string;
+//   searchValue: string;
+//   lastSearchValue: string;
+//   lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+//   updatedTabsCount: number;
+//   totalTabs: number | undefined;
+//   activeTab: chrome.tabs.Tab | null;
+//   layoverPosition: LayoverPosition;
+//   showLayover: boolean;
+//   showMatches: boolean;
+//   tabStates: Record<ValidTabId, SerializedTabState>;
+// }
+
 export function initStore() {
   const store: Store = {
     globalMatchIdx: 0,
@@ -60,6 +119,50 @@ export function initStore() {
   return store;
 }
 
+export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
+  const serializedTabState = store.tabStates[tabId];
+
+  return {
+    tabId,
+    serializedTabState,
+
+    // SHARED STORE:
+    totalMatchesCount: store.totalMatchesCount,
+    layoverPosition: store.layoverPosition,
+    showLayover: store.showLayover,
+    showMatches: store.showMatches,
+
+    findValue: store.findValue,
+    searchValue: store.searchValue,
+    lastSearchValue: store.lastSearchValue,
+
+    globalMatchIdx: store.globalMatchIdx,
+    activeTab: store.activeTab,
+  };
+}
+
+export function updateStore(store: Store, updates: Partial<Store>): void {
+  // if (Object.keys(updates).length === 1 && Object.keys)
+  Object.assign(store, updates);
+
+  if (updates.tabStates) {
+    for (const tabId in updates.tabStates) {
+      if (updates.tabStates.hasOwnProperty(tabId)) {
+        if (!store.tabStates[tabId]) {
+          store.tabStates[tabId] = updates.tabStates[tabId];
+        } else {
+          Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);
+        }
+      }
+    }
+  }
+
+  const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
+  // const msg = createUpdateStoreMsg(store);
+  // sendMessageToContentScripts(msg, tabIds);
+  sendStoreToContentScripts(store);
+}
+
 export function resetStore(store: Store): void {
   const initialState = initStore();
   updateStore(store, initialState);
@@ -77,88 +180,37 @@ export function resetPartialStore(store: Store): void {
 }
 
 // Store update functions
-export function sendStoreToContentScripts(store: Store): void {
-  const msg = createUpdateStoreMsg(store);
-  sendMessageToContentScripts(msg);
-}
+export async function sendStoreToContentScripts(store: Store): Promise<any> {
+  // debugger;
+  // const msg = createUpdateStoreMsg(store);
+  // sendMessageToContentScripts(msg);
 
-//////////////////////////////////////////////
-// Type guard to check if store is of type Store
-function isStore(store: BaseStore): store is Store {
-  // If the store has a 'tabStates' property, we know it's a Store
-  return (store as Store).tabStates !== undefined;
-}
+  const tabs = await queryCurrentWindowTabs();
+  const tabIds = tabs
+    .map((tab) => tab.id)
+    .filter((id): id is ValidTabId => id !== undefined);
 
-// Type guard to check if store is of type TabStore
-function isTabStore(store: BaseStore): store is TabStore {
-  // If the store has a 'tabId' property, we know it's a TabStore
-  return (store as TabStore).tabId !== undefined;
-}
+  const promises = tabIds.map((tabId) => {
+    const tabStore = createTabStore(store, tabId);
+    const msg = {
+      async: false,
+      from: 'background:store',
+      type: 'store-updated',
+      payload: {
+        tabStore,
+      },
+    };
 
-// TODO: Refactor
-export function updateStore(
-  store: Store | TabStore,
-  updates: Partial<Store> | Partial<TabStore>
-): void {
-  // Check if the updates are actually different from the existing store
-  // if (_.isEqual(store, { ...store, ...updates })) {
-  //   return; // No updates needed, so return early
-  // }
-
-  // Merge the updates into the existing store
-  Object.assign(store, updates);
-
-  // If the store is a Store and it has tabStates updates
-  if (isStore(store) && 'tabStates' in updates) {
-    const storeUpdates = updates as Partial<Store>;
-
-    if (storeUpdates.tabStates) {
-      // Iterate over each tabState update
-      for (const tabId in storeUpdates.tabStates) {
-        if (store.tabStates[tabId]) {
-          // If this tabState already exists, merge the updates into it
-          Object.assign(store.tabStates[tabId], storeUpdates.tabStates[tabId]);
+    return new Promise((resolve, reject) => {
+      chrome.tabs.sendMessage(tabId, msg, (response) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
         } else {
-          // If this tabState doesn't exist yet, create it
-          store.tabStates[tabId] = storeUpdates.tabStates[tabId];
+          resolve(response);
         }
-      }
-    }
-  }
+      });
+    });
+  });
 
-  // Prepare the message to send to the content scripts
-  const msg = createUpdateStoreMsg(store as Store);
-
-  // If the store is a Store, send the message to all tabs
-  if (isStore(store)) {
-    const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
-    console.log(store);
-    // debugger;
-    sendMessageToContentScripts(msg, tabIds);
-  }
-  // If the store is a TabStore, send the message to the specific tab
-  else if (isTabStore(store)) {
-    // debugger;
-    sendMessageToContentScripts(msg, [store.tabId]);
-  }
+  return Promise.all(promises);
 }
-
-// export function updateStoreOLD(store: Store, updates: Partial<Store>): void {
-//   Object.assign(store, updates);
-
-//   if (updates.tabStates) {
-//     for (const tabId in updates.tabStates) {
-//       if (updates.tabStates.hasOwnProperty(tabId)) {
-//         if (!store.tabStates[tabId]) {
-//           store.tabStates[tabId] = updates.tabStates[tabId];
-//         } else {
-//           Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);
-//         }
-//       }
-//     }
-//   }
-
-//   const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
-//   const msg = createUpdateStoreMsg(store);
-//   sendMessageToContentScripts(msg, tabIds);
-// }

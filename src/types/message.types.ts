@@ -1,6 +1,6 @@
 // src/interfaces/message.types.ts
 
-import { Store } from '../background/store';
+import { Store, TabStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import { TabState, SerializedTabState, ValidTabId, TabId } from './tab.types';
 
@@ -140,7 +140,8 @@ export interface UpdateStoreMsg extends BaseMessage {
   from: 'background:store';
   type: 'store-updated';
   payload: {
-    store: Store;
+    store?: Store;
+    tabStore?: TabStore;
   };
 }
 

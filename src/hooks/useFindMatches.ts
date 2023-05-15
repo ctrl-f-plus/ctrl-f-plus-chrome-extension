@@ -15,7 +15,6 @@ import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackgrou
 export const useFindMatches = () => {
   const { state2Context, setState2Context } = useContext(LayoverContext);
 
-  // - `findAllMatches()`, `updateHighlights()`, `nextMatch()`, and `previousMatch()` are only called from within `findMatchesScript.ts`
   async function findAllMatches(state2: TabState, findValue: string) {
     state2.currentIndex = 0;
     state2.matchesCount = 0;
@@ -87,10 +86,15 @@ export const useFindMatches = () => {
       const serializedState: SerializedTabState = serializeMatchesObj({
         ...state2,
       });
-      debugger;
-      // FIXME: serializedState.tabId is undefined..
+
+      if (serializedState.tabId === undefined) {
+        debugger;
+        // FIXME: serializedState.tabId is undefined..
+        debugger;
+      }
+
       const msg = createSwitchTabMsg(serializedState);
-      debugger;
+
       await sendMsgToBackground<SwitchTabMsg>(msg);
     } else {
       await updateHighlights(state2, prevIndex);

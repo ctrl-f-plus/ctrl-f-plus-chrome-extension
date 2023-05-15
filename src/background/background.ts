@@ -4,7 +4,6 @@ import {
   Messages,
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
-  ToggleSearchLayoverMsg,
 } from '../types/message.types';
 import {
   getOrderedTabs,
@@ -14,19 +13,19 @@ import {
   handleToggleStylesAllTabs,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
-  queryCurrentWindowTabs,
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
 import {
   createSwitchedActiveTabHideLayoverMsg,
   createSwitchedActiveTabShowLayoverMsg,
-  createToggleSearchLayoverMsg,
 } from '../utils/messageUtils/createMessages';
 import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
-import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
-import { initStore, sendStoreToContentScripts, updateStore } from './store';
+import { Store, initStore, sendStoreToContentScripts } from './store';
+
+// TODO: START HERE! // TODO: START HERE! // TODO: START HERE! // TODO: START HERE!
+// NEED TO FIGURE OUT STORE INITIALIZATIONS AND UPDATE THE STORES THAT ARE ACTUALLY PASSING TO THE CONTENT SCRIPTS THEN TRY TO MESSAGE PASS THROUGH PORTS
 
 export const store = initStore();
 sendStoreToContentScripts(store);
@@ -40,7 +39,6 @@ chrome.runtime.onMessage.addListener(
         await handleGetAllMatchesMsg(payload);
         return true;
       case 'next-match':
-        // debugger;
         transactionId &&
           (await handleNextPrevMatch(sender, type, transactionId));
         return true;
@@ -94,25 +92,8 @@ chrome.runtime.onMessage.addListener(
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
-    // sendStoreToContentScripts;
-    // const tabs = await queryCurrentWindowTabs(true);
-    // const tabs = await queryCurrentWindowTabs();
-
     const addStyles = !store.showLayover;
     await handleToggleStylesAllTabs(addStyles);
-    // debugger;
-    // updateStore(store, {
-    //   showLayover: addStyles,
-    //   showMatches: addStyles,
-    // });
-    // sendStoreToContentScripts(store);
-
-    // if (tabs[0].id) {
-    //   sendMessageToTab(tabs[0].id, {
-    //     async: false,
-    //     command: 'toggle_search_layover',
-    //   });
-    // }
   }
 });
 
@@ -158,15 +139,4 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   sendStoreToContentScripts(store);
-
-  // export function createToggleStylesMsg(
-  //   addStyles: boolean,
-  //   payload: any
-  // ): ToggleStylesMsg {
-  //   return {
-  //     from: 'background:backgroundUtils',
-  //     type: addStyles ? 'add-styles' : 'remove-styles',
-  //     payload,
-  //   };
-  // }
 });
