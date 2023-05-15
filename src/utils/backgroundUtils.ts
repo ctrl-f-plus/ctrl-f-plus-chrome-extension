@@ -42,26 +42,20 @@ export async function queryCurrentWindowTabs(
   });
 }
 
-async function executeContentScript(
-  findValue: string,
+async function executeContentScriptOnTab(
   tab: chrome.tabs.Tab,
-  store: Store
+  store: Store,
+  foundFirstMatch: boolean
 ): Promise<{
   hasMatch: boolean;
   state: any;
 }> {
   return new Promise<{ hasMatch: boolean; state: any }>(
     async (resolve, reject) => {
-      if (tab.id === undefined) {
-        console.warn('executeContentScript: Tab ID is undefined:', tab);
-        reject({ hasMatch: false, state: null });
-        return;
-      }
-
       const tabId: ValidTabId = tab.id as number;
 
       try {
-        const msg = createHighlightMsg(findValue, tabId);
+        const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
         const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
 
         const { currentIndex, matchesCount, serializedMatches } =
@@ -69,11 +63,13 @@ async function executeContentScript(
 
         updateStore(store, {
           totalMatchesCount: store.totalMatchesCount + matchesCount,
+        });
+
+        updateStore(store, {
           tabStates: {
             ...store.tabStates,
             [tabId]: {
               tabId,
-              active: false, //FIXME:
               currentIndex,
               matchesCount,
               serializedMatches,
@@ -143,50 +139,32 @@ export async function executeContentScriptOnAllTabs(
   for (const tab of orderedTabs) {
     if (tab.id && !foundFirstMatch) {
       const tabId: ValidTabId = tab.id as number;
-      // TODO: implment processTab() here
-      const { hasMatch, state } = await executeContentScript(
-        findValue,
+      const { hasMatch, state } = await executeContentScriptOnTab(
         tab,
-        store
+        store,
+        foundFirstMatch
       );
 
-      if (hasMatch && !foundFirstMatch) {
-        foundFirstMatch = true;
-
-        //FIXME: need to add await if you handle errors in `sendMsgToTab() (**354)
-        const msg = createUpdateHighlightsMsg(tab.id);
-        const response = await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
-        const activeTab = orderedTabs[0];
-        if (activeTab.id !== tab.id) {
-          chrome.tabs.update(tab.id, { active: true });
-          // store.activeTab = tab; //REVIEW IF YOU WANT TO USE updateStore instead
-        }
-
-        // TODO: review placement of this
-        updateStore(store, {
-          findValue,
-          activeTab: tab,
-          showLayover: true,
-          showMatches: true,
-          tabStates: {
-            ...store.tabStates,
-            [tabId]: {
-              ...store.tabStates[tabId],
-              serializedMatches: response.serializedState.serializedMatches,
-            },
-          },
-        });
-
-        // Process remaining tabs asynchronously
-        const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
-        remainingTabs.forEach((remainingTab) => {
-          if (remainingTab.id) {
-            executeContentScript(findValue, remainingTab, store);
-          }
-        });
-
-        break;
+      if (!hasMatch || foundFirstMatch) {
+        continue;
       }
+
+      foundFirstMatch = true;
+
+      const activeTab = orderedTabs[0];
+      if (activeTab.id !== tabId) {
+        chrome.tabs.update(tabId, { active: true });
+      }
+
+      // Process remaining tabs asynchronously
+      const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
+      remainingTabs.forEach((remainingTab) => {
+        if (remainingTab.id) {
+          executeContentScriptOnTab(remainingTab, store, foundFirstMatch);
+        }
+      });
+
+      break;
     }
   }
 }
@@ -253,10 +231,10 @@ export async function switchTab(
 /**
  * Event Handling Functions
  */
-export async function handleGetAllMatchesMsg(findValue: string) {
-  resetPartialStore(store);
-  executeContentScriptOnAllTabs(findValue, store);
-}
+// export async function handleGetAllMatchesMsg(findValue: string) {
+//   resetPartialStore(store);
+//   executeContentScriptOnAllTabs(findValue, store);
+// }
 
 export async function handleNextPrevMatch(
   sender: chrome.runtime.MessageSender,

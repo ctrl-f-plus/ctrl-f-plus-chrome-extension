@@ -61,9 +61,9 @@ const App: React.FC<{}> = () => {
   const { findAllMatches, updateHighlights, nextMatch } = useFindMatches();
 
   const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
-    // setSearchValue(store.searchValue);
-    // setLastSearchValue(store.lastSearchValue);
-    debugger;
+    setSearchValue(tabStore.searchValue);
+    // setLastSearchValue(tabStore.lastSearchValue);
+
     setShowLayover(tabStore.showLayover);
     setShowMatches(tabStore.showMatches);
     setTotalMatchesCount(tabStore.totalMatchesCount);
@@ -71,11 +71,11 @@ const App: React.FC<{}> = () => {
     setLayoverPosition(tabStore.layoverPosition);
 
     // FIXME: DRY THIS CODE
-    if (tabStore.tabStates[tabId]) {
-      // const serializedTabState = tabStore.tabStates[tabId];
-      // let tabState = deserializeMatchesObj(serializedTabState);
-      // tabState = retabStoreHighlightSpans(tabState);
-      // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+    if (tabStore.tabStates && tabStore.tabStates[tabId]) {
+      //   const serializedTabState = tabStore.tabStates[tabId];
+      //   let tabState = deserializeMatchesObj(serializedTabState);
+      //   tabState = restoreHighlightSpans(tabState);
+      //   setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
     }
 
     // TODO: Make sure this value is getting updated in the tabStore
@@ -104,7 +104,7 @@ const App: React.FC<{}> = () => {
 
   async function handleNextMatch(
     state2: TabState,
-    transactionId: TransactionId
+    transactionId?: TransactionId
   ): Promise<any> {
     if (state2.matchesObj.length > 0) await nextMatch(state2);
 
@@ -149,8 +149,6 @@ const App: React.FC<{}> = () => {
         showMatches && setShowLayover(false);
         break;
       case 'add-styles':
-        // injectedStyle = injectStyles(contentStyles);
-        // setShowMatches(true);
         serializedtabState =
           message.payload.store.tabStates[message.payload.tabId];
 
@@ -195,11 +193,22 @@ const App: React.FC<{}> = () => {
         state2 = { ...state2Context, tabId: tabId };
         findValue = message.findValue as string;
         response = await handleHighlight(state2, findValue, tabId);
+
+        if (response.hasMatch && !message.foundFirstMatch) {
+          response = await updateHighlights(
+            state2,
+            message.prevIndex,
+            false,
+            sendResponse
+          );
+          // const hasMatch = response.hasMatch;
+          response = { ...response, hasMatch: true };
+        }
+
         sendResponse(response);
         return true;
       case 'update-highlights':
         state2 = { ...state2Context, tabId: tabId };
-        // await updateHighlights(state2, message.prevIndex, false, sendResponse);
         response = await updateHighlights(
           state2,
           message.prevIndex,
@@ -209,20 +218,13 @@ const App: React.FC<{}> = () => {
         sendResponse(response);
         return true;
       case 'next-match':
-        state2 = { ...state2Context, tabId: message.payload.tabId };
+        state2 = { ...state2Context };
         transactionId &&
           (response = await handleNextMatch(state2, transactionId));
-        // response = await handleNextMatch(state2, transactionId);
 
         sendResponse(response);
         return true;
       default:
-        // if (command) {
-        //   handleKeyboardCommand(command, {
-        //     toggleSearchLayover,
-        //   });
-        // }
-        // sendResponse({ status: 'success' });
         break;
     }
     return true;

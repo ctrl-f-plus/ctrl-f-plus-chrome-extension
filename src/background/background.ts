@@ -6,8 +6,9 @@ import {
   SwitchedActiveTabShowLayover,
 } from '../types/message.types';
 import {
+  executeContentScriptOnAllTabs,
   getOrderedTabs,
-  handleGetAllMatchesMsg,
+  // handleGetAllMatchesMsg,
   handleNextPrevMatch,
   handleRemoveAllHighlightMatches,
   handleToggleStylesAllTabs,
@@ -22,25 +23,36 @@ import {
 } from '../utils/messageUtils/createMessages';
 import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
-import { Store, initStore, sendStoreToContentScripts } from './store';
-
-// TODO: START HERE! // TODO: START HERE! // TODO: START HERE! // TODO: START HERE!
-// NEED TO FIGURE OUT STORE INITIALIZATIONS AND UPDATE THE STORES THAT ARE ACTUALLY PASSING TO THE CONTENT SCRIPTS THEN TRY TO MESSAGE PASS THROUGH PORTS
+import {
+  Store,
+  initStore,
+  resetPartialStore,
+  sendStoreToContentScripts,
+  updateStore,
+} from './store';
 
 export const store = initStore();
 sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
+    console.log('Received message:', message);
     const { type, payload, transactionId } = message;
 
     switch (type) {
       case 'get-all-matches-msg':
-        await handleGetAllMatchesMsg(payload);
+        const findValue = payload; //FIXME: refactor
+
+        resetPartialStore(store);
+        updateStore(store, { findValue });
+
+        await executeContentScriptOnAllTabs(payload, store);
+        console.log(store);
         return true;
       case 'next-match':
         transactionId &&
           (await handleNextPrevMatch(sender, type, transactionId));
+        console.log(store);
         return true;
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
@@ -94,6 +106,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
     await handleToggleStylesAllTabs(addStyles);
+    sendStoreToContentScripts(store);
   }
 });
 

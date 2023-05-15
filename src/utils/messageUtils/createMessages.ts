@@ -39,14 +39,6 @@ export function createUpdateStoreMsg(store: Store): UpdateStoreMsg {
   };
 }
 
-export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
-  return {
-    from: 'background',
-    type: 'update-highlights',
-    prevIndex: undefined,
-  };
-}
-
 export function createToggleStylesMsg(
   addStyles: boolean,
   payload: any
@@ -86,14 +78,24 @@ export function createPrevMatchMsg(): PrevMatchMsg {
 
 export function createHighlightMsg(
   findValue: string,
-  tabId: ValidTabId
+  tabId: ValidTabId,
+  foundFirstMatch: boolean
 ): HighlightMsg {
   return {
     from: 'background',
     type: 'highlight',
     findValue: findValue,
+    foundFirstMatch,
     tabId: tabId,
     tabState: {},
+  };
+}
+
+export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
+  return {
+    from: 'background',
+    type: 'update-highlights',
+    prevIndex: undefined,
   };
 }
 

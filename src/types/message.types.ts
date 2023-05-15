@@ -82,6 +82,7 @@ export interface MessageFixMe {
   prevIndex?: number;
   tabId?: TabId;
   transactionId?: TransactionId;
+  foundFirstMatch?: boolean;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {
@@ -157,6 +158,7 @@ export interface HighlightMsg extends BaseMessage {
   from: 'background';
   type: 'highlight';
   findValue: string;
+  foundFirstMatch: boolean;
   tabId: ValidTabId;
   tabState: {};
 }
