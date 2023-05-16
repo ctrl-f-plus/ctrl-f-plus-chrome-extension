@@ -53,6 +53,7 @@ async function executeContentScriptOnTab(
   return new Promise<{ hasMatch: boolean; state: any }>(
     async (resolve, reject) => {
       const tabId: ValidTabId = tab.id as number;
+      console.log(`${tabId}: `, Date.now().toString());
 
       try {
         const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
@@ -136,7 +137,8 @@ export async function executeContentScriptOnAllTabs(
 
   let foundFirstMatch = false;
 
-  for (const tab of orderedTabs) {
+  // for (const tab of orderedTabs) {
+  const tabPromises = orderedTabs.map(async (tab) => {
     if (tab.id && !foundFirstMatch) {
       const tabId: ValidTabId = tab.id as number;
       const { hasMatch, state } = await executeContentScriptOnTab(
@@ -146,7 +148,8 @@ export async function executeContentScriptOnAllTabs(
       );
 
       if (!hasMatch || foundFirstMatch) {
-        continue;
+        // continue;
+        return;
       }
 
       foundFirstMatch = true;
@@ -156,17 +159,22 @@ export async function executeContentScriptOnAllTabs(
         chrome.tabs.update(tabId, { active: true });
       }
 
-      // Process remaining tabs asynchronously
-      const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
-      remainingTabs.forEach((remainingTab) => {
-        if (remainingTab.id) {
-          executeContentScriptOnTab(remainingTab, store, foundFirstMatch);
-        }
-      });
+      // // Process remaining tabs asynchronously
+      // const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
+      // remainingTabs.forEach((remainingTab) => {
+      //   if (remainingTab.id) {
+      //     executeContentScriptOnTab(remainingTab, store, foundFirstMatch);
+      //   }
+      // });
 
-      break;
+      // break;
+      // }
+      // }
+    } else if (tab.id) {
+      await executeContentScriptOnTab(tab, store, foundFirstMatch);
     }
-  }
+  });
+  await Promise.all(tabPromises);
 }
 
 // export async function executeContentScriptWithMessage(
@@ -198,19 +206,25 @@ export async function executeContentScriptOnAllTabs(
 export async function switchTab(
   serializedState: SerializedTabState
 ): Promise<void> {
+  debugger;
   if (serializedState.tabId === undefined) {
+    debugger;
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
-
+  debugger;
   const storedTabs = await getAllStoredTabs();
+  debugger;
   const matchesObject = storedTabs;
+  debugger;
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
+  debugger;
   const currentTabIndex = tabIds.findIndex(
     (tabId) => tabId === serializedState.tabId
   );
-
+  debugger;
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
+  debugger;
   const nextTabId = tabIds[nextTabIndex];
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
@@ -219,7 +233,7 @@ export async function switchTab(
     serializedState.tabId = tab.id;
 
     const msg = createUpdateHighlightsMsg(tab.id);
-
+    debugger;
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {

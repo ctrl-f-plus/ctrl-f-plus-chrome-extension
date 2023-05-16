@@ -49,8 +49,6 @@ const reducer = (
       return { ...state, globalMatchIdx: action.payload };
     case 'SET_LAYOVER_POSITION':
       return { ...state, layoverPosition: action.payload };
-    // case 'SET_STATE2':
-    //   return { ...state, state2: action.payload };
     case 'SET_STATE2_CONTEXT':
       if (typeof action.payload === 'function') {
         const updaterFunction = action.payload as (
@@ -87,6 +85,7 @@ const reducer = (
 export const useLayoverHandler = () => {
   // console.log('1. useLayoverHandler');
   const [state, dispatch] = useReducer(reducer, initialState);
+  // const [state, dispatch] = useReducer(reducer, setState2Context); ???????????????
 
   const toggleSearchLayover = useCallback(
     (forceShowLayover?: boolean) => {
@@ -141,11 +140,6 @@ export const useLayoverHandler = () => {
     dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
   };
 
-  // const setState2 = (
-  //   value: TabState | ((prevState2: TabState) => TabState)
-  // ) => {
-  //   dispatch({ type: 'SET_STATE2', payload: value });
-  // };
   const setState2Context = (value: SetState2Action) => {
     dispatch(value);
   };

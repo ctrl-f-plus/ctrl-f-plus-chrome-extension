@@ -47,13 +47,10 @@ chrome.runtime.onMessage.addListener(
         updateStore(store, { findValue });
 
         await executeContentScriptOnAllTabs(payload, store);
-        console.log(store);
+        sendStoreToContentScripts(store);
+
         return true;
-      // case 'next-match':
-      //   transactionId &&
-      //     (await handleNextPrevMatch(sender, type, transactionId));
-      //   console.log(store);
-      // return true;
+
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
         return true;
@@ -64,6 +61,7 @@ chrome.runtime.onMessage.addListener(
         await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
+        debugger;
         await switchTab(message.serializedState);
         return true;
       case 'update-tab-states-obj':
