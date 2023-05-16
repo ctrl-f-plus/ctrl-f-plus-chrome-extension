@@ -51,11 +51,11 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     if (searchInputRef.current) {
       if (searchValue === lastSearchValue) {
-        // debugger;
-        // handleTesting123();
-        // handleNext();
         nextMatch();
       } else {
+        // console.log('searchValue: ', searchValue);
+        // console.log('lastSearchValue: ', lastSearchValue);
+        // debugger;
         handleSearch(searchValue);
       }
     }

@@ -70,32 +70,26 @@ export const useFindMatchesCopy = () => {
 
       updatedState = updateHighlights(newState2, prevIndex, endOfTab);
 
-      const serializedState: SerializedTabState = serializeMatchesObj({
-        ...newState2,
-      });
+      if (state2.matchesCount === totalMatchesCount) {
+        // updateHighlights(newState2, prevIndex, false);
+        updatedState = updateHighlights(updatedState, undefined, false);
+      } else {
+        const serializedState: SerializedTabState = serializeMatchesObj({
+          ...newState2,
+        });
 
-      if (serializedState.tabId === undefined) {
-        debugger;
-        // FIXME: serializedState.tabId is undefined..
-        debugger;
+        const msg: SwitchTabMsg = {
+          from: 'content-script-match-utils',
+          type: 'switch-tab',
+          serializedState: serializedState,
+          prevIndex: prevIndex,
+        };
+
+        // await sendMsgToBackground<SwitchTabMsg>(msg);
+        const FIXME_RESPONSE_FROM_SWITCH_TAB_MSG =
+          await sendMsgToBackground<SwitchTabMsg>(msg);
+        console.log(FIXME_RESPONSE_FROM_SWITCH_TAB_MSG);
       }
-      // TODO: once you have totalMatchesCount updating again
-      // if (state2.matchesCount === totalMatchesCount) {
-      //   updateHighlights(newState2, ??message.prevIndex??, false);
-      // }
-
-      // debugger;
-      const msg: SwitchTabMsg = {
-        from: 'content-script-match-utils',
-        type: 'switch-tab',
-        serializedState: serializedState,
-        prevIndex: prevIndex,
-      };
-
-      // await sendMsgToBackground<SwitchTabMsg>(msg);
-      const FIXME_RESPONSE_FROM_SWITCH_TAB_MSG =
-        await sendMsgToBackground<SwitchTabMsg>(msg);
-      console.log(FIXME_RESPONSE_FROM_SWITCH_TAB_MSG);
     } else {
       updatedState = updateHighlights(newState2, prevIndex);
     }

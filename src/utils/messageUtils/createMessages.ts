@@ -82,6 +82,7 @@ export function createHighlightMsg(
   foundFirstMatch: boolean
 ): HighlightMsg {
   return {
+    async: true,
     from: 'background',
     type: 'highlight',
     findValue: findValue,

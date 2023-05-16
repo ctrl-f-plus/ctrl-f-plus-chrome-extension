@@ -43,6 +43,7 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches-msg':
         const findValue = payload; //FIXME: refactor
 
+        // FIXME: resetPartialStore doesn't update the tabStores at all.
         resetPartialStore(store);
         updateStore(store, { findValue });
 

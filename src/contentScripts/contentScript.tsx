@@ -171,7 +171,6 @@ const App: React.FC<{}> = () => {
         break;
       case 'store-updated':
         const { tabStore } = message.payload;
-        debugger;
         tabId = message.payload.tabId;
 
         updateContextFromStore(tabStore, tabId);

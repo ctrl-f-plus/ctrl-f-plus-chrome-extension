@@ -174,7 +174,8 @@ export async function executeContentScriptOnAllTabs(
       await executeContentScriptOnTab(tab, store, foundFirstMatch);
     }
   });
-  await Promise.all(tabPromises);
+
+  await Promise.allSettled(tabPromises);
 }
 
 // export async function executeContentScriptWithMessage(
