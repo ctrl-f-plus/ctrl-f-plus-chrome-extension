@@ -1,16 +1,10 @@
 // src/utils/backgroundUtils.ts
 
 import { store } from '../background/background';
-import {
-  Store,
-  resetPartialStore,
-  resetStore,
-  updateStore,
-} from '../background/store';
+import { Store, updateStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
-  TransactionId,
   RemoveAllHighlightMatchesMsg,
   ToggleStylesMsg,
   UpdateHighlightsMsg,
@@ -23,8 +17,6 @@ import {
 } from '../utils/storage';
 import {
   createHighlightMsg,
-  createNextMatchMsg,
-  createPrevMatchMsg,
   createRemoveAllHighlightMatchesMsg,
   createToggleStylesMsg,
   createUpdateHighlightsMsg,
@@ -106,7 +98,6 @@ export async function getOrderedTabs(
 
 // FIXME: Figure out if/when this actually ever gets called, then remove debugger
 export async function updateMatchesCount() {
-  // debugger;
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
@@ -139,7 +130,6 @@ export async function executeContentScriptOnAllTabs(
 
   let foundFirstMatch = false;
 
-  // for (const tab of orderedTabs) {
   const tabPromises = orderedTabs.map(async (tab) => {
     if (tab.id && !foundFirstMatch) {
       const tabId: ValidTabId = tab.id as number;
@@ -160,18 +150,6 @@ export async function executeContentScriptOnAllTabs(
       if (activeTab.id !== tabId) {
         chrome.tabs.update(tabId, { active: true });
       }
-
-      // // Process remaining tabs asynchronously
-      // const remainingTabs = orderedTabs.slice(orderedTabs.indexOf(tab) + 1);
-      // remainingTabs.forEach((remainingTab) => {
-      //   if (remainingTab.id) {
-      //     executeContentScriptOnTab(remainingTab, store, foundFirstMatch);
-      //   }
-      // });
-
-      // break;
-      // }
-      // }
     } else if (tab.id) {
       await executeContentScriptOnTab(tab, store, foundFirstMatch);
     }
@@ -180,54 +158,22 @@ export async function executeContentScriptOnAllTabs(
   await Promise.allSettled(tabPromises);
 }
 
-// export async function executeContentScriptWithMessage(
-//   tabId: number,
-//   messageType: string,
-//   transactionId: TransactionId
-// ): Promise<any> {
-//   try {
-//     let msg;
-
-//     if (messageType === 'next-match') {
-//       msg = createNextMatchMsg(tabId, transactionId);
-//     } else if (messageType === 'prev-match') {
-//       msg = createPrevMatchMsg();
-//     } else {
-//       throw new Error('Unsupported message type');
-//     }
-
-//     const response = await sendMsgToTab(tabId, msg);
-
-//     return response;
-//   } catch (error) {
-//     console.log(error);
-//     const response = { status: 'failed' };
-//     return response;
-//   }
-// }
-
 export async function switchTab(
   serializedState: SerializedTabState
 ): Promise<void> {
-  debugger;
   if (serializedState.tabId === undefined) {
-    debugger;
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
-  debugger;
+
   const storedTabs = await getAllStoredTabs();
-  debugger;
   const matchesObject = storedTabs;
-  debugger;
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-  debugger;
   const currentTabIndex = tabIds.findIndex(
     (tabId) => tabId === serializedState.tabId
   );
-  debugger;
+
   const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
-  debugger;
   const nextTabId = tabIds[nextTabIndex];
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
@@ -236,7 +182,7 @@ export async function switchTab(
     serializedState.tabId = tab.id;
 
     const msg = createUpdateHighlightsMsg(tab.id);
-    debugger;
+
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
@@ -248,68 +194,8 @@ export async function switchTab(
 /**
  * Event Handling Functions
  */
-// export async function handleGetAllMatchesMsg(findValue: string) {
-//   resetPartialStore(store);
-//   executeContentScriptOnAllTabs(findValue, store);
-// }
 
-// export async function handleNextPrevMatch(
-//   sender: chrome.runtime.MessageSender,
-//   type: string,
-//   transactionId: TransactionId
-// ) {
-//   if (sender.tab && sender.tab.id) {
-//     const response = await executeContentScriptWithMessage(
-//       sender.tab.id,
-//       type,
-//       transactionId
-//     );
-
-//     if (response.transactionId !== transactionId) {
-//       throw new Error(
-//         'transactionId mismatch. transactionId: ' +
-//           transactionId +
-//           'response.transactionId: ' +
-//           response.transactionId
-//       );
-//     }
-//     const tabState = store.tabStates[sender.tab.id];
-
-//     // let currentIndex = tabState.globalMatchIdxStart;
-
-//     if (response.status === 'success') {
-//       const currentIndex = response.serializedState2.currentIndex;
-
-//       updateStore(store, {
-//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-//         tabStates: {
-//           ...store.tabStates,
-//           [sender.tab.id]: {
-//             ...tabState,
-//             currentIndex,
-//           },
-//         },
-//       });
-//     } else {
-//       // TODO: Review to see if you actually need this:
-//       const currentIndex = tabState.globalMatchIdxStart;
-//       updateStore(store, {
-//         tabStates: {
-//           ...store.tabStates,
-//           [sender.tab.id]: {
-//             ...tabState,
-//             currentIndex,
-//           },
-//         },
-//       });
-//     }
-//   }
-// }
-
-export async function handleToggleStylesAllTabs(
-  addStyles: boolean
-  // tabs?: chrome.tabs.Tab[]
-) {
+export async function handleToggleStylesAllTabs(addStyles: boolean) {
   // FIXME: you should be able to replace this message by injecting styles into the DOM
   const tabs = await queryCurrentWindowTabs();
   tabs.forEach(async (tab) => {
@@ -317,9 +203,8 @@ export async function handleToggleStylesAllTabs(
     const payload = { store, tabId };
     const msg = createToggleStylesMsg(addStyles, payload);
     sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-    // await sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
   });
-  // debugger;
+
   updateStore(store, {
     showLayover: addStyles,
     showMatches: addStyles,
@@ -350,7 +235,7 @@ export async function handleUpdateTabStatesObj(
   sendResponse: Function
 ) {
   const { serializedState } = payload;
-  // debugger;
+
   await setStoredTabs(serializedState);
 
   store.updatedTabsCount++;

@@ -1,20 +1,16 @@
 // src/contentScript/contentScript.tsx
 
+import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Store } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
-import { useFindMatches } from '../hooks/useFindMatches';
 import { useFindMatchesCopy } from '../hooks/useFindMatchesCopy';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import {
-  MessageFixMe,
-  Messages,
-  UpdateTabStatesObjMsg,
-} from '../types/message.types';
+import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
 import {
   SerializedTabState,
   TabId,
@@ -34,7 +30,6 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { isEqual } from 'lodash';
 
 let injectedStyle: HTMLStyleElement;
 
@@ -61,16 +56,9 @@ const App: React.FC<{}> = () => {
     setState2Context,
   } = useContext(LayoverContext);
 
-  // const { findAllMatches, updateHighlights2 } = useFindMatches();
-  // const { findAllMatches } = useFindMatches();
-
-  // const { updateHighlights } = useFindMatchesCopy();
   const { updateHighlights, findAllMatches } = useFindMatchesCopy();
 
   const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
-    // setSearchValue(tabStore.searchValue);
-    // setLastSearchValue(tabStore.lastSearchValue);
-
     setShowLayover(tabStore.showLayover);
     setShowMatches(tabStore.showMatches);
     setTotalMatchesCount(tabStore.totalMatchesCount);
@@ -97,15 +85,10 @@ const App: React.FC<{}> = () => {
     tabId: TabId
   ): Promise<any> {
     state2.tabId = tabId;
-    // const handleHighlight = useCallback(
-    //   async (findValue: string, tabId: TabId): Promise<any> => {
     const newState = await findAllMatches(state2, findValue);
-    // await findAllMatches(findValue);
-    debugger;
 
-    // let state2 = { ...state2Context };
     newState.tabId = tabId;
-    // debugger;
+
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...newState,
     });
@@ -116,9 +99,6 @@ const App: React.FC<{}> = () => {
       state2: newState,
     };
   }
-  //   },
-  //   [state2Context, findAllMatches, serializeMatchesObj]
-  // );
 
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
   // const handleMessage = async (
@@ -207,7 +187,7 @@ const App: React.FC<{}> = () => {
             }
 
             state2 = updateHighlights(state2, message.prevIndex, false);
-            // Create a new response object with the updated state
+
             const serializedState: SerializedTabState = serializeMatchesObj({
               ...state2,
             });

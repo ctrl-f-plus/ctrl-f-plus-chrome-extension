@@ -39,7 +39,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   );
 
   const { nextMatch } = useFindMatchesCopy();
-  const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
+  const { handleSearch, handlePrevious } = useSearchHandler();
 
   // TODO: CLEANUP:
   //  - Add debounce
@@ -53,9 +53,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       if (searchValue === lastSearchValue) {
         nextMatch();
       } else {
-        // console.log('searchValue: ', searchValue);
-        // console.log('lastSearchValue: ', lastSearchValue);
-        // debugger;
         handleSearch(searchValue);
       }
     }
@@ -104,7 +101,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       {' '}
       <form
         onSubmit={handleSearchSubmit}
-        // onSubmit={handleNext}
         className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
       >
         <div className="col-span-3 grid grid-cols-6 gap-0 ">
@@ -143,7 +139,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
           <button
             type="button"
-            onClick={handleNext}
+            onClick={nextMatch}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
             disabled={searchValue === ''}
           >

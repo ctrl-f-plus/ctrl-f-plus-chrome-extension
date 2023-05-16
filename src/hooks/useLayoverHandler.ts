@@ -7,9 +7,9 @@ import {
   LayoverState,
   SetState2Action,
 } from '../types/layoverContext.types';
+import { TabId, TabState } from '../types/tab.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
-import { TabId, TabState } from '../types/tab.types';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -83,9 +83,7 @@ const reducer = (
 };
 
 export const useLayoverHandler = () => {
-  // console.log('1. useLayoverHandler');
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const [state, dispatch] = useReducer(reducer, setState2Context); ???????????????
 
   const toggleSearchLayover = useCallback(
     (forceShowLayover?: boolean) => {

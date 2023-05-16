@@ -24,7 +24,6 @@ import {
 import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import {
-  Store,
   initStore,
   resetPartialStore,
   sendStoreToContentScripts,
@@ -62,8 +61,6 @@ chrome.runtime.onMessage.addListener(
         await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
-        console.log(store);
-        debugger;
         await switchTab(message.serializedState);
         return true;
       case 'update-tab-states-obj':

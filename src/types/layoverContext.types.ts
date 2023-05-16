@@ -9,8 +9,6 @@ export interface SetState2Action {
   payload: TabState | ((prevState2: TabState) => TabState);
 }
 
-// export type SetState2Action = TabState | ((prevState2: TabState) => TabState);
-
 export interface LayoverContextData {
   showLayover: boolean;
   setShowLayover: (value: boolean) => void;
@@ -25,15 +23,9 @@ export interface LayoverContextData {
   setTotalMatchesCount: (value: number) => void;
   globalMatchIdx: number;
   setGlobalMatchIdx: (value: number) => void;
-  // layoverPosition: LayoverPosition;
-  // setLayoverPosition: (value: LayoverPosition) => void;
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
   state2Context: TabState;
-  // setState2: (value: TabState) => void;
-  // setState2: React.Dispatch<TabState | ((prevState2: TabState) => TabState)>;
-  // setState2: React.Dispatch<SetState2Action>;
-
   setState2Context: (value: SetState2Action) => void;
 }
 
@@ -48,7 +40,6 @@ export interface LayoverState {
   lastSearchValue: string;
   totalMatchesCount: number;
   globalMatchIdx: number;
-  // layoverPosition: LayoverPosition;
   layoverPosition: LayoverPosition | null;
   state2Context: TabState;
 }

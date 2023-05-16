@@ -2,7 +2,7 @@
 
 import { Store, TabStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { TabState, SerializedTabState, ValidTabId, TabId } from './tab.types';
+import { SerializedTabState, TabId, ValidTabId } from './tab.types';
 
 export type TransactionId = Exclude<string, undefined>;
 
@@ -22,7 +22,6 @@ export interface BaseMessage {
   payload?: any;
   serializedState2?: any;
   serializedState?: any;
-  // transactionId?: string;
   transactionId?: TransactionId;
 }
 
@@ -90,10 +89,6 @@ export interface RemoveStylesAllTabs extends BaseMessage {
   type: 'remove-styles-all-tabs';
 }
 
-// export interface AddStylesAllTabs extends BaseMessage {
-//   from: 'content';
-//   type: 'add-styles-all-tabs';
-// }
 export interface ToggleStylesAllTabs extends BaseMessage {
   from: 'content';
   type: 'add-styles-all-tabs' | 'remove-styles-all-tabs';
@@ -188,7 +183,6 @@ export type Messages =
   | PreviousMatchMessage
   | RemoveStylesMessage
   | RemoveStylesAllTabs
-  // | AddStylesAllTabs
   | RemoveAllHighlightMatches
   | ToggleStylesAllTabs
   | RemoveAllHighlightMatchesMsg
