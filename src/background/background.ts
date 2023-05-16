@@ -9,7 +9,7 @@ import {
   executeContentScriptOnAllTabs,
   getOrderedTabs,
   // handleGetAllMatchesMsg,
-  handleNextPrevMatch,
+  // handleNextPrevMatch,
   handleRemoveAllHighlightMatches,
   handleToggleStylesAllTabs,
   handleUpdateLayoverPosition,
@@ -49,11 +49,11 @@ chrome.runtime.onMessage.addListener(
         await executeContentScriptOnAllTabs(payload, store);
         console.log(store);
         return true;
-      case 'next-match':
-        transactionId &&
-          (await handleNextPrevMatch(sender, type, transactionId));
-        console.log(store);
-        return true;
+      // case 'next-match':
+      //   transactionId &&
+      //     (await handleNextPrevMatch(sender, type, transactionId));
+      //   console.log(store);
+      // return true;
       case 'remove-styles-all-tabs':
         await handleToggleStylesAllTabs(false);
         return true;
@@ -103,6 +103,7 @@ chrome.runtime.onMessage.addListener(
 
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
+  console.log('command:', command);
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
     await handleToggleStylesAllTabs(addStyles);

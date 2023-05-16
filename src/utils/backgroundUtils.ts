@@ -169,31 +169,31 @@ export async function executeContentScriptOnAllTabs(
   }
 }
 
-export async function executeContentScriptWithMessage(
-  tabId: number,
-  messageType: string,
-  transactionId: TransactionId
-): Promise<any> {
-  try {
-    let msg;
+// export async function executeContentScriptWithMessage(
+//   tabId: number,
+//   messageType: string,
+//   transactionId: TransactionId
+// ): Promise<any> {
+//   try {
+//     let msg;
 
-    if (messageType === 'next-match') {
-      msg = createNextMatchMsg(tabId, transactionId);
-    } else if (messageType === 'prev-match') {
-      msg = createPrevMatchMsg();
-    } else {
-      throw new Error('Unsupported message type');
-    }
+//     if (messageType === 'next-match') {
+//       msg = createNextMatchMsg(tabId, transactionId);
+//     } else if (messageType === 'prev-match') {
+//       msg = createPrevMatchMsg();
+//     } else {
+//       throw new Error('Unsupported message type');
+//     }
 
-    const response = await sendMsgToTab(tabId, msg);
+//     const response = await sendMsgToTab(tabId, msg);
 
-    return response;
-  } catch (error) {
-    console.log(error);
-    const response = { status: 'failed' };
-    return response;
-  }
-}
+//     return response;
+//   } catch (error) {
+//     console.log(error);
+//     const response = { status: 'failed' };
+//     return response;
+//   }
+// }
 
 export async function switchTab(
   serializedState: SerializedTabState
@@ -236,58 +236,58 @@ export async function switchTab(
 //   executeContentScriptOnAllTabs(findValue, store);
 // }
 
-export async function handleNextPrevMatch(
-  sender: chrome.runtime.MessageSender,
-  type: string,
-  transactionId: TransactionId
-) {
-  if (sender.tab && sender.tab.id) {
-    const response = await executeContentScriptWithMessage(
-      sender.tab.id,
-      type,
-      transactionId
-    );
+// export async function handleNextPrevMatch(
+//   sender: chrome.runtime.MessageSender,
+//   type: string,
+//   transactionId: TransactionId
+// ) {
+//   if (sender.tab && sender.tab.id) {
+//     const response = await executeContentScriptWithMessage(
+//       sender.tab.id,
+//       type,
+//       transactionId
+//     );
 
-    if (response.transactionId !== transactionId) {
-      throw new Error(
-        'transactionId mismatch. transactionId: ' +
-          transactionId +
-          'response.transactionId: ' +
-          response.transactionId
-      );
-    }
-    const tabState = store.tabStates[sender.tab.id];
+//     if (response.transactionId !== transactionId) {
+//       throw new Error(
+//         'transactionId mismatch. transactionId: ' +
+//           transactionId +
+//           'response.transactionId: ' +
+//           response.transactionId
+//       );
+//     }
+//     const tabState = store.tabStates[sender.tab.id];
 
-    // let currentIndex = tabState.globalMatchIdxStart;
+//     // let currentIndex = tabState.globalMatchIdxStart;
 
-    if (response.status === 'success') {
-      const currentIndex = response.serializedState2.currentIndex;
+//     if (response.status === 'success') {
+//       const currentIndex = response.serializedState2.currentIndex;
 
-      updateStore(store, {
-        globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
-        tabStates: {
-          ...store.tabStates,
-          [sender.tab.id]: {
-            ...tabState,
-            currentIndex,
-          },
-        },
-      });
-    } else {
-      // TODO: Review to see if you actually need this:
-      const currentIndex = tabState.globalMatchIdxStart;
-      updateStore(store, {
-        tabStates: {
-          ...store.tabStates,
-          [sender.tab.id]: {
-            ...tabState,
-            currentIndex,
-          },
-        },
-      });
-    }
-  }
-}
+//       updateStore(store, {
+//         globalMatchIdx: tabState.globalMatchIdxStart + currentIndex,
+//         tabStates: {
+//           ...store.tabStates,
+//           [sender.tab.id]: {
+//             ...tabState,
+//             currentIndex,
+//           },
+//         },
+//       });
+//     } else {
+//       // TODO: Review to see if you actually need this:
+//       const currentIndex = tabState.globalMatchIdxStart;
+//       updateStore(store, {
+//         tabStates: {
+//           ...store.tabStates,
+//           [sender.tab.id]: {
+//             ...tabState,
+//             currentIndex,
+//           },
+//         },
+//       });
+//     }
+//   }
+// }
 
 export async function handleToggleStylesAllTabs(
   addStyles: boolean

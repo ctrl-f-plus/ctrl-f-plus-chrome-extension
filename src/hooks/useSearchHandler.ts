@@ -2,17 +2,17 @@
 // src/hooks/useSearchHandler.ts
 
 import { useCallback, useContext } from 'react';
+import { LayoverContext } from '../contexts/LayoverContext';
+import { TransactionId } from '../types/message.types';
+import {
+  sendMessageToBackground,
+  sendMsgToBackground,
+} from '../utils/messageUtils/sendMessageToBackground';
 import {
   clearAllStoredTabs,
   setStoredFindValue,
   setStoredLastSearchValue,
 } from '../utils/storage';
-import {
-  sendMessageToBackground,
-  sendMsgToBackground,
-} from '../utils/messageUtils/sendMessageToBackground';
-import { LayoverContext } from '../contexts/LayoverContext';
-import { GetAllMatchesMsg, TransactionId } from '../types/message.types';
 
 // import { createGetAllMatchesMsg } from '../utils/messageUtils/createMessages';
 
@@ -25,6 +25,7 @@ import { GetAllMatchesMsg, TransactionId } from '../types/message.types';
 // }
 
 export const useSearchHandler = () => {
+  // console.log('4. useSearchHandler');
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(

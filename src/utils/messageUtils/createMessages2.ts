@@ -1,7 +1,8 @@
-// src/utils/messageUtils/createMessages.ts
+// src/utils/messageUtils/createMessages2.ts
 
 import { Store } from '../../background/store';
 import { LayoverPosition } from '../../components/Layover';
+
 import {
   GetAllMatchesMsg,
   HighlightMsg,
@@ -23,6 +24,8 @@ import {
   UpdateStoreMsg,
   UpdateTabStatesObjMsg,
 } from '../../types/message.types';
+
+// import { SerializedTabState } from '../../types/tab.types';
 import { SerializedTabState, TabId, ValidTabId } from '../../types/tab.types';
 
 /**
@@ -124,18 +127,6 @@ export function createToggleSearchLayoverMsg(): ToggleSearchLayoverMsg {
  * FROM: Content
  * TO: Background
  */
-export function createSwitchTabMsg(
-  serializedState: SerializedTabState,
-  prevIndex: number | undefined = undefined
-): SwitchTabMsg {
-  return {
-    from: 'content-script-match-utils',
-    type: 'switch-tab',
-    serializedState: serializedState,
-    prevIndex: prevIndex,
-  };
-}
-
 export function createSwitchTabMsg2(
   serializedState: SerializedTabState,
   prevIndex: number | undefined = undefined

@@ -28,7 +28,8 @@ export const LayoverContext = createContext<LayoverContextData>({
   setLayoverPosition: (value: LayoverPosition | null) => {},
   state2Context: {
     tabId: undefined,
-    currentIndex: undefined,
+    // currentIndex: undefined,
+    currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
   },

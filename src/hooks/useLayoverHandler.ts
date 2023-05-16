@@ -21,8 +21,8 @@ const initialState: LayoverState = {
   layoverPosition: null,
   state2Context: {
     tabId: undefined as TabId | undefined,
-    currentIndex: undefined,
-    matchesCount: undefined,
+    currentIndex: 0,
+    matchesCount: 10,
     matchesObj: [],
   },
 };
@@ -56,19 +56,36 @@ const reducer = (
         const updaterFunction = action.payload as (
           prevState2: TabState
         ) => TabState;
+        const newState = updaterFunction(state.state2Context);
+        console.log(
+          'Updating state with function. Old state:',
+          state.state2Context,
+          'New state:',
+          newState
+        );
         return {
           ...state,
-          state2Context: updaterFunction(state.state2Context),
+          state2Context: newState,
+          // state2Context: updaterFunction(state.state2Context),
         };
       } else {
+        console.log(
+          'Updating state with value. Old state:',
+          state.state2Context,
+          'New state:',
+          action.payload
+        );
         return { ...state, state2Context: action.payload as TabState };
       }
     default:
-      return state;
+      // throw new Error(`Unsupported action type: ${action.type}`);
+      throw new Error(`Unsupported action type: ${action}`);
+    // return state;
   }
 };
 
 export const useLayoverHandler = () => {
+  // console.log('1. useLayoverHandler');
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const toggleSearchLayover = useCallback(
@@ -148,8 +165,6 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
     setLayoverPosition: (value: LayoverPosition | null) =>
       dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
-    // setState2: (value: TabState) =>
-    //   dispatch({ type: 'SET_STATE2', payload: value }),
     setState2Context,
   };
 };

@@ -53,9 +53,14 @@ function generateXPaths(matchesObj: HTMLSpanElement[]): XPathMatchObject[] {
 export function serializeMatchesObj(
   shallowStateObject: TabState
 ): SerializedTabState {
+  // FIXME: I think this function is getting called too many times on the intial search. uncomment the console log to test
+  // console.log(`serializeMatchesObj: shallowStateObject: `, shallowStateObject);
   const { matchesObj, ...otherProperties } = shallowStateObject;
+  // debugger;
   const xpaths: XPathMatchObject[] = generateXPaths(matchesObj);
+  // debugger;
   const serializedXPaths: JSONString = JSON.stringify(xpaths);
+  // debugger;
 
   const serializedState: SerializedTabState = {
     ...otherProperties,

@@ -14,6 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { useFindMatchesCopy } from '../hooks/useFindMatchesCopy';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
 import { getStoredFindValue, getStoredLastSearchValue } from '../utils/storage';
@@ -30,12 +31,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
+    state2Context,
   } = useContext(LayoverContext);
 
   const [matchingCounts, setMatchingCounts] = useState(
     `${globalMatchIdx}/${totalMatchesCount}`
   );
 
+  const { nextMatch } = useFindMatchesCopy();
   const { handleSearch, handleNext, handlePrevious } = useSearchHandler();
 
   // TODO: CLEANUP:
@@ -48,7 +51,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     if (searchInputRef.current) {
       if (searchValue === lastSearchValue) {
-        handleNext();
+        // debugger;
+        // handleTesting123();
+        // handleNext();
+        nextMatch();
       } else {
         handleSearch(searchValue);
       }

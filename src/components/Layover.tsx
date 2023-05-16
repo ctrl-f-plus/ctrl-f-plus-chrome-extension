@@ -29,6 +29,7 @@ const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
   const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);
 
   const handleDragStop: DraggableEventHandler = (e, data: DraggableData) => {
+    // debugger;
     const newPosition: LayoverPosition = { x: data.x, y: data.y };
 
     setLayoverPosition(newPosition);

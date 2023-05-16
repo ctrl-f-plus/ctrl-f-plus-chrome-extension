@@ -7,11 +7,12 @@ import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useFindMatches } from '../hooks/useFindMatches';
+import { useFindMatchesCopy } from '../hooks/useFindMatchesCopy';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import {
   MessageFixMe,
-  TransactionId,
+  Messages,
   UpdateTabStatesObjMsg,
 } from '../types/message.types';
 import {
@@ -33,11 +34,13 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { isEqual } from 'lodash';
 
 let injectedStyle: HTMLStyleElement;
 
 const App: React.FC<{}> = () => {
   const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
+
   injectStyles(contentStyles);
   const {
     showLayover,
@@ -58,7 +61,9 @@ const App: React.FC<{}> = () => {
     setState2Context,
   } = useContext(LayoverContext);
 
-  const { findAllMatches, updateHighlights, nextMatch } = useFindMatches();
+  // const { findAllMatches, updateHighlights2 } = useFindMatches();
+  const { findAllMatches } = useFindMatches();
+  const { updateHighlights } = useFindMatchesCopy();
 
   const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
     setSearchValue(tabStore.searchValue);
@@ -99,23 +104,6 @@ const App: React.FC<{}> = () => {
     return {
       hasMatch: state2.matchesObj.length > 0,
       serializedState: serializedState,
-    };
-  }
-
-  async function handleNextMatch(
-    state2: TabState,
-    transactionId?: TransactionId
-  ): Promise<any> {
-    if (state2.matchesObj.length > 0) await nextMatch(state2);
-
-    const serializedState2: SerializedTabState = serializeMatchesObj({
-      ...state2,
-    });
-
-    return {
-      transactionId: transactionId,
-      serializedState2: serializedState2,
-      status: 'success',
     };
   }
 
@@ -182,10 +170,9 @@ const App: React.FC<{}> = () => {
         setTotalMatchesCount(message.payload.totalMatchesCount);
         break;
       case 'store-updated':
-        const { store, tabStore } = message.payload;
+        const { tabStore } = message.payload;
         tabId = message.payload.tabId;
-        // debugger;
-        // updateContextFromStore(store, tabId);
+
         updateContextFromStore(tabStore, tabId);
         break;
       case 'highlight':
@@ -195,35 +182,50 @@ const App: React.FC<{}> = () => {
         response = await handleHighlight(state2, findValue, tabId);
 
         if (response.hasMatch && !message.foundFirstMatch) {
-          response = await updateHighlights(
-            state2,
-            message.prevIndex,
-            false,
-            sendResponse
-          );
-          // const hasMatch = response.hasMatch;
-          response = { ...response, hasMatch: true };
+          if (!isEqual(state2, state2Context)) {
+            setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+          }
+
+          state2 = updateHighlights(state2, message.prevIndex, false);
+          // Create a new response object with the updated state
+          const serializedState: SerializedTabState = serializeMatchesObj({
+            ...state2,
+          });
+          response = {
+            ...response,
+            serializedState: serializedState,
+            hasMatch: true,
+          };
         }
 
-        sendResponse(response);
-        return true;
-      case 'update-highlights':
-        state2 = { ...state2Context, tabId: tabId };
-        response = await updateHighlights(
-          state2,
-          message.prevIndex,
-          false,
-          sendResponse
-        );
-        sendResponse(response);
-        return true;
-      case 'next-match':
-        state2 = { ...state2Context };
-        transactionId &&
-          (response = await handleNextMatch(state2, transactionId));
+        console.log('state2Context: ', state2Context);
+        console.log('state2: ', state2);
 
+        if (!isEqual(state2, state2Context)) {
+          setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+        }
         sendResponse(response);
         return true;
+
+      case 'update-highlights':
+        // state2 = { ...state2Context, tabId: tabId };
+        // response = await updateHighlights2(
+        //   state2,
+        //   message.prevIndex,
+        //   false,
+        //   sendResponse
+        // );
+        // sendResponse(response);
+        // return true;
+        break;
+      case 'next-match':
+        //   state2 = { ...state2Context };
+        //   transactionId &&
+        //     (response = await handleNextMatch(state2, transactionId));
+
+        //   sendResponse(response);
+        // return true;
+        break;
       default:
         break;
     }
@@ -231,6 +233,59 @@ const App: React.FC<{}> = () => {
   };
 
   useMessageHandler(handleMessage);
+  // const [message, setMessage] = useState<Messages | null>(null);
+  // useMessageHandler(handleMessage, setMessage);
+
+  // useEffect(() => {
+  //   let serializedtabState: SerializedTabState;
+  //   let tabState: TabState;
+  //   let findValue;
+  //   let state2: TabState;
+  //   let tabId;
+  //   let response;
+
+  //   if (message && message.type === 'highlight') {
+  //     tabId = message.tabId;
+  //     state2: tabState = { ...state2Context, tabId: tabId };
+  //     findValue = message.findValue as string;
+  //     // response = handleHighlight(state2, findValue, tabId);
+  //     handleHighlight(state2Context, message.findValue, message.tabId)
+  //       .then((response) => {
+  //         debugger;
+  //         // Handle the response
+
+  //         if (response.hasMatch && !message.foundFirstMatch) {
+  //           if (!isEqual(state2, state2Context)) {
+  //             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+  //           }
+  //           // const prevIndex = message.prevIndex;
+  //           state2 = updateHighlights(state2, message.prevIndex, false);
+  //           // Create a new response object with the updated state
+  //           const serializedState: SerializedTabState = serializeMatchesObj({
+  //             ...state2,
+  //           });
+  //           response = {
+  //             ...response,
+  //             serializedState: serializedState,
+  //             hasMatch: true,
+  //           };
+  //         }
+
+  //         console.log('state2Context: ', state2Context);
+  //         console.log('state2: ', state2);
+
+  //         if (!isEqual(state2, state2Context)) {
+  //           setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+  //         }
+  //         sendResponse(response);
+  //         return true;
+  //       })
+  //       .catch((error) => {
+  //         debugger;
+  //         // Handle the error
+  //       });
+  //   }
+  // }, [state2Context, message]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -259,6 +314,10 @@ const App: React.FC<{}> = () => {
       showMatches && rmvHltMatches();
     };
   }, [showMatches]);
+
+  useEffect(() => {
+    console.log('state2Context updated: ', state2Context);
+  }, [state2Context]);
 
   return (
     <>

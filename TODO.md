@@ -7,6 +7,8 @@
       });
     ```
 
+
+
 - Review: https://stackoverflow.com/questions/73089998/how-to-refactor-global-variables-from-mv2-to-using-chrome-storage-in-mv3-service
 
 - Review and potentially add "busy" to the storage utility. I also think you may be able to abstract more code out of the contentScript and into the storage util
@@ -51,6 +53,9 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - Tips for using the Chrome Web Store:
     - https://support.google.com/chrome_webstore/answer/1050673?visit_id=638174638501656455-168292003&p=cws_badges&rd=1#cws_badges&zippy=%2Cunderstand-chrome-web-store-badges
     - https://developer.chrome.com/docs/webstore/best_practices/
+
+  ESLINT:
+    - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-cycle.md
 
 <!-- //- FIX: if no matches are found, the searchLayover just closes. this should not happen -->
 
