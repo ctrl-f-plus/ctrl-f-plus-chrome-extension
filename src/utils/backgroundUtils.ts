@@ -62,6 +62,8 @@ async function executeContentScriptOnTab(
         const { currentIndex, matchesCount, serializedMatches } =
           response.serializedState;
 
+        await setStoredTabs(response.serializedState);
+
         updateStore(store, {
           totalMatchesCount: store.totalMatchesCount + matchesCount,
         });

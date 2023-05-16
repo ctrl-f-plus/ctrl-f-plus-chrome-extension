@@ -62,6 +62,7 @@ chrome.runtime.onMessage.addListener(
         await handleRemoveAllHighlightMatches(sendResponse);
         break;
       case 'switch-tab':
+        console.log(store);
         debugger;
         await switchTab(message.serializedState);
         return true;

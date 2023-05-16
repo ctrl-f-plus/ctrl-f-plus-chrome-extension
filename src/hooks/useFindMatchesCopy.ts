@@ -2,14 +2,15 @@
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
-import { SwitchTabMsg } from '../types/message.types';
+import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 export const useFindMatchesCopy = () => {
   // console.log('5. useFindMatchesCopy');
-  // const { state2Context, setState2Context } = useContext(LayoverContext);
+
   const { state2Context, setState2Context, totalMatchesCount, globalMatchIdx } =
     useContext(LayoverContext);
   const [state2, setState2] = useState(state2Context);
@@ -24,6 +25,29 @@ export const useFindMatchesCopy = () => {
       setState2(state2Context);
     }
   }, [state2Context]);
+
+  const findAllMatches = useCallback(
+    async (state2: TabState, findValue: string) => {
+      const newState = { ...state2Context };
+
+      newState.currentIndex = 0;
+      newState.matchesCount = 0;
+      newState.matchesObj = [];
+
+      await searchAndHighlight({
+        state2: newState,
+        findValue,
+      });
+
+      const serializedState: SerializedTabState = serializeMatchesObj({
+        ...state2,
+      });
+
+      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
+      return newState;
+    },
+    [state2Context, setState2Context]
+  );
 
   const updateHighlights = useCallback(
     (state: TabState, prevIndex?: number, endOfTab?: boolean): TabState => {
@@ -70,6 +94,7 @@ export const useFindMatchesCopy = () => {
 
       updatedState = updateHighlights(newState2, prevIndex, endOfTab);
 
+      debugger;
       if (state2.matchesCount === totalMatchesCount) {
         // updateHighlights(newState2, prevIndex, false);
         updatedState = updateHighlights(updatedState, undefined, false);
@@ -95,6 +120,7 @@ export const useFindMatchesCopy = () => {
     }
 
     setState2(updatedState);
+    debugger;
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
   }, [
     updateHighlights,
@@ -114,5 +140,9 @@ export const useFindMatchesCopy = () => {
   //   []
   // );
 
-  return { nextMatch, updateHighlights };
+  return {
+    findAllMatches,
+    nextMatch,
+    updateHighlights,
+  };
 };

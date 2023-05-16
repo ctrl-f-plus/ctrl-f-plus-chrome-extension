@@ -8,7 +8,7 @@ export const sendMessageToBackground = async (
   return new Promise((resolve) => {
     chrome.runtime.sendMessage(message, (response) => {
       return resolve(response);
-    });
+    });sendMsgToBackground
   });
 };
 

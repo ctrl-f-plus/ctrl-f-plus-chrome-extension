@@ -22,7 +22,7 @@ const initialState: LayoverState = {
   state2Context: {
     tabId: undefined as TabId | undefined,
     currentIndex: 0,
-    matchesCount: 10,
+    matchesCount: 0,
     matchesObj: [],
   },
 };

@@ -1,6 +1,6 @@
 // src/contentScript/contentScript.tsx
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Store } from '../background/store';
 import Layover from '../components/Layover';
@@ -62,8 +62,10 @@ const App: React.FC<{}> = () => {
   } = useContext(LayoverContext);
 
   // const { findAllMatches, updateHighlights2 } = useFindMatches();
-  const { findAllMatches } = useFindMatches();
-  const { updateHighlights } = useFindMatchesCopy();
+  // const { findAllMatches } = useFindMatches();
+
+  // const { updateHighlights } = useFindMatchesCopy();
+  const { updateHighlights, findAllMatches } = useFindMatchesCopy();
 
   const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
     // setSearchValue(tabStore.searchValue);
@@ -95,130 +97,150 @@ const App: React.FC<{}> = () => {
     tabId: TabId
   ): Promise<any> {
     state2.tabId = tabId;
-    await findAllMatches(state2, findValue);
+    // const handleHighlight = useCallback(
+    //   async (findValue: string, tabId: TabId): Promise<any> => {
+    const newState = await findAllMatches(state2, findValue);
+    // await findAllMatches(findValue);
+    debugger;
 
+    // let state2 = { ...state2Context };
+    newState.tabId = tabId;
+    // debugger;
     const serializedState: SerializedTabState = serializeMatchesObj({
-      ...state2,
+      ...newState,
     });
 
     return {
-      hasMatch: state2.matchesObj.length > 0,
+      hasMatch: newState.matchesObj.length > 0,
       serializedState: serializedState,
+      state2: newState,
     };
   }
+  //   },
+  //   [state2Context, findAllMatches, serializeMatchesObj]
+  // );
 
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
-  const handleMessage = async (
-    message: MessageFixMe,
-    sender: any,
-    sendResponse: any
-  ) => {
-    console.log('Received message:', message, state2Context);
+  // const handleMessage = async (
+  //   message: MessageFixMe,
+  //   sender: any,
+  //   sendResponse: any
+  // ) => {
+  const handleMessage = useCallback(
+    async (message: MessageFixMe, sender: any, sendResponse: any) => {
+      console.log('Received message:', message, state2Context);
 
-    const { type, command, transactionId } = message;
+      const { type, command, transactionId } = message;
 
-    if (transactionId && transactionId <= lastProcessedTransactionId) {
-      console.log('Ignoring message:', message);
-      return;
-    }
+      if (transactionId && transactionId <= lastProcessedTransactionId) {
+        console.log('Ignoring message:', message);
+        return;
+      }
 
-    let serializedtabState: SerializedTabState;
-    let tabState: TabState;
-    let findValue;
-    let state2;
-    let tabId;
-    let response;
+      let serializedtabState: SerializedTabState;
+      let tabState: TabState;
+      let findValue;
+      let state2;
+      let tabId;
+      let response;
 
-    switch (type) {
-      case 'switched-active-tab-show-layover':
-        showMatches && setShowLayover(true);
-        break;
-      case 'switched-active-tab-hide-layover':
-        showMatches && setShowLayover(false);
-        break;
-      case 'add-styles':
-        serializedtabState =
-          message.payload.store.tabStates[message.payload.tabId];
-
-        response = { status: 'success' };
-
-        if (serializedtabState === undefined) {
-          sendResponse(response);
+      switch (type) {
+        case 'switched-active-tab-show-layover':
+          showMatches && setShowLayover(true);
           break;
-        }
+        case 'switched-active-tab-hide-layover':
+          showMatches && setShowLayover(false);
+          break;
+        case 'add-styles':
+          serializedtabState =
+            message.payload.store.tabStates[message.payload.tabId];
 
-        deserializeMatchesObj(serializedtabState);
-        tabState = deserializeMatchesObj({
-          ...serializedtabState,
-        });
+          response = { status: 'success' };
 
-        tabState = restoreHighlightSpans(tabState);
-        //FIXME: DRY and/or REFACTOR AS RESPONSE:
-        const serializedState: SerializedTabState = serializeMatchesObj({
-          ...tabState,
-        });
+          if (serializedtabState === undefined) {
+            sendResponse(response);
+            break;
+          }
 
-        const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
-        sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
-        sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
-        break;
-      case 'remove-all-highlight-matches':
-        removeAllHighlightMatches();
-        sendResponse({ success: true });
-        break;
-      case 'update-matches-count':
-        setTotalMatchesCount(message.payload.totalMatchesCount);
-        break;
-      case 'store-updated':
-        const { tabStore } = message.payload;
-        tabId = message.payload.tabId;
+          deserializeMatchesObj(serializedtabState);
+          tabState = deserializeMatchesObj({
+            ...serializedtabState,
+          });
 
-        updateContextFromStore(tabStore, tabId);
-        break;
-      case 'highlight':
-        tabId = message.tabId;
-        state2 = { ...state2Context, tabId: tabId };
-        findValue = message.findValue as string;
-        response = await handleHighlight(state2, findValue, tabId);
+          tabState = restoreHighlightSpans(tabState);
+          //FIXME: DRY and/or REFACTOR AS RESPONSE:
+          const serializedState: SerializedTabState = serializeMatchesObj({
+            ...tabState,
+          });
 
-        if (response.hasMatch && !message.foundFirstMatch) {
+          const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
+          sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+          sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
+          break;
+        case 'remove-all-highlight-matches':
+          removeAllHighlightMatches();
+          sendResponse({ success: true });
+          break;
+        case 'update-matches-count':
+          setTotalMatchesCount(message.payload.totalMatchesCount);
+          break;
+        case 'store-updated':
+          const { tabStore } = message.payload;
+          tabId = message.payload.tabId;
+          debugger;
+
+          updateContextFromStore(tabStore, tabId);
+          break;
+        case 'highlight':
+          tabId = message.tabId;
+          state2 = { ...state2Context, tabId: tabId };
+          findValue = message.findValue as string;
+          response = await handleHighlight(state2, findValue, tabId);
+          state2 = response.state2;
+
+          if (response.hasMatch && !message.foundFirstMatch) {
+            if (!isEqual(state2, state2Context)) {
+              setState2Context({
+                type: 'SET_STATE2_CONTEXT',
+                payload: state2,
+              });
+            }
+
+            state2 = updateHighlights(state2, message.prevIndex, false);
+            // Create a new response object with the updated state
+            const serializedState: SerializedTabState = serializeMatchesObj({
+              ...state2,
+            });
+
+            response = {
+              ...response,
+              serializedState: serializedState,
+              hasMatch: true,
+            };
+          }
+
           if (!isEqual(state2, state2Context)) {
             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
           }
 
-          state2 = updateHighlights(state2, message.prevIndex, false);
-          // Create a new response object with the updated state
-          const serializedState: SerializedTabState = serializeMatchesObj({
-            ...state2,
-          });
+          sendResponse(response);
+          return true;
+        case 'update-highlights':
+          state2 = { ...state2Context, tabId: tabId };
+          response = updateHighlights(state2, message.prevIndex, false);
 
-          response = {
-            ...response,
-            serializedState: serializedState,
-            hasMatch: true,
-          };
-        }
+          debugger;
+          sendResponse(response);
+          return true;
 
-        if (!isEqual(state2, state2Context)) {
-          setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
-        }
-
-        sendResponse(response);
-        return true;
-
-      case 'update-highlights':
-        state2 = { ...state2Context, tabId: tabId };
-        response = updateHighlights(state2, message.prevIndex, false);
-
-        debugger;
-        sendResponse(response);
-        return true;
-
-      default:
-        break;
-    }
-    return true;
-  };
+        default:
+          break;
+      }
+      return true;
+      // };
+    },
+    [handleHighlight, state2Context, updateHighlights, setState2Context]
+  );
 
   useMessageHandler(handleMessage);
 
