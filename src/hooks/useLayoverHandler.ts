@@ -195,7 +195,12 @@ export const useLayoverHandler = () => {
         ([key, value]) => typeof value !== 'function'
       )
     );
-    console.log('LayoverContext Updated: ', stateWithoutFunctions);
+    console.log(
+      'LayoverContext Updated: ',
+      stateWithoutFunctions,
+      '\nmatchesObj: ',
+      state.state2Context.matchesObj
+    );
   }, [state]);
 
   return {

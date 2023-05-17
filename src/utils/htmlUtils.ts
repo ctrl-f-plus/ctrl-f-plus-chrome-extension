@@ -69,14 +69,42 @@ export function serializeMatchesObj(
  *
  * UTILS FOR RESTORING MATCHES HTML
  */
+// function getElementByXPath(xpath: string) {
+//   return document.evaluate(
+//     xpath,
+//     document,
+//     null,
+//     XPathResult.FIRST_ORDERED_NODE_TYPE,
+//     null
+//   ).singleNodeValue;
+// }
+
 function getElementByXPath(xpath: string) {
-  return document.evaluate(
-    xpath,
-    document,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null
-  ).singleNodeValue;
+  let result = null;
+
+  // Check if the xpath starts with "//" (indicating an ID-based xpath)
+  if (xpath.startsWith('//')) {
+    // Evaluate the xpath expression from the root of the document
+    result = document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    ).singleNodeValue;
+  } else {
+    // If it doesn't start with "//", prepend it with "/html/"
+    const modifiedXpath = '/html/' + xpath;
+    result = document.evaluate(
+      modifiedXpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    ).singleNodeValue;
+  }
+
+  return result;
 }
 
 // FIXME: fix typing: `any`
@@ -124,18 +152,26 @@ export function wrapTextWithHighlight(
 
 export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
   const tabXPaths: XPathMatchObject[] = xPathTabState.matchesObj;
+
   const tabState: TabState = { ...xPathTabState };
+
   tabState.matchesObj = [];
 
   tabXPaths.forEach(({ xpath, text, spanClasses }) => {
+    // const element = '/html/' + getElementByXPath(xpath);
+
     const element = getElementByXPath(xpath);
 
     if (element) {
       wrapTextWithHighlight(element, text, spanClasses);
 
-      //@ts-ignore //FIXME: remove
-      const spanElement = element.querySelector('span');
-      tabState.matchesObj.push(spanElement);
+      // const spanElement = element.querySelector('span');
+      // tabState.matchesObj.push(spanElement);
+
+      const spanElement = (element as Element).querySelector('span');
+      if (spanElement !== null) {
+        tabState.matchesObj.push(spanElement);
+      }
     }
   });
 

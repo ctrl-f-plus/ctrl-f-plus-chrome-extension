@@ -72,16 +72,12 @@ const App: React.FC<{}> = () => {
     setGlobalMatchIdx(tabStore.globalMatchIdx + 1);
     setLayoverPosition(tabStore.layoverPosition);
 
-    // debugger;
     const serializedTabState = tabStore.serializedTabState;
-    // debugger;
     // const xPathTabState: XPathTabState =
     const xPathTabState = deserializeMatchesObj(serializedTabState);
-    // debugger;
     const tabState = restoreHighlightSpans(xPathTabState);
     console.log(tabState);
-    // debugger;
-    // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+    setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
 
     // TODO: Make sure this value is getting updated in the tabStore
     if (tabStore.activeTab) {
@@ -191,7 +187,6 @@ const App: React.FC<{}> = () => {
         case 'store-updated':
           const { tabStore } = message.payload;
           tabId = message.payload.tabId;
-          // debugger;
 
           updateContextFromStore(tabStore, tabId);
           break;
@@ -232,9 +227,7 @@ const App: React.FC<{}> = () => {
         case 'update-highlights':
           tabId = message.payload.tabId;
           state2 = { ...state2Context, tabId: tabId };
-          debugger;
           const newState = updateHighlights(state2, message.prevIndex, false);
-          debugger;
 
           if (!isEqual(state2, state2Context)) {
             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });

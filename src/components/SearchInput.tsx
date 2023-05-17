@@ -57,7 +57,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       if (localSearchValue === lastSearchValue) {
         nextMatch();
       } else {
-        debugger;
         handleSearch(localSearchValue);
         // handleSearch(searchValue);
       }
@@ -67,17 +66,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
-    // setSearchValue(newValue);
     setLocalSearchValue(newValue);
     setInitialLoad(false);
-    // handleSearch(newValue);
   };
 
   useEffect(() => {
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
 
-      // if (searchValue && initialLoad) {
       if (localSearchValue && initialLoad) {
         searchInputRef.current.select();
         setInitialLoad(false);

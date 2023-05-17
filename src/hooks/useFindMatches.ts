@@ -38,7 +38,6 @@ export const useFindMatches = () => {
       });
 
       setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
-      // debugger;
       return newState;
     },
     [state2Context, setState2Context]
@@ -47,22 +46,18 @@ export const useFindMatches = () => {
   const updateHighlights = useCallback(
     (state: TabState, prevIndex?: number, endOfTab?: boolean): TabState => {
       const newState = { ...state };
-
       if (!newState.matchesObj.length) {
         return newState;
       }
-
       if (typeof prevIndex === 'number') {
         const prevMatch = newState.matchesObj[prevIndex];
         prevMatch.classList.remove('ctrl-f-highlight-focus');
       }
-
       if (!endOfTab && typeof newState.currentIndex !== 'undefined') {
         const curMatch = newState.matchesObj[newState.currentIndex];
         curMatch.classList.add('ctrl-f-highlight-focus');
         scrollToElement(curMatch);
       }
-
       return newState;
     },
     []
@@ -86,7 +81,6 @@ export const useFindMatches = () => {
 
       updatedState = updateHighlights(newState2, prevIndex, endOfTab);
 
-      // debugger;
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, undefined, false);
       } else {
@@ -107,7 +101,6 @@ export const useFindMatches = () => {
       updatedState = updateHighlights(newState2, prevIndex);
     }
     console.log(globalMatchIdx);
-    // debugger;
     setState2(updatedState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
   }, [
