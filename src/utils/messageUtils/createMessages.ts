@@ -97,6 +97,9 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
     from: 'background',
     type: 'update-highlights',
     prevIndex: undefined,
+    payload: {
+      tabId: tabId,
+    },
   };
 }
 

@@ -3,11 +3,11 @@
 import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Store } from '../background/store';
+import { Store, TabStore } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
-import { useFindMatchesCopy } from '../hooks/useFindMatchesCopy';
+import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
@@ -16,6 +16,7 @@ import {
   TabId,
   TabState,
   ValidTabId,
+  XPathTabState,
 } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -56,22 +57,28 @@ const App: React.FC<{}> = () => {
     setState2Context,
   } = useContext(LayoverContext);
 
-  const { updateHighlights, findAllMatches } = useFindMatchesCopy();
+  const { updateHighlights, findAllMatches } = useFindMatches();
 
-  const updateContextFromStore = async (tabStore: Store, tabId: ValidTabId) => {
+  const updateContextFromStore = async (
+    tabStore: TabStore,
+    tabId: ValidTabId
+  ) => {
     setShowLayover(tabStore.showLayover);
     setShowMatches(tabStore.showMatches);
     setTotalMatchesCount(tabStore.totalMatchesCount);
     setGlobalMatchIdx(tabStore.globalMatchIdx + 1);
     setLayoverPosition(tabStore.layoverPosition);
 
-    // FIXME: DRY THIS CODE
-    if (tabStore.tabStates && tabStore.tabStates[tabId]) {
-      //   const serializedTabState = tabStore.tabStates[tabId];
-      //   let tabState = deserializeMatchesObj(serializedTabState);
-      //   tabState = restoreHighlightSpans(tabState);
-      //   setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
-    }
+    // debugger;
+    const serializedTabState = tabStore.serializedTabState;
+    // debugger;
+    // const xPathTabState: XPathTabState =
+    const xPathTabState = deserializeMatchesObj(serializedTabState);
+    // debugger;
+    const tabState = restoreHighlightSpans(xPathTabState);
+    console.log(tabState);
+    debugger;
+    // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
 
     // TODO: Make sure this value is getting updated in the tabStore
     if (tabStore.activeTab) {
@@ -167,7 +174,7 @@ const App: React.FC<{}> = () => {
         case 'store-updated':
           const { tabStore } = message.payload;
           tabId = message.payload.tabId;
-          debugger;
+          // debugger;
 
           updateContextFromStore(tabStore, tabId);
           break;
@@ -206,11 +213,17 @@ const App: React.FC<{}> = () => {
           sendResponse(response);
           return true;
         case 'update-highlights':
-          state2 = { ...state2Context, tabId: tabId };
-          response = updateHighlights(state2, message.prevIndex, false);
-
           debugger;
-          sendResponse(response);
+          tabId = message.payload.tabId;
+          state2 = { ...state2Context, tabId: tabId };
+          debugger;
+          const newState = updateHighlights(state2, message.prevIndex, false);
+          debugger;
+          // debugger;
+          if (!isEqual(state2, state2Context)) {
+            setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
+          }
+          sendResponse({ status: 'success' });
           return true;
 
         default:
@@ -253,7 +266,7 @@ const App: React.FC<{}> = () => {
   }, [showMatches]);
 
   useEffect(() => {
-    console.log('state2Context updated: ', state2Context);
+    console.log('state2Context updated: ', state2Context); 
   }, [state2Context]);
 
   useEffect(() => {

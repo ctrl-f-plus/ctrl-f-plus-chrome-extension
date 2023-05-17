@@ -27,6 +27,7 @@ export interface LayoverContextData {
   setLayoverPosition: (value: LayoverPosition | null) => void;
   state2Context: TabState;
   setState2Context: (value: SetState2Action) => void;
+  incrementMatchIndices: () => void;
 }
 
 export interface LayoverProviderProps {
@@ -44,6 +45,9 @@ export interface LayoverState {
   state2Context: TabState;
 }
 
+export type ActionTypes = 'INCREMENT_MATCH_INDICES';
+// | /* add other action types here */
+
 export type LayoverAction =
   | {
       type: 'INITIALIZE_STATE';
@@ -56,4 +60,5 @@ export type LayoverAction =
   | { type: 'SET_TOTAL_MATCHES_COUNT'; payload: number }
   | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number }
   | { type: 'SET_LAYOVER_POSITION'; payload: LayoverPosition | null }
-  | { type: 'SET_STATE2_CONTEXT'; payload: TabState };
+  | { type: 'SET_STATE2_CONTEXT'; payload: TabState }
+  | { type: 'INCREMENT_MATCH_INDICES'; payload?: number };

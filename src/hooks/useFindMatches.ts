@@ -1,4 +1,4 @@
-// src/hooks/useFindMatchesCopy.ts
+// src/hooks/useFindMatches.ts
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
@@ -8,9 +8,14 @@ import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
-export const useFindMatchesCopy = () => {
-  const { state2Context, setState2Context, totalMatchesCount, globalMatchIdx } =
-    useContext(LayoverContext);
+export const useFindMatches = () => {
+  const {
+    state2Context,
+    setState2Context,
+    totalMatchesCount,
+    globalMatchIdx,
+    setGlobalMatchIdx,
+  } = useContext(LayoverContext);
   const [state2, setState2] = useState(state2Context);
 
   useEffect(() => {
@@ -33,6 +38,7 @@ export const useFindMatchesCopy = () => {
       });
 
       setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
+      debugger;
       return newState;
     },
     [state2Context, setState2Context]
@@ -100,7 +106,8 @@ export const useFindMatchesCopy = () => {
     } else {
       updatedState = updateHighlights(newState2, prevIndex);
     }
-
+    console.log(globalMatchIdx);
+    debugger;
     setState2(updatedState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
   }, [

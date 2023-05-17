@@ -14,7 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import { useFindMatchesCopy } from '../hooks/useFindMatchesCopy';
+import { useFindMatches } from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
 import { getStoredFindValue, getStoredLastSearchValue } from '../utils/storage';
@@ -38,7 +38,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     `${globalMatchIdx}/${totalMatchesCount}`
   );
 
-  const { nextMatch } = useFindMatchesCopy();
+  const { nextMatch } = useFindMatches();
   const { handleSearch, handlePrevious } = useSearchHandler();
 
   // TODO: CLEANUP:
@@ -93,8 +93,16 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   }, []);
 
   useEffect(() => {
+    // if (state2Context.globalMatchIdxStart && state2Context.currentIndex) {
+    //   // debugger;
+    //   const curIdxRENAME_ME =
+    //     state2Context.globalMatchIdxStart + state2Context.currentIndex;
+
+    //   setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
+    // }
+
     setMatchingCounts(`${globalMatchIdx}/${totalMatchesCount}`);
-  }, [globalMatchIdx, totalMatchesCount]);
+  }, [globalMatchIdx, totalMatchesCount, state2Context]);
 
   return (
     <>

@@ -9,7 +9,6 @@ import {
   SetState2Action,
 } from '../types/layoverContext.types';
 
-// TODO: Potentially move searchValue and setSearchValue out of this file
 export const LayoverContext = createContext<LayoverContextData>({
   showLayover: false,
   setShowLayover: () => {},
@@ -28,12 +27,14 @@ export const LayoverContext = createContext<LayoverContextData>({
   setLayoverPosition: (value: LayoverPosition | null) => {},
   state2Context: {
     tabId: undefined,
-    // currentIndex: undefined,
-    currentIndex: 0,
+    currentIndex: undefined,
+    // currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
+    globalMatchIdxStart: undefined,
   },
   setState2Context: (value: SetState2Action) => {},
+  incrementMatchIndices: () => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
@@ -59,6 +60,7 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setLayoverPosition,
     state2Context,
     setState2Context,
+    incrementMatchIndices,
   } = useLayoverHandler();
 
   return (
@@ -81,6 +83,7 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         setLayoverPosition,
         state2Context,
         setState2Context,
+        incrementMatchIndices,
       }}
     >
       {children}

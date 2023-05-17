@@ -56,6 +56,9 @@ async function executeContentScriptOnTab(
 
         await setStoredTabs(response.serializedState);
 
+        // debugger;
+        const globalMatchIdxStart = store.totalMatchesCount;
+
         updateStore(store, {
           totalMatchesCount: store.totalMatchesCount + matchesCount,
         });
@@ -68,7 +71,7 @@ async function executeContentScriptOnTab(
               currentIndex,
               matchesCount,
               serializedMatches,
-              globalMatchIdxStart: store.totalMatchesCount,
+              globalMatchIdxStart,
             },
           },
         });
@@ -180,8 +183,9 @@ export async function switchTab(
     if (tab === undefined || tab.id === undefined) return;
 
     serializedState.tabId = tab.id;
-
+    debugger;
     const msg = createUpdateHighlightsMsg(tab.id);
+    debugger;
 
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 

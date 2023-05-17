@@ -8,8 +8,6 @@ import {
 import {
   executeContentScriptOnAllTabs,
   getOrderedTabs,
-  // handleGetAllMatchesMsg,
-  // handleNextPrevMatch,
   handleRemoveAllHighlightMatches,
   handleToggleStylesAllTabs,
   handleUpdateLayoverPosition,
@@ -43,6 +41,8 @@ chrome.runtime.onMessage.addListener(
         const findValue = payload; //FIXME: refactor
 
         // FIXME: resetPartialStore doesn't update the tabStores at all.
+        // - update reset to clear the tabStores too
+        // - add useEffect updates?
         resetPartialStore(store);
         updateStore(store, { findValue });
 

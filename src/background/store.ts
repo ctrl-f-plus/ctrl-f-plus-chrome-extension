@@ -41,6 +41,13 @@ export interface TabStore extends SharedStore {
   serializedTabState: SerializedTabState;
 }
 
+// tabId: TabId;
+// active?: boolean;
+// currentIndex: number | undefined;
+// matchesCount: number | undefined;
+// globalMatchIdxStart?: number;
+// serializedMatches: JSONString;
+
 // const sharedStore: SharedStore = initSharedStore();
 
 // // Store utility functions
@@ -120,7 +127,18 @@ export function initStore() {
 }
 
 export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
-  const serializedTabState = store.tabStates[tabId];
+  let serializedTabState = store.tabStates[tabId];
+  if (serializedTabState === undefined) {
+    serializedTabState = {
+      tabId: tabId,
+      // active: false,
+      currentIndex: 0,
+      matchesCount: 0,
+      // matchesObj: [],
+      serializedMatches: '',
+      globalMatchIdxStart: -1,
+    };
+  }
 
   return {
     tabId,

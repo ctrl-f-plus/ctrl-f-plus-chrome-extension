@@ -3,6 +3,7 @@
 import { useCallback, useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import {
+  ActionTypes,
   LayoverAction,
   LayoverState,
   SetState2Action,
@@ -24,14 +25,31 @@ const initialState: LayoverState = {
     currentIndex: 0,
     matchesCount: 0,
     matchesObj: [],
+    globalMatchIdxStart: undefined,
   },
 };
 
-// const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
+// const ACTIONS = {
+//   // INCREMENT_MATCH_INDICES: 'increment_match_indices',
+//   INCREMENT_MATCH_INDICES: 'INCREMENT_MATCH_INDICES',
+// };
+
+const ACTIONS: { [K in ActionTypes]: K } = {
+  INCREMENT_MATCH_INDICES: 'INCREMENT_MATCH_INDICES',
+  // add other action types here
+} as const;
+
+function incrementMatchIndices(globalMatchIdxStart: number) {
+  // TODO:
+  // return;
+}
+
 const reducer = (
   state: LayoverState,
-  action: LayoverAction | SetState2Action
+  action: LayoverAction | SetState2Action | { type: ActionTypes; payload: any }
 ): LayoverState => {
+  // let updatedState: LayoverState;
+
   switch (action.type) {
     case 'INITIALIZE_STATE':
       return action.payload;
@@ -64,8 +82,11 @@ const reducer = (
         return {
           ...state,
           state2Context: newState,
-          // state2Context: updaterFunction(state.state2Context),
         };
+        // updatedState = {
+        //   ...state,
+        //   state2Context: newState,
+        // };
       } else {
         console.log(
           'Updating state with value. Old state:',
@@ -74,12 +95,34 @@ const reducer = (
           action.payload
         );
         return { ...state, state2Context: action.payload as TabState };
+        // updatedState = { ...state, state2Context: action.payload as TabState };
       }
+    case ACTIONS.INCREMENT_MATCH_INDICES:
+    // return {
+    //   // updatedState = {
+    //   ...state,
+    //   globalMatchIdx: state.globalMatchIdx + 1,
+    //   state2Context: {
+    //     ...state.state2Context,
+    //     // currentIndex: state.state2Context.currentIndex + 1,
+    //     globalMatchIdxStart: state.state2Context.globalMatchIdxStart
+    //       ? state.state2Context.globalMatchIdxStart + 1
+    //       : undefined,
+    //   },
+    // };
     default:
-      // throw new Error(`Unsupported action type: ${action.type}`);
-      throw new Error(`Unsupported action type: ${action}`);
-    // return state;
+      // updatedState = state;
+      return state;
+    // globalMatchIdx: (updatedState.state2Context.currentIndex || 0) +
+    //   (updatedState.state2Context.globalMatchIdxStart || 0),
   }
+  // return updatedState;
+  // return {
+  //   ...updatedState,
+  //   globalMatchIdx:
+  //     (updatedState.state2Context.currentIndex || 0) +
+  //     (updatedState.state2Context.globalMatchIdxStart || 0),
+  // };
 };
 
 export const useLayoverHandler = () => {
@@ -142,6 +185,11 @@ export const useLayoverHandler = () => {
     dispatch(value);
   };
 
+  const incrementMatchIndices = () => {
+    // dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
+    dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
+  };
+
   return {
     ...state,
     setSearchValue,
@@ -158,5 +206,6 @@ export const useLayoverHandler = () => {
     setLayoverPosition: (value: LayoverPosition | null) =>
       dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
     setState2Context,
+    incrementMatchIndices,
   };
 };

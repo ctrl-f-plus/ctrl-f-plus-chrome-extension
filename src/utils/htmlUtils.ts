@@ -149,9 +149,14 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
 export function deserializeMatchesObj(
   shallowStateObject: SerializedTabState
 ): TabState {
+  // ): XPathTabState {
   const { serializedMatches, ...otherProperties } = shallowStateObject;
 
   const serializedXPaths = serializedMatches;
+
+  // const deserializedXPaths =
+  //   serializedXPaths === '' ? '' : JSON.parse(serializedXPaths);
+
   const deserializedXPaths = JSON.parse(serializedXPaths);
 
   const deserializedState: TabState = {
