@@ -34,7 +34,7 @@ sendStoreToContentScripts(store);
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     console.log('Received message:', message, ' \n Store: ', store);
-    // console.log('store: ', store);
+
     const { type, payload, transactionId } = message;
 
     switch (type) {
@@ -44,7 +44,9 @@ chrome.runtime.onMessage.addListener(
         // FIXME: resetPartialStore doesn't update the tabStores at all.
         // - update reset to clear the tabStores too
         // - add useEffect updates?
+
         resetPartialStore(store);
+
         updateStore(store, {
           findValue,
           searchValue: findValue,

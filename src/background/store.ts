@@ -195,6 +195,7 @@ export function resetPartialStore(store: Store): void {
     findValue: '',
     searchValue: '',
     lastSearchValue: '',
+    tabStates: {},
   };
   updateStore(store, partialInitialState);
 }
