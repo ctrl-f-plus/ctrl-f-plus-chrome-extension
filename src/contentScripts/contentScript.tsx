@@ -63,6 +63,8 @@ const App: React.FC<{}> = () => {
     tabStore: TabStore,
     tabId: ValidTabId
   ) => {
+    setSearchValue(tabStore.searchValue);
+    setLastSearchValue(tabStore.lastSearchValue);
     setShowLayover(tabStore.showLayover);
     setShowMatches(tabStore.showMatches);
     setTotalMatchesCount(tabStore.totalMatchesCount);
@@ -77,7 +79,7 @@ const App: React.FC<{}> = () => {
     // debugger;
     const tabState = restoreHighlightSpans(xPathTabState);
     console.log(tabState);
-    debugger;
+    // debugger;
     // setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
 
     // TODO: Make sure this value is getting updated in the tabStore
@@ -115,7 +117,10 @@ const App: React.FC<{}> = () => {
   // ) => {
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
-      console.log('Received message:', message, state2Context);
+      console.log('Received message:', message);
+      //   ' \n layoverContext: ',
+      //   LayoverContext
+      // );
 
       const { type, command, transactionId } = message;
 
@@ -213,13 +218,12 @@ const App: React.FC<{}> = () => {
           sendResponse(response);
           return true;
         case 'update-highlights':
-          debugger;
           tabId = message.payload.tabId;
           state2 = { ...state2Context, tabId: tabId };
           debugger;
           const newState = updateHighlights(state2, message.prevIndex, false);
           debugger;
-          // debugger;
+
           if (!isEqual(state2, state2Context)) {
             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
           }
@@ -232,7 +236,13 @@ const App: React.FC<{}> = () => {
       return true;
       // };
     },
-    [handleHighlight, state2Context, updateHighlights, setState2Context]
+    [
+      handleHighlight,
+      state2Context,
+      updateHighlights,
+      setState2Context,
+      LayoverContext,
+    ]
   );
 
   useMessageHandler(handleMessage);
@@ -266,7 +276,7 @@ const App: React.FC<{}> = () => {
   }, [showMatches]);
 
   useEffect(() => {
-    console.log('state2Context updated: ', state2Context); 
+    console.log('state2Context updated: ', state2Context);
   }, [state2Context]);
 
   useEffect(() => {

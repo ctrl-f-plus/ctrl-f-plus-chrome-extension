@@ -11,6 +11,7 @@ import {
 import { TabId, TabState } from '../types/tab.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
+import { LayoverContext } from '../contexts/LayoverContext';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -49,6 +50,7 @@ const reducer = (
   action: LayoverAction | SetState2Action | { type: ActionTypes; payload: any }
 ): LayoverState => {
   // let updatedState: LayoverState;
+  console.log('Old state: ', state, '\nNew State', state);
 
   switch (action.type) {
     case 'INITIALIZE_STATE':
@@ -73,12 +75,12 @@ const reducer = (
           prevState2: TabState
         ) => TabState;
         const newState = updaterFunction(state.state2Context);
-        console.log(
-          'Updating state with function. Old state:',
-          state.state2Context,
-          'New state:',
-          newState
-        );
+        // console.log(
+        //   'Updating state with function. Old state:',
+        //   state.state2Context,
+        //   'New state:',
+        //   newState
+        // );
         return {
           ...state,
           state2Context: newState,
@@ -88,12 +90,12 @@ const reducer = (
         //   state2Context: newState,
         // };
       } else {
-        console.log(
-          'Updating state with value. Old state:',
-          state.state2Context,
-          'New state:',
-          action.payload
-        );
+        // console.log(
+        //   'Updating state with value. Old state:',
+        //   state.state2Context,
+        //   'New state:',
+        //   action.payload
+        // );
         return { ...state, state2Context: action.payload as TabState };
         // updatedState = { ...state, state2Context: action.payload as TabState };
       }
@@ -189,6 +191,8 @@ export const useLayoverHandler = () => {
     // dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
+
+  console.log('LayoverContext Updated: ', LayoverContext);
 
   return {
     ...state,

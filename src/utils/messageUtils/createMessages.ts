@@ -33,9 +33,7 @@ export function createUpdateStoreMsg(store: Store): UpdateStoreMsg {
   return {
     from: 'background:store',
     type: 'store-updated',
-    payload: {
-      store,
-    },
+    payload: {},
   };
 }
 

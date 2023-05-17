@@ -38,7 +38,7 @@ export const useFindMatches = () => {
       });
 
       setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
-      debugger;
+      // debugger;
       return newState;
     },
     [state2Context, setState2Context]
@@ -86,7 +86,7 @@ export const useFindMatches = () => {
 
       updatedState = updateHighlights(newState2, prevIndex, endOfTab);
 
-      debugger;
+      // debugger;
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, undefined, false);
       } else {
@@ -107,7 +107,7 @@ export const useFindMatches = () => {
       updatedState = updateHighlights(newState2, prevIndex);
     }
     console.log(globalMatchIdx);
-    debugger;
+    // debugger;
     setState2(updatedState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
   }, [

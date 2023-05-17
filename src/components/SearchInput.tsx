@@ -51,8 +51,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     if (searchInputRef.current) {
       if (searchValue === lastSearchValue) {
+        debugger;
         nextMatch();
       } else {
+        debugger;
         handleSearch(searchValue);
       }
     }
@@ -77,20 +79,41 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     }
   }, [focus, searchValue]);
 
+  // useEffect(() => {
+  //   const fetchStoredFindValue = async () => {
+  //     const storedFindValue = await getStoredFindValue();
+  //     debugger;
+  //     setSearchValue(storedFindValue);
+  //   };
+
+  //   const fetchStoredLastSearchValue = async () => {
+  //     const storedLastSearchValue = await getStoredLastSearchValue();
+  //     debugger;
+  //     setLastSearchValue(storedLastSearchValue);
+  //   };
+
+  //   fetchStoredFindValue();
+  //   fetchStoredLastSearchValue();
+  // }, []);
+
   useEffect(() => {
     const fetchStoredFindValue = async () => {
       const storedFindValue = await getStoredFindValue();
+      debugger;
       setSearchValue(storedFindValue);
     };
 
     const fetchStoredLastSearchValue = async () => {
       const storedLastSearchValue = await getStoredLastSearchValue();
+      debugger;
       setLastSearchValue(storedLastSearchValue);
     };
 
-    fetchStoredFindValue();
-    fetchStoredLastSearchValue();
-  }, []);
+    // fetchStoredFindValue();
+    // fetchStoredLastSearchValue();
+    setSearchValue(searchValue);
+    setLastSearchValue(lastSearchValue);
+  }, [searchValue, lastSearchValue]);
 
   useEffect(() => {
     // if (state2Context.globalMatchIdxStart && state2Context.currentIndex) {

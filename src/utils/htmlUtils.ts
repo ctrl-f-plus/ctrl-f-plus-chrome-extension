@@ -56,12 +56,8 @@ export function serializeMatchesObj(
   // FIXME: I think this function is getting called too many times on the intial search. uncomment the console log to test
   // console.log(`serializeMatchesObj: shallowStateObject: `, shallowStateObject);
   const { matchesObj, ...otherProperties } = shallowStateObject;
-  // debugger;
   const xpaths: XPathMatchObject[] = generateXPaths(matchesObj);
-  // debugger;
   const serializedXPaths: JSONString = JSON.stringify(xpaths);
-  // debugger;
-
   const serializedState: SerializedTabState = {
     ...otherProperties,
     serializedMatches: serializedXPaths,
@@ -154,10 +150,10 @@ export function deserializeMatchesObj(
 
   const serializedXPaths = serializedMatches;
 
-  // const deserializedXPaths =
-  //   serializedXPaths === '' ? '' : JSON.parse(serializedXPaths);
+  const deserializedXPaths =
+    serializedXPaths === '' ? [] : JSON.parse(serializedXPaths);
 
-  const deserializedXPaths = JSON.parse(serializedXPaths);
+  // const deserializedXPaths = JSON.parse(serializedXPaths);
 
   const deserializedState: TabState = {
     ...otherProperties,

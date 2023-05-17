@@ -45,7 +45,7 @@ async function executeContentScriptOnTab(
   return new Promise<{ hasMatch: boolean; state: any }>(
     async (resolve, reject) => {
       const tabId: ValidTabId = tab.id as number;
-      console.log(`${tabId}: `, Date.now().toString());
+      // console.log(`${tabId}: `, Date.now().toString());
 
       try {
         const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
@@ -183,11 +183,10 @@ export async function switchTab(
     if (tab === undefined || tab.id === undefined) return;
 
     serializedState.tabId = tab.id;
-    debugger;
-    const msg = createUpdateHighlightsMsg(tab.id);
-    debugger;
 
-    await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+    const msg = createUpdateHighlightsMsg(tab.id);
+
+    // await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,

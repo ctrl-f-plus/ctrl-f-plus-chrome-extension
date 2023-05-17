@@ -175,6 +175,7 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
     }
   }
 
+  console.log('store updated: ', store);
   // const tabIds = Object.keys(store.tabStates).map((key) => Number(key));
   // const msg = createUpdateStoreMsg(store);
   // sendMessageToContentScripts(msg, tabIds);
@@ -218,7 +219,7 @@ export async function sendStoreToContentScripts(store: Store): Promise<any> {
         tabStore,
       },
     };
-    console.log(tabStore);
+    // console.log(tabStore);
     return new Promise((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {
