@@ -36,56 +36,6 @@ export async function queryCurrentWindowTabs(
   });
 }
 
-async function executeContentScriptOnTab(
-  tab: chrome.tabs.Tab,
-  store: Store,
-  foundFirstMatch: boolean
-): Promise<{
-  hasMatch: boolean;
-  state: any;
-}> {
-  return new Promise<{ hasMatch: boolean; state: any }>(
-    async (resolve, reject) => {
-      const tabId: ValidTabId = tab.id as number;
-      // console.log(`${tabId}: `, Date.now().toString());
-
-      try {
-        const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
-        const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
-
-        const { currentIndex, matchesCount, serializedMatches } =
-          response.serializedState;
-
-        await setStoredTabs(response.serializedState);
-
-        // debugger;
-        const globalMatchIdxStart = store.totalMatchesCount;
-
-        updateStore(store, {
-          totalMatchesCount: store.totalMatchesCount + matchesCount,
-        });
-
-        updateStore(store, {
-          tabStates: {
-            ...store.tabStates,
-            [tabId]: {
-              tabId,
-              currentIndex,
-              matchesCount,
-              serializedMatches,
-              globalMatchIdxStart,
-            },
-          },
-        });
-
-        resolve(response);
-      } catch (error) {
-        reject({ hasMatch: false, state: null });
-      }
-    }
-  );
-}
-
 export async function getOrderedTabs(
   includeActiveTab: boolean = true
 ): Promise<chrome.tabs.Tab[]> {
@@ -123,20 +73,68 @@ export async function updateTotalTabsCount(store: Store) {
   store.totalTabs = tabs.length;
 }
 
-/**
- *  Main Functions:
- */
-// TODO: Refactor and separate out a processTab() function
+async function executeContentScriptOnTab(
+  tab: chrome.tabs.Tab,
+  store: Store,
+  foundFirstMatch: boolean
+): Promise<{
+  hasMatch: boolean;
+  state: any;
+}> {
+  return new Promise<{ hasMatch: boolean; state: any }>(
+    async (resolve, reject) => {
+      const tabId: ValidTabId = tab.id as number;
+      // console.log(`${tabId}: `, Date.now().toString());
+
+      try {
+        const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
+        const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
+
+        const { currentIndex, matchesCount, serializedMatches } =
+          response.serializedState;
+
+        await setStoredTabs(response.serializedState);
+
+        const globalMatchIdxStart = store.totalMatchesCount;
+
+        updateStore(store, {
+          totalMatchesCount: store.totalMatchesCount + matchesCount,
+        });
+
+        updateStore(store, {
+          tabStates: {
+            ...store.tabStates,
+            [tabId]: {
+              tabId,
+              currentIndex,
+              matchesCount,
+              serializedMatches,
+              globalMatchIdxStart,
+            },
+          },
+        });
+
+        resolve(response);
+      } catch (error) {
+        reject({ hasMatch: false, state: null });
+      }
+    }
+  );
+}
+
 export async function executeContentScriptOnAllTabs(
   findValue: string,
   store: Store
 ) {
   const orderedTabs = await getOrderedTabs();
-
   let foundFirstMatch = false;
+  let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
-  const tabPromises = orderedTabs.map(async (tab) => {
-    if (tab.id && !foundFirstMatch) {
+  // Process tabs one by one until the first match
+  for (let i = 0; i < orderedTabs.length; i++) {
+    const tab = orderedTabs[i];
+
+    if (tab.id) {
       const tabId: ValidTabId = tab.id as number;
       const { hasMatch, state } = await executeContentScriptOnTab(
         tab,
@@ -144,19 +142,25 @@ export async function executeContentScriptOnAllTabs(
         foundFirstMatch
       );
 
-      if (!hasMatch || foundFirstMatch) {
-        // continue;
-        return;
-      }
+      if (hasMatch && !foundFirstMatch) {
+        foundFirstMatch = true;
+        firstMatchTabIndex = i;
 
-      foundFirstMatch = true;
+        const activeTab = orderedTabs[0];
+        if (activeTab.id !== tabId) {
+          chrome.tabs.update(tabId, { active: true });
+        }
 
-      const activeTab = orderedTabs[0];
-      if (activeTab.id !== tabId) {
-        chrome.tabs.update(tabId, { active: true });
+        break;
       }
-    } else if (tab.id) {
-      await executeContentScriptOnTab(tab, store, foundFirstMatch);
+    }
+  }
+
+  // Process the remaining tabs asynchronously
+  const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
+  const tabPromises = remainingTabs.map((tab) => {
+    if (tab.id) {
+      return executeContentScriptOnTab(tab, store, foundFirstMatch);
     }
   });
 

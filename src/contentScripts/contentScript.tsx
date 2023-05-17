@@ -107,11 +107,7 @@ const App: React.FC<{}> = () => {
   }
 
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
-  // const handleMessage = async (
-  //   message: MessageFixMe,
-  //   sender: any,
-  //   sendResponse: any
-  // ) => {
+
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
       const stateOnlyContext = {
