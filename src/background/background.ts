@@ -9,7 +9,7 @@ import {
   executeContentScriptOnAllTabs,
   getOrderedTabs,
   handleRemoveAllHighlightMatches,
-  handleToggleStylesAllTabs,
+  toggleLayoverAndMatchesAllTabs,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
   switchTab,
@@ -31,6 +31,8 @@ import {
 export const store = initStore();
 sendStoreToContentScripts(store);
 
+// TODO: - add useEffect updates to contentScript?
+
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     console.log('Received message:', message, ' \n Store: ', store);
@@ -41,9 +43,6 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches-msg':
         const findValue = payload; //FIXME: refactor
 
-        // FIXME: resetPartialStore doesn't update the tabStores at all.
-        // - update reset to clear the tabStores too
-        // - add useEffect updates?
         resetPartialStore(store);
 
         updateStore(store, {
@@ -69,7 +68,7 @@ chrome.runtime.onMessage.addListener(
         });
         return true;
       case 'add-styles-all-tabs':
-        await handleToggleStylesAllTabs(true);
+        await toggleLayoverAndMatchesAllTabs(true);
         return true;
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
@@ -117,7 +116,7 @@ chrome.commands.onCommand.addListener(async (command) => {
   console.log('command:', command);
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
-    await handleToggleStylesAllTabs(addStyles);
+    await toggleLayoverAndMatchesAllTabs(addStyles);
     sendStoreToContentScripts(store);
   }
 });

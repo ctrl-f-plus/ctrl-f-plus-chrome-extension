@@ -69,15 +69,6 @@ export function serializeMatchesObj(
  *
  * UTILS FOR RESTORING MATCHES HTML
  */
-// function getElementByXPath(xpath: string) {
-//   return document.evaluate(
-//     xpath,
-//     document,
-//     null,
-//     XPathResult.FIRST_ORDERED_NODE_TYPE,
-//     null
-//   ).singleNodeValue;
-// }
 
 function getElementByXPath(xpath: string) {
   let result = null;
@@ -134,22 +125,8 @@ export function wrapTextWithHighlight(
   return span;
 }
 
-// FIXME: Add types
+// FIXME:
 // @ts-ignore
-// export function restoreHighlightSpans(xpathObj) {
-//   //
-//   Object.keys(xpathObj).forEach((tabId) => {
-//     const tabXPaths = xpathObj[tabId];
-//     // @ts-ignore
-//     tabXPaths.forEach(({ xpath, text, spanClasses }) => {
-//       const element = getElementByXPath(xpath);
-//       if (element) {
-//         wrapTextWithHighlight(element, text, spanClasses);
-//       }
-//     });
-//   });
-// }
-
 export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
   const tabXPaths: XPathMatchObject[] = xPathTabState.matchesObj;
 
@@ -165,9 +142,6 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
     if (element) {
       wrapTextWithHighlight(element, text, spanClasses);
 
-      // const spanElement = element.querySelector('span');
-      // tabState.matchesObj.push(spanElement);
-
       const spanElement = (element as Element).querySelector('span');
       if (spanElement !== null) {
         tabState.matchesObj.push(spanElement);
@@ -181,15 +155,12 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
 export function deserializeMatchesObj(
   shallowStateObject: SerializedTabState
 ): TabState {
-  // ): XPathTabState {
   const { serializedMatches, ...otherProperties } = shallowStateObject;
 
   const serializedXPaths = serializedMatches;
 
   const deserializedXPaths =
     serializedXPaths === '' ? [] : JSON.parse(serializedXPaths);
-
-  // const deserializedXPaths = JSON.parse(serializedXPaths);
 
   const deserializedState: TabState = {
     ...otherProperties,
@@ -198,24 +169,3 @@ export function deserializeMatchesObj(
 
   return deserializedState;
 }
-
-// Example use
-/**
- * const matchesObj = {
-  237543846: [
-    document.querySelector('nav > div > a > span.ctrl-f-highlight'),
-    document.querySelector(
-      'h1.display-3.text-center.font-alt-no-space > span.ctrl-f-highlight'
-    ),
-    document.querySelector('p > span.ctrl-f-highlight'),
-  ],
-};
-
-const xpaths = generateXPaths(matchesObj);
-const serializedXPaths = JSON.stringify(xpaths);
-localStorage.setItem('storedXPaths', serializedXPaths);
-
-const serializedStoredXPaths = localStorage.getItem('storedXPaths');
-const storedXPaths = JSON.parse(serializedStoredXPaths);
-restoreHighlightSpans(storedXPaths);
- */

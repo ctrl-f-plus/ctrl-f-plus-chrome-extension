@@ -82,7 +82,6 @@ async function executeContentScriptOnTab(
   return new Promise<{ hasMatch: boolean; state: any }>(
     async (resolve, reject) => {
       const tabId: ValidTabId = tab.id as number;
-      // console.log(`${tabId}: `, Date.now().toString());
 
       try {
         const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
@@ -202,16 +201,7 @@ export async function switchTab(
  * Event Handling Functions
  */
 
-export async function handleToggleStylesAllTabs(addStyles: boolean) {
-  // FIXME: you should be able to replace this message by injecting styles into the DOM
-  const tabs = await queryCurrentWindowTabs();
-  tabs.forEach(async (tab) => {
-    const tabId: ValidTabId = tab.id as number;
-    const payload = { store, tabId };
-    const msg = createToggleStylesMsg(addStyles, payload);
-    sendMsgToTab<ToggleStylesMsg>(tab.id, msg);
-  });
-
+export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
   updateStore(store, {
     showLayover: addStyles,
     showMatches: addStyles,

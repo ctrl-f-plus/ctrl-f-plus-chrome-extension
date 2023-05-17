@@ -9,13 +9,8 @@ import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 export const useFindMatches = () => {
-  const {
-    state2Context,
-    setState2Context,
-    totalMatchesCount,
-    globalMatchIdx,
-    setGlobalMatchIdx,
-  } = useContext(LayoverContext);
+  const { state2Context, setState2Context, totalMatchesCount, globalMatchIdx } =
+    useContext(LayoverContext);
   const [state2, setState2] = useState(state2Context);
 
   useEffect(() => {

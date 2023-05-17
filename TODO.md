@@ -77,3 +77,4 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - showMatches is getting stuck sometimes without showLayover and sometimes showMatches won't toggle off
 - NextMatch() doesn't send updated state to background ever
 - If you search an empty string twice, then you get `NaN/0`. fix this
+- Escape key doesn't work quite right. i think it only toggles one thing in the background script maybe. review it.

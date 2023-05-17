@@ -17,7 +17,6 @@ import { LayoverContext } from '../contexts/LayoverContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
-import { getStoredFindValue, getStoredLastSearchValue } from '../utils/storage';
 
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -25,9 +24,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const {
     searchValue,
-    setSearchValue,
     lastSearchValue,
-    setLastSearchValue,
     toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
@@ -58,7 +55,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
         nextMatch();
       } else {
         handleSearch(localSearchValue);
-        // handleSearch(searchValue);
       }
     }
   };
@@ -79,7 +75,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
         setInitialLoad(false);
       }
     }
-    // }, [focus, searchValue]);
   }, [focus, localSearchValue]);
 
   useEffect(() => {
@@ -92,8 +87,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
       setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
     }
-
-    // setMatchingCounts(`${globalMatchIdx}/${totalMatchesCount}`);
   }, [globalMatchIdx, totalMatchesCount, state2Context]);
 
   return (
@@ -107,7 +100,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           <input
             ref={searchInputRef}
             type="text"
-            // value={searchValue}
             value={localSearchValue}
             onChange={handleInputChange}
             className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
@@ -125,7 +117,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
             type="button"
             onClick={handlePrevious}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            // disabled={searchValue === ''}
             disabled={localSearchValue === ''}
           >
             {' '}
@@ -143,7 +134,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
             type="button"
             onClick={nextMatch}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            // disabled={searchValue === ''}
             disabled={localSearchValue === ''}
           >
             {' '}

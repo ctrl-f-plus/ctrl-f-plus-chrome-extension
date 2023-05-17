@@ -3,7 +3,7 @@
 import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Store, TabStore } from '../background/store';
+import { TabStore } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
@@ -16,7 +16,6 @@ import {
   TabId,
   TabState,
   ValidTabId,
-  XPathTabState,
 } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -76,7 +75,6 @@ const App: React.FC<{}> = () => {
     // const xPathTabState: XPathTabState =
     const xPathTabState = deserializeMatchesObj(serializedTabState);
     const tabState = restoreHighlightSpans(xPathTabState);
-    console.log(tabState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
 
     // TODO: Make sure this value is getting updated in the tabStore
@@ -122,9 +120,6 @@ const App: React.FC<{}> = () => {
       };
 
       console.log('Received message:', message);
-      //   ' \n layoverContext: ',
-      //   LayoverContext
-      // );
 
       const { type, command, transactionId } = message;
 
@@ -235,7 +230,6 @@ const App: React.FC<{}> = () => {
           break;
       }
       return true;
-      // };
     },
     [
       handleHighlight,

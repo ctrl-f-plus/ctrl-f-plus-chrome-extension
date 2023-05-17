@@ -17,7 +17,6 @@ export const useSearchHandler = () => {
 
   const handleSearch = useCallback(
     async (newSearchValue: string): Promise<void> => {
-      // setSearchValue({ type: 'SET_SEARCH_VALUE', payload: newSearchValue });
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
 
