@@ -192,7 +192,7 @@ export async function switchTab(
 
     const msg = createUpdateHighlightsMsg(tab.id);
 
-    // await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+    await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
     updateStore(store, {
       globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
