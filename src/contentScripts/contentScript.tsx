@@ -52,6 +52,7 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount,
     globalMatchIdx,
     setGlobalMatchIdx,
+    layoverPosition,
     setLayoverPosition,
     state2Context,
     setState2Context,
@@ -117,6 +118,17 @@ const App: React.FC<{}> = () => {
   // ) => {
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
+      const stateOnlyContext = {
+        showLayover,
+        searchValue,
+        lastSearchValue,
+        showMatches,
+        totalMatchesCount,
+        globalMatchIdx,
+        layoverPosition,
+        state2Context,
+      };
+
       console.log('Received message:', message);
       //   ' \n layoverContext: ',
       //   LayoverContext
@@ -242,6 +254,14 @@ const App: React.FC<{}> = () => {
       updateHighlights,
       setState2Context,
       LayoverContext,
+
+      showLayover,
+      searchValue,
+      lastSearchValue,
+      showMatches,
+      totalMatchesCount,
+      globalMatchIdx,
+      layoverPosition,
     ]
   );
 
@@ -275,13 +295,13 @@ const App: React.FC<{}> = () => {
     };
   }, [showMatches]);
 
-  useEffect(() => {
-    console.log('state2Context updated: ', state2Context);
-  }, [state2Context]);
+  // useEffect(() => {
+  //   console.log('state2Context updated: ', state2Context);
+  // }, [state2Context]);
 
-  useEffect(() => {
-    console.log('totalMatchesCount updated: ', totalMatchesCount);
-  }, [totalMatchesCount]);
+  // useEffect(() => {
+  //   console.log('totalMatchesCount updated: ', totalMatchesCount);
+  // }, [totalMatchesCount]);
 
   return (
     <>

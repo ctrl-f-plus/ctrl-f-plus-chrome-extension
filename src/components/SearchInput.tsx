@@ -33,6 +33,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     globalMatchIdx,
     state2Context,
   } = useContext(LayoverContext);
+  const [localSearchValue, setLocalSearchValue] = useState(searchValue);
+  useEffect(() => {
+    setLocalSearchValue(searchValue);
+  }, [searchValue]);
 
   const [matchingCounts, setMatchingCounts] = useState(
     `${globalMatchIdx}/${totalMatchesCount}`
@@ -50,12 +54,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     e.preventDefault();
 
     if (searchInputRef.current) {
-      if (searchValue === lastSearchValue) {
-        debugger;
+      if (localSearchValue === lastSearchValue) {
         nextMatch();
       } else {
         debugger;
-        handleSearch(searchValue);
+        handleSearch(localSearchValue);
+        // handleSearch(searchValue);
       }
     }
   };
@@ -63,7 +67,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
 
-    setSearchValue(newValue);
+    // setSearchValue(newValue);
+    setLocalSearchValue(newValue);
     setInitialLoad(false);
     // handleSearch(newValue);
   };
@@ -72,48 +77,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     if (focus && searchInputRef.current) {
       searchInputRef.current.focus();
 
-      if (searchValue && initialLoad) {
+      // if (searchValue && initialLoad) {
+      if (localSearchValue && initialLoad) {
         searchInputRef.current.select();
         setInitialLoad(false);
       }
     }
-  }, [focus, searchValue]);
-
-  // useEffect(() => {
-  //   const fetchStoredFindValue = async () => {
-  //     const storedFindValue = await getStoredFindValue();
-  //     debugger;
-  //     setSearchValue(storedFindValue);
-  //   };
-
-  //   const fetchStoredLastSearchValue = async () => {
-  //     const storedLastSearchValue = await getStoredLastSearchValue();
-  //     debugger;
-  //     setLastSearchValue(storedLastSearchValue);
-  //   };
-
-  //   fetchStoredFindValue();
-  //   fetchStoredLastSearchValue();
-  // }, []);
-
-  useEffect(() => {
-    const fetchStoredFindValue = async () => {
-      const storedFindValue = await getStoredFindValue();
-      debugger;
-      setSearchValue(storedFindValue);
-    };
-
-    const fetchStoredLastSearchValue = async () => {
-      const storedLastSearchValue = await getStoredLastSearchValue();
-      debugger;
-      setLastSearchValue(storedLastSearchValue);
-    };
-
-    // fetchStoredFindValue();
-    // fetchStoredLastSearchValue();
-    setSearchValue(searchValue);
-    setLastSearchValue(lastSearchValue);
-  }, [searchValue, lastSearchValue]);
+    // }, [focus, searchValue]);
+  }, [focus, localSearchValue]);
 
   useEffect(() => {
     // if (state2Context.globalMatchIdxStart && state2Context.currentIndex) {
@@ -138,7 +109,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           <input
             ref={searchInputRef}
             type="text"
-            value={searchValue}
+            // value={searchValue}
+            value={localSearchValue}
             onChange={handleInputChange}
             className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
             placeholder="Find on page"
@@ -155,7 +127,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
             type="button"
             onClick={handlePrevious}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            disabled={searchValue === ''}
+            // disabled={searchValue === ''}
+            disabled={localSearchValue === ''}
           >
             {' '}
             <div className="flex items-center justify-center h-full">
@@ -172,7 +145,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
             type="button"
             onClick={nextMatch}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            disabled={searchValue === ''}
+            // disabled={searchValue === ''}
+            disabled={localSearchValue === ''}
           >
             {' '}
             <div className="flex items-center justify-center h-full">

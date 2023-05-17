@@ -16,12 +16,13 @@ export const useSearchHandler = () => {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(
-    async (findValue: string): Promise<void> => {
-      setStoredFindValue(findValue);
+    async (newSearchValue: string): Promise<void> => {
+      // setSearchValue({ type: 'SET_SEARCH_VALUE', payload: newSearchValue });
+      setSearchValue(newSearchValue);
+      setLastSearchValue(newSearchValue);
 
-      setStoredLastSearchValue(findValue);
-      // setSearchValue(findValue);
-      setLastSearchValue(findValue);
+      setStoredFindValue(newSearchValue);
+      setStoredLastSearchValue(newSearchValue);
 
       await clearAllStoredTabs(); //FIXME: review a) if you need this and b) its location
 
@@ -30,12 +31,12 @@ export const useSearchHandler = () => {
         type: 'remove-all-highlight-matches',
       });
 
-      if (findValue === '') return; //TODO: need to update count to 0 though
+      if (newSearchValue === '') return; //TODO: need to update count to 0 though
 
       await sendMessageToBackground({
         from: 'content',
         type: 'get-all-matches-msg',
-        payload: findValue,
+        payload: newSearchValue,
       });
     },
     [sendMessageToBackground, sendMsgToBackground]

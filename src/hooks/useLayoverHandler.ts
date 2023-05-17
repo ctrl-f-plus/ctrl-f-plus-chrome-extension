@@ -1,6 +1,6 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import {
   ActionTypes,
@@ -49,9 +49,6 @@ const reducer = (
   state: LayoverState,
   action: LayoverAction | SetState2Action | { type: ActionTypes; payload: any }
 ): LayoverState => {
-  // let updatedState: LayoverState;
-  console.log('Old state: ', state, '\nNew State', state);
-
   switch (action.type) {
     case 'INITIALIZE_STATE':
       return action.payload;
@@ -192,7 +189,14 @@ export const useLayoverHandler = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
 
-  console.log('LayoverContext Updated: ', LayoverContext);
+  useEffect(() => {
+    const stateWithoutFunctions = Object.fromEntries(
+      Object.entries(state).filter(
+        ([key, value]) => typeof value !== 'function'
+      )
+    );
+    console.log('LayoverContext Updated: ', stateWithoutFunctions);
+  }, [state]);
 
   return {
     ...state,
