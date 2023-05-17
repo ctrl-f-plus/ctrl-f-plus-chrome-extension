@@ -1,6 +1,4 @@
 // src/utils/backgroundUtils.ts
-// createHighlightMsg
-// createUpdateStoreMsg
 
 import { store } from '../background/background';
 import { Store, updateStore } from '../background/store';

@@ -73,3 +73,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - FIX: there are some bugs around the style being injected or not - might be better to leave style injected and remove spans instead of removing style and leaving spans. this will fix any weird spacing that could occur as well.
 - FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="cntrl-f-extension"` which we don't need to do
 - TabId is getting reset to undefined in `newState2`
+- Remove all matches on hard reset or at least don't show them
+- showMatches is getting stuck sometimes without showLayover and sometimes showMatches won't toggle off

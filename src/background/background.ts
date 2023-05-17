@@ -84,24 +84,24 @@ chrome.runtime.onMessage.addListener(
 // - could maybe use sendMessageToContentScripts() instead, but need to message active tab first
 // - Could maybe be improved by using the `active-tab` field in the store
 // - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
-// chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-//   const orderedTabs = await getOrderedTabs(false);
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  const orderedTabs = await getOrderedTabs(false);
 
-//   const msg = createSwitchedActiveTabShowLayoverMsg();
-//   sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
+  const msg = createSwitchedActiveTabShowLayoverMsg();
+  sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
 
-//   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
+  const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-//   const msg2 = createSwitchedActiveTabHideLayoverMsg();
+  const msg2 = createSwitchedActiveTabHideLayoverMsg();
 
-//   for (const otherTab of inactiveTabs) {
-//     if (otherTab.id) {
-//       sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
-//     }
-//   }
+  for (const otherTab of inactiveTabs) {
+    if (otherTab.id) {
+      sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
+    }
+  }
 
-//   sendStoreToContentScripts(store);
-// });
+  sendStoreToContentScripts(store);
+});
 
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
