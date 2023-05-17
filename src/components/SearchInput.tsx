@@ -24,6 +24,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const {
     searchValue,
+    showLayover,
+    showMatches,
     lastSearchValue,
     toggleSearchLayover,
     totalMatchesCount,
@@ -87,7 +89,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
       setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
     }
-  }, [globalMatchIdx, totalMatchesCount, state2Context]);
+  }, [
+    globalMatchIdx,
+    totalMatchesCount,
+    state2Context,
+    showLayover,
+    showMatches,
+  ]);
 
   return (
     <>

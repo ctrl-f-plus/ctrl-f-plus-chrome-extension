@@ -2,7 +2,7 @@
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import { SwitchTabMsg } from '../types/message.types';
+import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
@@ -79,6 +79,18 @@ export const useFindMatches = () => {
 
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, undefined, false);
+        // const serializedState: SerializedTabState = serializeMatchesObj({
+        //   ...updatedState,
+        // });
+        // const msg: UpdateTabStatesObjMsg = {
+        //   from: 'content:match-utils',
+        //   type: 'update-tab-states-obj',
+        //   payload: {
+        //     serializedState,
+        //   },
+        // };
+
+        // await sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
       } else {
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
@@ -95,8 +107,21 @@ export const useFindMatches = () => {
       }
     } else {
       updatedState = updateHighlights(newState2, prevIndex);
+      // const serializedState: SerializedTabState = serializeMatchesObj({
+      //   ...updatedState,
+      // });
+
+      // const msg: UpdateTabStatesObjMsg = {
+      //   from: 'content:match-utils',
+      //   type: 'update-tab-states-obj',
+      //   payload: {
+      //     serializedState,
+      //   },
+      // };
+
+      // await sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
     }
-    console.log(globalMatchIdx);
+
     setState2(updatedState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
   }, [
@@ -105,6 +130,11 @@ export const useFindMatches = () => {
     state2,
     totalMatchesCount,
     globalMatchIdx,
+
+    setState2,
+    serializeMatchesObj,
+    // createUpdateTabStatesObjMsg,
+    sendMsgToBackground,
   ]);
 
   // src/utils/scrollUtils.ts

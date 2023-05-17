@@ -231,9 +231,19 @@ export async function handleUpdateTabStatesObj(
   payload: any,
   sendResponse: Function
 ) {
-  const { serializedState } = payload;
+  const {
+    serializedState: {
+      tabId,
+      active,
+      currentIndex,
+      matchesCount,
+      globalMatchIdxStart,
+      serializedMatches,
+    },
+  } = payload;
 
-  await setStoredTabs(serializedState);
+  await setStoredTabs(payload.serializedState);
+  // await setStoredTabs(serializedMatches);
 
   store.updatedTabsCount++;
 
@@ -242,15 +252,22 @@ export async function handleUpdateTabStatesObj(
     store.updatedTabsCount = 0;
   }
 
-  // updateStore(store, {
-  //   tabStates: {
-  //     ...store.tabStates,
-  //     [payload.serializedState.tabId]: {
-  //       ...store.tabStates[payload.serializedState.tabId],
-  //       serializedMatches: payload.serializedState.serializedMatches,
-  //     },
-  //   },
-  // });
+  console.log(store);
+
+  updateStore(store, {
+    tabStates: {
+      ...store.tabStates,
+      [payload.serializedState.tabId]: {
+        ...store.tabStates[payload.serializedState.tabId],
+        tabId,
+        active,
+        currentIndex,
+        matchesCount,
+        globalMatchIdxStart,
+        serializedMatches,
+      },
+    },
+  });
 
   sendResponse({ status: 'success' });
 }
