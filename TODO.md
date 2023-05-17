@@ -75,3 +75,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - TabId is getting reset to undefined in `newState2`
 - Remove all matches on hard reset or at least don't show them
 - showMatches is getting stuck sometimes without showLayover and sometimes showMatches won't toggle off
+- NextMatch() doesn't send updated state to background ever
+- If you search an empty string twice, then you get `NaN/0`. fix this

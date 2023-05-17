@@ -160,7 +160,7 @@ export interface HighlightMsg extends BaseMessage {
 
 export interface ToggleStylesMsg extends BaseMessage {
   from: 'background:backgroundUtils';
-  type: 'add-styles' | 'remove-styles';
+  type: 'add-styles';
 }
 
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {

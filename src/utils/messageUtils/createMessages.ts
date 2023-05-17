@@ -43,7 +43,7 @@ export function createToggleStylesMsg(
 ): ToggleStylesMsg {
   return {
     from: 'background:backgroundUtils',
-    type: addStyles ? 'add-styles' : 'remove-styles',
+    type: 'add-styles',
     payload,
   };
 }

@@ -44,7 +44,6 @@ chrome.runtime.onMessage.addListener(
         // FIXME: resetPartialStore doesn't update the tabStores at all.
         // - update reset to clear the tabStores too
         // - add useEffect updates?
-
         resetPartialStore(store);
 
         updateStore(store, {
@@ -53,13 +52,21 @@ chrome.runtime.onMessage.addListener(
           lastSearchValue: findValue,
         });
 
+        if (findValue === '') {
+          sendStoreToContentScripts(store);
+          return;
+        }
+
         await executeContentScriptOnAllTabs(payload, store);
         sendStoreToContentScripts(store);
 
         return true;
 
       case 'remove-styles-all-tabs':
-        await handleToggleStylesAllTabs(false);
+        updateStore(store, {
+          showLayover: false,
+          showMatches: false,
+        });
         return true;
       case 'add-styles-all-tabs':
         await handleToggleStylesAllTabs(true);

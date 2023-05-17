@@ -83,15 +83,17 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   }, [focus, localSearchValue]);
 
   useEffect(() => {
-    // if (state2Context.globalMatchIdxStart && state2Context.currentIndex) {
-    //   // debugger;
-    //   const curIdxRENAME_ME =
-    //     state2Context.globalMatchIdxStart + state2Context.currentIndex;
+    if (
+      state2Context.globalMatchIdxStart !== undefined &&
+      state2Context.currentIndex !== undefined
+    ) {
+      const curIdxRENAME_ME =
+        state2Context.globalMatchIdxStart + state2Context.currentIndex + 1;
 
-    //   setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
-    // }
+      setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
+    }
 
-    setMatchingCounts(`${globalMatchIdx}/${totalMatchesCount}`);
+    // setMatchingCounts(`${globalMatchIdx}/${totalMatchesCount}`);
   }, [globalMatchIdx, totalMatchesCount, state2Context]);
 
   return (

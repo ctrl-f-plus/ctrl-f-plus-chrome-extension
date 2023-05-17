@@ -55,7 +55,7 @@ export const useFindMatches = () => {
       }
       if (!endOfTab && typeof newState.currentIndex !== 'undefined') {
         const curMatch = newState.matchesObj[newState.currentIndex];
-        debugger;
+
         curMatch.classList.add('ctrl-f-highlight-focus');
         scrollToElement(curMatch);
       }

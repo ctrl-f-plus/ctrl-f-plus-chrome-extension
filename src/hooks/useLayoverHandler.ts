@@ -145,10 +145,10 @@ export const useLayoverHandler = () => {
         setStoredLastSearchValue(searchValue);
 
         // src/hooks/useLayoverHandler.ts
-        sendMessageToBackground({
-          from: 'content',
-          type: 'remove-styles-all-tabs',
-        });
+        // sendMessageToBackground({
+        //   from: 'content',
+        //   type: 'remove-styles-all-tabs',
+        // });
 
         await sendMessageToBackground({
           from: 'content',

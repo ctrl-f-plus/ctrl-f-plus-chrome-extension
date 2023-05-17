@@ -31,8 +31,6 @@ export const useSearchHandler = () => {
         type: 'remove-all-highlight-matches',
       });
 
-      if (newSearchValue === '') return; //TODO: need to update count to 0 though
-
       await sendMessageToBackground({
         from: 'content',
         type: 'get-all-matches-msg',
