@@ -164,8 +164,8 @@ const App: React.FC<{}> = () => {
             ...tabState,
           });
 
-          const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
-          sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+          // const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
+          // sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
           sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
           break;
         case 'remove-all-highlight-matches':

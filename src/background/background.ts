@@ -77,10 +77,14 @@ chrome.runtime.onMessage.addListener(
         await switchTab(message.serializedState);
         return true;
       case 'update-tab-states-obj':
+        console.log('update-tab-states-obj');
         await handleUpdateTabStatesObj(payload, sendResponse);
         return true;
       case 'update-layover-position':
         await handleUpdateLayoverPosition(store, payload.newPosition);
+        return;
+      case 'state-update':
+        console.log('state-update');
         return;
       default:
         return;

@@ -12,6 +12,26 @@ import { TabId, TabState } from '../types/tab.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
 import { LayoverContext } from '../contexts/LayoverContext';
+import {
+  StateUpdateMessage,
+  UpdateTabStatesObjMsg,
+} from '../types/message.types';
+
+function debounce<F extends (...args: any[]) => any>(
+  func: F,
+  delay: number
+): (...args: Parameters<F>) => void {
+  let timeoutID: NodeJS.Timeout | null;
+  return (...args: Parameters<F>) => {
+    if (timeoutID) {
+      clearTimeout(timeoutID);
+    }
+    // @ts-ignore
+    timeoutID = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -189,19 +209,47 @@ export const useLayoverHandler = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
 
-  useEffect(() => {
-    const stateWithoutFunctions = Object.fromEntries(
+  const sendStateToBackground = async (state: LayoverState) => {
+    const stateWithoutFunctions: Partial<LayoverState> = Object.fromEntries(
       Object.entries(state).filter(
         ([key, value]) => typeof value !== 'function'
       )
+    ) as Partial<LayoverState>;
+
+    const message: UpdateTabStatesObjMsg = {
+      // const message: StateUpdateMessage = {
+      from: 'content:match-utils',
+      // type: 'state-update',
+      type: 'update-tab-states-obj',
+      payload: {
+        serializedState: stateWithoutFunctions,
+      },
+    };
+
+    await sendMessageToBackground(message);
+  };
+  useEffect(() => {
+    // const stateWithoutFunctions = Object.fromEntries(
+    //   Object.entries(state).filter(
+    //     ([key, value]) => typeof value !== 'function'
+    //   )
+    // );
+    // console.log(
+    //   'LayoverContext Updated: ',
+    //   stateWithoutFunctions,
+    //   '\nmatchesObj: ',
+    //   state.state2Context.matchesObj
+    // );
+
+    // sendStateToBackground(state);
+    const debouncedSendStateToBackground = debounce(
+      sendStateToBackground,
+      1000
     );
-    console.log(
-      'LayoverContext Updated: ',
-      stateWithoutFunctions,
-      '\nmatchesObj: ',
-      state.state2Context.matchesObj
-    );
-  }, [state]);
+
+    // Send the state to the background script, debounced
+    debouncedSendStateToBackground(state);
+  }, [state, sendStateToBackground]);
 
   return {
     ...state,

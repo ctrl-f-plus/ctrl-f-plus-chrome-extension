@@ -173,6 +173,19 @@ export interface ToggleSearchLayoverMsg extends BaseMessage {
   type: 'toggle_search_layover';
 }
 
+// type StateUpdateMessage = {
+//   from: 'content';
+//   type: 'state-update';
+//   payload: {
+//     state: LayoverState;
+//   };
+// };
+export interface StateUpdateMessage extends BaseMessage {
+  from: 'content';
+  type: 'state-update';
+  payload: any;
+}
+
 export type Messages =
   | GetAllMatchesMsg
   | NextMatchMsg
@@ -197,4 +210,5 @@ export type Messages =
   | UpdateLayoverPositionMsg
   | ToggleStylesMsg
   | RemoveAllHighlightMatches_msg
-  | ToggleSearchLayoverMsg;
+  | ToggleSearchLayoverMsg
+  | StateUpdateMessage;
