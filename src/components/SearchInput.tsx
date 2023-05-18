@@ -29,7 +29,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     lastSearchValue,
     // toggleSearchLayover,
     totalMatchesCount,
-    globalMatchIdx,
     state2Context,
   } = useContext(LayoverContext);
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
@@ -38,7 +37,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   }, [searchValue]);
 
   const [matchingCounts, setMatchingCounts] = useState(
-    `${globalMatchIdx}/${totalMatchesCount}`
+    // `${globalMatchIdx}/${totalMatchesCount}`
+    '0/0'
   );
 
   const { nextMatch } = useFindMatches();
@@ -54,8 +54,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
     if (searchInputRef.current) {
       if (localSearchValue === lastSearchValue) {
+        debugger;
         nextMatch();
       } else {
+        debugger;
         handleSearch(localSearchValue);
       }
     }
@@ -89,13 +91,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
       setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
     }
-  }, [
-    globalMatchIdx,
-    totalMatchesCount,
-    state2Context,
-    showLayover,
-    showMatches,
-  ]);
+  }, [totalMatchesCount, state2Context, showLayover, showMatches]);
 
   return (
     <>

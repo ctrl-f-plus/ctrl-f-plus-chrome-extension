@@ -191,9 +191,9 @@ export async function switchTab(
 
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
 
-    updateStore(store, {
-      globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
-    });
+    // updateStore(store, {
+    //   globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
+    // });
   });
 }
 
@@ -208,23 +208,26 @@ export async function switchTab(
 //   });
 // }
 
-// export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
-//   const tabs = await queryCurrentWindowTabs();
+export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+  const tabs = await queryCurrentWindowTabs();
 
-//   const tabPromises = tabs.map((tab) => {
-//     if (tab.id) {
-//       const msg = createRemoveAllHighlightMatchesMsg();
-//       return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
-//     } else {
-//       return Promise.resolve(null);
-//     }
-//   });
+  const tabPromises = tabs.map((tab) => {
+    if (tab.id) {
+      const msg: RemoveAllHighlightMatchesMsg = {
+        from: 'background:backgroundUtils',
+        type: 'remove-all-highlight-matches',
+      };
+      return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
+    } else {
+      return Promise.resolve(null);
+    }
+  });
 
-//   const responses = await Promise.all(tabPromises);
-//   sendResponse(responses);
+  const responses = await Promise.all(tabPromises);
+  sendResponse(responses);
 
-//   return true;
-// }
+  return true;
+}
 
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(

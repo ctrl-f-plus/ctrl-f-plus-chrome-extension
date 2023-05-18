@@ -79,18 +79,6 @@ export const useFindMatches = () => {
 
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, undefined, false);
-        // const serializedState: SerializedTabState = serializeMatchesObj({
-        //   ...updatedState,
-        // });
-        // const msg: UpdateTabStatesObjMsg = {
-        //   from: 'content:match-utils',
-        //   type: 'update-tab-states-obj',
-        //   payload: {
-        //     serializedState,
-        //   },
-        // };
-
-        // await sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
       } else {
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
@@ -107,19 +95,6 @@ export const useFindMatches = () => {
       }
     } else {
       updatedState = updateHighlights(newState2, prevIndex);
-      // const serializedState: SerializedTabState = serializeMatchesObj({
-      //   ...updatedState,
-      // });
-
-      // const msg: UpdateTabStatesObjMsg = {
-      //   from: 'content:match-utils',
-      //   type: 'update-tab-states-obj',
-      //   payload: {
-      //     serializedState,
-      //   },
-      // };
-
-      // await sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
     }
 
     setState2(updatedState);

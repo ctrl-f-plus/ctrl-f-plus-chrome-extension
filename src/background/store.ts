@@ -1,7 +1,7 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { SerializedTabState, ValidTabId } from '../types/tab.types';
+import { SerializedTabState, ValidTabId, TabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
 
 // Store Interface
@@ -17,8 +17,8 @@ export interface SharedStore {
   lastSearchValue: string;
 
   // GLOBAL: MAYBE, OTHERWISE MORE TO `Store`
-  globalMatchIdx: number;
-  activeTab: chrome.tabs.Tab | null;
+  // activeTab: chrome.tabs.Tab | null;
+  activeTabId: TabId;
 }
 
 export interface Store extends SharedStore {
@@ -35,7 +35,7 @@ export interface TabStore extends SharedStore {
 
 export function initStore() {
   const store: Store = {
-    globalMatchIdx: 0,
+    // globalMatchIdx: 0,
     totalMatchesCount: 0,
     findValue: '',
     searchValue: '',
@@ -43,7 +43,8 @@ export function initStore() {
     lastFocusedWindowId: undefined,
     updatedTabsCount: 0,
     totalTabs: undefined,
-    activeTab: null,
+    // activeTab: null,
+    activeTabId: undefined,
     layoverPosition: { x: 0, y: 0 },
     showLayover: false,
     showMatches: false,
@@ -79,8 +80,9 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     searchValue: store.searchValue,
     lastSearchValue: store.lastSearchValue,
 
-    globalMatchIdx: store.globalMatchIdx,
-    activeTab: store.activeTab,
+    // globalMatchIdx: store.globalMatchIdx,
+    // activeTab: store.activeTab,
+    activeTabId: store.activeTabId,
   };
 }
 
@@ -109,7 +111,6 @@ export function resetStore(store: Store): void {
 
 export function resetPartialStore(store: Store): void {
   const partialInitialState = {
-    globalMatchIdx: 0,
     totalMatchesCount: 0,
     findValue: '',
     searchValue: '',

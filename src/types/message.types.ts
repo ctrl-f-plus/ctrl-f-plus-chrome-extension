@@ -84,14 +84,9 @@ export interface MessageFixMe {
   foundFirstMatch?: boolean;
 }
 
-// export interface RemoveStylesAllTabs extends BaseMessage {
-//   from: 'content';
-//   type: 'remove-styles-all-tabs';
-// }
-
-export interface ToggleStylesAllTabs extends BaseMessage {
+export interface RemoveStylesAllTabs extends BaseMessage {
   from: 'content';
-  type: 'add-styles-all-tabs' | 'remove-styles-all-tabs';
+  type: 'remove-styles-all-tabs';
 }
 
 export interface RemoveAllHighlightMatches extends BaseMessage {
@@ -116,15 +111,15 @@ export interface UpdateHighlightsMsg extends BaseMessage {
   type: 'update-highlights';
   prevIndex: number | undefined;
 }
-export interface SwitchedActiveTabShowLayover extends BaseMessage {
-  from: 'background';
-  type: 'switched-active-tab-show-layover';
-}
+// export interface SwitchedActiveTabShowLayover extends BaseMessage {
+//   from: 'background';
+//   type: 'switched-active-tab-show-layover';
+// }
 
-export interface SwitchedActiveTabHideLayover extends BaseMessage {
-  from: 'background';
-  type: 'switched-active-tab-hide-layover';
-}
+// export interface SwitchedActiveTabHideLayover extends BaseMessage {
+//   from: 'background';
+//   type: 'switched-active-tab-hide-layover';
+// }
 
 export interface UpdateTabStatesObjMsg extends BaseMessage {
   from: 'content:match-utils';
@@ -201,16 +196,16 @@ export type Messages =
   | NextMatch_msg
   | PreviousMatchMessage
   | RemoveStylesMessage
-  // | RemoveStylesAllTabs
+  | RemoveStylesAllTabs
+  // | ToggleStylesAllTabs
   | RemoveAllHighlightMatches
-  | ToggleStylesAllTabs
   | RemoveAllHighlightMatchesMsg
   | RemoveAllHighlightMatches_msg
   | SwitchTabMsg
   | UpdateHighlightsMsg
   | HighlightMsg
-  | SwitchedActiveTabShowLayover
-  | SwitchedActiveTabHideLayover
+  // | SwitchedActiveTabShowLayover
+  // | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
   | UpdateLayoverPositionMsg

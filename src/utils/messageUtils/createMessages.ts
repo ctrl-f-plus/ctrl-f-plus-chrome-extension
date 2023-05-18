@@ -12,8 +12,8 @@ import {
   RemoveAllHighlightMatchesMsg,
   RemoveAllHighlightMatches_msg,
   SwitchTabMsg,
-  SwitchedActiveTabHideLayover,
-  SwitchedActiveTabShowLayover,
+  // SwitchedActiveTabHideLayover,
+  // SwitchedActiveTabShowLayover,
   ToggleSearchLayoverMsg,
   // ToggleStylesAllTabs,
   ToggleStylesMsg,
@@ -101,19 +101,19 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   };
 }
 
-export function createSwitchedActiveTabShowLayoverMsg(): SwitchedActiveTabShowLayover {
-  return {
-    from: 'background',
-    type: 'switched-active-tab-show-layover',
-  };
-}
+// export function createSwitchedActiveTabShowLayoverMsg(): SwitchedActiveTabShowLayover {
+//   return {
+//     from: 'background',
+//     type: 'switched-active-tab-show-layover',
+//   };
+// }
 
-export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLayover {
-  return {
-    from: 'background',
-    type: 'switched-active-tab-hide-layover',
-  };
-}
+// export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLayover {
+//   return {
+//     from: 'background',
+//     type: 'switched-active-tab-hide-layover',
+//   };
+// }
 
 export function createToggleSearchLayoverMsg(): ToggleSearchLayoverMsg {
   return {

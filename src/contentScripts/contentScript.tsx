@@ -53,13 +53,13 @@ const App: React.FC<{}> = () => {
     setShowMatches,
     totalMatchesCount,
     setTotalMatchesCount,
-    globalMatchIdx,
-    setGlobalMatchIdx,
     layoverPosition,
     setLayoverPosition,
     state2Context,
     setState2Context,
   } = useContext(LayoverContext);
+
+  const { matchesObj, tabId } = state2Context;
 
   const { updateHighlights, findAllMatches } = useFindMatches();
 
@@ -72,7 +72,6 @@ const App: React.FC<{}> = () => {
     setShowLayover(tabStore.showLayover);
     setShowMatches(tabStore.showMatches);
     setTotalMatchesCount(tabStore.totalMatchesCount);
-    setGlobalMatchIdx(tabStore.globalMatchIdx + 1);
     setLayoverPosition(tabStore.layoverPosition);
 
     const serializedTabState = tabStore.serializedTabState;
@@ -81,10 +80,7 @@ const App: React.FC<{}> = () => {
     const tabState = restoreHighlightSpans(xPathTabState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
 
-    // TODO: Make sure this value is getting updated in the tabStore
-    if (tabStore.activeTab) {
-      setActiveTabId(tabStore.activeTab.id);
-    }
+    setActiveTabId(tabStore.activeTabId);
   };
 
   async function handleHighlight(
@@ -129,12 +125,12 @@ const App: React.FC<{}> = () => {
       let response;
 
       switch (type) {
-        case 'switched-active-tab-show-layover':
-          showMatches && setShowLayover(true);
-          break;
-        case 'switched-active-tab-hide-layover':
-          showMatches && setShowLayover(false);
-          break;
+        // case 'switched-active-tab-show-layover':
+        //   showMatches && setShowLayover(true);
+        //   break;
+        // case 'switched-active-tab-hide-layover':
+        //   showMatches && setShowLayover(false);
+        //   break;
         case 'add-styles':
           serializedtabState =
             message.payload.store.tabStates[message.payload.tabId];
@@ -239,7 +235,6 @@ const App: React.FC<{}> = () => {
       lastSearchValue,
       showMatches,
       totalMatchesCount,
-      globalMatchIdx,
       layoverPosition,
     ]
   );
@@ -249,22 +244,10 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showLayover) {
-        // toggleSearchLayover(false);
-        // setShowLayover(false);
-        // setShowMatches(false);
-
         sendMessageToBackground({
           from: 'content',
           type: 'remove-styles-all-tabs',
         });
-
-        // // FIXME: refactor so that the message doesn't get set to this tab?
-        // const msg: CLOSE_SEARCH_OVERLAY_MESSAGE = {
-        //   from: 'content',
-        //   type: 'CLOSE_SEARCH_OVERLAY',
-        //   payload: {},
-        // };
-        // sendMessageToBackground(msg);
       }
     };
 
@@ -276,33 +259,24 @@ const App: React.FC<{}> = () => {
   }, [showLayover]);
 
   useEffect(() => {
-    // const rmvHltMatches = async () => {
-    //   await sendMessageToBackground({
-    //     from: 'content',
-    //     type: 'remove-all-highlight-matches',
-    //   });
-    // };
-    // debugger;
-
     return () => {
-      // showMatches && rmvHltMatches();
       if (showMatches) {
-        // debugger;
-        // rmvHltMatches();
-        // TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE:
-        // toggleSearchLayover(false);
         removeAllHighlightMatches();
       }
     };
   }, [showMatches]);
 
-  // useEffect(() => {
-  //   console.log('state2Context updated: ', state2Context);
-  // }, [state2Context]);
+  useEffect(() => {
+    const handleActiveTabChange = () => {
+      if (showMatches && activeTabId === state2Context.tabId) {
+        setShowLayover(true);
+      } else {
+        setShowLayover(false);
+      }
+    };
 
-  // useEffect(() => {
-  //   console.log('totalMatchesCount updated: ', totalMatchesCount);
-  // }, [totalMatchesCount]);
+    handleActiveTabChange();
+  }, [activeTabId, showMatches, tabId]);
 
   return (
     <>
@@ -332,3 +306,11 @@ reactRoot.render(
     </LayoverProvider>
   </React.StrictMode>
 );
+
+// useEffect(() => {
+//   console.log('state2Context updated: ', state2Context);
+// }, [state2Context]);
+
+// useEffect(() => {
+//   console.log('totalMatchesCount updated: ', totalMatchesCount);
+// }, [totalMatchesCount]);

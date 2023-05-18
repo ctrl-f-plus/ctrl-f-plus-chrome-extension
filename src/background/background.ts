@@ -2,22 +2,21 @@
 
 import {
   Messages,
-  SwitchedActiveTabHideLayover,
-  SwitchedActiveTabShowLayover,
+  // SwitchedActiveTabHideLayover,
+  // SwitchedActiveTabShowLayover,
 } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
   getOrderedTabs,
-  // handleRemoveAllHighlightMatches,
+  handleRemoveAllHighlightMatches,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
-import {
-  createSwitchedActiveTabHideLayoverMsg,
-  createSwitchedActiveTabShowLayoverMsg,
-} from '../utils/messageUtils/createMessages';
+import // createSwitchedActiveTabHideLayoverMsg,
+// createSwitchedActiveTabShowLayoverMsg,
+'../utils/messageUtils/createMessages';
 import { sendMsgToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import {
@@ -67,16 +66,10 @@ chrome.runtime.onMessage.addListener(
         });
         sendStoreToContentScripts(store);
         return true;
-      // case 'remove-all-highlight-matches':
-      // await handleRemoveAllHighlightMatches(sendResponse);
-      // sendStoreToContentScripts(store);
-      // break;
-      case 'add-styles-all-tabs':
-        updateStore(store, {
-          showLayover: true,
-          showMatches: true,
-        });
-        return true;
+      case 'remove-all-highlight-matches':
+        await handleRemoveAllHighlightMatches(sendResponse);
+        sendStoreToContentScripts(store);
+        break;
       case 'CLOSE_SEARCH_OVERLAY':
         updateStore(store, {
           showLayover: false,
@@ -109,22 +102,28 @@ chrome.runtime.onMessage.addListener(
 // - Could maybe be improved by using the `active-tab` field in the store
 // - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  updateStore(store, { activeTabId: tabId });
+
   if (store.showLayover) {
-    const orderedTabs = await getOrderedTabs(false);
-
-    const msg = createSwitchedActiveTabShowLayoverMsg();
-    sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
-
-    const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
-
-    const msg2 = createSwitchedActiveTabHideLayoverMsg();
-
-    for (const otherTab of inactiveTabs) {
-      if (otherTab.id) {
-        sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
-      }
-    }
+    sendStoreToContentScripts(store);
   }
+
+  // if (store.showLayover) {
+  //   const orderedTabs = await getOrderedTabs(false);
+
+  //   const msg = createSwitchedActiveTabShowLayoverMsg();
+  //   sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
+
+  //   const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
+
+  //   const msg2 = createSwitchedActiveTabHideLayoverMsg();
+
+  //   for (const otherTab of inactiveTabs) {
+  //     if (otherTab.id) {
+  //       sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
+  //     }
+  //   }
+  // }
   // sendStoreToContentScripts(store);
 });
 
