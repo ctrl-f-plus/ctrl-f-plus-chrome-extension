@@ -36,6 +36,7 @@ sendStoreToContentScripts(store);
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     console.log('Received message:', message, ' \n Store: ', store);
+    // return;
 
     const { type, payload, transactionId } = message;
 
@@ -72,7 +73,13 @@ chrome.runtime.onMessage.addListener(
         return true;
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
+        sendStoreToContentScripts(store);
         break;
+      case 'CLOSE_SEARCH_OVERLAY':
+        await toggleLayoverAndMatchesAllTabs(false);
+        sendStoreToContentScripts(store);
+        break;
+
       case 'switch-tab':
         await switchTab(message.serializedState);
         return true;
@@ -117,7 +124,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
-  console.log('command:', command);
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
     await toggleLayoverAndMatchesAllTabs(addStyles);

@@ -149,26 +149,17 @@ export const useLayoverHandler = () => {
 
   const toggleSearchLayover = useCallback(
     (forceShowLayover?: boolean) => {
-      const openSearchLayover = () => {
-        // sendMessageToBackground({
-        //   from: 'content',
-        //   type: 'add-styles-all-tabs',
-        // });
-        // dispatch({ type: 'SET_SHOW_MATCHES', payload: true });
-      };
-
       const closeSearchLayover = async (searchValue: string) => {
-        // TODO: NEED TO RUN SEARCHSUBMIT, BUT WITHOUT THE CSS INJECTION (test by typing a new value into search input then hitting `esc` key)
         setStoredFindValue(searchValue);
 
         // FIXME: There is a bug here. where we incorrectly call handle next when no matches are highlighted
         setStoredLastSearchValue(searchValue);
 
         // src/hooks/useLayoverHandler.ts
-        // sendMessageToBackground({
-        //   from: 'content',
-        //   type: 'remove-styles-all-tabs',
-        // });
+        sendMessageToBackground({
+          from: 'content',
+          type: 'remove-styles-all-tabs',
+        });
 
         await sendMessageToBackground({
           from: 'content',
@@ -178,6 +169,7 @@ export const useLayoverHandler = () => {
         dispatch({ type: 'SET_SHOW_MATCHES', payload: false });
         dispatch({ type: 'SET_SHOW_LAYOVER', payload: false });
       };
+
       closeSearchLayover(state.searchValue);
 
       // const newState =
@@ -187,6 +179,7 @@ export const useLayoverHandler = () => {
 
       // newState ? openSearchLayover() : closeSearchLayover(state.searchValue);
       // dispatch({ type: 'SET_SHOW_LAYOVER', payload: newState });
+      // dispatch({ type: 'SET_SHOW_MATCHES', payload: newState });
     },
 
     [sendMessageToBackground, state.showLayover, state.searchValue]
@@ -209,47 +202,61 @@ export const useLayoverHandler = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
 
-  const sendStateToBackground = async (state: LayoverState) => {
-    const stateWithoutFunctions: Partial<LayoverState> = Object.fromEntries(
+  // const sendStateToBackground = async (state: LayoverState) => {
+  //   const stateWithoutFunctions: Partial<LayoverState> = Object.fromEntries(
+  //     Object.entries(state).filter(
+  //       ([key, value]) => typeof value !== 'function'
+  //     )
+  //   ) as Partial<LayoverState>;
+
+  //   const message: UpdateTabStatesObjMsg = {
+  //     // const message: StateUpdateMessage = {
+  //     from: 'content:match-utils',
+  //     // type: 'state-update',
+  //     type: 'update-tab-states-obj',
+  //     payload: {
+  //       serializedState: stateWithoutFunctions,
+  //     },
+  //   };
+
+  //   await sendMessageToBackground(message);
+  // };
+  // useEffect(() => {
+  //   // const stateWithoutFunctions = Object.fromEntries(
+  //   //   Object.entries(state).filter(
+  //   //     ([key, value]) => typeof value !== 'function'
+  //   //   )
+  //   // );
+  //   // console.log(
+  //   //   'LayoverContext Updated: ',
+  //   //   stateWithoutFunctions,
+  //   //   '\nmatchesObj: ',
+  //   //   state.state2Context.matchesObj
+  //   // );
+
+  //   // sendStateToBackground(state);
+  //   const debouncedSendStateToBackground = debounce(
+  //     sendStateToBackground,
+  //     1000
+  //   );
+
+  //   // Send the state to the background script, debounced
+  //   // debouncedSendStateToBackground(state);
+  // }, [state, sendStateToBackground]);
+
+  useEffect(() => {
+    const stateWithoutFunctions = Object.fromEntries(
       Object.entries(state).filter(
         ([key, value]) => typeof value !== 'function'
       )
-    ) as Partial<LayoverState>;
-
-    const message: UpdateTabStatesObjMsg = {
-      // const message: StateUpdateMessage = {
-      from: 'content:match-utils',
-      // type: 'state-update',
-      type: 'update-tab-states-obj',
-      payload: {
-        serializedState: stateWithoutFunctions,
-      },
-    };
-
-    await sendMessageToBackground(message);
-  };
-  useEffect(() => {
-    // const stateWithoutFunctions = Object.fromEntries(
-    //   Object.entries(state).filter(
-    //     ([key, value]) => typeof value !== 'function'
-    //   )
-    // );
-    // console.log(
-    //   'LayoverContext Updated: ',
-    //   stateWithoutFunctions,
-    //   '\nmatchesObj: ',
-    //   state.state2Context.matchesObj
-    // );
-
-    // sendStateToBackground(state);
-    const debouncedSendStateToBackground = debounce(
-      sendStateToBackground,
-      1000
     );
-
-    // Send the state to the background script, debounced
-    debouncedSendStateToBackground(state);
-  }, [state, sendStateToBackground]);
+    console.log(
+      'LayoverContext Updated: ',
+      stateWithoutFunctions,
+      '\nmatchesObj: ',
+      state.state2Context.matchesObj
+    );
+  }, [state]);
 
   return {
     ...state,

@@ -186,6 +186,12 @@ export interface StateUpdateMessage extends BaseMessage {
   payload: any;
 }
 
+export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
+  from: 'content';
+  type: 'CLOSE_SEARCH_OVERLAY';
+  payload: any;
+}
+
 export type Messages =
   | GetAllMatchesMsg
   | NextMatchMsg
@@ -211,4 +217,5 @@ export type Messages =
   | ToggleStylesMsg
   | RemoveAllHighlightMatches_msg
   | ToggleSearchLayoverMsg
-  | StateUpdateMessage;
+  | StateUpdateMessage
+  | CLOSE_SEARCH_OVERLAY_MESSAGE;

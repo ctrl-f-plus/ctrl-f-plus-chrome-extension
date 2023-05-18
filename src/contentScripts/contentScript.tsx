@@ -10,7 +10,11 @@ import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
+import {
+  CLOSE_SEARCH_OVERLAY_MESSAGE,
+  MessageFixMe,
+  UpdateTabStatesObjMsg,
+} from '../types/message.types';
 import {
   SerializedTabState,
   TabId,
@@ -164,9 +168,12 @@ const App: React.FC<{}> = () => {
             ...tabState,
           });
 
+          // FIXME: REVIEW //////////////////////////
           // const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
           // sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
+
           sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
+          // FIXME: REVIEW //////////////////////////
           break;
         case 'remove-all-highlight-matches':
           removeAllHighlightMatches();
@@ -252,9 +259,16 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // TODO: Should run on all stored tabs from given window
       if (e.key === 'Escape' && showLayover) {
         toggleSearchLayover(false);
+
+        // // FIXME: refactor so that the message doesn't get set to this tab?
+        // const msg: CLOSE_SEARCH_OVERLAY_MESSAGE = {
+        //   from: 'content',
+        //   type: 'CLOSE_SEARCH_OVERLAY',
+        //   payload: {},
+        // };
+        // sendMessageToBackground(msg);
       }
     };
 
@@ -263,7 +277,7 @@ const App: React.FC<{}> = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showLayover, searchValue]);
+  }, [showLayover, showMatches, searchValue]);
 
   useEffect(() => {
     const rmvHltMatches = async () => {

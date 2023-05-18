@@ -78,3 +78,4 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - NextMatch() doesn't send updated state to background ever
 - If you search an empty string twice, then you get `NaN/0`. fix this
 - Escape key doesn't work quite right. i think it only toggles one thing in the background script maybe. review it.
+- On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
