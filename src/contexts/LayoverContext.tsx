@@ -12,7 +12,7 @@ import {
 export const LayoverContext = createContext<LayoverContextData>({
   showLayover: false,
   setShowLayover: () => {},
-  toggleSearchLayover: (forceShowLayover?: boolean) => undefined,
+  // toggleSearchLayover: (forceShowLayover?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
   lastSearchValue: '',
@@ -49,7 +49,7 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setLastSearchValue,
     searchValue,
     setSearchValue,
-    toggleSearchLayover,
+    // toggleSearchLayover,
     showMatches,
     setShowMatches,
     totalMatchesCount,
@@ -68,7 +68,7 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
       value={{
         showLayover,
         setShowLayover,
-        toggleSearchLayover,
+        // toggleSearchLayover,
         searchValue,
         setSearchValue,
         lastSearchValue,

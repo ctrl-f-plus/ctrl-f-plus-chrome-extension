@@ -17,7 +17,7 @@ import {
 } from '../utils/storage';
 import {
   createHighlightMsg,
-  createRemoveAllHighlightMatchesMsg,
+  // createRemoveAllHighlightMatchesMsg,
   createToggleStylesMsg,
   createUpdateHighlightsMsg,
 } from './messageUtils/createMessages';
@@ -201,30 +201,30 @@ export async function switchTab(
  * Event Handling Functions
  */
 
-export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
-  updateStore(store, {
-    showLayover: addStyles,
-    showMatches: addStyles,
-  });
-}
+// export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
+//   updateStore(store, {
+//     showLayover: addStyles,
+//     showMatches: addStyles,
+//   });
+// }
 
-export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
-  const tabs = await queryCurrentWindowTabs();
+// export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+//   const tabs = await queryCurrentWindowTabs();
 
-  const tabPromises = tabs.map((tab) => {
-    if (tab.id) {
-      const msg = createRemoveAllHighlightMatchesMsg();
-      return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
-    } else {
-      return Promise.resolve(null);
-    }
-  });
+//   const tabPromises = tabs.map((tab) => {
+//     if (tab.id) {
+//       const msg = createRemoveAllHighlightMatchesMsg();
+//       return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
+//     } else {
+//       return Promise.resolve(null);
+//     }
+//   });
 
-  const responses = await Promise.all(tabPromises);
-  sendResponse(responses);
+//   const responses = await Promise.all(tabPromises);
+//   sendResponse(responses);
 
-  return true;
-}
+//   return true;
+// }
 
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(

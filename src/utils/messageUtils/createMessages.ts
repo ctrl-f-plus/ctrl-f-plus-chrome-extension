@@ -15,7 +15,7 @@ import {
   SwitchedActiveTabHideLayover,
   SwitchedActiveTabShowLayover,
   ToggleSearchLayoverMsg,
-  ToggleStylesAllTabs,
+  // ToggleStylesAllTabs,
   ToggleStylesMsg,
   TransactionId,
   UpdateHighlightsMsg,
@@ -48,12 +48,12 @@ export function createToggleStylesMsg(
   };
 }
 
-export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesMsg {
-  return {
-    from: 'background:backgroundUtils',
-    type: 'remove-all-highlight-matches',
-  };
-}
+// export function createRemoveAllHighlightMatchesMsg(): RemoveAllHighlightMatchesMsg {
+//   return {
+//     from: 'background:backgroundUtils',
+//     type: 'remove-all-highlight-matches',
+//   };
+// }
 
 export function createNextMatchMsg(
   tabId: TabId,
@@ -174,16 +174,6 @@ export function createUpdateLayoverPositionMsg(
   };
 }
 
-// TODO: consolidate with `createToggleStylesMsg()`??
-export function createToggleStylesAllTabsMsg(
-  addStlyes: boolean
-): ToggleStylesAllTabs {
-  return {
-    from: 'content',
-    type: addStlyes ? 'add-styles-all-tabs' : 'remove-styles-all-tabs',
-  };
-}
-
 // export const createGetAllMatchesMsg = (findValue: string): GetAllMatchesMsg => {
 export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
   return {
@@ -194,12 +184,12 @@ export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
 }
 
 // FIXME:consoliate?
-export function createRemoveAllHighlightMatches_msg(): RemoveAllHighlightMatches_msg {
-  return {
-    from: 'content',
-    type: 'remove-all-highlight-matches',
-  };
-}
+// export function createRemoveAllHighlightMatches_msg(): RemoveAllHighlightMatches_msg {
+//   return {
+//     from: 'content',
+//     type: 'remove-all-highlight-matches',
+//   };
+// }
 
 export function createNextMatch_msg(): NextMatch_msg {
   return {

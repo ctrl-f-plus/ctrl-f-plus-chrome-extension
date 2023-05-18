@@ -44,7 +44,7 @@ const App: React.FC<{}> = () => {
   const {
     showLayover,
     setShowLayover,
-    toggleSearchLayover,
+    // toggleSearchLayover,
     searchValue,
     setSearchValue,
     lastSearchValue,
@@ -112,17 +112,6 @@ const App: React.FC<{}> = () => {
 
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
-      const stateOnlyContext = {
-        showLayover,
-        searchValue,
-        lastSearchValue,
-        showMatches,
-        totalMatchesCount,
-        globalMatchIdx,
-        layoverPosition,
-        state2Context,
-      };
-
       console.log('Received message:', message);
 
       const { type, command, transactionId } = message;
@@ -260,7 +249,14 @@ const App: React.FC<{}> = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showLayover) {
-        toggleSearchLayover(false);
+        // toggleSearchLayover(false);
+        // setShowLayover(false);
+        // setShowMatches(false);
+
+        sendMessageToBackground({
+          from: 'content',
+          type: 'remove-styles-all-tabs',
+        });
 
         // // FIXME: refactor so that the message doesn't get set to this tab?
         // const msg: CLOSE_SEARCH_OVERLAY_MESSAGE = {
@@ -277,18 +273,26 @@ const App: React.FC<{}> = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showLayover, showMatches, searchValue]);
+  }, [showLayover]);
 
   useEffect(() => {
-    const rmvHltMatches = async () => {
-      await sendMessageToBackground({
-        from: 'content',
-        type: 'remove-all-highlight-matches',
-      });
-    };
+    // const rmvHltMatches = async () => {
+    //   await sendMessageToBackground({
+    //     from: 'content',
+    //     type: 'remove-all-highlight-matches',
+    //   });
+    // };
+    // debugger;
 
     return () => {
-      showMatches && rmvHltMatches();
+      // showMatches && rmvHltMatches();
+      if (showMatches) {
+        // debugger;
+        // rmvHltMatches();
+        // TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE: TODO: START HERE:
+        // toggleSearchLayover(false);
+        removeAllHighlightMatches();
+      }
     };
   }, [showMatches]);
 

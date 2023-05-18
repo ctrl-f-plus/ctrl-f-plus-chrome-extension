@@ -8,8 +8,7 @@ import {
 import {
   executeContentScriptOnAllTabs,
   getOrderedTabs,
-  handleRemoveAllHighlightMatches,
-  toggleLayoverAndMatchesAllTabs,
+  // handleRemoveAllHighlightMatches,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
   switchTab,
@@ -61,22 +60,28 @@ chrome.runtime.onMessage.addListener(
         sendStoreToContentScripts(store);
 
         return true;
-
       case 'remove-styles-all-tabs':
         updateStore(store, {
           showLayover: false,
           showMatches: false,
         });
-        return true;
-      case 'add-styles-all-tabs':
-        await toggleLayoverAndMatchesAllTabs(true);
-        return true;
-      case 'remove-all-highlight-matches':
-        await handleRemoveAllHighlightMatches(sendResponse);
         sendStoreToContentScripts(store);
-        break;
+        return true;
+      // case 'remove-all-highlight-matches':
+      // await handleRemoveAllHighlightMatches(sendResponse);
+      // sendStoreToContentScripts(store);
+      // break;
+      case 'add-styles-all-tabs':
+        updateStore(store, {
+          showLayover: true,
+          showMatches: true,
+        });
+        return true;
       case 'CLOSE_SEARCH_OVERLAY':
-        await toggleLayoverAndMatchesAllTabs(false);
+        updateStore(store, {
+          showLayover: false,
+          showMatches: false,
+        });
         sendStoreToContentScripts(store);
         break;
 
@@ -104,30 +109,35 @@ chrome.runtime.onMessage.addListener(
 // - Could maybe be improved by using the `active-tab` field in the store
 // - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  const orderedTabs = await getOrderedTabs(false);
+  if (store.showLayover) {
+    const orderedTabs = await getOrderedTabs(false);
 
-  const msg = createSwitchedActiveTabShowLayoverMsg();
-  sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
+    const msg = createSwitchedActiveTabShowLayoverMsg();
+    sendMsgToTab<SwitchedActiveTabShowLayover>(tabId, msg);
 
-  const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
+    const inactiveTabs = orderedTabs.filter((tab) => tab.id !== tabId);
 
-  const msg2 = createSwitchedActiveTabHideLayoverMsg();
+    const msg2 = createSwitchedActiveTabHideLayoverMsg();
 
-  for (const otherTab of inactiveTabs) {
-    if (otherTab.id) {
-      sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
+    for (const otherTab of inactiveTabs) {
+      if (otherTab.id) {
+        sendMsgToTab<SwitchedActiveTabHideLayover>(otherTab.id, msg2);
+      }
     }
   }
-
-  sendStoreToContentScripts(store);
+  // sendStoreToContentScripts(store);
 });
 
 // FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
-    await toggleLayoverAndMatchesAllTabs(addStyles);
+    updateStore(store, {
+      showLayover: addStyles,
+      showMatches: addStyles,
+    });
     sendStoreToContentScripts(store);
+    console.log(store);
   }
 });
 

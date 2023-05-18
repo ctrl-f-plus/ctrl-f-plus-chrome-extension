@@ -84,10 +84,10 @@ export interface MessageFixMe {
   foundFirstMatch?: boolean;
 }
 
-export interface RemoveStylesAllTabs extends BaseMessage {
-  from: 'content';
-  type: 'remove-styles-all-tabs';
-}
+// export interface RemoveStylesAllTabs extends BaseMessage {
+//   from: 'content';
+//   type: 'remove-styles-all-tabs';
+// }
 
 export interface ToggleStylesAllTabs extends BaseMessage {
   from: 'content';
@@ -201,7 +201,7 @@ export type Messages =
   | NextMatch_msg
   | PreviousMatchMessage
   | RemoveStylesMessage
-  | RemoveStylesAllTabs
+  // | RemoveStylesAllTabs
   | RemoveAllHighlightMatches
   | ToggleStylesAllTabs
   | RemoveAllHighlightMatchesMsg

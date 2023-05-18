@@ -27,7 +27,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     showLayover,
     showMatches,
     lastSearchValue,
-    toggleSearchLayover,
+    // toggleSearchLayover,
     totalMatchesCount,
     globalMatchIdx,
     state2Context,
@@ -156,7 +156,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </button>
 
           <button
-            onClick={() => toggleSearchLayover()}
+            // onClick={() => toggleSearchLayover()}
             type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >
