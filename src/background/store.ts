@@ -113,12 +113,17 @@ export function resetPartialStore(store: Store): void {
 }
 
 // Store update functions
-export async function sendStoreToContentScripts(store: Store): Promise<any> {
+export async function sendStoreToContentScripts(
+  store: Store,
+  tabIds: ValidTabId[] = []
+): Promise<any> {
   const tabs = await queryCurrentWindowTabs();
-  console.log('store - tabs: ', tabs);
-  const tabIds = tabs
-    .map((tab) => tab.id)
-    .filter((id): id is ValidTabId => id !== undefined);
+
+  if (tabIds.length === 0) {
+    tabIds = tabs
+      .map((tab) => tab.id)
+      .filter((id): id is ValidTabId => id !== undefined);
+  }
 
   const promises = tabIds.map((tabId) => {
     const tabStore = createTabStore(store, tabId);

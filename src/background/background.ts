@@ -148,9 +148,29 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
+  // console.log(store);
+
+  // resetStore(store);
+
+  // const tabs: chrome.tabs.Tab[] = await new Promise((resolve) => {
+  //   chrome.tabs.query({}, (tabs) => {
+  //     resolve(tabs);
+  //   });
+  // });
+
+  // const tabIds = tabs
+  //   .map((tab) => tab.id)
+  //   .filter((id): id is ValidTabId => id !== undefined);
+
+  // sendStoreToContentScripts(store, tabIds);
+  // // debugger;
   await clearLocalStorage();
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+// FIXME: REVIEW
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (!store.showMatches) {
+    return;
+  }
   sendStoreToContentScripts(store);
 });
