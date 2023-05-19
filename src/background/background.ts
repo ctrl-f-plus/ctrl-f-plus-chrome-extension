@@ -1,43 +1,24 @@
 // src/background/background.ts
 
-import {
-  Messages,
-  PRINT_STORE,
-  UpdateHighlightsMsg,
-} from '../types/message.types';
+import { Messages } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
-  getOrderedTabs,
   handleRemoveAllHighlightMatches,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
-  queryCurrentWindowTabs,
   switchTab,
-  toggleLayoverAndMatchesAllTabs,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
-import { createUpdateHighlightsMsg } from '../utils/messageUtils/createMessages';
-import {
-  sendMessageToContentScripts,
-  sendMsgToTab,
-} from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import {
   initStore,
   resetPartialStore,
-  sendPrintStoreTOContentScripts,
   sendStoreToContentScripts,
   updateStore,
 } from './store';
 
 export const store = initStore();
-sendStoreToContentScripts(store, 'init');
-
-let printMsg: PRINT_STORE = {
-  from: 'background',
-  type: 'PRINT_STORE',
-  payload: {},
-};
+sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
@@ -58,17 +39,12 @@ chrome.runtime.onMessage.addListener(
         });
 
         if (findValue === '') {
-          sendStoreToContentScripts(store, 'get-all-matches-ms -> ');
+          sendStoreToContentScripts(store);
           return;
         }
 
         await executeContentScriptOnAllTabs(payload, store);
-        sendStoreToContentScripts(
-          store,
-          'get-all-matches-msg - exec on all tabs'
-        );
-
-        sendPrintStoreTOContentScripts(store);
+        sendStoreToContentScripts(store);
 
         return true;
       case 'remove-styles-all-tabs':
@@ -76,42 +52,33 @@ chrome.runtime.onMessage.addListener(
           showLayover: false,
           showMatches: false,
         });
-        sendStoreToContentScripts(store, 'remove-styles-all-tabs');
+        sendStoreToContentScripts(store);
 
-        sendPrintStoreTOContentScripts(store);
         return true;
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
-        sendStoreToContentScripts(store, 'remove-all-highlight-matches');
+        sendStoreToContentScripts(store);
 
-        sendPrintStoreTOContentScripts(store);
         break;
       case 'CLOSE_SEARCH_OVERLAY':
         updateStore(store, {
           showLayover: false,
           showMatches: false,
         });
-        sendStoreToContentScripts(store, 'CLOSE_SEARCH_OVERLAY');
+        sendStoreToContentScripts(store);
 
-        sendPrintStoreTOContentScripts(store);
         break;
       case 'switch-tab':
         await switchTab(message.serializedState);
 
-        sendPrintStoreTOContentScripts(store);
         return true;
       case 'update-tab-states-obj':
         console.log('update-tab-states-obj');
         await handleUpdateTabStatesObj(payload, sendResponse);
-        sendPrintStoreTOContentScripts(store);
         return true;
       case 'update-layover-position':
         await handleUpdateLayoverPosition(store, payload.newPosition);
-        sendPrintStoreTOContentScripts(store);
         return;
-      // case 'state-update':
-      //   console.log('state-update');
-      //   return;
       default:
         return;
     }
@@ -126,7 +93,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   updateStore(store, { activeTabId: tabId });
 
   if (store.showLayover) {
-    sendStoreToContentScripts(store, 'onActivated');
+    sendStoreToContentScripts(store);
   }
 });
 
@@ -134,36 +101,24 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
-    // const addStyles = true;
 
-    // const tabs = await queryCurrentWindowTabs();
     updateStore(store, {
       showLayover: addStyles,
       showMatches: addStyles,
     });
-    // await toggleLayoverAndMatchesAllTabs(addStyles);
-    // console.log('store:', store, '\naddStyles: ', addStyles, '\ntabs: ', tabs);
-    // debugger;
 
-    sendStoreToContentScripts(store, 'onCommand');
-    sendPrintStoreTOContentScripts(store);
-
-    // const msg = createUpdateHighlightsMsg(store.activeTabId as number);
-
-    // await sendMsgToTab<UpdateHighlightsMsg>(store.activeTabId, msg);
-
-    console.log(store);
+    sendStoreToContentScripts(store);
   }
 });
 
 chrome.tabs.onCreated.addListener(() => {
   updateTotalTabsCount(store);
-  sendStoreToContentScripts(store, 'onCreated');
+  sendStoreToContentScripts(store);
 });
 
 chrome.tabs.onRemoved.addListener(() => {
   updateTotalTabsCount(store);
-  sendStoreToContentScripts(store, 'onRemoved');
+  sendStoreToContentScripts(store);
 });
 
 chrome.windows.onFocusChanged.addListener((windowId) => {
@@ -185,7 +140,7 @@ chrome.windows.onFocusChanged.addListener((windowId) => {
     ) {
       updateTotalTabsCount(store);
       store.updatedTabsCount = 0;
-      sendStoreToContentScripts(store, 'windows.get');
+      sendStoreToContentScripts(store);
     }
 
     store.lastFocusedWindowId = windowId;
@@ -197,5 +152,5 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  sendStoreToContentScripts(store, 'onUpdated');
+  sendStoreToContentScripts(store);
 });

@@ -6,7 +6,6 @@ import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
-  ToggleStylesMsg,
   UpdateHighlightsMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
@@ -17,8 +16,6 @@ import {
 } from '../utils/storage';
 import {
   createHighlightMsg,
-  // createRemoveAllHighlightMatchesMsg,
-  createToggleStylesMsg,
   createUpdateHighlightsMsg,
 } from './messageUtils/createMessages';
 import { sendMsgToTab } from './messageUtils/sendMessageToContentScripts';
@@ -171,7 +168,7 @@ export async function switchTab(
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
-  
+
   const {
     tabId,
     currentIndex,
@@ -211,10 +208,6 @@ export async function switchTab(
     const msg = createUpdateHighlightsMsg(tab.id);
 
     await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
-
-    // updateStore(store, {
-    //   globalMatchIdx: store.tabStates[nextTabId].globalMatchIdxStart,
-    // });
   });
 }
 
@@ -264,9 +257,7 @@ export async function handleUpdateTabStatesObj(
       tabId,
     },
   } = payload;
-  // debugger;
   await setStoredTabs(payload.serializedState);
-  // await setStoredTabs(serializedMatches);
 
   store.updatedTabsCount++;
 
@@ -274,8 +265,6 @@ export async function handleUpdateTabStatesObj(
     updateMatchesCount();
     store.updatedTabsCount = 0;
   }
-
-  console.log(store);
 
   updateStore(store, {
     tabStates: {

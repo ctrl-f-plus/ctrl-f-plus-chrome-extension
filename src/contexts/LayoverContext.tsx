@@ -12,7 +12,6 @@ import {
 export const LayoverContext = createContext<LayoverContextData>({
   showLayover: false,
   setShowLayover: () => {},
-  // toggleSearchLayover: (forceShowLayover?: boolean) => undefined,
   searchValue: '',
   setSearchValue: () => {},
   lastSearchValue: '',
@@ -28,7 +27,6 @@ export const LayoverContext = createContext<LayoverContextData>({
   state2Context: {
     tabId: undefined,
     currentIndex: undefined,
-    // currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
     globalMatchIdxStart: undefined,

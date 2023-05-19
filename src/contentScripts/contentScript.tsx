@@ -10,11 +10,7 @@ import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import {
-  CLOSE_SEARCH_OVERLAY_MESSAGE,
-  MessageFixMe,
-  UpdateTabStatesObjMsg,
-} from '../types/message.types';
+import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
 import {
   SerializedTabState,
   TabId,
@@ -27,7 +23,6 @@ import {
   serializeMatchesObj,
 } from '../utils/htmlUtils';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
-import { createUpdateTabStatesObjMsg } from '../utils/messageUtils/createMessages';
 import {
   sendMessageToBackground,
   sendMsgToBackground,
@@ -44,7 +39,6 @@ const App: React.FC<{}> = () => {
   const {
     showLayover,
     setShowLayover,
-    // toggleSearchLayover,
     searchValue,
     setSearchValue,
     lastSearchValue,
@@ -58,8 +52,6 @@ const App: React.FC<{}> = () => {
     state2Context,
     setState2Context,
   } = useContext(LayoverContext);
-
-  // const { matchesObj, tabId } = state2Context;
 
   const { updateHighlights, findAllMatches } = useFindMatches();
 
@@ -113,7 +105,7 @@ const App: React.FC<{}> = () => {
 
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
-      // console.log('Received message:', message);
+      console.log('Received message:', message);
 
       const { type, command, transactionId } = message;
 

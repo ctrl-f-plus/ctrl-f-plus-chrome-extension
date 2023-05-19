@@ -118,7 +118,6 @@ export const useFindMatches = () => {
 
     setState2,
     serializeMatchesObj,
-    // createUpdateTabStatesObjMsg,
     sendMsgToBackground,
   ]);
 

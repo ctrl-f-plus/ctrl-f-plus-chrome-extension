@@ -1,7 +1,7 @@
 // src/background/store.ts
 
 import { LayoverPosition } from '../components/Layover';
-import { SerializedTabState, ValidTabId, TabId } from '../types/tab.types';
+import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
 
 // Store Interface
@@ -17,7 +17,6 @@ export interface SharedStore {
   lastSearchValue: string;
 
   // GLOBAL: MAYBE, OTHERWISE MORE TO `Store`
-  // activeTab: chrome.tabs.Tab | null;
   activeTabId: TabId;
 }
 
@@ -35,7 +34,6 @@ export interface TabStore extends SharedStore {
 
 export function initStore() {
   const store: Store = {
-    // globalMatchIdx: 0,
     totalMatchesCount: 0,
     findValue: '',
     searchValue: '',
@@ -43,7 +41,6 @@ export function initStore() {
     lastFocusedWindowId: undefined,
     updatedTabsCount: 0,
     totalTabs: undefined,
-    // activeTab: null,
     activeTabId: undefined,
     layoverPosition: { x: 0, y: 0 },
     showLayover: false,
@@ -58,7 +55,6 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
   if (serializedTabState === undefined) {
     serializedTabState = {
       tabId: tabId,
-      // active: false,
       currentIndex: 0,
       matchesCount: 0,
       serializedMatches: '',
@@ -80,8 +76,6 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     searchValue: store.searchValue,
     lastSearchValue: store.lastSearchValue,
 
-    // globalMatchIdx: store.globalMatchIdx,
-    // activeTab: store.activeTab,
     activeTabId: store.activeTabId,
   };
 }
@@ -100,8 +94,6 @@ export function updateStore(store: Store, updates: Partial<Store>): void {
       }
     }
   }
-
-  console.log('store updated: ', store);
 }
 
 export function resetStore(store: Store): void {
@@ -121,12 +113,7 @@ export function resetPartialStore(store: Store): void {
 }
 
 // Store update functions
-export async function sendStoreToContentScripts(
-  store: Store,
-  origin: string
-  // tabs: chrome.tabs.Tab[] = []
-): Promise<any> {
-  // tabs = tabs.length > 0 ? tabs : await queryCurrentWindowTabs();
+export async function sendStoreToContentScripts(store: Store): Promise<any> {
   const tabs = await queryCurrentWindowTabs();
   console.log('store - tabs: ', tabs);
   const tabIds = tabs
@@ -155,41 +142,6 @@ export async function sendStoreToContentScripts(
       });
     });
   });
-  // debugger;
-  return Promise.all(promises);
-}
 
-export async function sendPrintStoreTOContentScripts(
-  store: Store
-  // origin: string
-): Promise<any> {
-  const tabs = await queryCurrentWindowTabs();
-  const tabIds = tabs
-    .map((tab) => tab.id)
-    .filter((id): id is ValidTabId => id !== undefined);
-
-  const promises = tabIds.map((tabId) => {
-    const tabStore = createTabStore(store, tabId);
-    const msg = {
-      async: false,
-      from: 'background',
-      type: 'PRINT_STORE',
-      payload: {
-        tabStore,
-        origin,
-      },
-    };
-
-    return new Promise((resolve, reject) => {
-      chrome.tabs.sendMessage(tabId, msg, (response) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
-        } else {
-          resolve(response);
-        }
-      });
-    });
-  });
-  // debugger;
   return Promise.all(promises);
 }

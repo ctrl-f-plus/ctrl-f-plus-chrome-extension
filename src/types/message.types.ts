@@ -159,13 +159,6 @@ export interface ToggleSearchLayoverMsg extends BaseMessage {
   type: 'toggle_search_layover';
 }
 
-// type StateUpdateMessage = {
-//   from: 'content';
-//   type: 'state-update';
-//   payload: {
-//     state: LayoverState;
-//   };
-// };
 export interface StateUpdateMessage extends BaseMessage {
   from: 'content';
   type: 'state-update';
@@ -175,12 +168,6 @@ export interface StateUpdateMessage extends BaseMessage {
 export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
   from: 'content';
   type: 'CLOSE_SEARCH_OVERLAY';
-  payload: any;
-}
-
-export interface PRINT_STORE extends BaseMessage {
-  from: 'background';
-  type: 'PRINT_STORE';
   payload: any;
 }
 
@@ -208,5 +195,4 @@ export type Messages =
   | RemoveAllHighlightMatches_msg
   | ToggleSearchLayoverMsg
   | StateUpdateMessage
-  | CLOSE_SEARCH_OVERLAY_MESSAGE
-  | PRINT_STORE;
+  | CLOSE_SEARCH_OVERLAY_MESSAGE;
