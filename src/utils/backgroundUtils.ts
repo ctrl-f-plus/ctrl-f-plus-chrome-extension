@@ -171,6 +171,27 @@ export async function switchTab(
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
+  
+  const {
+    tabId,
+    currentIndex,
+    matchesCount,
+    serializedMatches,
+    globalMatchIdxStart,
+  } = serializedState;
+
+  updateStore(store, {
+    tabStates: {
+      ...store.tabStates,
+      [tabId]: {
+        tabId,
+        currentIndex,
+        matchesCount,
+        serializedMatches,
+        globalMatchIdxStart,
+      },
+    },
+  });
 
   const storedTabs = await getAllStoredTabs();
   const matchesObject = storedTabs;
@@ -201,12 +222,12 @@ export async function switchTab(
  * Event Handling Functions
  */
 
-// export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
-//   updateStore(store, {
-//     showLayover: addStyles,
-//     showMatches: addStyles,
-//   });
-// }
+export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
+  updateStore(store, {
+    showLayover: addStyles,
+    showMatches: addStyles,
+  });
+}
 
 export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
   const tabs = await queryCurrentWindowTabs();
@@ -236,15 +257,14 @@ export async function handleUpdateTabStatesObj(
 ) {
   const {
     serializedState: {
-      tabId,
-      active,
       currentIndex,
-      matchesCount,
       globalMatchIdxStart,
+      matchesCount,
       serializedMatches,
+      tabId,
     },
   } = payload;
-
+  // debugger;
   await setStoredTabs(payload.serializedState);
   // await setStoredTabs(serializedMatches);
 
@@ -262,12 +282,11 @@ export async function handleUpdateTabStatesObj(
       ...store.tabStates,
       [payload.serializedState.tabId]: {
         ...store.tabStates[payload.serializedState.tabId],
-        tabId,
-        active,
         currentIndex,
-        matchesCount,
         globalMatchIdxStart,
+        matchesCount,
         serializedMatches,
+        tabId,
       },
     },
   });

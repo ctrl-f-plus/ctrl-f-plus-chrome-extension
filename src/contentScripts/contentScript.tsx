@@ -59,7 +59,7 @@ const App: React.FC<{}> = () => {
     setState2Context,
   } = useContext(LayoverContext);
 
-  const { matchesObj, tabId } = state2Context;
+  // const { matchesObj, tabId } = state2Context;
 
   const { updateHighlights, findAllMatches } = useFindMatches();
 
@@ -67,6 +67,7 @@ const App: React.FC<{}> = () => {
     tabStore: TabStore,
     tabId: ValidTabId
   ) => {
+    debugger;
     setSearchValue(tabStore.searchValue);
     setLastSearchValue(tabStore.lastSearchValue);
     setShowLayover(tabStore.showLayover);
@@ -77,8 +78,12 @@ const App: React.FC<{}> = () => {
     const serializedTabState = tabStore.serializedTabState;
     // const xPathTabState: XPathTabState =
     const xPathTabState = deserializeMatchesObj(serializedTabState);
+    debugger;
     const tabState = restoreHighlightSpans(xPathTabState);
-    setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+
+    if (!isEqual(tabState, state2Context)) {
+      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+    }
 
     setActiveTabId(tabStore.activeTabId);
   };
@@ -108,7 +113,7 @@ const App: React.FC<{}> = () => {
 
   const handleMessage = useCallback(
     async (message: MessageFixMe, sender: any, sendResponse: any) => {
-      console.log('Received message:', message);
+      // console.log('Received message:', message);
 
       const { type, command, transactionId } = message;
 
@@ -125,12 +130,6 @@ const App: React.FC<{}> = () => {
       let response;
 
       switch (type) {
-        // case 'switched-active-tab-show-layover':
-        //   showMatches && setShowLayover(true);
-        //   break;
-        // case 'switched-active-tab-hide-layover':
-        //   showMatches && setShowLayover(false);
-        //   break;
         case 'add-styles':
           serializedtabState =
             message.payload.store.tabStates[message.payload.tabId];
@@ -147,6 +146,7 @@ const App: React.FC<{}> = () => {
             ...serializedtabState,
           });
 
+          debugger;
           tabState = restoreHighlightSpans(tabState);
           //FIXME: DRY and/or REFACTOR AS RESPONSE:
           const serializedState: SerializedTabState = serializeMatchesObj({
@@ -182,10 +182,7 @@ const App: React.FC<{}> = () => {
 
           if (response.hasMatch && !message.foundFirstMatch) {
             if (!isEqual(state2, state2Context)) {
-              setState2Context({
-                type: 'SET_STATE2_CONTEXT',
-                payload: state2,
-              });
+              setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
             }
 
             state2 = updateHighlights(state2, message.prevIndex, false);
@@ -215,9 +212,26 @@ const App: React.FC<{}> = () => {
           if (!isEqual(state2, state2Context)) {
             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
           }
+
+          const newSerializedState = serializeMatchesObj({
+            ...newState,
+          });
+
+          sendMsgToBackground<UpdateTabStatesObjMsg>({
+            from: 'content:match-utils',
+            type: 'update-tab-states-obj',
+            payload: { serializedState: newSerializedState },
+          });
+
           sendResponse({ status: 'success' });
           return true;
+        case 'PRINT_STORE':
+          const storeToPrint = message.payload.tabStore;
 
+          const serializedTabState = storeToPrint.serializedTabState;
+
+          const xPathTabState = deserializeMatchesObj(serializedTabState);
+          console.log(xPathTabState);
         default:
           break;
       }
@@ -276,7 +290,8 @@ const App: React.FC<{}> = () => {
     };
 
     handleActiveTabChange();
-  }, [activeTabId, showMatches, tabId]);
+    // }, [activeTabId, showMatches, tabId]);
+  }, [activeTabId, showMatches]);
 
   return (
     <>

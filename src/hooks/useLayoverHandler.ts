@@ -238,19 +238,19 @@ export const useLayoverHandler = () => {
   //   // debouncedSendStateToBackground(state);
   // }, [state, sendStateToBackground]);
 
-  useEffect(() => {
-    const stateWithoutFunctions = Object.fromEntries(
-      Object.entries(state).filter(
-        ([key, value]) => typeof value !== 'function'
-      )
-    );
-    console.log(
-      'LayoverContext Updated: ',
-      stateWithoutFunctions,
-      '\nmatchesObj: ',
-      state.state2Context.matchesObj
-    );
-  }, [state]);
+  // useEffect(() => {
+  //   const stateWithoutFunctions = Object.fromEntries(
+  //     Object.entries(state).filter(
+  //       ([key, value]) => typeof value !== 'function'
+  //     )
+  //   );
+  //   console.log(
+  //     'LayoverContext Updated: ',
+  //     stateWithoutFunctions,
+  //     '\nmatchesObj: ',
+  //     state.state2Context.matchesObj
+  //   );
+  // }, [state]);
 
   return {
     ...state,

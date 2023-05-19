@@ -111,15 +111,6 @@ export interface UpdateHighlightsMsg extends BaseMessage {
   type: 'update-highlights';
   prevIndex: number | undefined;
 }
-// export interface SwitchedActiveTabShowLayover extends BaseMessage {
-//   from: 'background';
-//   type: 'switched-active-tab-show-layover';
-// }
-
-// export interface SwitchedActiveTabHideLayover extends BaseMessage {
-//   from: 'background';
-//   type: 'switched-active-tab-hide-layover';
-// }
 
 export interface UpdateTabStatesObjMsg extends BaseMessage {
   from: 'content:match-utils';
@@ -187,6 +178,12 @@ export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
   payload: any;
 }
 
+export interface PRINT_STORE extends BaseMessage {
+  from: 'background';
+  type: 'PRINT_STORE';
+  payload: any;
+}
+
 export type Messages =
   | GetAllMatchesMsg
   | NextMatchMsg
@@ -204,8 +201,6 @@ export type Messages =
   | SwitchTabMsg
   | UpdateHighlightsMsg
   | HighlightMsg
-  // | SwitchedActiveTabShowLayover
-  // | SwitchedActiveTabHideLayover
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
   | UpdateLayoverPositionMsg
@@ -213,4 +208,5 @@ export type Messages =
   | RemoveAllHighlightMatches_msg
   | ToggleSearchLayoverMsg
   | StateUpdateMessage
-  | CLOSE_SEARCH_OVERLAY_MESSAGE;
+  | CLOSE_SEARCH_OVERLAY_MESSAGE
+  | PRINT_STORE;

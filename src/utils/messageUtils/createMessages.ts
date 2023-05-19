@@ -12,8 +12,6 @@ import {
   RemoveAllHighlightMatchesMsg,
   RemoveAllHighlightMatches_msg,
   SwitchTabMsg,
-  // SwitchedActiveTabHideLayover,
-  // SwitchedActiveTabShowLayover,
   ToggleSearchLayoverMsg,
   // ToggleStylesAllTabs,
   ToggleStylesMsg,
@@ -101,20 +99,6 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   };
 }
 
-// export function createSwitchedActiveTabShowLayoverMsg(): SwitchedActiveTabShowLayover {
-//   return {
-//     from: 'background',
-//     type: 'switched-active-tab-show-layover',
-//   };
-// }
-
-// export function createSwitchedActiveTabHideLayoverMsg(): SwitchedActiveTabHideLayover {
-//   return {
-//     from: 'background',
-//     type: 'switched-active-tab-hide-layover',
-//   };
-// }
-
 export function createToggleSearchLayoverMsg(): ToggleSearchLayoverMsg {
   return {
     from: 'background',
@@ -182,14 +166,6 @@ export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
     payload: findValue,
   };
 }
-
-// FIXME:consoliate?
-// export function createRemoveAllHighlightMatches_msg(): RemoveAllHighlightMatches_msg {
-//   return {
-//     from: 'content',
-//     type: 'remove-all-highlight-matches',
-//   };
-// }
 
 export function createNextMatch_msg(): NextMatch_msg {
   return {

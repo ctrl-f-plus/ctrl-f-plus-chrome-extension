@@ -121,8 +121,14 @@ export function resetPartialStore(store: Store): void {
 }
 
 // Store update functions
-export async function sendStoreToContentScripts(store: Store): Promise<any> {
+export async function sendStoreToContentScripts(
+  store: Store,
+  origin: string
+  // tabs: chrome.tabs.Tab[] = []
+): Promise<any> {
+  // tabs = tabs.length > 0 ? tabs : await queryCurrentWindowTabs();
   const tabs = await queryCurrentWindowTabs();
+  console.log('store - tabs: ', tabs);
   const tabIds = tabs
     .map((tab) => tab.id)
     .filter((id): id is ValidTabId => id !== undefined);
@@ -135,6 +141,7 @@ export async function sendStoreToContentScripts(store: Store): Promise<any> {
       type: 'store-updated',
       payload: {
         tabStore,
+        origin,
       },
     };
 
@@ -148,6 +155,41 @@ export async function sendStoreToContentScripts(store: Store): Promise<any> {
       });
     });
   });
+  // debugger;
+  return Promise.all(promises);
+}
 
+export async function sendPrintStoreTOContentScripts(
+  store: Store
+  // origin: string
+): Promise<any> {
+  const tabs = await queryCurrentWindowTabs();
+  const tabIds = tabs
+    .map((tab) => tab.id)
+    .filter((id): id is ValidTabId => id !== undefined);
+
+  const promises = tabIds.map((tabId) => {
+    const tabStore = createTabStore(store, tabId);
+    const msg = {
+      async: false,
+      from: 'background',
+      type: 'PRINT_STORE',
+      payload: {
+        tabStore,
+        origin,
+      },
+    };
+
+    return new Promise((resolve, reject) => {
+      chrome.tabs.sendMessage(tabId, msg, (response) => {
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+        } else {
+          resolve(response);
+        }
+      });
+    });
+  });
+  // debugger;
   return Promise.all(promises);
 }

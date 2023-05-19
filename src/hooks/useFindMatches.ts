@@ -88,7 +88,7 @@ export const useFindMatches = () => {
           from: 'content-script-match-utils',
           type: 'switch-tab',
           serializedState: serializedState,
-          prevIndex: prevIndex,
+          prevIndex: prevIndex, // I don't think you need this field
         };
 
         await sendMsgToBackground<SwitchTabMsg>(msg);
@@ -96,6 +96,16 @@ export const useFindMatches = () => {
     } else {
       updatedState = updateHighlights(newState2, prevIndex);
     }
+
+    const serializedState: SerializedTabState = serializeMatchesObj({
+      ...updatedState,
+    });
+
+    sendMsgToBackground<UpdateTabStatesObjMsg>({
+      from: 'content:match-utils',
+      type: 'update-tab-states-obj',
+      payload: { serializedState },
+    });
 
     setState2(updatedState);
     setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
