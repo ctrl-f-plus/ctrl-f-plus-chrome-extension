@@ -59,7 +59,6 @@ const App: React.FC<{}> = () => {
     tabStore: TabStore,
     tabId: ValidTabId
   ) => {
-    debugger;
     setSearchValue(tabStore.searchValue);
     setLastSearchValue(tabStore.lastSearchValue);
     setShowLayover(tabStore.showLayover);
@@ -70,7 +69,7 @@ const App: React.FC<{}> = () => {
     const serializedTabState = tabStore.serializedTabState;
     // const xPathTabState: XPathTabState =
     const xPathTabState = deserializeMatchesObj(serializedTabState);
-    debugger;
+
     const tabState = restoreHighlightSpans(xPathTabState);
 
     if (!isEqual(tabState, state2Context)) {
@@ -122,36 +121,6 @@ const App: React.FC<{}> = () => {
       let response;
 
       switch (type) {
-        case 'add-styles':
-          serializedtabState =
-            message.payload.store.tabStates[message.payload.tabId];
-
-          response = { status: 'success' };
-
-          if (serializedtabState === undefined) {
-            sendResponse(response);
-            break;
-          }
-
-          deserializeMatchesObj(serializedtabState);
-          tabState = deserializeMatchesObj({
-            ...serializedtabState,
-          });
-
-          debugger;
-          tabState = restoreHighlightSpans(tabState);
-          //FIXME: DRY and/or REFACTOR AS RESPONSE:
-          const serializedState: SerializedTabState = serializeMatchesObj({
-            ...tabState,
-          });
-
-          // FIXME: REVIEW //////////////////////////
-          // const msg = createUpdateTabStatesObjMsg(serializedState); // if you keep this here, it should probably be a `response`
-          // sendMsgToBackground<UpdateTabStatesObjMsg>(msg);
-
-          sendResponse(response); // FIXME: review this: might want to have status be more conditional at this point
-          // FIXME: REVIEW //////////////////////////
-          break;
         case 'remove-all-highlight-matches':
           removeAllHighlightMatches();
           sendResponse({ success: true });

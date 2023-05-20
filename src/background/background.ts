@@ -3,6 +3,7 @@
 import { Messages } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
+  getActiveTabId,
   handleRemoveAllHighlightMatches,
   handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
@@ -18,6 +19,7 @@ import {
 } from './store';
 
 export const store = initStore();
+
 sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
@@ -92,6 +94,8 @@ chrome.runtime.onMessage.addListener(
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   updateStore(store, { activeTabId: tabId });
 
+  // TODO: if showMatches then search the new tab and update everything? Otherwise, if you open a new tab, go back to the previously opened tab and search the same value again, it doesn't know to search the new tab because it uses nextMatch(). There are other solutions if you change your mind on this one.
+
   if (store.showLayover) {
     sendStoreToContentScripts(store);
   }
@@ -121,10 +125,13 @@ chrome.tabs.onRemoved.addListener(() => {
   sendStoreToContentScripts(store);
 });
 
-chrome.windows.onFocusChanged.addListener((windowId) => {
+chrome.windows.onFocusChanged.addListener(async (windowId) => {
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     return;
   }
+
+  const activeTabId = await getActiveTabId();
+  store.activeTabId = activeTabId;
 
   chrome.windows.get(windowId, (focusedWindow) => {
     if (chrome.runtime.lastError) {

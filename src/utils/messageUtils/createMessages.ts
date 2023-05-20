@@ -14,7 +14,6 @@ import {
   SwitchTabMsg,
   ToggleSearchLayoverMsg,
   // ToggleStylesAllTabs,
-  ToggleStylesMsg,
   TransactionId,
   UpdateHighlightsMsg,
   UpdateLayoverPositionMsg,
@@ -32,17 +31,6 @@ export function createUpdateStoreMsg(store: Store): UpdateStoreMsg {
     from: 'background:store',
     type: 'store-updated',
     payload: {},
-  };
-}
-
-export function createToggleStylesMsg(
-  addStyles: boolean,
-  payload: any
-): ToggleStylesMsg {
-  return {
-    from: 'background:backgroundUtils',
-    type: 'add-styles',
-    payload,
   };
 }
 

@@ -31,6 +31,18 @@ export async function queryCurrentWindowTabs(
   });
 }
 
+export function getActiveTabId(): Promise<number | undefined> {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length) {
+        resolve(tabs[0].id);
+      } else {
+        resolve(undefined);
+      }
+    });
+  });
+}
+
 export async function getOrderedTabs(
   includeActiveTab: boolean = true
 ): Promise<chrome.tabs.Tab[]> {

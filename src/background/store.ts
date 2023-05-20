@@ -2,7 +2,10 @@
 
 import { LayoverPosition } from '../components/Layover';
 import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
+import {
+  getActiveTabId,
+  queryCurrentWindowTabs,
+} from '../utils/backgroundUtils';
 
 // Store Interface
 export interface SharedStore {
@@ -34,6 +37,8 @@ export interface TabStore extends SharedStore {
 
 export function initStore() {
   const store: Store = {
+    activeTabId: undefined,
+    // activeTabId,
     totalMatchesCount: 0,
     findValue: '',
     searchValue: '',
@@ -41,12 +46,12 @@ export function initStore() {
     lastFocusedWindowId: undefined,
     updatedTabsCount: 0,
     totalTabs: undefined,
-    activeTabId: undefined,
     layoverPosition: { x: 0, y: 0 },
     showLayover: false,
     showMatches: false,
     tabStates: {},
   };
+
   return store;
 }
 
@@ -62,7 +67,9 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     };
   }
 
+  // debugger;
   return {
+    // activeTabId: 1,
     tabId,
     serializedTabState,
 
