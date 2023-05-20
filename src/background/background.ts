@@ -18,6 +18,7 @@ import {
   updateStore,
 } from './store';
 
+clearLocalStorage();
 export const store = initStore();
 sendStoreToContentScripts(store);
 
@@ -34,22 +35,21 @@ chrome.runtime.onMessage.addListener(
 
         break;
       case 'get-all-matches-msg':
-        const findValue = payload; //FIXME: refactor
+        const { searchValue } = payload;
 
         resetPartialStore(store);
 
         updateStore(store, {
-          findValue,
-          searchValue: findValue,
-          lastSearchValue: findValue,
+          searchValue,
+          lastSearchValue: searchValue,
         });
 
-        if (findValue === '') {
+        if (searchValue === '') {
           sendStoreToContentScripts(store);
           return;
         }
 
-        await executeContentScriptOnAllTabs(payload, store);
+        await executeContentScriptOnAllTabs(store);
         sendStoreToContentScripts(store);
 
         return true;
@@ -60,8 +60,7 @@ chrome.runtime.onMessage.addListener(
         await switchTab(message.serializedState);
 
         return true;
-      case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY'
-        // GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
+      case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
         updateStore(store, {
           showLayover: false,
           showMatches: false,

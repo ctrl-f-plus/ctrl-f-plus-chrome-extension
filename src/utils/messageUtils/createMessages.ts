@@ -14,7 +14,7 @@ import { ValidTabId } from '../../types/tab.types';
  */
 
 export function createHighlightMsg(
-  findValue: string,
+  searchValue: string,
   tabId: ValidTabId,
   foundFirstMatch: boolean
 ): HighlightMsg {
@@ -22,10 +22,12 @@ export function createHighlightMsg(
     async: true,
     from: 'background',
     type: 'highlight',
-    findValue: findValue,
-    foundFirstMatch,
-    tabId: tabId,
-    tabState: {},
+    payload: {
+      findValue: searchValue,
+      foundFirstMatch,
+      tabId: tabId,
+      tabState: {},
+    },
   };
 }
 

@@ -13,14 +13,11 @@ export interface SharedStore {
   layoverPosition: LayoverPosition;
   showLayover: boolean;
   showMatches: boolean;
+  activeTabId: TabId;
 
   // GLOBAL: yes - will need to review after logic changes
-  findValue: string;
   searchValue: string;
   lastSearchValue: string;
-
-  // GLOBAL: MAYBE, OTHERWISE MORE TO `Store`
-  activeTabId: TabId;
 }
 
 export interface Store extends SharedStore {
@@ -38,9 +35,7 @@ export interface TabStore extends SharedStore {
 export function initStore() {
   const store: Store = {
     activeTabId: undefined,
-    // activeTabId,
     totalMatchesCount: 0,
-    findValue: '',
     searchValue: '',
     lastSearchValue: '',
     lastFocusedWindowId: undefined,
@@ -77,7 +72,6 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     showLayover: store.showLayover,
     showMatches: store.showMatches,
 
-    findValue: store.findValue,
     searchValue: store.searchValue,
     lastSearchValue: store.lastSearchValue,
 
@@ -109,7 +103,6 @@ export function resetStore(store: Store): void {
 export function resetPartialStore(store: Store): void {
   const partialInitialState = {
     totalMatchesCount: 0,
-    findValue: '',
     searchValue: '',
     lastSearchValue: '',
     tabStates: {},

@@ -11,7 +11,8 @@ export interface Match {
 
 // FIXME: review for duplicates
 export interface LocalStorage {
-  findValue?: string;
+  // findValue?: string;
+  searchValue?: string;
   lastSearchValue?: string;
   allMatches?: Match[];
   tabs?: { [tabId: number]: SerializedTabState };
@@ -58,24 +59,24 @@ export function setStoredLayoverPosition(
   return setLocalStorageItem(key, newPosition);
 }
 
-export function getStoredFindValue(): Promise<string> {
-  const key: LocalStorageKeys = 'findValue';
+// export function getStoredStoredValue(): Promise<string> {
+//   const key: LocalStorageKeys = 'findValue';
 
-  return getLocalStorageItem(key).then((findValue) => findValue ?? '');
-}
+//   return getLocalStorageItem(key).then((findValue) => findValue ?? '');
+// }
 
-export function setStoredFindValue(findValue: string): Promise<void> {
-  const key: LocalStorageKeys = 'findValue';
+// export function setStoredFindValue(findValue: string): Promise<void> {
+//   const key: LocalStorageKeys = 'findValue';
 
-  return setLocalStorageItem(key, findValue);
+//   return setLocalStorageItem(key, findValue);
 
-  // const val: LocalStorage = { findValue };
-  // return new Promise((resolve) => {
-  //   chrome.storage.local.set(val, () => {
-  //     resolve();
-  //   });
-  // });
-}
+//   // const val: LocalStorage = { findValue };
+//   // return new Promise((resolve) => {
+//   //   chrome.storage.local.set(val, () => {
+//   //     resolve();
+//   //   });
+//   // });
+// }
 
 //////////////////////////////////////////
 export function getStoredLastSearchValue(): Promise<string> {

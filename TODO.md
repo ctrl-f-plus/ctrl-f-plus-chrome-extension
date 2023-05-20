@@ -82,3 +82,10 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 
 - Add PrevMatch logic
+- Go through messaging
+  - add sync/async
+  - catch all promises
+  - cleanup sendMessageToContentScripts.ts file
+- Storage
+  - clean up storagUtils
+  - updated all updates to store so that they also write to chrome storage

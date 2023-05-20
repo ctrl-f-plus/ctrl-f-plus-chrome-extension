@@ -123,14 +123,13 @@ const App: React.FC<{}> = () => {
           break;
         case 'store-updated':
           const { tabStore } = message.payload;
-          tabId = message.payload.tabId;
+          ({ tabId } = message.payload);
 
           updateContextFromStore(tabStore, tabId);
           break;
         case 'highlight':
-          tabId = message.tabId;
+          ({ tabId, findValue } = message.payload);
           state2 = { ...state2Context, tabId: tabId };
-          findValue = message.findValue as string;
           response = await handleHighlight(state2, findValue, tabId);
           state2 = response.state2;
 

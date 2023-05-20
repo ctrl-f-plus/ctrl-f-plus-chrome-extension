@@ -28,13 +28,12 @@ export interface BaseMessage {
 export interface GetAllMatchesMsg extends BaseMessage {
   from: 'content';
   type: 'get-all-matches-msg';
-  payload: string;
+  payload: any;
 }
 
 export interface MessageFixMe {
   async: boolean | true;
   type: string;
-  findValue?: string;
   command?: string;
   payload?: any;
   prevIndex?: number;
@@ -97,10 +96,13 @@ export interface UpdateLayoverPositionMsg extends BaseMessage {
 export interface HighlightMsg extends BaseMessage {
   from: 'background';
   type: 'highlight';
-  findValue: string;
-  foundFirstMatch: boolean;
-  tabId: ValidTabId;
-  tabState: {};
+  payload: any;
+  // payload: {
+  //   findValue: string;
+  //   foundFirstMatch: boolean;
+  //   tabId: ValidTabId;
+  //   tabState: {};
+  // };
 }
 
 export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {

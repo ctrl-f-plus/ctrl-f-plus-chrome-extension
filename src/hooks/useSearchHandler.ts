@@ -6,11 +6,7 @@ import {
   sendMessageToBackground,
   sendMsgToBackground,
 } from '../utils/messageUtils/sendMessageToBackground';
-import {
-  clearAllStoredTabs,
-  setStoredFindValue,
-  setStoredLastSearchValue,
-} from '../utils/storage';
+import { clearAllStoredTabs } from '../utils/storage';
 
 export const useSearchHandler = () => {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
@@ -19,9 +15,6 @@ export const useSearchHandler = () => {
     async (newSearchValue: string): Promise<void> => {
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
-
-      setStoredFindValue(newSearchValue);
-      setStoredLastSearchValue(newSearchValue);
 
       await clearAllStoredTabs(); //FIXME: review a) if you need this and b) its location
 
@@ -33,7 +26,9 @@ export const useSearchHandler = () => {
       await sendMessageToBackground({
         from: 'content',
         type: 'get-all-matches-msg',
-        payload: newSearchValue,
+        payload: {
+          searchValue: newSearchValue,
+        },
       });
     },
     [sendMessageToBackground, sendMsgToBackground]

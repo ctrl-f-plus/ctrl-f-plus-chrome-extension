@@ -93,7 +93,11 @@ async function executeContentScriptOnTab(
       const tabId: ValidTabId = tab.id as number;
 
       try {
-        const msg = createHighlightMsg(store.findValue, tabId, foundFirstMatch);
+        const msg = createHighlightMsg(
+          store.searchValue,
+          tabId,
+          foundFirstMatch
+        );
         const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
 
         const { currentIndex, matchesCount, serializedMatches } =
@@ -128,10 +132,7 @@ async function executeContentScriptOnTab(
   );
 }
 
-export async function executeContentScriptOnAllTabs(
-  findValue: string,
-  store: Store
-) {
+export async function executeContentScriptOnAllTabs(store: Store) {
   const orderedTabs = await getOrderedTabs();
   let foundFirstMatch = false;
   let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found

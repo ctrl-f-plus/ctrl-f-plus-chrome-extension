@@ -24,7 +24,6 @@ export const sendMessageToContentScripts = async (
   });
 };
 
-// FIXME: (**354)
 // UPDATED VERSION
 export function sendMsgToTab<T extends Messages>(
   tabId: TabId,
@@ -33,7 +32,6 @@ export function sendMsgToTab<T extends Messages>(
   return new Promise((resolve, reject) => {
     chrome.tabs.sendMessage(tabId as number, message, (response) => {
       if (chrome.runtime.lastError) {
-        console.log(message);
         reject(chrome.runtime.lastError);
       } else {
         resolve(response);

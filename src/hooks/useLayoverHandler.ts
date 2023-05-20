@@ -140,37 +140,6 @@ const reducer = (
 export const useLayoverHandler = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // TODO: DON"T DELETE `toggleSearchLayover()` yet
-  // const toggleSearchLayover = useCallback(
-  //   (forceShowLayover?: boolean) => {
-  //     const closeSearchLayover = async (searchValue: string) => {
-  //       setStoredFindValue(searchValue);
-
-  //       // FIXME: There is a bug here. where we incorrectly call handle next when no matches are highlighted
-  //       setStoredLastSearchValue(searchValue);
-
-  //       // src/hooks/useLayoverHandler.ts
-  //       sendMessageToBackground({
-  //         from: 'content',
-  //         type: 'remove-styles-all-tabs',
-  //       });
-
-  //       // await sendMessageToBackground({
-  //       //   from: 'content',
-  //       //   type: 'remove-all-highlight-matches',
-  //       // });
-  //       // removeAllHighlightMatches();
-
-  //       dispatch({ type: 'SET_SHOW_MATCHES', payload: false });
-  //       dispatch({ type: 'SET_SHOW_LAYOVER', payload: false });
-  //     };
-
-  //     closeSearchLayover(state.searchValue);
-  //   },
-
-  //   [sendMessageToBackground, state.showLayover, state.searchValue]
-  // );
-
   const setSearchValue = (value: string) => {
     dispatch({ type: 'SET_SEARCH_VALUE', payload: value });
   };
@@ -184,7 +153,6 @@ export const useLayoverHandler = () => {
   };
 
   const incrementMatchIndices = () => {
-    // dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
 
