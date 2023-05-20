@@ -30,8 +30,6 @@ import {
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
-let injectedStyle: HTMLStyleElement;
-
 const App: React.FC<{}> = () => {
   const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
 
@@ -113,8 +111,6 @@ const App: React.FC<{}> = () => {
         return;
       }
 
-      let serializedtabState: SerializedTabState;
-      let tabState: TabState;
       let findValue;
       let state2;
       let tabId;
@@ -124,9 +120,6 @@ const App: React.FC<{}> = () => {
         case 'remove-all-highlight-matches':
           removeAllHighlightMatches();
           sendResponse({ success: true });
-          break;
-        case 'update-matches-count':
-          setTotalMatchesCount(message.payload.totalMatchesCount);
           break;
         case 'store-updated':
           const { tabStore } = message.payload;
@@ -186,13 +179,6 @@ const App: React.FC<{}> = () => {
 
           sendResponse({ status: 'success' });
           return true;
-        case 'PRINT_STORE':
-          const storeToPrint = message.payload.tabStore;
-
-          const serializedTabState = storeToPrint.serializedTabState;
-
-          const xPathTabState = deserializeMatchesObj(serializedTabState);
-          console.log(xPathTabState);
         default:
           break;
       }
@@ -251,7 +237,6 @@ const App: React.FC<{}> = () => {
     };
 
     handleActiveTabChange();
-    // }, [activeTabId, showMatches, tabId]);
   }, [activeTabId, showMatches]);
 
   return (

@@ -19,7 +19,6 @@ import {
 } from './store';
 
 export const store = initStore();
-
 sendStoreToContentScripts(store);
 
 chrome.runtime.onMessage.addListener(
@@ -29,6 +28,11 @@ chrome.runtime.onMessage.addListener(
     const { type, payload, transactionId } = message;
 
     switch (type) {
+      case 'remove-all-highlight-matches':
+        await handleRemoveAllHighlightMatches(sendResponse);
+        sendStoreToContentScripts(store);
+
+        break;
       case 'get-all-matches-msg':
         const findValue = payload; //FIXME: refactor
 
@@ -49,36 +53,25 @@ chrome.runtime.onMessage.addListener(
         sendStoreToContentScripts(store);
 
         return true;
-      case 'remove-styles-all-tabs':
-        updateStore(store, {
-          showLayover: false,
-          showMatches: false,
-        });
-        sendStoreToContentScripts(store);
-
+      case 'update-tab-states-obj':
+        await handleUpdateTabStatesObj(payload, sendResponse);
         return true;
-      case 'remove-all-highlight-matches':
-        await handleRemoveAllHighlightMatches(sendResponse);
-        sendStoreToContentScripts(store);
-
-        break;
-      case 'CLOSE_SEARCH_OVERLAY':
-        updateStore(store, {
-          showLayover: false,
-          showMatches: false,
-        });
-        sendStoreToContentScripts(store);
-
-        break;
       case 'switch-tab':
         await switchTab(message.serializedState);
 
         return true;
-      case 'update-tab-states-obj':
-        console.log('update-tab-states-obj');
-        await handleUpdateTabStatesObj(payload, sendResponse);
+      case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY'
+        // GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
+        updateStore(store, {
+          showLayover: false,
+          showMatches: false,
+        });
+        sendStoreToContentScripts(store);
+
         return true;
-      case 'update-layover-position':
+
+      case 'update-layover-position': // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
+        console.log('update-layover-position');
         await handleUpdateLayoverPosition(store, payload.newPosition);
         return;
       default:
@@ -87,10 +80,6 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-// FIXME:
-// - could maybe use sendMessageToContentScripts() instead, but need to message active tab first
-// - Could maybe be improved by using the `active-tab` field in the store
-// - This would be better if it only ran on stored tabs instead of using getOrderedTabs()
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   updateStore(store, { activeTabId: tabId });
 
@@ -101,7 +90,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   }
 });
 
-// FIXME: MESSAGE TPYE?
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !store.showLayover;
@@ -155,23 +143,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  // console.log(store);
-
-  // resetStore(store);
-
-  // const tabs: chrome.tabs.Tab[] = await new Promise((resolve) => {
-  //   chrome.tabs.query({}, (tabs) => {
-  //     resolve(tabs);
-  //   });
-  // });
-
-  // const tabIds = tabs
-  //   .map((tab) => tab.id)
-  //   .filter((id): id is ValidTabId => id !== undefined);
-
-  // sendStoreToContentScripts(store, tabIds);
-  // // debugger;
-  await clearLocalStorage();
+  // await clearLocalStorage();
+  clearLocalStorage();
 });
 
 // FIXME: REVIEW

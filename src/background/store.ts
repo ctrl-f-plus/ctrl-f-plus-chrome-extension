@@ -67,9 +67,7 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     };
   }
 
-  // debugger;
   return {
-    // activeTabId: 1,
     tabId,
     serializedTabState,
 
