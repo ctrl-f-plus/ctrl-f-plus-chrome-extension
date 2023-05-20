@@ -48,8 +48,8 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount,
     layoverPosition,
     setLayoverPosition,
-    state2Context,
-    setState2Context,
+    tabStateContext,
+    setTabStateContext,
   } = useContext(LayoverContext);
 
   const { updateHighlights, findAllMatches } = useFindMatches();
@@ -71,8 +71,8 @@ const App: React.FC<{}> = () => {
 
     const tabState = restoreHighlightSpans(xPathTabState);
 
-    if (!isEqual(tabState, state2Context)) {
-      setState2Context(tabState);
+    if (!isEqual(tabState, tabStateContext)) {
+      setTabStateContext(tabState);
     }
 
     setActiveTabId(tabStore.activeTabId);
@@ -130,13 +130,13 @@ const App: React.FC<{}> = () => {
           break;
         case 'highlight':
           ({ tabId, findValue } = message.payload);
-          state2 = { ...state2Context, tabId: tabId };
+          state2 = { ...tabStateContext, tabId: tabId };
           response = await handleHighlight(state2, findValue, tabId);
           state2 = response.state2;
 
           if (response.hasMatch && !message.foundFirstMatch) {
-            if (!isEqual(state2, state2Context)) {
-              setState2Context(state2);
+            if (!isEqual(state2, tabStateContext)) {
+              setTabStateContext(state2);
             }
 
             state2 = updateHighlights(state2, { endOfTab: false });
@@ -152,20 +152,20 @@ const App: React.FC<{}> = () => {
             };
           }
 
-          if (!isEqual(state2, state2Context)) {
-            setState2Context(state2);
+          if (!isEqual(state2, tabStateContext)) {
+            setTabStateContext(state2);
           }
 
           sendResponse(response);
           return true;
         case 'update-highlights':
           tabId = message.payload.tabId;
-          state2 = { ...state2Context, tabId: tabId };
+          state2 = { ...tabStateContext, tabId: tabId };
 
           const newState = updateHighlights(state2, { endOfTab: false });
 
-          if (!isEqual(state2, state2Context)) {
-            setState2Context(newState);
+          if (!isEqual(state2, tabStateContext)) {
+            setTabStateContext(newState);
           }
 
           const newSerializedState = serializeMatchesObj({
@@ -187,9 +187,9 @@ const App: React.FC<{}> = () => {
     },
     [
       handleHighlight,
-      state2Context,
+      tabStateContext,
       updateHighlights,
-      setState2Context,
+      setTabStateContext,
       LayoverContext,
 
       showLayover,
@@ -230,7 +230,7 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     const handleActiveTabChange = () => {
-      if (showMatches && activeTabId === state2Context.tabId) {
+      if (showMatches && activeTabId === tabStateContext.tabId) {
         setShowLayover(true);
       } else {
         setShowLayover(false);

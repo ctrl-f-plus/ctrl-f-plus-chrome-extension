@@ -28,7 +28,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     showMatches,
     lastSearchValue,
     totalMatchesCount,
-    state2Context,
+    tabStateContext,
   } = useContext(LayoverContext);
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
   useEffect(() => {
@@ -77,15 +77,15 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   useEffect(() => {
     if (
-      state2Context.globalMatchIdxStart !== undefined &&
-      state2Context.currentIndex !== undefined
+      tabStateContext.globalMatchIdxStart !== undefined &&
+      tabStateContext.currentIndex !== undefined
     ) {
       const curIdxRENAME_ME =
-        state2Context.globalMatchIdxStart + state2Context.currentIndex + 1;
+        tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
       setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
     }
-  }, [totalMatchesCount, state2Context, showLayover, showMatches]);
+  }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
   return (
     <>

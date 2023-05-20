@@ -14,19 +14,23 @@ type UpdateHighlightsOptions = {
 };
 
 export const useFindMatches = () => {
-  const { state2Context, setState2Context, totalMatchesCount, globalMatchIdx } =
-    useContext(LayoverContext);
-  const [state2, setState2] = useState(state2Context);
+  const {
+    tabStateContext,
+    setTabStateContext,
+    totalMatchesCount,
+    globalMatchIdx,
+  } = useContext(LayoverContext);
+  const [state2, setState2] = useState(tabStateContext);
 
   useEffect(() => {
-    if (JSON.stringify(state2) !== JSON.stringify(state2Context)) {
-      setState2(state2Context);
+    if (JSON.stringify(state2) !== JSON.stringify(tabStateContext)) {
+      setState2(tabStateContext);
     }
-  }, [state2Context]);
+  }, [tabStateContext]);
 
   const findAllMatches = useCallback(
     async (state2: TabState, findValue: string) => {
-      const newState = { ...state2Context };
+      const newState = { ...tabStateContext };
 
       newState.currentIndex = 0;
       newState.matchesCount = 0;
@@ -37,10 +41,10 @@ export const useFindMatches = () => {
         findValue,
       });
 
-      setState2Context(newState);
+      setTabStateContext(newState);
       return newState;
     },
-    [state2Context, setState2Context]
+    [tabStateContext, setTabStateContext]
   );
 
   const updateHighlights = useCallback(
@@ -115,10 +119,10 @@ export const useFindMatches = () => {
     });
 
     setState2(updatedState);
-    setState2Context(updatedState);
+    setTabStateContext(updatedState);
   }, [
     updateHighlights,
-    setState2Context,
+    setTabStateContext,
     state2,
     totalMatchesCount,
     globalMatchIdx,

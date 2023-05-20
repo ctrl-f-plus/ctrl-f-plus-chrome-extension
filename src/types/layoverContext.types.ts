@@ -19,8 +19,8 @@ export interface LayoverContextData {
   setGlobalMatchIdx: (value: number) => void;
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
-  state2Context: TabState;
-  setState2Context: (value: TabState) => void;
+  tabStateContext: TabState;
+  setTabStateContext: (value: TabState) => void;
   incrementMatchIndices: () => void;
 }
 
@@ -36,7 +36,7 @@ export interface LayoverState {
   totalMatchesCount: number;
   globalMatchIdx: number;
   layoverPosition: LayoverPosition | null;
-  state2Context: TabState;
+  tabStateContext: TabState;
 }
 
 export type ActionTypes = 'INCREMENT_MATCH_INDICES';

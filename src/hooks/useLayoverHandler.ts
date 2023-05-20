@@ -17,7 +17,7 @@ const initialState: LayoverState = {
   totalMatchesCount: 0,
   globalMatchIdx: 0,
   layoverPosition: null,
-  state2Context: {
+  tabStateContext: {
     tabId: undefined as TabId | undefined,
     currentIndex: 0,
     matchesCount: 0,
@@ -65,11 +65,11 @@ const reducer = (
     case 'SET_STATE2_CONTEXT':
       // console.log(
       //   'Updating state with value. Old state:',
-      //   state.state2Context,
+      //   state.tabStateContext,
       //   'New state:',
       //   action.payload
       // );
-      return { ...state, state2Context: action.payload as TabState };
+      return { ...state, tabStateContext: action.payload as TabState };
     // case ACTIONS.INCREMENT_MATCH_INDICES:
     default:
       return state;
@@ -87,7 +87,7 @@ export const useLayoverHandler = () => {
     dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
   };
 
-  const setState2Context = (value: TabState) => {
+  const setTabStateContext = (value: TabState) => {
     dispatch({ type: 'SET_STATE2_CONTEXT', payload: value });
   };
 
@@ -109,7 +109,7 @@ export const useLayoverHandler = () => {
       dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
     setLayoverPosition: (value: LayoverPosition | null) =>
       dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
-    setState2Context,
+    setTabStateContext,
     incrementMatchIndices,
   };
 };
