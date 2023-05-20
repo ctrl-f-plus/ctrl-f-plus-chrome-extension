@@ -5,22 +5,13 @@ import { LayoverPosition } from '../../components/Layover';
 import {
   GetAllMatchesMsg,
   HighlightMsg,
-  NextMatchMsg,
-  NextMatch_msg,
-  PrevMatchMsg,
-  PrevMatch_msg,
-  RemoveAllHighlightMatchesMsg,
-  RemoveAllHighlightMatches_msg,
   SwitchTabMsg,
-  ToggleSearchLayoverMsg,
-  // ToggleStylesAllTabs,
-  TransactionId,
   UpdateHighlightsMsg,
   UpdateLayoverPositionMsg,
   UpdateStoreMsg,
   UpdateTabStatesObjMsg,
 } from '../../types/message.types';
-import { SerializedTabState, TabId, ValidTabId } from '../../types/tab.types';
+import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 
 /**
  * FROM: Background
@@ -40,25 +31,6 @@ export function createUpdateStoreMsg(store: Store): UpdateStoreMsg {
 //     type: 'remove-all-highlight-matches',
 //   };
 // }
-
-export function createNextMatchMsg(
-  tabId: TabId,
-  transactionId: TransactionId
-): NextMatchMsg {
-  return {
-    from: 'background:backgroundUtils',
-    type: 'next-match',
-    payload: { tabId },
-    transactionId: transactionId,
-  };
-}
-
-export function createPrevMatchMsg(): PrevMatchMsg {
-  return {
-    from: 'background:backgroundUtils',
-    type: 'prev-match',
-  };
-}
 
 export function createHighlightMsg(
   findValue: string,
@@ -84,13 +56,6 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
     payload: {
       tabId: tabId,
     },
-  };
-}
-
-export function createToggleSearchLayoverMsg(): ToggleSearchLayoverMsg {
-  return {
-    from: 'background',
-    type: 'toggle_search_layover',
   };
 }
 
@@ -152,19 +117,5 @@ export function createGetAllMatchesMsg(findValue: string): GetAllMatchesMsg {
     from: 'content',
     type: 'get-all-matches-msg',
     payload: findValue,
-  };
-}
-
-export function createNextMatch_msg(): NextMatch_msg {
-  return {
-    from: 'content',
-    type: 'next-match',
-  };
-}
-
-export function createPrevMatch_msg(): PrevMatch_msg {
-  return {
-    from: 'content',
-    type: 'prev-match',
   };
 }

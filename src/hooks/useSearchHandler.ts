@@ -40,10 +40,10 @@ export const useSearchHandler = () => {
   );
 
   const handlePrevious = useCallback((): void => {
-    sendMessageToBackground({
-      from: 'content',
-      type: 'prev-match',
-    });
+    // sendMessageToBackground({
+    //   from: 'content',
+    //   type: 'prev-match',
+    // });
   }, [sendMessageToBackground]);
 
   return {

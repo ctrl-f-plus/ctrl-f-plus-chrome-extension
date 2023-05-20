@@ -1,6 +1,6 @@
 // src/hooks/useLayoverHandler.ts
 
-import { useCallback, useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import {
   ActionTypes,
@@ -9,14 +9,6 @@ import {
   SetState2Action,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
-import { setStoredFindValue, setStoredLastSearchValue } from '../utils/storage';
-import { LayoverContext } from '../contexts/LayoverContext';
-import {
-  StateUpdateMessage,
-  UpdateTabStatesObjMsg,
-} from '../types/message.types';
-import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 
 function debounce<F extends (...args: any[]) => any>(
   func: F,

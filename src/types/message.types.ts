@@ -30,47 +30,6 @@ export interface GetAllMatchesMsg extends BaseMessage {
   type: 'get-all-matches-msg';
   payload: string;
 }
-export interface NextMatchMsg extends BaseMessage {
-  from: 'background:backgroundUtils';
-  type: 'next-match';
-}
-
-export interface PrevMatchMsg extends BaseMessage {
-  from: 'background:backgroundUtils';
-  type: 'prev-match';
-}
-
-export interface NextMatchMessage extends BaseMessage {
-  from: 'content';
-  type: 'next-match';
-  serializedState2?: SerializedTabState;
-}
-
-export interface PrevMatch_msg extends BaseMessage {
-  from: 'content';
-  type: 'prev-match';
-}
-
-export interface NextMatch_msg extends BaseMessage {
-  from: 'content';
-  type: 'next-match';
-  serializedState2?: SerializedTabState;
-}
-export interface PreviousMatchMessage extends BaseMessage {
-  from: 'content';
-  type: 'prev-match';
-  serializedState2?: SerializedTabState;
-}
-
-export interface NextMatchMessageFromBack extends BaseMessage {
-  from: 'background';
-  type: 'next-match';
-}
-
-export interface RemoveStylesMessage extends BaseMessage {
-  from: 'background' | 'content';
-  type: 'remove_styles';
-}
 
 export interface MessageFixMe {
   async: boolean | true;
@@ -94,8 +53,8 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
   type: 'remove-all-highlight-matches';
 }
 
-export interface RemoveAllHighlightMatches_msg extends BaseMessage {
-  from: 'content';
+export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
+  from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
 }
 
@@ -144,22 +103,6 @@ export interface HighlightMsg extends BaseMessage {
   tabState: {};
 }
 
-export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
-  from: 'background:backgroundUtils';
-  type: 'remove-all-highlight-matches';
-}
-
-export interface ToggleSearchLayoverMsg extends BaseMessage {
-  from: 'background';
-  type: 'toggle_search_layover';
-}
-
-export interface StateUpdateMessage extends BaseMessage {
-  from: 'content';
-  type: 'state-update';
-  payload: any;
-}
-
 export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
   from: 'content';
   type: 'CLOSE_SEARCH_OVERLAY';
@@ -168,25 +111,13 @@ export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
 
 export type Messages =
   | GetAllMatchesMsg
-  | NextMatchMsg
-  | PrevMatchMsg
-  | NextMatchMessage
-  | PrevMatch_msg
-  | NextMatch_msg
-  | PreviousMatchMessage
-  | RemoveStylesMessage
   | RemoveStylesAllTabs
-  // | ToggleStylesAllTabs
   | RemoveAllHighlightMatches
   | RemoveAllHighlightMatchesMsg
-  | RemoveAllHighlightMatches_msg
   | SwitchTabMsg
   | UpdateHighlightsMsg
   | HighlightMsg
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
   | UpdateLayoverPositionMsg
-  | RemoveAllHighlightMatches_msg
-  | ToggleSearchLayoverMsg
-  | StateUpdateMessage
   | CLOSE_SEARCH_OVERLAY_MESSAGE;

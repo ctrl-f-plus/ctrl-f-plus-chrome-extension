@@ -12,7 +12,6 @@ export interface SetState2Action {
 export interface LayoverContextData {
   showLayover: boolean;
   setShowLayover: (value: boolean) => void;
-  // toggleSearchLayover: (forceShowLayover?: boolean) => void;
   searchValue: string;
   setSearchValue: (value: string) => void;
   lastSearchValue: string;
