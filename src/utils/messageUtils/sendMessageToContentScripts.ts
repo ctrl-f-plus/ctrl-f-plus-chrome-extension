@@ -4,6 +4,7 @@ import { Messages } from '../../types/message.types';
 import { TabId, ValidTabId } from '../../types/tab.types';
 import { queryCurrentWindowTabs } from '../backgroundUtils';
 
+// FIXME: UNUSED
 export const sendMessageToContentScripts = async (
   msg: Messages,
   tabIds: ValidTabId[] = []

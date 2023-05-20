@@ -67,7 +67,7 @@ export interface SwitchTabMsg extends BaseMessage {
 export interface UpdateHighlightsMsg extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
-  prevIndex: number | undefined;
+  // prevIndex: number | undefined;
 }
 
 export interface UpdateTabStatesObjMsg extends BaseMessage {

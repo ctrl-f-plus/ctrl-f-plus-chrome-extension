@@ -8,6 +8,11 @@ import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
+type UpdateHighlightsOptions = {
+  prevIndex?: number;
+  endOfTab?: boolean;
+};
+
 export const useFindMatches = () => {
   const { state2Context, setState2Context, totalMatchesCount, globalMatchIdx } =
     useContext(LayoverContext);
@@ -39,7 +44,9 @@ export const useFindMatches = () => {
   );
 
   const updateHighlights = useCallback(
-    (state: TabState, prevIndex?: number, endOfTab?: boolean): TabState => {
+    // (state: TabState, prevIndex?: number, endOfTab?: boolean): TabState => {
+    (state: TabState, options?: UpdateHighlightsOptions): TabState => {
+      const { prevIndex, endOfTab } = options || {};
       const newState = { ...state };
       if (!newState.matchesObj.length) {
         return newState;
@@ -73,12 +80,13 @@ export const useFindMatches = () => {
 
     let updatedState: TabState;
     if (newState2.currentIndex === 0) {
-      const endOfTab: boolean = true;
-
-      updatedState = updateHighlights(newState2, prevIndex, endOfTab);
+      updatedState = updateHighlights(newState2, {
+        prevIndex: prevIndex,
+        endOfTab: true,
+      });
 
       if (state2.matchesCount === totalMatchesCount) {
-        updatedState = updateHighlights(updatedState, undefined, false);
+        updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
@@ -94,7 +102,7 @@ export const useFindMatches = () => {
         await sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      updatedState = updateHighlights(newState2, prevIndex);
+      updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
     }
 
     const serializedState: SerializedTabState = serializeMatchesObj({

@@ -18,7 +18,7 @@ import {
   updateStore,
 } from './store';
 
-clearLocalStorage();
+clearLocalStorage(); //Keep?
 export const store = initStore();
 sendStoreToContentScripts(store);
 

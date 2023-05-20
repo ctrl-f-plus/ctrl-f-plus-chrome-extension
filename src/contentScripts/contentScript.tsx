@@ -112,7 +112,7 @@ const App: React.FC<{}> = () => {
       }
 
       let findValue;
-      let state2;
+      let state2: TabState;
       let tabId;
       let response;
 
@@ -138,7 +138,7 @@ const App: React.FC<{}> = () => {
               setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
             }
 
-            state2 = updateHighlights(state2, message.prevIndex, false);
+            state2 = updateHighlights(state2, { endOfTab: false });
 
             const serializedState: SerializedTabState = serializeMatchesObj({
               ...state2,
@@ -160,7 +160,8 @@ const App: React.FC<{}> = () => {
         case 'update-highlights':
           tabId = message.payload.tabId;
           state2 = { ...state2Context, tabId: tabId };
-          const newState = updateHighlights(state2, message.prevIndex, false);
+
+          const newState = updateHighlights(state2, { endOfTab: false });
 
           if (!isEqual(state2, state2Context)) {
             setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
@@ -266,11 +267,3 @@ reactRoot.render(
     </LayoverProvider>
   </React.StrictMode>
 );
-
-// useEffect(() => {
-//   console.log('state2Context updated: ', state2Context);
-// }, [state2Context]);
-
-// useEffect(() => {
-//   console.log('totalMatchesCount updated: ', totalMatchesCount);
-// }, [totalMatchesCount]);

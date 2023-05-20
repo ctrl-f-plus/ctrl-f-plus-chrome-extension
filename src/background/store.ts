@@ -2,10 +2,7 @@
 
 import { LayoverPosition } from '../components/Layover';
 import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
-import {
-  getActiveTabId,
-  queryCurrentWindowTabs,
-} from '../utils/backgroundUtils';
+import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
 
 // Store Interface
 export interface SharedStore {

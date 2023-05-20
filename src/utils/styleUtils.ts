@@ -9,8 +9,9 @@ export function injectStyles(css: string): HTMLStyleElement {
   return style;
 }
 
-export function removeStyles(styleElement: HTMLStyleElement): void {
-  if (styleElement && styleElement.parentNode) {
-    styleElement.parentNode.removeChild(styleElement);
-  }
-}
+// FIXME: UNUSED
+// export function removeStyles(styleElement: HTMLStyleElement): void {
+//   if (styleElement && styleElement.parentNode) {
+//     styleElement.parentNode.removeChild(styleElement);
+//   }
+// }

@@ -9,11 +9,7 @@ import {
   UpdateHighlightsMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import {
-  getAllStoredTabs,
-  setStoredLayoverPosition,
-  setStoredTabs,
-} from '../utils/storage';
+import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
 import {
   createHighlightMsg,
   createUpdateHighlightsMsg,
@@ -300,7 +296,7 @@ export async function handleUpdateLayoverPosition(
   store: Store,
   newPosition: LayoverPosition
 ) {
-  setStoredLayoverPosition(newPosition);
+  // setStoredLayoverPosition(newPosition);
 
   updateStore(store, {
     layoverPosition: newPosition,

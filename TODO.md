@@ -82,10 +82,18 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 
 - Add PrevMatch logic
+- Remove all `// @ts-ignore`, `// @ts-no-check`, and `debugger` usage
+- Review/Remove `any` types
 - Go through messaging
   - add sync/async
   - catch all promises
   - cleanup sendMessageToContentScripts.ts file
+  - Consolidate `sendMessageToBackground()` and `sendMsgToBackground()` in `sendMessageToBackground.ts`
 - Storage
   - clean up storagUtils
   - updated all updates to store so that they also write to chrome storage
+- `BackgroundUtils.ts`
+  - General/Complete refactor
+- `htmlUtils.ts`
+  - remove `@ts-ignore`
+  - remove `any` types

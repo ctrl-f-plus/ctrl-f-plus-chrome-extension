@@ -12,7 +12,6 @@ import { ValidTabId } from '../../types/tab.types';
  * FROM: Background
  * TO: Content
  */
-
 export function createHighlightMsg(
   searchValue: string,
   tabId: ValidTabId,
@@ -35,7 +34,6 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   return {
     from: 'background',
     type: 'update-highlights',
-    prevIndex: undefined,
     payload: {
       tabId: tabId,
     },
