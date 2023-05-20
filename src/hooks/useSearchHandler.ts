@@ -20,7 +20,6 @@ export const useSearchHandler = () => {
 
       await sendMessageToBackground({
         from: 'content',
-        // type: MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES,
         type: 'remove-all-highlight-matches',
       });
 

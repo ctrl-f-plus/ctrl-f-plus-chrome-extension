@@ -11,9 +11,9 @@ export interface SharedStore {
   showLayover: boolean;
   showMatches: boolean;
   activeTabId: TabId;
-
-  // GLOBAL: yes - will need to review after logic changes
   searchValue: string;
+
+  // GLOBAL: yes - will need to review after logic changes to immediate searching
   lastSearchValue: string;
 }
 
@@ -68,10 +68,8 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     layoverPosition: store.layoverPosition,
     showLayover: store.showLayover,
     showMatches: store.showMatches,
-
     searchValue: store.searchValue,
     lastSearchValue: store.lastSearchValue,
-
     activeTabId: store.activeTabId,
   };
 }
@@ -107,7 +105,6 @@ export function resetPartialStore(store: Store): void {
   updateStore(store, partialInitialState);
 }
 
-// Store update functions
 export async function sendStoreToContentScripts(
   store: Store,
   tabIds: ValidTabId[] = []

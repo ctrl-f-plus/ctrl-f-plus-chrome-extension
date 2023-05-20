@@ -44,7 +44,6 @@ export const useFindMatches = () => {
   );
 
   const updateHighlights = useCallback(
-    // (state: TabState, prevIndex?: number, endOfTab?: boolean): TabState => {
     (state: TabState, options?: UpdateHighlightsOptions): TabState => {
       const { prevIndex, endOfTab } = options || {};
       const newState = { ...state };
