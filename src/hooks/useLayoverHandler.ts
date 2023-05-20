@@ -6,7 +6,6 @@ import {
   ActionTypes,
   LayoverAction,
   LayoverState,
-  SetState2Action,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
 
@@ -37,14 +36,14 @@ const ACTIONS: { [K in ActionTypes]: K } = {
   // add other action types here
 } as const;
 
-function incrementMatchIndices(globalMatchIdxStart: number) {
-  // TODO:
-  // return;
-}
+// function incrementMatchIndices(globalMatchIdxStart: number) {
+//   // TODO:
+//   // return;
+// }
 
 const reducer = (
   state: LayoverState,
-  action: LayoverAction | SetState2Action | { type: ActionTypes; payload: any }
+  action: LayoverAction | { type: ActionTypes; payload: any }
 ): LayoverState => {
   switch (action.type) {
     case 'INITIALIZE_STATE':
@@ -64,61 +63,17 @@ const reducer = (
     case 'SET_LAYOVER_POSITION':
       return { ...state, layoverPosition: action.payload };
     case 'SET_STATE2_CONTEXT':
-      if (typeof action.payload === 'function') {
-        const updaterFunction = action.payload as (
-          prevState2: TabState
-        ) => TabState;
-        const newState = updaterFunction(state.state2Context);
-        // console.log(
-        //   'Updating state with function. Old state:',
-        //   state.state2Context,
-        //   'New state:',
-        //   newState
-        // );
-        return {
-          ...state,
-          state2Context: newState,
-        };
-        // updatedState = {
-        //   ...state,
-        //   state2Context: newState,
-        // };
-      } else {
-        // console.log(
-        //   'Updating state with value. Old state:',
-        //   state.state2Context,
-        //   'New state:',
-        //   action.payload
-        // );
-        return { ...state, state2Context: action.payload as TabState };
-        // updatedState = { ...state, state2Context: action.payload as TabState };
-      }
-    case ACTIONS.INCREMENT_MATCH_INDICES:
-    // return {
-    //   // updatedState = {
-    //   ...state,
-    //   globalMatchIdx: state.globalMatchIdx + 1,
-    //   state2Context: {
-    //     ...state.state2Context,
-    //     // currentIndex: state.state2Context.currentIndex + 1,
-    //     globalMatchIdxStart: state.state2Context.globalMatchIdxStart
-    //       ? state.state2Context.globalMatchIdxStart + 1
-    //       : undefined,
-    //   },
-    // };
+      // console.log(
+      //   'Updating state with value. Old state:',
+      //   state.state2Context,
+      //   'New state:',
+      //   action.payload
+      // );
+      return { ...state, state2Context: action.payload as TabState };
+    // case ACTIONS.INCREMENT_MATCH_INDICES:
     default:
-      // updatedState = state;
       return state;
-    // globalMatchIdx: (updatedState.state2Context.currentIndex || 0) +
-    //   (updatedState.state2Context.globalMatchIdxStart || 0),
   }
-  // return updatedState;
-  // return {
-  //   ...updatedState,
-  //   globalMatchIdx:
-  //     (updatedState.state2Context.currentIndex || 0) +
-  //     (updatedState.state2Context.globalMatchIdxStart || 0),
-  // };
 };
 
 export const useLayoverHandler = () => {
@@ -132,69 +87,13 @@ export const useLayoverHandler = () => {
     dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
   };
 
-  const setState2Context = (value: SetState2Action) => {
-    dispatch(value);
+  const setState2Context = (value: TabState) => {
+    dispatch({ type: 'SET_STATE2_CONTEXT', payload: value });
   };
 
   const incrementMatchIndices = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
-
-  // const sendStateToBackground = async (state: LayoverState) => {
-  //   const stateWithoutFunctions: Partial<LayoverState> = Object.fromEntries(
-  //     Object.entries(state).filter(
-  //       ([key, value]) => typeof value !== 'function'
-  //     )
-  //   ) as Partial<LayoverState>;
-
-  //   const message: UpdateTabStatesObjMsg = {
-  //     // const message: StateUpdateMessage = {
-  //     from: 'content:match-utils',
-  //     // type: 'state-update',
-  //     type: 'update-tab-states-obj',
-  //     payload: {
-  //       serializedState: stateWithoutFunctions,
-  //     },
-  //   };
-
-  //   await sendMessageToBackground(message);
-  // };
-  // useEffect(() => {
-  //   // const stateWithoutFunctions = Object.fromEntries(
-  //   //   Object.entries(state).filter(
-  //   //     ([key, value]) => typeof value !== 'function'
-  //   //   )
-  //   // );
-  //   // console.log(
-  //   //   'LayoverContext Updated: ',
-  //   //   stateWithoutFunctions,
-  //   //   '\nmatchesObj: ',
-  //   //   state.state2Context.matchesObj
-  //   // );
-
-  //   // sendStateToBackground(state);
-  //   const debouncedSendStateToBackground = debounce(
-  //     sendStateToBackground,
-  //     1000
-  //   );
-
-  //   // Send the state to the background script, debounced
-  //   // debouncedSendStateToBackground(state);
-  // }, [state, sendStateToBackground]);
-
-  // useEffect(() => {
-  //   const stateWithoutFunctions = Object.fromEntries(
-  //     Object.entries(state).filter(
-  //       ([key, value]) => typeof value !== 'function'
-  //     )
-  //   );
-  //   console.log(
-  //     'LayoverContext Updated: ',
-  //     stateWithoutFunctions,
-  //     '\nmatchesObj: ',
-  //     state.state2Context.matchesObj
-  //   );
-  // }, [state]);
 
   return {
     ...state,
@@ -202,7 +101,6 @@ export const useLayoverHandler = () => {
     setLastSearchValue,
     setShowLayover: (value: boolean) =>
       dispatch({ type: 'SET_SHOW_LAYOVER', payload: value }),
-    // toggleSearchLayover,
     setShowMatches: (value: boolean) =>
       dispatch({ type: 'SET_SHOW_MATCHES', payload: value }),
     setTotalMatchesCount: (value: number) =>

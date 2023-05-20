@@ -106,7 +106,6 @@ export function wrapTextWithHighlight(
   text: string,
   spanClasses: any[]
 ): HTMLSpanElement {
-  debugger;
   const textNodeIndex = Array.prototype.slice
     .call(element.childNodes)
     .findIndex(

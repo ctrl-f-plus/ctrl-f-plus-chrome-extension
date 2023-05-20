@@ -68,12 +68,11 @@ const App: React.FC<{}> = () => {
     const serializedTabState = tabStore.serializedTabState;
     const xPathTabState: XPathTabState =
       deserializeMatchesObj(serializedTabState);
-    debugger;
 
     const tabState = restoreHighlightSpans(xPathTabState);
 
     if (!isEqual(tabState, state2Context)) {
-      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: tabState });
+      setState2Context(tabState);
     }
 
     setActiveTabId(tabStore.activeTabId);
@@ -120,7 +119,6 @@ const App: React.FC<{}> = () => {
 
       switch (type) {
         case 'remove-all-highlight-matches':
-          // case MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES:
           removeAllHighlightMatches();
           sendResponse({ success: true });
           break;
@@ -138,7 +136,7 @@ const App: React.FC<{}> = () => {
 
           if (response.hasMatch && !message.foundFirstMatch) {
             if (!isEqual(state2, state2Context)) {
-              setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+              setState2Context(state2);
             }
 
             state2 = updateHighlights(state2, { endOfTab: false });
@@ -155,7 +153,7 @@ const App: React.FC<{}> = () => {
           }
 
           if (!isEqual(state2, state2Context)) {
-            setState2Context({ type: 'SET_STATE2_CONTEXT', payload: state2 });
+            setState2Context(state2);
           }
 
           sendResponse(response);
@@ -167,7 +165,7 @@ const App: React.FC<{}> = () => {
           const newState = updateHighlights(state2, { endOfTab: false });
 
           if (!isEqual(state2, state2Context)) {
-            setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
+            setState2Context(newState);
           }
 
           const newSerializedState = serializeMatchesObj({

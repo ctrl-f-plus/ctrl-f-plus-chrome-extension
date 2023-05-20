@@ -4,11 +4,6 @@ import { ReactNode } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import { TabState } from './tab.types';
 
-export interface SetState2Action {
-  type: 'SET_STATE2_CONTEXT';
-  payload: TabState | ((prevState2: TabState) => TabState);
-}
-
 export interface LayoverContextData {
   showLayover: boolean;
   setShowLayover: (value: boolean) => void;
@@ -25,7 +20,7 @@ export interface LayoverContextData {
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
   state2Context: TabState;
-  setState2Context: (value: SetState2Action) => void;
+  setState2Context: (value: TabState) => void;
   incrementMatchIndices: () => void;
 }
 

@@ -37,7 +37,7 @@ export const useFindMatches = () => {
         findValue,
       });
 
-      setState2Context({ type: 'SET_STATE2_CONTEXT', payload: newState });
+      setState2Context(newState);
       return newState;
     },
     [state2Context, setState2Context]
@@ -116,7 +116,7 @@ export const useFindMatches = () => {
     });
 
     setState2(updatedState);
-    setState2Context({ type: 'SET_STATE2_CONTEXT', payload: updatedState });
+    setState2Context(updatedState);
   }, [
     updateHighlights,
     setState2Context,

@@ -82,6 +82,9 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 
 - Update Store to hold windows
+- Add Error Handling
+- Potentially consolidate showMatches and showLayover
+- Add Testing
 - Add PrevMatch logic
 - Remove all `// @ts-ignore`, `// @ts-no-check`, and `debugger` usage
 - Review/Remove `any` types

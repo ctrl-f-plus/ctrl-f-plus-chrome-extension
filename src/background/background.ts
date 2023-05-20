@@ -29,7 +29,6 @@ chrome.runtime.onMessage.addListener(
 
     switch (type) {
       case 'remove-all-highlight-matches':
-        // case MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES:
         await handleRemoveAllHighlightMatches(sendResponse);
         sendStoreToContentScripts(store);
 

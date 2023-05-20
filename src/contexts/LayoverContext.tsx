@@ -6,8 +6,8 @@ import { useLayoverHandler } from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
-  SetState2Action,
 } from '../types/layoverContext.types';
+import { TabState } from '../types/tab.types';
 
 export const LayoverContext = createContext<LayoverContextData>({
   showLayover: false,
@@ -31,15 +31,13 @@ export const LayoverContext = createContext<LayoverContextData>({
     matchesObj: [],
     globalMatchIdxStart: undefined,
   },
-  setState2Context: (value: SetState2Action) => {},
+  setState2Context: (value: TabState) => {},
   incrementMatchIndices: () => {},
 });
 
 export const LayoverProvider: React.FC<LayoverProviderProps> = ({
   children,
 }) => {
-  // Code to fetch the initial state from the background store and set it to `store` using `setStore`
-
   const {
     showLayover,
     setShowLayover,
@@ -47,7 +45,6 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setLastSearchValue,
     searchValue,
     setSearchValue,
-    // toggleSearchLayover,
     showMatches,
     setShowMatches,
     totalMatchesCount,
@@ -66,7 +63,6 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
       value={{
         showLayover,
         setShowLayover,
-        // toggleSearchLayover,
         searchValue,
         setSearchValue,
         lastSearchValue,
