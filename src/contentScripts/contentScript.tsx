@@ -16,6 +16,7 @@ import {
   TabId,
   TabState,
   ValidTabId,
+  XPathTabState,
 } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -65,8 +66,9 @@ const App: React.FC<{}> = () => {
     setLayoverPosition(tabStore.layoverPosition);
 
     const serializedTabState = tabStore.serializedTabState;
-    // const xPathTabState: XPathTabState =
-    const xPathTabState = deserializeMatchesObj(serializedTabState);
+    const xPathTabState: XPathTabState =
+      deserializeMatchesObj(serializedTabState);
+    debugger;
 
     const tabState = restoreHighlightSpans(xPathTabState);
 

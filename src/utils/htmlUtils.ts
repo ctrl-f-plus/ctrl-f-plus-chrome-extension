@@ -5,6 +5,7 @@ import {
   SerializedTabState,
   TabState,
   XPathMatchObject,
+  XPathTabState,
 } from '../types/tab.types';
 
 function getXPath(element: Node): string {
@@ -70,6 +71,7 @@ export function serializeMatchesObj(
  * UTILS FOR RESTORING MATCHES HTML
  */
 
+// TODO: Need to add return type
 function getElementByXPath(xpath: string) {
   let result = null;
 
@@ -104,6 +106,7 @@ export function wrapTextWithHighlight(
   text: string,
   spanClasses: any[]
 ): HTMLSpanElement {
+  debugger;
   const textNodeIndex = Array.prototype.slice
     .call(element.childNodes)
     .findIndex(
@@ -126,26 +129,22 @@ export function wrapTextWithHighlight(
 }
 
 // FIXME:
-// @ts-ignore
+
 export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
-  const tabXPaths: XPathMatchObject[] = xPathTabState.matchesObj;
-
-  const tabState: TabState = { ...xPathTabState };
-
-  tabState.matchesObj = [];
+  const { matchesObj: tabXPaths, ...rest } = xPathTabState;
+  const tabState: TabState = { ...rest, matchesObj: [] };
 
   tabXPaths.forEach(({ xpath, text, spanClasses }) => {
-    // const element = '/html/' + getElementByXPath(xpath);
-
     const element = getElementByXPath(xpath);
 
     if (element) {
       wrapTextWithHighlight(element, text, spanClasses);
 
-      const spanElement = (element as Element).querySelector('span');
-      if (spanElement !== null) {
-        tabState.matchesObj.push(spanElement);
-      }
+      const spanElement: HTMLSpanElement | null = (
+        element as Element
+      ).querySelector('span');
+
+      spanElement && tabState.matchesObj.push(spanElement);
     }
   });
 
@@ -154,7 +153,7 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
 
 export function deserializeMatchesObj(
   shallowStateObject: SerializedTabState
-): TabState {
+): XPathTabState {
   const { serializedMatches, ...otherProperties } = shallowStateObject;
 
   const serializedXPaths = serializedMatches;
@@ -162,7 +161,7 @@ export function deserializeMatchesObj(
   const deserializedXPaths =
     serializedXPaths === '' ? [] : JSON.parse(serializedXPaths);
 
-  const deserializedState: TabState = {
+  const deserializedState: XPathTabState = {
     ...otherProperties,
     matchesObj: deserializedXPaths,
   };

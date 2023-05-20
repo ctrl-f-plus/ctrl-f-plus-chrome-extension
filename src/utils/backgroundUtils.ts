@@ -54,7 +54,6 @@ export async function getOrderedTabs(
   return orderedTabs;
 }
 
-// FIXME: Figure out if/when this actually ever gets called, then remove debugger
 export async function updateMatchesCount() {
   const storedTabs = await getAllStoredTabs();
 
@@ -223,7 +222,6 @@ export async function switchTab(
 /**
  * Event Handling Functions
  */
-
 export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
   updateStore(store, {
     showLayover: addStyles,

@@ -4,7 +4,7 @@ export type TabId = chrome.tabs.Tab['id'] | number;
 export type ValidTabId = Exclude<TabId, undefined>;
 export type JSONString = string;
 
-export interface BaseTab {
+interface Tab {
   tabId: TabId;
   active?: boolean;
   currentIndex: number | undefined;
@@ -18,17 +18,15 @@ export interface XPathMatchObject {
   spanClasses: string[];
 }
 
-// FIXME: remove serializedMatches from TabState
-export interface TabState extends BaseTab {
-  matchesObj: HTMLSpanElement[];
-}
-
-export interface XPathTabState extends BaseTab {
+export interface XPathTabState extends Tab {
   matchesObj: XPathMatchObject[];
 }
 
-export interface SerializedTabState extends BaseTab {
-  serializedMatches: JSONString;
+// FIXME: remove serializedMatches from TabState
+export interface TabState extends Tab {
+  matchesObj: HTMLSpanElement[];
 }
 
-// type SerializedMatchesObj = string;
+export interface SerializedTabState extends Tab {
+  serializedMatches: JSONString;
+}

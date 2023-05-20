@@ -18,7 +18,7 @@ import {
   updateStore,
 } from './store';
 
-clearLocalStorage(); //Keep?
+// clearLocalStorage(); //Keep?
 export const store = initStore();
 sendStoreToContentScripts(store);
 
@@ -121,13 +121,6 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
   store.activeTabId = activeTabId;
 
   chrome.windows.get(windowId, (focusedWindow) => {
-    if (chrome.runtime.lastError) {
-      console.error(
-        `checked runtime.lastError: ${chrome.runtime.lastError.message}`
-      );
-      return;
-    }
-
     if (
       store.lastFocusedWindowId !== windowId &&
       focusedWindow.type === 'normal'
@@ -142,11 +135,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  // await clearLocalStorage();
   clearLocalStorage();
 });
 
-// FIXME: REVIEW
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!store.showMatches) {
     return;

@@ -81,6 +81,7 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
 
 
+- Update Store to hold windows
 - Add PrevMatch logic
 - Remove all `// @ts-ignore`, `// @ts-no-check`, and `debugger` usage
 - Review/Remove `any` types
