@@ -6,6 +6,17 @@ import { SerializedTabState, TabId, ValidTabId } from './tab.types';
 
 export type TransactionId = Exclude<string, undefined>;
 
+// export const MESSAGES = {
+//   REMOVE_ALL_HIGHLIGHT_MATCHES: 'REMOVE_ALL_HIGHLIGHT_MATCHES',
+//   GET_ALL_MATCHES: 'GET_ALL_MATCHES',
+//   UPDATE_TAB_STATES_OBJ: 'UPDATE_TAB_STATES_OBJ',
+//   SWITCH_TAB: 'SWITCH_TAB',
+//   REMOVE_STYLES_ALL_TABS: 'REMOVE_STYLES_ALL_TABS',
+//   UPDATE_LAYOVER_POSITION: 'UPDATE_LAYOVER_POSITION',
+// };
+
+// export type MessageTypes = keyof typeof MESSAGES;
+
 export interface BaseMessage {
   from:
     | 'background'
@@ -19,6 +30,7 @@ export interface BaseMessage {
     | 'content:layover-component';
   async?: boolean | true;
   type: string;
+  // type: string | MessageTypes;
   payload?: any;
   serializedState2?: any;
   serializedState?: any;
@@ -27,7 +39,7 @@ export interface BaseMessage {
 
 export interface GetAllMatchesMsg extends BaseMessage {
   from: 'content';
-  type: 'get-all-matches-msg';
+  type: 'get-all-matches';
   payload: any;
 }
 
@@ -42,19 +54,21 @@ export interface MessageFixMe {
   foundFirstMatch?: boolean;
 }
 
-export interface RemoveStylesAllTabs extends BaseMessage {
-  from: 'content';
-  type: 'remove-styles-all-tabs';
-}
-
 export interface RemoveAllHighlightMatches extends BaseMessage {
   from: 'content';
   type: 'remove-all-highlight-matches';
+  // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES;
 }
 
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
   from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
+  // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES;
+}
+
+export interface RemoveStylesAllTabs extends BaseMessage {
+  from: 'content';
+  type: 'remove-styles-all-tabs';
 }
 
 export interface SwitchTabMsg extends BaseMessage {

@@ -120,6 +120,7 @@ const App: React.FC<{}> = () => {
 
       switch (type) {
         case 'remove-all-highlight-matches':
+          // case MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES:
           removeAllHighlightMatches();
           sendResponse({ success: true });
           break;

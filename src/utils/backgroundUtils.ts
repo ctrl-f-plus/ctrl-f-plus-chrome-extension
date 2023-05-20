@@ -237,6 +237,7 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
       const msg: RemoveAllHighlightMatchesMsg = {
         from: 'background:backgroundUtils',
         type: 'remove-all-highlight-matches',
+        // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES,
       };
       return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
     } else {

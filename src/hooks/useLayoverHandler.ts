@@ -10,22 +10,6 @@ import {
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
 
-function debounce<F extends (...args: any[]) => any>(
-  func: F,
-  delay: number
-): (...args: Parameters<F>) => void {
-  let timeoutID: NodeJS.Timeout | null;
-  return (...args: Parameters<F>) => {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-    }
-    // @ts-ignore
-    timeoutID = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-}
-
 const initialState: LayoverState = {
   showLayover: false,
   showMatches: false,
