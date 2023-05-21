@@ -78,27 +78,6 @@ const App: React.FC<{}> = () => {
     setActiveTabId(tabStore.activeTabId);
   };
 
-  async function handleHighlight(
-    state2: TabState,
-    findValue: string,
-    tabId: TabId
-  ): Promise<any> {
-    state2.tabId = tabId;
-    const newState = await findAllMatches(state2, findValue);
-
-    newState.tabId = tabId;
-
-    const serializedState: SerializedTabState = serializeMatchesObj({
-      ...newState,
-    });
-
-    return {
-      hasMatch: newState.matchesObj.length > 0,
-      serializedState: serializedState,
-      state2: newState,
-    };
-  }
-
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
 
   const handleMessage = useCallback(
@@ -113,9 +92,9 @@ const App: React.FC<{}> = () => {
       }
 
       let findValue;
-      let state2: TabState;
       let tabId;
       let response;
+      let newState;
 
       switch (type) {
         case 'remove-all-highlight-matches':
@@ -130,19 +109,30 @@ const App: React.FC<{}> = () => {
           break;
         case 'highlight':
           ({ tabId, findValue } = message.payload);
-          state2 = { ...tabStateContext, tabId: tabId };
-          response = await handleHighlight(state2, findValue, tabId);
-          state2 = response.state2;
+
+          newState = await findAllMatches(tabStateContext, findValue);
+
+          newState.tabId = tabId;
+
+          const serializedState: SerializedTabState = serializeMatchesObj({
+            ...newState,
+          });
+
+          response = {
+            hasMatch: newState.matchesObj.length > 0,
+            serializedState: serializedState,
+            state2: newState,
+          };
 
           if (response.hasMatch && !message.foundFirstMatch) {
-            if (!isEqual(state2, tabStateContext)) {
-              setTabStateContext(state2);
+            if (!isEqual(newState, tabStateContext)) {
+              setTabStateContext(newState);
             }
 
-            state2 = updateHighlights(state2, { endOfTab: false });
+            newState = updateHighlights(newState, { endOfTab: false });
 
             const serializedState: SerializedTabState = serializeMatchesObj({
-              ...state2,
+              ...newState,
             });
 
             response = {
@@ -152,25 +142,26 @@ const App: React.FC<{}> = () => {
             };
           }
 
-          if (!isEqual(state2, tabStateContext)) {
-            setTabStateContext(state2);
+          if (!isEqual(newState, tabStateContext)) {
+            setTabStateContext(newState);
           }
 
           sendResponse(response);
           return true;
+
         case 'update-highlights':
-          tabId = message.payload.tabId;
-          state2 = { ...tabStateContext, tabId: tabId };
+          ({ tabId } = message.payload);
 
-          const newState = updateHighlights(state2, { endOfTab: false });
+          newState = updateHighlights(
+            { ...tabStateContext, tabId },
+            { endOfTab: false }
+          );
 
-          if (!isEqual(state2, tabStateContext)) {
+          if (!isEqual(newState, tabStateContext)) {
             setTabStateContext(newState);
           }
 
-          const newSerializedState = serializeMatchesObj({
-            ...newState,
-          });
+          const newSerializedState = serializeMatchesObj(newState);
 
           sendMsgToBackground<UpdateTabStatesObjMsg>({
             from: 'content:match-utils',
@@ -180,13 +171,13 @@ const App: React.FC<{}> = () => {
 
           sendResponse({ status: 'success' });
           return true;
+
         default:
           break;
       }
       return true;
     },
     [
-      handleHighlight,
       tabStateContext,
       updateHighlights,
       setTabStateContext,

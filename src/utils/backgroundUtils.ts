@@ -83,48 +83,40 @@ async function executeContentScriptOnTab(
   hasMatch: boolean;
   state: any;
 }> {
-  return new Promise<{ hasMatch: boolean; state: any }>(
-    async (resolve, reject) => {
-      const tabId: ValidTabId = tab.id as number;
+  try {
+    const tabId: ValidTabId = tab.id as number;
 
-      try {
-        const msg = createHighlightMsg(
-          store.searchValue,
+    const msg = createHighlightMsg(store.searchValue, tabId, foundFirstMatch);
+    const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
+
+    const { currentIndex, matchesCount, serializedMatches } =
+      response.serializedState;
+
+    await setStoredTabs(response.serializedState);
+
+    const globalMatchIdxStart = store.totalMatchesCount;
+
+    updateStore(store, {
+      totalMatchesCount: store.totalMatchesCount + matchesCount,
+    });
+
+    updateStore(store, {
+      tabStates: {
+        ...store.tabStates,
+        [tabId]: {
           tabId,
-          foundFirstMatch
-        );
-        const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
+          currentIndex,
+          matchesCount,
+          serializedMatches,
+          globalMatchIdxStart,
+        },
+      },
+    });
 
-        const { currentIndex, matchesCount, serializedMatches } =
-          response.serializedState;
-
-        await setStoredTabs(response.serializedState);
-
-        const globalMatchIdxStart = store.totalMatchesCount;
-
-        updateStore(store, {
-          totalMatchesCount: store.totalMatchesCount + matchesCount,
-        });
-
-        updateStore(store, {
-          tabStates: {
-            ...store.tabStates,
-            [tabId]: {
-              tabId,
-              currentIndex,
-              matchesCount,
-              serializedMatches,
-              globalMatchIdxStart,
-            },
-          },
-        });
-
-        resolve(response);
-      } catch (error) {
-        reject({ hasMatch: false, state: null });
-      }
-    }
-  );
+    return response;
+  } catch (error) {
+    return { hasMatch: false, state: null };
+  }
 }
 
 export async function executeContentScriptOnAllTabs(store: Store) {
