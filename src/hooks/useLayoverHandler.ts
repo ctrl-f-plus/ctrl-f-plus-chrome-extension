@@ -8,6 +8,7 @@ import {
   LayoverState,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
+import { isEqual } from 'lodash';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -80,7 +81,9 @@ export const useLayoverHandler = () => {
   };
 
   const setTabStateContext = (value: TabState) => {
-    dispatch({ type: ACTIONS.SET_TAB_STATE_CONTEXT, payload: value });
+    if (!isEqual(value, state.tabStateContext)) {
+      dispatch({ type: ACTIONS.SET_TAB_STATE_CONTEXT, payload: value });
+    }
   };
 
   const setShowLayover = (value: boolean) =>
