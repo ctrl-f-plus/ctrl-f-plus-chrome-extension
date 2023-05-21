@@ -98,6 +98,6 @@ DOM ELEMENTS TO LOCAL STORAGE:
   - updated all updates to store so that they also write to chrome storage
 - `BackgroundUtils.ts`
   - General/Complete refactor
-- `htmlUtils.ts`
-  - remove `@ts-ignore`
-  - remove `any` types
+<!-- //- `htmlUtils.ts`
+  <!-- //- remove `@ts-ignore` -->
+  <!-- //- remove `any` types --> -->
