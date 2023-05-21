@@ -25,23 +25,6 @@ export const sendMessageToContentScripts = async (
   });
 };
 
-// UPDATED VERSION
-// export function sendMsgToTab<T extends Messages>(
-//   tabId: TabId,
-//   message: T
-// ): Promise<any> {
-//   return new Promise((resolve, reject) => {
-//     chrome.tabs.sendMessage(tabId as number, message, (response) => {
-//       if (chrome.runtime.lastError) {
-//         reject(chrome.runtime.lastError);
-//       } else {
-//         resolve(response);
-//       }
-//     });
-//   });
-// }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 export function sendMessageToTab<T extends Messages>(
   tabId: number,
   message: T
@@ -55,10 +38,18 @@ export function sendMessageToTab<T extends Messages>(
       }
     };
 
+    // chrome.tabs.get(tabId, function (tab) {
+    // if (tab.status === 'complete') {
+    // try {
     if (message.async) {
       chrome.tabs.sendMessage(tabId as number, message, callback);
     } else {
       chrome.tabs.sendMessage(tabId as number, message);
     }
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    // }
+    // });
   });
 }

@@ -88,6 +88,7 @@ const App: React.FC<{}> = () => {
         case 'store-updated':
           const { tabStore } = message.payload;
           tabStore && updateContextFromStore(tabStore);
+          sendResponse(true);
           break;
         case 'highlight':
           const { findValue, foundFirstMatch } = message.payload;
@@ -132,6 +133,7 @@ const App: React.FC<{}> = () => {
         default:
           break;
       }
+
       return true;
     },
     [
