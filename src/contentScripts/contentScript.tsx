@@ -84,7 +84,6 @@ const App: React.FC<{}> = () => {
       switch (type) {
         case 'remove-all-highlight-matches':
           removeAllHighlightMatches();
-          sendResponse({ success: true });
           break;
         case 'store-updated':
           const { tabStore } = message.payload;

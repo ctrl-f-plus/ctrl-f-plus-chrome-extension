@@ -32,6 +32,7 @@ export function createHighlightMsg(
 
 export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
   return {
+    async: true,
     from: 'background',
     type: 'update-highlights',
     payload: {

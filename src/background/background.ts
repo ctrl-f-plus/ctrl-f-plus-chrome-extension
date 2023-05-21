@@ -32,7 +32,7 @@ chrome.runtime.onMessage.addListener(
         await handleRemoveAllHighlightMatches(sendResponse);
         sendStoreToContentScripts(store);
 
-        break;
+        return true;
       case 'get-all-matches':
         const { searchValue } = payload;
 

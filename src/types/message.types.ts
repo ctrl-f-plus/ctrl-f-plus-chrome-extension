@@ -47,6 +47,7 @@ export interface RemoveAllHighlightMatches extends BaseMessage {
 }
 
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
+  async: false;
   from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
   payload: any;
@@ -79,6 +80,7 @@ export interface MessageFixMe {
 }
 
 export interface UpdateHighlightsMsg extends BaseMessage {
+  async: true;
   from: 'background';
   type: 'update-highlights';
 }
@@ -109,6 +111,7 @@ export interface UpdateLayoverPositionMsg extends BaseMessage {
 }
 
 export interface HighlightMsg extends BaseMessage {
+  async: true;
   from: 'background';
   type: 'highlight';
   payload: any;

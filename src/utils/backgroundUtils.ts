@@ -14,7 +14,7 @@ import {
   createHighlightMsg,
   createUpdateHighlightsMsg,
 } from './messageUtils/createMessages';
-import { sendMsgToTab } from './messageUtils/sendMessageToContentScripts';
+import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
 
 /**
  *  Utility/Helper Functions:
@@ -87,7 +87,7 @@ async function executeContentScriptOnTab(
     const tabId: ValidTabId = tab.id as number;
 
     const msg = createHighlightMsg(store.searchValue, tabId, foundFirstMatch);
-    const response = await sendMsgToTab<HighlightMsg>(tabId, msg);
+    const response = await sendMessageToTab<HighlightMsg>(tabId, msg);
 
     const { currentIndex, matchesCount, serializedMatches } =
       response.serializedState;
@@ -207,7 +207,7 @@ export async function switchTab(
 
     const msg = createUpdateHighlightsMsg(tab.id);
 
-    await sendMsgToTab<UpdateHighlightsMsg>(tab.id, msg);
+    await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
   });
 }
 
@@ -227,14 +227,14 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {
       const msg: RemoveAllHighlightMatchesMsg = {
+        async: false,
         from: 'background:backgroundUtils',
         type: 'remove-all-highlight-matches',
         payload: {
           tabId: tab.id,
         },
-        // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES,
       };
-      return sendMsgToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
+      return sendMessageToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
     } else {
       return Promise.resolve(null);
     }

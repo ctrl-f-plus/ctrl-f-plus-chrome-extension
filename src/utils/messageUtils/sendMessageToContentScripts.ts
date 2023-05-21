@@ -26,23 +26,26 @@ export const sendMessageToContentScripts = async (
 };
 
 // UPDATED VERSION
-export function sendMsgToTab<T extends Messages>(
-  tabId: TabId,
-  message: T
-): Promise<any> {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.sendMessage(tabId as number, message, (response) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(response);
-      }
-    });
-  });
-}
+// export function sendMsgToTab<T extends Messages>(
+//   tabId: TabId,
+//   message: T
+// ): Promise<any> {
+//   return new Promise((resolve, reject) => {
+//     chrome.tabs.sendMessage(tabId as number, message, (response) => {
+//       if (chrome.runtime.lastError) {
+//         reject(chrome.runtime.lastError);
+//       } else {
+//         resolve(response);
+//       }
+//     });
+//   });
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-export function sendMessageToTab(tabId: number, message: any): Promise<any> {
+export function sendMessageToTab<T extends Messages>(
+  tabId: number,
+  message: T
+): Promise<any> {
   return new Promise((resolve, reject) => {
     const callback = (response: any) => {
       if (chrome.runtime.lastError) {
@@ -56,7 +59,6 @@ export function sendMessageToTab(tabId: number, message: any): Promise<any> {
       chrome.tabs.sendMessage(tabId as number, message, callback);
     } else {
       chrome.tabs.sendMessage(tabId as number, message);
-      resolve(true);
     }
   });
 }
