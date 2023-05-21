@@ -49,19 +49,23 @@ export const useFindMatches = () => {
     (state: TabState, options?: UpdateHighlightsOptions): TabState => {
       const { prevIndex, endOfTab } = options || {};
       const newState = { ...state };
+      debugger;
       if (!newState.matchesObj.length) {
         return newState;
       }
+
       if (typeof prevIndex === 'number') {
         const prevMatch = newState.matchesObj[prevIndex];
         prevMatch.classList.remove('ctrl-f-highlight-focus');
       }
+
       if (!endOfTab && typeof newState.currentIndex !== 'undefined') {
         const curMatch = newState.matchesObj[newState.currentIndex];
 
         curMatch.classList.add('ctrl-f-highlight-focus');
         scrollToElement(curMatch);
       }
+      debugger;
       return newState;
     },
     []

@@ -14,7 +14,7 @@ import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
-import { XPathTabState } from '../types/tab.types';
+import { ValidTabId, XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
   restoreHighlightSpans,
@@ -73,7 +73,7 @@ const App: React.FC<{}> = () => {
       console.log('Received message:', message);
 
       const { type, transactionId } = message;
-      const { tabId } = message.payload;
+      const { tabId }: { tabId: ValidTabId } = message.payload;
       let newState;
 
       if (transactionId && transactionId <= lastProcessedTransactionId) {
@@ -114,7 +114,7 @@ const App: React.FC<{}> = () => {
           return true;
         case 'update-highlights':
           newState = updateHighlights(
-            { ...tabStateContext, tabId },
+            { ...tabStateContext },
             { endOfTab: false }
           );
 

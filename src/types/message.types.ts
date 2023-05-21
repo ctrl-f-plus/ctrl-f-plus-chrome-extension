@@ -43,11 +43,13 @@ export interface GetAllMatchesMsg extends BaseMessage {
 export interface RemoveAllHighlightMatches extends BaseMessage {
   from: 'content';
   type: 'remove-all-highlight-matches';
+  // payload: any;
 }
 
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
   from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
+  payload: any;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {
@@ -65,6 +67,17 @@ export interface SwitchTabMsg extends BaseMessage {
   // };
 }
 
+export interface MessageFixMe {
+  async: boolean | true;
+  type: string;
+  command?: string;
+  payload?: any;
+  prevIndex?: number;
+  tabId?: TabId;
+  transactionId?: TransactionId;
+  foundFirstMatch?: boolean;
+}
+
 export interface UpdateHighlightsMsg extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
@@ -79,10 +92,12 @@ export interface UpdateTabStatesObjMsg extends BaseMessage {
 export interface UpdateStoreMsg extends BaseMessage {
   from: 'background:store';
   type: 'store-updated';
-  payload: {
-    store?: Store;
-    tabStore?: TabStore;
-  };
+  payload: any;
+  // payload: {
+  //   tabId: ValidTabId;
+  //   store?: Store;
+  //   tabStore?: TabStore;
+  // };
 }
 
 export interface UpdateLayoverPositionMsg extends BaseMessage {

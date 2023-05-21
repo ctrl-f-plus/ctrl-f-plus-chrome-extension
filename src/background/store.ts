@@ -124,8 +124,8 @@ export async function sendStoreToContentScripts(
       from: 'background:store',
       type: 'store-updated',
       payload: {
+        tabId,
         tabStore,
-        origin,
       },
     };
 
