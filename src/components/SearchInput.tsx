@@ -14,6 +14,7 @@ import React, {
   useState,
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { TabStateContext } from '../contexts/TabStateContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
@@ -28,8 +29,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     showMatches,
     lastSearchValue,
     totalMatchesCount,
-    tabStateContext,
   } = useContext(LayoverContext);
+  const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
   useEffect(() => {
     setLocalSearchValue(searchValue);

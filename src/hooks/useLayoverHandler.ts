@@ -26,51 +26,46 @@ const initialState: LayoverState = {
   },
 };
 
-// const ACTIONS = {
-//   // INCREMENT_MATCH_INDICES: 'increment_match_indices',
-//   INCREMENT_MATCH_INDICES: 'INCREMENT_MATCH_INDICES',
-// };
-
 const ACTIONS: { [K in ActionTypes]: K } = {
+  INITIALIZE_STATE: 'INITIALIZE_STATE',
+  SET_SHOW_LAYOVER: 'SET_SHOW_LAYOVER',
+  SET_SHOW_MATCHES: 'SET_SHOW_MATCHES',
+  SET_SEARCH_VALUE: 'SET_SEARCH_VALUE',
+  SET_LAST_SEARCH_VALUE: 'SET_LAST_SEARCH_VALUE',
+  SET_TOTAL_MATCHES_COUNT: 'SET_TOTAL_MATCHES_COUNT',
+  SET_GLOBAL_MATCH_IDX: 'SET_GLOBAL_MATCH_IDX',
+  SET_LAYOVER_POSITION: 'SET_LAYOVER_POSITION',
   INCREMENT_MATCH_INDICES: 'INCREMENT_MATCH_INDICES',
-  // add other action types here
+  SET_TAB_STATE_CONTEXT: 'SET_TAB_STATE_CONTEXT',
 } as const;
 
-// function incrementMatchIndices(globalMatchIdxStart: number) {
-//   // TODO:
-//   // return;
-// }
-
-const reducer = (
-  state: LayoverState,
-  action: LayoverAction | { type: ActionTypes; payload: any }
-): LayoverState => {
+const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
   switch (action.type) {
-    case 'INITIALIZE_STATE':
+    case ACTIONS.INITIALIZE_STATE:
       return action.payload;
-    case 'SET_SHOW_LAYOVER':
+    case ACTIONS.SET_SHOW_LAYOVER:
       return { ...state, showLayover: action.payload };
-    case 'SET_SHOW_MATCHES':
+    case ACTIONS.SET_SHOW_MATCHES:
       return { ...state, showMatches: action.payload };
-    case 'SET_SEARCH_VALUE':
+    case ACTIONS.SET_SEARCH_VALUE:
       return { ...state, searchValue: action.payload };
-    case 'SET_LAST_SEARCH_VALUE':
+    case ACTIONS.SET_LAST_SEARCH_VALUE:
       return { ...state, lastSearchValue: action.payload };
-    case 'SET_TOTAL_MATCHES_COUNT':
+    case ACTIONS.SET_TOTAL_MATCHES_COUNT:
       return { ...state, totalMatchesCount: action.payload };
-    case 'SET_GLOBAL_MATCH_IDX':
+    case ACTIONS.SET_GLOBAL_MATCH_IDX:
       return { ...state, globalMatchIdx: action.payload };
-    case 'SET_LAYOVER_POSITION':
+    case ACTIONS.SET_LAYOVER_POSITION:
       return { ...state, layoverPosition: action.payload };
-    case 'SET_STATE2_CONTEXT':
+    case ACTIONS.SET_TAB_STATE_CONTEXT:
       // console.log(
       //   'Updating state with value. Old state:',
       //   state.tabStateContext,
       //   'New state:',
       //   action.payload
       // );
+
       return { ...state, tabStateContext: action.payload as TabState };
-    // case ACTIONS.INCREMENT_MATCH_INDICES:
     default:
       return state;
   }
@@ -80,16 +75,31 @@ export const useLayoverHandler = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const setSearchValue = (value: string) => {
-    dispatch({ type: 'SET_SEARCH_VALUE', payload: value });
+    dispatch({ type: ACTIONS.SET_SEARCH_VALUE, payload: value });
   };
 
   const setLastSearchValue = (value: string) => {
-    dispatch({ type: 'SET_LAST_SEARCH_VALUE', payload: value });
+    dispatch({ type: ACTIONS.SET_LAST_SEARCH_VALUE, payload: value });
   };
 
   const setTabStateContext = (value: TabState) => {
-    dispatch({ type: 'SET_STATE2_CONTEXT', payload: value });
+    dispatch({ type: ACTIONS.SET_TAB_STATE_CONTEXT, payload: value });
   };
+
+  const setShowLayover = (value: boolean) =>
+    dispatch({ type: ACTIONS.SET_SHOW_LAYOVER, payload: value });
+
+  const setShowMatches = (value: boolean) =>
+    dispatch({ type: ACTIONS.SET_SHOW_MATCHES, payload: value });
+
+  const setTotalMatchesCount = (value: number) =>
+    dispatch({ type: ACTIONS.SET_TOTAL_MATCHES_COUNT, payload: value });
+
+  const setGlobalMatchIdx = (value: number) =>
+    dispatch({ type: ACTIONS.SET_GLOBAL_MATCH_IDX, payload: value });
+
+  const setLayoverPosition = (value: LayoverPosition | null) =>
+    dispatch({ type: ACTIONS.SET_LAYOVER_POSITION, payload: value });
 
   const incrementMatchIndices = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
@@ -99,17 +109,12 @@ export const useLayoverHandler = () => {
     ...state,
     setSearchValue,
     setLastSearchValue,
-    setShowLayover: (value: boolean) =>
-      dispatch({ type: 'SET_SHOW_LAYOVER', payload: value }),
-    setShowMatches: (value: boolean) =>
-      dispatch({ type: 'SET_SHOW_MATCHES', payload: value }),
-    setTotalMatchesCount: (value: number) =>
-      dispatch({ type: 'SET_TOTAL_MATCHES_COUNT', payload: value }),
-    setGlobalMatchIdx: (value: number) =>
-      dispatch({ type: 'SET_GLOBAL_MATCH_IDX', payload: value }),
-    setLayoverPosition: (value: LayoverPosition | null) =>
-      dispatch({ type: 'SET_LAYOVER_POSITION', payload: value }),
-    setTabStateContext,
+    setShowLayover,
+    setShowMatches,
+    setTotalMatchesCount,
+    setGlobalMatchIdx,
+    setLayoverPosition,
     incrementMatchIndices,
+    setTabStateContext,
   };
 };

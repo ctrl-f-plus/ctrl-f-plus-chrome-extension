@@ -2,6 +2,7 @@
 
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { TabStateContext } from '../contexts/TabStateContext';
 import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
@@ -15,11 +16,14 @@ type UpdateHighlightsOptions = {
 
 export const useFindMatches = () => {
   const {
-    tabStateContext,
-    setTabStateContext,
+    // tabStateContext,
+    // setTabStateContext,
     totalMatchesCount,
     globalMatchIdx,
   } = useContext(LayoverContext);
+
+  const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
+
   const [state2, setState2] = useState(tabStateContext);
 
   useEffect(() => {

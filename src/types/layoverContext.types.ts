@@ -19,8 +19,6 @@ export interface LayoverContextData {
   setGlobalMatchIdx: (value: number) => void;
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
-  tabStateContext: TabState;
-  setTabStateContext: (value: TabState) => void;
   incrementMatchIndices: () => void;
 }
 
@@ -39,14 +37,20 @@ export interface LayoverState {
   tabStateContext: TabState;
 }
 
-export type ActionTypes = 'INCREMENT_MATCH_INDICES';
-// | /* add other action types here */
+export type ActionTypes =
+  | 'INITIALIZE_STATE'
+  | 'SET_SHOW_LAYOVER'
+  | 'SET_SHOW_MATCHES'
+  | 'SET_SEARCH_VALUE'
+  | 'SET_LAST_SEARCH_VALUE'
+  | 'SET_TOTAL_MATCHES_COUNT'
+  | 'SET_GLOBAL_MATCH_IDX'
+  | 'SET_LAYOVER_POSITION'
+  | 'SET_TAB_STATE_CONTEXT'
+  | 'INCREMENT_MATCH_INDICES';
 
 export type LayoverAction =
-  | {
-      type: 'INITIALIZE_STATE';
-      payload: LayoverState;
-    }
+  | { type: 'INITIALIZE_STATE'; payload: LayoverState }
   | { type: 'SET_SHOW_LAYOVER'; payload: boolean }
   | { type: 'SET_SHOW_MATCHES'; payload: boolean }
   | { type: 'SET_SEARCH_VALUE'; payload: string }
@@ -54,5 +58,5 @@ export type LayoverAction =
   | { type: 'SET_TOTAL_MATCHES_COUNT'; payload: number }
   | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number }
   | { type: 'SET_LAYOVER_POSITION'; payload: LayoverPosition | null }
-  | { type: 'SET_STATE2_CONTEXT'; payload: TabState }
-  | { type: 'INCREMENT_MATCH_INDICES'; payload?: number };
+  | { type: 'INCREMENT_MATCH_INDICES' }
+  | { type: 'SET_TAB_STATE_CONTEXT'; payload: TabState };

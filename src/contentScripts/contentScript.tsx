@@ -1,5 +1,6 @@
 // src/contentScript/contentScript.tsx
 
+
 import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -7,6 +8,10 @@ import { TabStore } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
+import {
+  TabStateContext,
+  TabStateContextProvider,
+} from '../contexts/TabStateContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
@@ -48,9 +53,8 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount,
     layoverPosition,
     setLayoverPosition,
-    tabStateContext,
-    setTabStateContext,
   } = useContext(LayoverContext);
+  const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
   const { updateHighlights, findAllMatches } = useFindMatches();
 
@@ -254,8 +258,10 @@ const reactRoot = createRoot(root);
 
 reactRoot.render(
   <React.StrictMode>
-    <LayoverProvider>
-      <App />
-    </LayoverProvider>
+    <TabStateContextProvider>
+      <LayoverProvider>
+        <App />
+      </LayoverProvider>
+    </TabStateContextProvider>
   </React.StrictMode>
 );
