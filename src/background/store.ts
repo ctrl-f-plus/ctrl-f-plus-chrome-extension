@@ -2,7 +2,28 @@
 
 import { LayoverPosition } from '../components/Layover';
 import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from '../utils/backgroundUtils';
+import { queryWindowTabs } from '../utils/backgroundUtils';
+
+export interface WindowStore extends SharedStore {
+  updatedTabsCount: number;
+  totalTabs: number | undefined;
+  tabStores: Record<ValidTabId, SimplifiedTabState>;
+}
+
+export interface SimplifiedTabState {
+  tabId: ValidTabId;
+  serializedTabState: SerializedTabState;
+}
+
+export interface TabStore extends SharedStore {
+  tabId: ValidTabId;
+  serializedTabState: SerializedTabState;
+}
+
+export interface Store {
+  lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+  windowStores: Record<chrome.windows.Window['id'], WindowStore>;
+}
 
 // Store Interface
 export interface SharedStore {
@@ -17,38 +38,64 @@ export interface SharedStore {
   lastSearchValue: string;
 }
 
-export interface Store extends SharedStore {
-  lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-  updatedTabsCount: number;
-  totalTabs: number | undefined;
-  tabStates: Record<ValidTabId, SerializedTabState>;
+export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
+  return new Promise((resolve, reject) => {
+    chrome.windows.getAll({ populate: true }, (windows) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(windows);
+      }
+    });
+  });
 }
 
-export interface TabStore extends SharedStore {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
+export async function initStore(): Promise<Store> {
+  const windows = await getAllOpenWindows();
+
+  const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
+  let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+
+  for (const window of windows) {
+    windowStores[window.id] = initWindowStore(window.id);
+    lastFocusedWindowId = window.id; //TODO: review
+  }
+
+  return {
+    lastFocusedWindowId,
+    windowStores,
+  };
 }
 
-export function initStore() {
-  const store: Store = {
-    activeTabId: undefined,
+export function initWindowStore(
+  windowId: chrome.windows.Window['id']
+): WindowStore {
+  const windowStore: WindowStore = {
+    // SharedStore properties:
     totalMatchesCount: 0,
-    searchValue: '',
-    lastSearchValue: '',
-    lastFocusedWindowId: undefined,
-    updatedTabsCount: 0,
-    totalTabs: undefined,
     layoverPosition: { x: 0, y: 0 },
     showLayover: false,
     showMatches: false,
-    tabStates: {},
+    activeTabId: undefined,
+    searchValue: '',
+    lastSearchValue: '',
+
+    // WindowStore specific properties:
+    updatedTabsCount: 0,
+    totalTabs: undefined,
+    tabStores: {},
   };
 
-  return store;
+  return windowStore;
 }
 
-export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
-  let serializedTabState = store.tabStates[tabId];
+// export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
+export function createTabStore(
+  windowStore: WindowStore,
+  tabId: ValidTabId
+): TabStore {
+  let serializedTabState = windowStore.tabStores[tabId]?.serializedTabState;
+
   if (serializedTabState === undefined) {
     serializedTabState = {
       tabId: tabId,
@@ -64,61 +111,66 @@ export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
     serializedTabState,
 
     // SHARED STORE:
-    totalMatchesCount: store.totalMatchesCount,
-    layoverPosition: store.layoverPosition,
-    showLayover: store.showLayover,
-    showMatches: store.showMatches,
-    searchValue: store.searchValue,
-    lastSearchValue: store.lastSearchValue,
-    activeTabId: store.activeTabId,
+    totalMatchesCount: windowStore.totalMatchesCount,
+    layoverPosition: windowStore.layoverPosition,
+    showLayover: windowStore.showLayover,
+    showMatches: windowStore.showMatches,
+    searchValue: windowStore.searchValue,
+    lastSearchValue: windowStore.lastSearchValue,
+    activeTabId: windowStore.activeTabId,
   };
 }
 
-export function updateStore(store: Store, updates: Partial<Store>): void {
-  Object.assign(store, updates);
+export function updateStore(
+  windowStore: WindowStore,
+  updates: Partial<WindowStore>
+): void {
+  Object.assign(windowStore, updates);
 
-  if (updates.tabStates) {
-    for (const tabId in updates.tabStates) {
-      if (updates.tabStates.hasOwnProperty(tabId)) {
-        if (!store.tabStates[tabId]) {
-          store.tabStates[tabId] = updates.tabStates[tabId];
+  if (updates.tabStores) {
+    for (const tabId in updates.tabStores) {
+      if (updates.tabStores.hasOwnProperty(tabId)) {
+        if (!windowStore.tabStores[tabId]) {
+          windowStore.tabStores[tabId] = updates.tabStores[tabId];
         } else {
-          Object.assign(store.tabStates[tabId], updates.tabStates[tabId]);
+          Object.assign(windowStore.tabStores[tabId], updates.tabStores[tabId]);
         }
       }
     }
   }
 }
 
-export function resetStore(store: Store): void {
-  const initialState = initStore();
-  updateStore(store, initialState);
-}
+// FIXME: Unused Function
+// export function resetStore(store: Store): void {
+//   const initialState = initStore();
+//   updateStore(store, initialState);
+// }
 
-export function resetPartialStore(store: Store): void {
+export function resetPartialStore(windowStore: WindowStore): void {
   const partialInitialState = {
     totalMatchesCount: 0,
     searchValue: '',
     lastSearchValue: '',
-    tabStates: {},
+    tabStores: {},
   };
-  updateStore(store, partialInitialState);
+  updateStore(windowStore, partialInitialState);
 }
 
 export async function sendStoreToContentScripts(
-  store: Store,
+  windowStore: WindowStore,
   tabIds: ValidTabId[] = []
 ): Promise<any> {
-  const tabs = await queryCurrentWindowTabs();
+  // const tabs = await queryCurrentWindowTabs();
+  const currentWindowTabs = await queryWindowTabs();
 
   if (tabIds.length === 0) {
-    tabIds = tabs
+    tabIds = currentWindowTabs
       .map((tab) => tab.id)
       .filter((id): id is ValidTabId => id !== undefined);
   }
 
   const promises = tabIds.map((tabId) => {
-    const tabStore = createTabStore(store, tabId);
+    const tabStore = createTabStore(windowStore, tabId);
     const msg = {
       async: false,
       from: 'background:store',

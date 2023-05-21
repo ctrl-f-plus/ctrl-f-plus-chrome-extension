@@ -1,7 +1,7 @@
 // src/utils/backgroundUtils.ts
 
-import { store } from '../background/background';
-import { Store, updateStore } from '../background/store';
+// import { store } from '../background/background';
+import { Store, WindowStore, updateStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
@@ -27,6 +27,15 @@ export async function queryCurrentWindowTabs(
   });
 }
 
+export async function queryWindowTabs(
+  windowId?: chrome.windows.Window['id'],
+  activeTab: boolean | undefined = undefined
+): Promise<chrome.tabs.Tab[]> {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ windowId, active: activeTab }, resolve);
+  });
+}
+
 export function getActiveTabId(): Promise<number | undefined> {
   return new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -40,6 +49,7 @@ export function getActiveTabId(): Promise<number | undefined> {
 }
 
 export async function getOrderedTabs(
+  windowStore: WindowStore,
   includeActiveTab: boolean = true
 ): Promise<chrome.tabs.Tab[]> {
   const tabs = await queryCurrentWindowTabs();
@@ -54,7 +64,7 @@ export async function getOrderedTabs(
   return orderedTabs;
 }
 
-export async function updateMatchesCount() {
+export async function updateMatchesCount(windowStore: WindowStore) {
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
@@ -64,20 +74,20 @@ export async function updateMatchesCount() {
     }
   }
 
-  updateStore(store, {
+  updateStore(windowStore, {
     totalMatchesCount,
   });
 }
 
 // 'Match X/Y (Total: Z)';
-export async function updateTotalTabsCount(store: Store) {
+export async function updateTotalTabsCount(windowStore: WindowStore) {
   const tabs = await queryCurrentWindowTabs();
-  store.totalTabs = tabs.length;
+  windowStore.totalTabs = tabs.length;
 }
 
 async function executeContentScriptOnTab(
   tab: chrome.tabs.Tab,
-  store: Store,
+  windowStore: WindowStore,
   foundFirstMatch: boolean
 ): Promise<{
   hasMatch: boolean;
@@ -86,7 +96,11 @@ async function executeContentScriptOnTab(
   try {
     const tabId: ValidTabId = tab.id as number;
 
-    const msg = createHighlightMsg(store.searchValue, tabId, foundFirstMatch);
+    const msg = createHighlightMsg(
+      windowStore.searchValue,
+      tabId,
+      foundFirstMatch
+    );
     const response = await sendMessageToTab<HighlightMsg>(tabId, msg);
 
     const { currentIndex, matchesCount, serializedMatches } =
@@ -94,21 +108,24 @@ async function executeContentScriptOnTab(
 
     await setStoredTabs(response.serializedState);
 
-    const globalMatchIdxStart = store.totalMatchesCount;
+    const globalMatchIdxStart = windowStore.totalMatchesCount;
 
-    updateStore(store, {
-      totalMatchesCount: store.totalMatchesCount + matchesCount,
+    updateStore(windowStore, {
+      totalMatchesCount: windowStore.totalMatchesCount + matchesCount,
     });
 
-    updateStore(store, {
-      tabStates: {
-        ...store.tabStates,
+    updateStore(windowStore, {
+      tabStores: {
+        ...windowStore.tabStores,
         [tabId]: {
           tabId,
-          currentIndex,
-          matchesCount,
-          serializedMatches,
-          globalMatchIdxStart,
+          serializedTabState: {
+            tabId,
+            currentIndex,
+            matchesCount,
+            serializedMatches,
+            globalMatchIdxStart,
+          },
         },
       },
     });
@@ -119,8 +136,8 @@ async function executeContentScriptOnTab(
   }
 }
 
-export async function executeContentScriptOnAllTabs(store: Store) {
-  const orderedTabs = await getOrderedTabs();
+export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
+  const orderedTabs = await getOrderedTabs(windowStore);
   let foundFirstMatch = false;
   let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
@@ -132,7 +149,7 @@ export async function executeContentScriptOnAllTabs(store: Store) {
       const tabId: ValidTabId = tab.id as number;
       const { hasMatch, state } = await executeContentScriptOnTab(
         tab,
-        store,
+        windowStore,
         foundFirstMatch
       );
 
@@ -154,7 +171,7 @@ export async function executeContentScriptOnAllTabs(store: Store) {
   const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
   const tabPromises = remainingTabs.map((tab) => {
     if (tab.id) {
-      return executeContentScriptOnTab(tab, store, foundFirstMatch);
+      return executeContentScriptOnTab(tab, windowStore, foundFirstMatch);
     }
   });
 
@@ -162,6 +179,7 @@ export async function executeContentScriptOnAllTabs(store: Store) {
 }
 
 export async function switchTab(
+  windowStore: WindowStore,
   serializedState: SerializedTabState
 ): Promise<void> {
   if (serializedState.tabId === undefined) {
@@ -177,15 +195,18 @@ export async function switchTab(
     globalMatchIdxStart,
   } = serializedState;
 
-  updateStore(store, {
-    tabStates: {
-      ...store.tabStates,
+  updateStore(windowStore, {
+    tabStores: {
+      ...windowStore.tabStores,
       [tabId]: {
         tabId,
-        currentIndex,
-        matchesCount,
-        serializedMatches,
-        globalMatchIdxStart,
+        serializedTabState: {
+          tabId,
+          currentIndex,
+          matchesCount,
+          serializedMatches,
+          globalMatchIdxStart,
+        },
       },
     },
   });
@@ -208,16 +229,6 @@ export async function switchTab(
     const msg = createUpdateHighlightsMsg(tab.id);
 
     await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
-  });
-}
-
-/**
- * Event Handling Functions
- */
-export async function toggleLayoverAndMatchesAllTabs(addStyles: boolean) {
-  updateStore(store, {
-    showLayover: addStyles,
-    showMatches: addStyles,
   });
 }
 
@@ -248,6 +259,7 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(
+  windowStore: WindowStore,
   payload: any,
   sendResponse: Function
 ) {
@@ -262,23 +274,26 @@ export async function handleUpdateTabStatesObj(
   } = payload;
   await setStoredTabs(payload.serializedState);
 
-  store.updatedTabsCount++;
+  windowStore.updatedTabsCount++;
 
-  if (store.updatedTabsCount === store.totalTabs) {
-    updateMatchesCount();
-    store.updatedTabsCount = 0;
+  if (windowStore.updatedTabsCount === windowStore.totalTabs) {
+    updateMatchesCount(windowStore);
+    windowStore.updatedTabsCount = 0;
   }
 
-  updateStore(store, {
-    tabStates: {
-      ...store.tabStates,
+  updateStore(windowStore, {
+    tabStores: {
+      ...windowStore.tabStores,
       [payload.serializedState.tabId]: {
-        ...store.tabStates[payload.serializedState.tabId],
-        currentIndex,
-        globalMatchIdxStart,
-        matchesCount,
-        serializedMatches,
+        ...windowStore.tabStores[payload.serializedState.tabId],
         tabId,
+        serializedTabState: {
+          tabId,
+          currentIndex,
+          matchesCount,
+          serializedMatches,
+          globalMatchIdxStart,
+        },
       },
     },
   });
@@ -287,12 +302,12 @@ export async function handleUpdateTabStatesObj(
 }
 
 export async function handleUpdateLayoverPosition(
-  store: Store,
+  windowStore: WindowStore,
   newPosition: LayoverPosition
 ) {
   // setStoredLayoverPosition(newPosition);
 
-  updateStore(store, {
+  updateStore(windowStore, {
     layoverPosition: newPosition,
   });
 }
