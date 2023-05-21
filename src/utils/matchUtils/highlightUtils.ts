@@ -27,7 +27,6 @@ function createCustomTreeWalker() {
         if (
           node.nodeName !== 'SCRIPT' &&
           node.nodeName !== 'STYLE' &&
-          // TODO: REVIEW IF YOU NEED `SVG` OR NOT  - ALSO MAKE SURE YOU ARE NOT EXCLUDING TOO MUCH
           node.nodeName !== 'SVG' &&
           isVisible(node) &&
           node.textContent?.trim() !== ''
@@ -46,7 +45,6 @@ function createHighlightSpan({
   const span = document.createElement('span');
   span.className = 'ctrl-f-highlight';
   span.textContent = matchText;
-  // span.innerHTML = matchText.replace(/\u00A0/g, '&nbsp;');
 
   return span;
 }

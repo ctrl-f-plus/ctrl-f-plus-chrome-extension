@@ -5,11 +5,10 @@ import Draggable, {
   DraggableData,
   DraggableEventHandler,
 } from 'react-draggable';
-import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { UpdateLayoverPositionMsg } from '../types/message.types';
-import { TabId } from '../types/tab.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
+import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 export interface LayoverPosition {
   x: number;

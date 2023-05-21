@@ -1,6 +1,5 @@
 // src/hooks/useLayoverHandler.ts
 
-import { cloneDeep } from 'lodash';
 import { useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import {
@@ -43,13 +42,6 @@ const ACTIONS: { [K in ActionTypes]: K } = {
 } as const;
 
 const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
-  // console.log(
-  //   'Updating state with value. Old state:',
-  //   state,
-  //   'New state:',
-  //   action.payload
-  // );
-
   switch (action.type) {
     case ACTIONS.INITIALIZE_STATE:
       return action.payload;
@@ -71,14 +63,6 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
       return { ...state, activeTabId: action.payload };
     case ACTIONS.SET_TAB_STATE_CONTEXT:
       return { ...state, tabStateContext: action.payload as TabState };
-    // case ACTIONS.SET_TAB_STATE_CONTEXT:
-    //   const newTabStateContext = cloneDeep(state.tabStateContext); //TODO: review the cost of using cloneDeep. It may be overkill
-    //   // Update the cloned state with the new values from the action's payload\
-
-    //   // TODO: Review: "use Object.assign to update the cloned state. Be aware that Object.assign does not deep clone the properties from action.payload. If action.payload contains nested objects, and these objects are later mutated elsewhere in your app, you might encounter unexpected results due to object reference equality."
-    //   Object.assign(newTabStateContext, action.payload);
-    //   return { ...state, tabStateContext: newTabStateContext };
-
     default:
       return state;
   }

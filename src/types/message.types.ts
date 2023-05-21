@@ -111,12 +111,6 @@ export interface HighlightMsg extends BaseMessage {
   from: 'background';
   type: 'highlight';
   payload: any;
-  // payload: {
-  //   findValue: string;
-  //   foundFirstMatch: boolean;
-  //   tabId: ValidTabId;
-  //   tabState: {};
-  // };
 }
 
 export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {

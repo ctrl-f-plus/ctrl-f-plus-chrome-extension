@@ -1,7 +1,7 @@
 // src/contentScript/contentScript.tsx
 
 import { isEqual } from 'lodash';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { TabStore } from '../background/store';
 import Layover from '../components/Layover';
@@ -17,8 +17,6 @@ import '../tailwind.css';
 import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
 import {
   SerializedTabState,
-  TabId,
-  TabState,
   ValidTabId,
   XPathTabState,
 } from '../types/tab.types';
@@ -54,7 +52,6 @@ const App: React.FC<{}> = () => {
     setActiveTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
-
   const { updateHighlights, findAllMatches } = useFindMatches();
 
   const updateContextFromStore = async (
@@ -114,40 +111,42 @@ const App: React.FC<{}> = () => {
           ({ tabId, findValue } = message.payload);
 
           newState = await findAllMatches(tabStateContext, findValue);
-
           newState.tabId = tabId;
 
-          const serializedState: SerializedTabState = serializeMatchesObj({
-            ...newState,
-          });
+          let hasMatch = newState.matchesObj.length > 0;
 
-          response = {
-            hasMatch: newState.matchesObj.length > 0,
-            serializedState: serializedState,
-            state2: newState,
-          };
+          // const serializedState: SerializedTabState = serializeMatchesObj({
+          //   ...newState,
+          // });
 
-          if (response.hasMatch && !message.foundFirstMatch) {
-            if (!isEqual(newState, tabStateContext)) {
-              setTabStateContext(newState);
-            }
+          // response = {
+          //   hasMatch: newState.matchesObj.length > 0,
+          //   serializedState: serializedState,
+          // };
 
+          if (hasMatch && !message.foundFirstMatch) {
             newState = updateHighlights(newState, { endOfTab: false });
-
-            const serializedState: SerializedTabState = serializeMatchesObj({
-              ...newState,
-            });
-
-            response = {
-              ...response,
-              serializedState: serializedState,
-              hasMatch: true,
-            };
+            hasMatch = true;
           }
 
           if (!isEqual(newState, tabStateContext)) {
             setTabStateContext(newState);
           }
+
+          // newState = updateHighlights(newState, { endOfTab: false });
+          const serializedState = serializeMatchesObj(newState);
+          // const serializedState: SerializedTabState = serializeMatchesObj({
+          //   ...newState,
+          // });
+
+          response = {
+            serializedState,
+            hasMatch,
+          };
+
+          // if (!isEqual(newState, tabStateContext)) {
+          //   setTabStateContext(newState);
+          // }
 
           sendResponse(response);
           return true;

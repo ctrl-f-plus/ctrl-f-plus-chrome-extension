@@ -30,7 +30,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
     lastSearchValue,
     totalMatchesCount,
   } = useContext(LayoverContext);
-  const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
+  const { tabStateContext } = useContext(TabStateContext);
   const [localSearchValue, setLocalSearchValue] = useState(searchValue);
   useEffect(() => {
     setLocalSearchValue(searchValue);
