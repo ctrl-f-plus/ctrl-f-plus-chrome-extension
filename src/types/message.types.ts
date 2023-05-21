@@ -30,10 +30,7 @@ export interface BaseMessage {
     | 'content:layover-component';
   async?: boolean | true;
   type: string;
-  // type: string | MessageTypes;
   payload?: any;
-  serializedState2?: any;
-  serializedState?: any;
   transactionId?: TransactionId;
 }
 
@@ -43,27 +40,14 @@ export interface GetAllMatchesMsg extends BaseMessage {
   payload: any;
 }
 
-export interface MessageFixMe {
-  async: boolean | true;
-  type: string;
-  command?: string;
-  payload?: any;
-  prevIndex?: number;
-  tabId?: TabId;
-  transactionId?: TransactionId;
-  foundFirstMatch?: boolean;
-}
-
 export interface RemoveAllHighlightMatches extends BaseMessage {
   from: 'content';
   type: 'remove-all-highlight-matches';
-  // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES;
 }
 
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
   from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
-  // type: typeof MESSAGES.REMOVE_ALL_HIGHLIGHT_MATCHES;
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {
@@ -74,14 +58,16 @@ export interface RemoveStylesAllTabs extends BaseMessage {
 export interface SwitchTabMsg extends BaseMessage {
   from: 'content-script-match-utils';
   type: 'switch-tab';
-  serializedState: SerializedTabState;
-  prevIndex: number | undefined;
+  payload: any;
+  // payload: {
+  //   serializedState: SerializedTabState;
+  //   prevIndex: number | undefined;
+  // };
 }
 
 export interface UpdateHighlightsMsg extends BaseMessage {
   from: 'background';
   type: 'update-highlights';
-  // prevIndex: number | undefined;
 }
 
 export interface UpdateTabStatesObjMsg extends BaseMessage {

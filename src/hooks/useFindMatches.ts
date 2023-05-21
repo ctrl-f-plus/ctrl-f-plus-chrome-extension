@@ -96,8 +96,10 @@ export const useFindMatches = () => {
         const msg: SwitchTabMsg = {
           from: 'content-script-match-utils',
           type: 'switch-tab',
-          serializedState: serializedState,
-          prevIndex: prevIndex, // I don't think you need this field
+          payload: {
+            serializedState: serializedState,
+            prevIndex: prevIndex, // I don't think you need this field
+          },
         };
 
         await sendMsgToBackground<SwitchTabMsg>(msg);

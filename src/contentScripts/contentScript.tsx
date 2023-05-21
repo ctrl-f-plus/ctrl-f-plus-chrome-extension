@@ -13,7 +13,7 @@ import {
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { MessageFixMe, UpdateTabStatesObjMsg } from '../types/message.types';
+import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -69,7 +69,7 @@ const App: React.FC<{}> = () => {
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
 
   const handleMessage = useCallback(
-    async (message: MessageFixMe, sendResponse: any) => {
+    async (message: Messages, sender: any, sendResponse: any) => {
       console.log('Received message:', message);
 
       const { type, transactionId } = message;
@@ -88,10 +88,10 @@ const App: React.FC<{}> = () => {
           break;
         case 'store-updated':
           const { tabStore } = message.payload;
-          updateContextFromStore(tabStore);
+          tabStore && updateContextFromStore(tabStore);
           break;
         case 'highlight':
-          const { findValue } = message.payload;
+          const { findValue, foundFirstMatch } = message.payload;
           newState = await findAllMatches(
             { ...tabStateContext, tabId },
             findValue
@@ -99,7 +99,7 @@ const App: React.FC<{}> = () => {
 
           const hasMatch = newState.matchesObj.length > 0;
 
-          if (hasMatch && !message.foundFirstMatch) {
+          if (hasMatch && !foundFirstMatch) {
             newState = updateHighlights(newState, { endOfTab: false });
           }
 

@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener(
         await handleUpdateTabStatesObj(payload, sendResponse);
         return true;
       case 'switch-tab':
-        await switchTab(message.serializedState);
+        await switchTab(payload.serializedState);
 
         return true;
       case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
