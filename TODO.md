@@ -62,26 +62,26 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - FIX: if you have two tabs and you search, but then you close one or move it to its own window, then the next feature doestn' cycle back to the beginning (first match) properly.
 
 
-- Fix: if findValue === ' '
-    - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com
+<!-- //- Fix: if findValue === ' '
+   // - Make the functionality match that of the native broswer find. test for difference on benjamin-chavez.com -->
 
-- FIX: restore highlights if single tab reloaded
+<!-- //- FIX: restore highlights if single tab reloaded -->
 - FIX: if new tab is created automatically update the search count
 - Fix: if you search a value and you aren't on the very first tab, then the globalIndex value should not show 1, it should show the starting point for that tab
 - FIX: match total should be window specific. probably need to fix the context
-- fix: when no matches or when search string === "", be sure to set count to 0
-- FIX: there are some bugs around the style being injected or not - might be better to leave style injected and remove spans instead of removing style and leaving spans. this will fix any weird spacing that could occur as well.
+<!-- //- fix: when no matches or when search string === "", be sure to set count to 0 -->
+<!-- //- FIX: there are some bugs around the style being injected or not - might be better to leave style injected and remove spans instead of removing style and leaving spans. this will fix any weird spacing that could occur as well. -->
 - FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="cntrl-f-extension"` which we don't need to do
 - TabId is getting reset to undefined in `newState2`
-- Remove all matches on hard reset or at least don't show them
-- showMatches is getting stuck sometimes without showLayover and sometimes showMatches won't toggle off
-- NextMatch() doesn't send updated state to background ever
+<!-- //- Remove all matches on hard reset or at least don't show them -->
+<!-- //- showMatches is getting stuck sometimes without showLayover and sometimes showMatches won't toggle off -->
+<!-- //- NextMatch() doesn't send updated state to background ever -->
 - If you search an empty string twice, then you get `NaN/0`. fix this
-- Escape key doesn't work quite right. i think it only toggles one thing in the background script maybe. review it.
+<!-- //- Escape key doesn't work quite right. i think it only toggles one thing in the background script maybe. review it. -->
 - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
 
 
-- Update Store to hold windows
+<!-- //- Update Store to hold windows -->
 - Add Error Handling
 - Potentially consolidate showMatches and showLayover
 - Add Testing

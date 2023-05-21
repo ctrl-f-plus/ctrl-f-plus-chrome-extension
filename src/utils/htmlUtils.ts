@@ -100,12 +100,12 @@ function getElementByXPath(xpath: string) {
   return result;
 }
 
-// FIXME: fix typing: `any`
 export function wrapTextWithHighlight(
-  element: any,
+  element: Node,
   text: string,
-  spanClasses: any[]
+  spanClasses: string[]
 ): HTMLSpanElement {
+  debugger;
   const textNodeIndex = Array.prototype.slice
     .call(element.childNodes)
     .findIndex(
@@ -120,14 +120,14 @@ export function wrapTextWithHighlight(
   const span = document.createElement('span');
 
   span.classList.add(...spanClasses);
-  range.setStart(textNode, textNode.textContent.indexOf(text));
-  range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
-  range.surroundContents(span);
+  if (textNode.textContent !== null) {
+    range.setStart(textNode, textNode.textContent.indexOf(text));
+    range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
+  }
 
+  range.surroundContents(span);
   return span;
 }
-
-// FIXME:
 
 export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
   const { matchesObj: tabXPaths, ...rest } = xPathTabState;
