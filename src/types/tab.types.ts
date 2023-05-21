@@ -22,7 +22,6 @@ export interface XPathTabState extends Tab {
   matchesObj: XPathMatchObject[];
 }
 
-// FIXME: remove serializedMatches from TabState
 export interface TabState extends Tab {
   matchesObj: HTMLSpanElement[];
 }

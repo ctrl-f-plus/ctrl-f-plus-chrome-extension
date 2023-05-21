@@ -1,6 +1,5 @@
 // src/contentScript/contentScript.tsx
 
-
 import { isEqual } from 'lodash';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -37,8 +36,6 @@ import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
 const App: React.FC<{}> = () => {
-  const [activeTabId, setActiveTabId] = useState<number | undefined>(undefined);
-
   injectStyles(contentStyles);
   const {
     showLayover,
@@ -53,6 +50,8 @@ const App: React.FC<{}> = () => {
     setTotalMatchesCount,
     layoverPosition,
     setLayoverPosition,
+    activeTabId,
+    setActiveTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
@@ -241,7 +240,7 @@ const App: React.FC<{}> = () => {
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
-            <Layover activeTabId={activeTabId}>
+            <Layover>
               <SearchInput focus={showLayover} />
             </Layover>
           </div>

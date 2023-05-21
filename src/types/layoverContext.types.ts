@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { LayoverPosition } from '../components/Layover';
-import { TabState } from './tab.types';
+import { TabId, TabState } from './tab.types';
 
 export interface LayoverContextData {
   showLayover: boolean;
@@ -19,6 +19,8 @@ export interface LayoverContextData {
   setGlobalMatchIdx: (value: number) => void;
   layoverPosition: LayoverPosition | null;
   setLayoverPosition: (value: LayoverPosition | null) => void;
+  activeTabId: TabId;
+  setActiveTabId: (value: TabId) => void;
   incrementMatchIndices: () => void;
 }
 
@@ -34,6 +36,7 @@ export interface LayoverState {
   totalMatchesCount: number;
   globalMatchIdx: number;
   layoverPosition: LayoverPosition | null;
+  activeTabId: TabId;
   tabStateContext: TabState;
 }
 
@@ -47,6 +50,7 @@ export type ActionTypes =
   | 'SET_GLOBAL_MATCH_IDX'
   | 'SET_LAYOVER_POSITION'
   | 'SET_TAB_STATE_CONTEXT'
+  | 'SET_ACTIVE_TAB_ID'
   | 'INCREMENT_MATCH_INDICES';
 
 export type LayoverAction =
@@ -59,4 +63,5 @@ export type LayoverAction =
   | { type: 'SET_GLOBAL_MATCH_IDX'; payload: number }
   | { type: 'SET_LAYOVER_POSITION'; payload: LayoverPosition | null }
   | { type: 'INCREMENT_MATCH_INDICES' }
+  | { type: 'SET_ACTIVE_TAB_ID'; payload: TabId }
   | { type: 'SET_TAB_STATE_CONTEXT'; payload: TabState };

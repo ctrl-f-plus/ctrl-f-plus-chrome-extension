@@ -42,3 +42,43 @@ export const TabStateContextProvider: React.FC<
     </TabStateContext.Provider>
   );
 };
+
+// export type TabStateAction = {
+//   type: TabStateActionTypes;
+//   payload: TabState;
+// };
+
+// const tabStateReducer = (state: TabState, action: TabStateAction): TabState => {
+//   switch (action.type) {
+//     case 'SET_TAB_STATE_CONTEXT':
+//       return {
+//         ...state,
+//         // This is assuming `action.payload` is the `newState` from previous examples
+//         // Make sure to do a deep clone if action.payload is a nested structure
+//         ...action.payload,
+//       };
+//     default:
+//       throw new Error(`Unhandled action type: ${action.type}`);
+//   }
+// };
+
+// export const TabStateContextProvider: React.FC<
+//   TabStateContextProviderProps
+// > = ({ children }) => {
+//   const [tabStateContext, dispatch] = useReducer(tabStateReducer, initialState);
+
+//   const setTabStateContext = (value: TabState) => {
+//     dispatch({ type: 'SET_TAB_STATE_CONTEXT', payload: value });
+//   };
+
+//   return (
+//     <TabStateContext.Provider
+//       value={{
+//         tabStateContext,
+//         setTabStateContext,
+//       }}
+//     >
+//       {children}
+//     </TabStateContext.Provider>
+//   );
+// };

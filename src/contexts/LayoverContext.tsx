@@ -23,6 +23,8 @@ export const LayoverContext = createContext<LayoverContextData>({
   setGlobalMatchIdx: () => {},
   layoverPosition: null,
   setLayoverPosition: (value: LayoverPosition | null) => {},
+  activeTabId: undefined,
+  setActiveTabId: () => {},
   incrementMatchIndices: () => {},
 });
 
@@ -44,6 +46,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     setGlobalMatchIdx,
     layoverPosition,
     setLayoverPosition,
+    activeTabId,
+    setActiveTabId,
     incrementMatchIndices,
   } = useLayoverHandler();
 
@@ -64,6 +68,8 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
         setGlobalMatchIdx,
         layoverPosition,
         setLayoverPosition,
+        activeTabId,
+        setActiveTabId,
         incrementMatchIndices,
       }}
     >

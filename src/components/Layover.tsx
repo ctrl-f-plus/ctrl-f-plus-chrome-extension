@@ -18,10 +18,9 @@ export interface LayoverPosition {
 
 interface LayoverProps {
   children: React.ReactNode;
-  activeTabId: TabId;
 }
 
-const Layover: React.FC<LayoverProps> = ({ children, activeTabId }) => {
+const Layover: React.FC<LayoverProps> = ({ children }) => {
   const nodeRef = React.useRef(null);
 
   const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);

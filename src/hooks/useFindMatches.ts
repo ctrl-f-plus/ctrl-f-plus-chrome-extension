@@ -15,13 +15,7 @@ type UpdateHighlightsOptions = {
 };
 
 export const useFindMatches = () => {
-  const {
-    // tabStateContext,
-    // setTabStateContext,
-    totalMatchesCount,
-    globalMatchIdx,
-  } = useContext(LayoverContext);
-
+  const { totalMatchesCount, globalMatchIdx } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
   const [state2, setState2] = useState(tabStateContext);
@@ -33,7 +27,8 @@ export const useFindMatches = () => {
   }, [tabStateContext]);
 
   const findAllMatches = useCallback(
-    async (state2: TabState, findValue: string) => {
+    async (tabStateContext: TabState, findValue: string) => {
+      // async (state2: TabState, findValue: string) => {
       const newState = { ...tabStateContext };
 
       newState.currentIndex = 0;

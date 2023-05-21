@@ -1,5 +1,6 @@
 // src/hooks/useLayoverHandler.ts
 
+import { cloneDeep } from 'lodash';
 import { useReducer } from 'react';
 import { LayoverPosition } from '../components/Layover';
 import {
@@ -17,8 +18,9 @@ const initialState: LayoverState = {
   totalMatchesCount: 0,
   globalMatchIdx: 0,
   layoverPosition: null,
+  activeTabId: undefined,
   tabStateContext: {
-    tabId: undefined as TabId | undefined,
+    tabId: undefined as TabId,
     currentIndex: 0,
     matchesCount: 0,
     matchesObj: [],
@@ -35,11 +37,19 @@ const ACTIONS: { [K in ActionTypes]: K } = {
   SET_TOTAL_MATCHES_COUNT: 'SET_TOTAL_MATCHES_COUNT',
   SET_GLOBAL_MATCH_IDX: 'SET_GLOBAL_MATCH_IDX',
   SET_LAYOVER_POSITION: 'SET_LAYOVER_POSITION',
+  SET_ACTIVE_TAB_ID: 'SET_ACTIVE_TAB_ID',
   INCREMENT_MATCH_INDICES: 'INCREMENT_MATCH_INDICES',
   SET_TAB_STATE_CONTEXT: 'SET_TAB_STATE_CONTEXT',
 } as const;
 
 const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
+  // console.log(
+  //   'Updating state with value. Old state:',
+  //   state,
+  //   'New state:',
+  //   action.payload
+  // );
+
   switch (action.type) {
     case ACTIONS.INITIALIZE_STATE:
       return action.payload;
@@ -57,15 +67,18 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
       return { ...state, globalMatchIdx: action.payload };
     case ACTIONS.SET_LAYOVER_POSITION:
       return { ...state, layoverPosition: action.payload };
+    case ACTIONS.SET_ACTIVE_TAB_ID:
+      return { ...state, activeTabId: action.payload };
     case ACTIONS.SET_TAB_STATE_CONTEXT:
-      // console.log(
-      //   'Updating state with value. Old state:',
-      //   state.tabStateContext,
-      //   'New state:',
-      //   action.payload
-      // );
-
       return { ...state, tabStateContext: action.payload as TabState };
+    // case ACTIONS.SET_TAB_STATE_CONTEXT:
+    //   const newTabStateContext = cloneDeep(state.tabStateContext); //TODO: review the cost of using cloneDeep. It may be overkill
+    //   // Update the cloned state with the new values from the action's payload\
+
+    //   // TODO: Review: "use Object.assign to update the cloned state. Be aware that Object.assign does not deep clone the properties from action.payload. If action.payload contains nested objects, and these objects are later mutated elsewhere in your app, you might encounter unexpected results due to object reference equality."
+    //   Object.assign(newTabStateContext, action.payload);
+    //   return { ...state, tabStateContext: newTabStateContext };
+
     default:
       return state;
   }
@@ -101,6 +114,9 @@ export const useLayoverHandler = () => {
   const setLayoverPosition = (value: LayoverPosition | null) =>
     dispatch({ type: ACTIONS.SET_LAYOVER_POSITION, payload: value });
 
+  const setActiveTabId = (value: TabId) =>
+    dispatch({ type: ACTIONS.SET_ACTIVE_TAB_ID, payload: value });
+
   const incrementMatchIndices = () => {
     dispatch({ type: ACTIONS.INCREMENT_MATCH_INDICES });
   };
@@ -116,5 +132,6 @@ export const useLayoverHandler = () => {
     setLayoverPosition,
     incrementMatchIndices,
     setTabStateContext,
+    setActiveTabId,
   };
 };
