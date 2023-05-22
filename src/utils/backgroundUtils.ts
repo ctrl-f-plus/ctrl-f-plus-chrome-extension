@@ -1,7 +1,12 @@
 // src/utils/backgroundUtils.ts
 
 // import { store } from '../background/background';
-import { Store, WindowStore, updateStore } from '../background/store';
+import {
+  Store,
+  WindowStore,
+  sendStoreToContentScripts,
+  updateStore,
+} from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
@@ -180,7 +185,8 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
 
 export async function switchTab(
   windowStore: WindowStore,
-  serializedState: SerializedTabState
+  serializedState: SerializedTabState,
+  direction: 'next' | 'previous'
 ): Promise<void> {
   if (serializedState.tabId === undefined) {
     console.warn('switchTab: Tab ID is undefined:', serializedState);
@@ -211,15 +217,27 @@ export async function switchTab(
     },
   });
 
+  const orderedTabs = await getOrderedTabs(windowStore);
   const storedTabs = await getAllStoredTabs();
+
   const matchesObject = storedTabs;
   const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-  const currentTabIndex = tabIds.findIndex(
+
+  const orderedTabIds: ValidTabId[] = orderedTabs
+    .map((tab) => tab.id)
+    .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
+
+  const currentTabIndex = orderedTabIds.findIndex(
     (tabId) => tabId === serializedState.tabId
   );
 
-  const nextTabIndex = (currentTabIndex + 1) % tabIds.length;
-  const nextTabId = tabIds[nextTabIndex];
+  const tabCount = orderedTabIds.length;
+  const nextTabIndex =
+    direction === 'next'
+      ? (currentTabIndex + 1) % tabCount
+      : (currentTabIndex - 1 + tabCount) % tabCount;
+
+  const nextTabId = orderedTabIds[nextTabIndex];
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     if (tab === undefined || tab.id === undefined) return;

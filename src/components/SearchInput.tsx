@@ -38,7 +38,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const [matchingCounts, setMatchingCounts] = useState('0/0');
 
-  const { nextMatch, prevMatch } = useFindMatches();
+  const { nextMatch, previousMatch } = useFindMatches();
   const { handleSearch, handlePrevious } = useSearchHandler();
 
   // TODO: CLEANUP:
@@ -85,6 +85,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
         tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
       setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
+      // console.log(`${new Date().getTime()}`, ': ', matchingCounts);
     }
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
@@ -114,7 +115,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
         <div className=" flex justify-evenly items-center">
           <button
             type="button"
-            onClick={prevMatch}
+            onClick={previousMatch}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
             disabled={localSearchValue === ''}
           >

@@ -108,7 +108,11 @@ chrome.runtime.onMessage.addListener(
         );
         return true;
       case 'switch-tab':
-        await switchTab(activeWindowStore, payload.serializedState);
+        await switchTab(
+          activeWindowStore,
+          payload.serializedState,
+          payload.direction
+        );
         return true;
       case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
         // updateStore(store, {

@@ -64,6 +64,7 @@ export interface SwitchTabMsg extends BaseMessage {
   payload: any;
   // payload: {
   //   serializedState: SerializedTabState;
+  //   direction: string
   //   prevIndex: number | undefined;
   // };
 }

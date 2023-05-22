@@ -99,6 +99,9 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - `BackgroundUtils.ts`
   - General/Complete refactor
 - Look into updating the codebase with the `activeTab` permission. You might be able to clean a few things up through using the permission.
+- Currently the `@benjamin-chavez` line on your Youtube profile doesn't add the `ctrl-f-highlight-focus` class for some reason:
+  - `https://www.youtube.com/channel/UC6bQ5cJIHV0f7PeQNsorQhg`
+  - This part of your github profile doesn't work either: `Listen Here: aminchavez.com`
 <!-- //- `htmlUtils.ts`
   <!-- //- remove `@ts-ignore` -->
   <!-- //- remove `any` types --> -->

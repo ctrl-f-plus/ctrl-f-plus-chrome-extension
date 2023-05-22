@@ -100,6 +100,7 @@ export const useFindMatches = () => {
           type: 'switch-tab',
           payload: {
             serializedState: serializedState,
+            direction: 'next',
             prevIndex: prevIndex, // I don't think you need this field
           },
         };
@@ -134,7 +135,7 @@ export const useFindMatches = () => {
     sendMsgToBackground,
   ]);
 
-  const prevMatch = useCallback(async (): Promise<void> => {
+  const previousMatch = useCallback(async (): Promise<void> => {
     if (state2.currentIndex === undefined) {
       return;
     }
@@ -149,7 +150,8 @@ export const useFindMatches = () => {
     };
 
     let updatedState: TabState;
-    if (newState2.currentIndex === 0) {
+
+    if (newState2.currentIndex === state2.matchesObj.length - 1) {
       updatedState = updateHighlights(newState2, {
         prevIndex: prevIndex,
         endOfTab: true,
@@ -167,6 +169,7 @@ export const useFindMatches = () => {
           type: 'switch-tab',
           payload: {
             serializedState: serializedState,
+            direction: 'previous',
             prevIndex: prevIndex, // I don't think you need this field
           },
         };
@@ -209,7 +212,7 @@ export const useFindMatches = () => {
   return {
     findAllMatches,
     nextMatch,
-    prevMatch,
+    previousMatch,
     updateHighlights,
   };
 };
