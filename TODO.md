@@ -106,3 +106,4 @@ DOM ELEMENTS TO LOCAL STORAGE:
   <!-- //- remove `@ts-ignore` -->
   <!-- //- remove `any` types --> -->
 - Fix styling so that it is consistent accross pages
+- You might be injecting the style a bunch of times on each page

@@ -27,6 +27,7 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { scrollToElement } from '../utils/scrollUtils';
 
 const App: React.FC<{}> = () => {
   injectStyles(contentStyles);
@@ -63,7 +64,26 @@ const App: React.FC<{}> = () => {
       deserializeMatchesObj(serializedTabState);
     const tabState = restoreHighlightSpans(xPathTabState);
 
+    // debugger;
+    // tabState.currentIndex &&
+    //   tabState.matchesObj[tabState.currentIndex].classList.add(
+    //     'ctrl-f-highlight-focus'
+    //   );
     setTabStateContext(tabState);
+    // updateHighlights(newState, { endOfTab: false });
+    // debugger;
+    console.log('here');
+    // if (tabState.currentIndex) {
+    if (
+      typeof tabState.currentIndex === 'number' &&
+      tabState.matchesCount !== undefined &&
+      tabState.currentIndex == tabState.matchesCount - 1
+    ) {
+      const curMatch = tabState.matchesObj[tabState.currentIndex];
+      curMatch && curMatch.classList.add('ctrl-f-highlight-focus');
+      scrollToElement(curMatch);
+      // curMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
@@ -98,7 +118,7 @@ const App: React.FC<{}> = () => {
           );
 
           const hasMatch = newState.matchesObj.length > 0;
-
+          debugger;
           if (hasMatch && !foundFirstMatch) {
             newState = updateHighlights(newState, { endOfTab: false });
           }
@@ -112,24 +132,30 @@ const App: React.FC<{}> = () => {
             hasMatch,
           });
           return true;
-        case 'update-highlights':
-          newState = updateHighlights(
-            { ...tabStateContext },
-            { endOfTab: false }
-          );
+        // case 'update-highlights':
+        //   // debugger;
 
-          setTabStateContext(newState);
+        //   newState = updateHighlights(
+        //     { ...tabStateContext },
+        //     { endOfTab: false }
+        //   );
+        //   // debugger;
+        //   console.log('newState: ', newState);
+        //   console.log('tabStateContext (original): ', tabStateContext);
+        //   setTabStateContext(newState);
+        //   console.log('tabStateContext (updated): ', tabStateContext);
+        //   // debugger;
+        //   const newSerializedState = serializeMatchesObj(newState);
 
-          const newSerializedState = serializeMatchesObj(newState);
+        //   console.log('newSerializedState: ', newSerializedState);
+        //   sendMsgToBackground<UpdateTabStatesObjMsg>({
+        //     from: 'content:match-utils',
+        //     type: 'update-tab-states-obj',
+        //     payload: { serializedState: newSerializedState },
+        //   });
 
-          sendMsgToBackground<UpdateTabStatesObjMsg>({
-            from: 'content:match-utils',
-            type: 'update-tab-states-obj',
-            payload: { serializedState: newSerializedState },
-          });
-
-          sendResponse({ status: 'success' });
-          return true;
+        //   sendResponse({ status: 'success' });
+        //   return true;
         default:
           break;
       }
@@ -143,12 +169,20 @@ const App: React.FC<{}> = () => {
       LayoverContext,
 
       // FIXME: REVIEW THESE
-      showLayover,
-      searchValue,
-      lastSearchValue,
-      showMatches,
-      totalMatchesCount,
-      layoverPosition,
+      // showLayover,
+      // searchValue,
+      // lastSearchValue,
+      // showMatches,
+      // totalMatchesCount,
+      // layoverPosition,
+
+      lastProcessedTransactionId,
+      removeAllHighlightMatches,
+      updateContextFromStore,
+      findAllMatches,
+
+      sendMsgToBackground,
+      serializeMatchesObj,
     ]
   );
 
@@ -190,6 +224,10 @@ const App: React.FC<{}> = () => {
 
     handleActiveTabChange();
   }, [activeTabId, showMatches]);
+
+  useEffect(() => {
+    console.log('tabStateContext updated: ', tabStateContext);
+  }, [tabStateContext]);
 
   return (
     <>

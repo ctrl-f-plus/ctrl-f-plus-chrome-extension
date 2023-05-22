@@ -30,13 +30,17 @@ export function createHighlightMsg(
   };
 }
 
-export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
+export function createUpdateHighlightsMsg(
+  tabId: number
+  // fwdDirection: boolean
+): UpdateHighlightsMsg {
   return {
     async: true,
     from: 'background',
     type: 'update-highlights',
     payload: {
       tabId: tabId,
+      // fwdDirection,
     },
   };
 }

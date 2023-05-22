@@ -2,7 +2,6 @@
 
 // import { store } from '../background/background';
 import {
-  Store,
   WindowStore,
   sendStoreToContentScripts,
   updateStore,
@@ -145,7 +144,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   const orderedTabs = await getOrderedTabs(windowStore);
   let foundFirstMatch = false;
   let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
-
+  // debugger;
   // Process tabs one by one until the first match
   for (let i = 0; i < orderedTabs.length; i++) {
     const tab = orderedTabs[i];
@@ -167,20 +166,21 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
           chrome.tabs.update(tabId, { active: true });
         }
 
-        break;
+        // break;
       }
     }
   }
 
   // Process the remaining tabs asynchronously
-  const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
-  const tabPromises = remainingTabs.map((tab) => {
-    if (tab.id) {
-      return executeContentScriptOnTab(tab, windowStore, foundFirstMatch);
-    }
-  });
+  // const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
+  // const tabPromises = remainingTabs.map((tab) => {
+  //   if (tab.id) {
+  //     return executeContentScriptOnTab(tab, windowStore, foundFirstMatch);
+  //   }
+  // });
 
-  await Promise.allSettled(tabPromises);
+  // await Promise.allSettled(tabPromises);
+  return;
 }
 
 export async function switchTab(
@@ -218,6 +218,7 @@ export async function switchTab(
   });
 
   const orderedTabs = await getOrderedTabs(windowStore);
+  // debugger;
   const storedTabs = await getAllStoredTabs();
 
   const matchesObject = storedTabs;
@@ -236,16 +237,36 @@ export async function switchTab(
     direction === 'next'
       ? (currentTabIndex + 1) % tabCount
       : (currentTabIndex - 1 + tabCount) % tabCount;
-
+  // debugger;
   const nextTabId = orderedTabIds[nextTabIndex];
+  let targetMatchIndex: number | undefined;
+
+  if (
+    windowStore.tabStores[nextTabId] &&
+    windowStore.tabStores[nextTabId].serializedTabState &&
+    windowStore.tabStores[nextTabId].serializedTabState.matchesCount !==
+      undefined
+  ) {
+    targetMatchIndex =
+      direction === 'next'
+        ? 1
+        : (windowStore.tabStores[nextTabId].serializedTabState
+            .matchesCount as number);
+    targetMatchIndex -= 1;
+
+    windowStore.tabStores[nextTabId].serializedTabState.currentIndex =
+      targetMatchIndex;
+  }
+
+  // sendStoreToContentScripts(windowStore);
 
   chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
     if (tab === undefined || tab.id === undefined) return;
 
-    serializedState.tabId = tab.id;
+    // sendStoreToContentScripts(windowStore);
 
     const msg = createUpdateHighlightsMsg(tab.id);
-    await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
+    // await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
   });
 }
 

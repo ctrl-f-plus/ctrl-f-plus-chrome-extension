@@ -8,6 +8,7 @@ import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { scrollToElement } from '../utils/scrollUtils';
 
 type UpdateHighlightsOptions = {
   prevIndex?: number;
@@ -62,6 +63,7 @@ export const useFindMatches = () => {
         const curMatch = newState.matchesObj[newState.currentIndex];
 
         curMatch.classList.add('ctrl-f-highlight-focus');
+        console.log('HERE');
         scrollToElement(curMatch);
       }
       return newState;
@@ -74,23 +76,30 @@ export const useFindMatches = () => {
       return;
     }
 
-    const prevIndex = state2.currentIndex;
+    const prevIndex = state2.currentIndex; // 0 // 2
 
     const newState2 = {
       ...state2,
       currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
-    };
+    }; // 1 // 0
 
     let updatedState: TabState;
+    // debugger;
+    // checks if we have seen all of the matches
     if (newState2.currentIndex === 0) {
+      // debugger;
       updatedState = updateHighlights(newState2, {
         prevIndex: prevIndex,
         endOfTab: true,
-      });
+      }); // removes the focus class from the last match
 
+      // debugger;
+      //checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
+        // debugger;
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
+        // debugger;
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
         });
@@ -105,12 +114,14 @@ export const useFindMatches = () => {
           },
         };
 
-        await sendMsgToBackground<SwitchTabMsg>(msg);
+        // await sendMsgToBackground<SwitchTabMsg>(msg);
+        sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
+      // debugger;
+      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); //1
     }
-
+    // debugger;
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
     });
@@ -136,34 +147,42 @@ export const useFindMatches = () => {
   ]);
 
   const previousMatch = useCallback(async (): Promise<void> => {
+    debugger;
     if (state2.currentIndex === undefined) {
       return;
     }
 
-    const prevIndex = state2.currentIndex;
+    const prevIndex = state2.currentIndex; //0
 
     const newState2 = {
       ...state2,
       currentIndex:
         (state2.currentIndex - 1 + state2.matchesObj.length) %
         state2.matchesObj.length,
-    };
+    }; // 2
 
     let updatedState: TabState;
-
+    // debugger;
+    // checks if we have seen all of the matches
     if (newState2.currentIndex === state2.matchesObj.length - 1) {
+      // debugger;
       updatedState = updateHighlights(newState2, {
         prevIndex: prevIndex,
         endOfTab: true,
-      });
+      }); // removes the focus class from the last match
 
+      // debugger;
+      //checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
+        // debugger;
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
+        // debugger;
+        // newState2.currentIndex:2 <- should maybe be undefined?
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
         });
-
+        debugger;
         const msg: SwitchTabMsg = {
           from: 'content-script-match-utils',
           type: 'switch-tab',
@@ -174,12 +193,20 @@ export const useFindMatches = () => {
           },
         };
 
-        await sendMsgToBackground<SwitchTabMsg>(msg);
+        debugger;
+        // await sendMsgToBackground<SwitchTabMsg>(msg);
+        sendMsgToBackground<SwitchTabMsg>(msg);
+        debugger;
+
+        setState2(updatedState);
+        setTabStateContext(updatedState);
+        return;
       }
     } else {
+      // debugger;
       updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
     }
-
+    // debugger;
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
     });
@@ -204,10 +231,10 @@ export const useFindMatches = () => {
     sendMsgToBackground,
   ]);
 
-  // src/utils/scrollUtils.ts
-  function scrollToElement(element: HTMLElement) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
+  // // src/utils/scrollUtils.ts
+  // function scrollToElement(element: HTMLElement) {
+  //   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // }
 
   return {
     findAllMatches,

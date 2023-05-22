@@ -73,6 +73,7 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
+        debugger;
         sendStoreToContentScripts(activeWindowStore);
         return true;
       case 'get-all-matches':
@@ -92,11 +93,13 @@ chrome.runtime.onMessage.addListener(
         // });
 
         if (searchValue === '') {
+          debugger;
           sendStoreToContentScripts(activeWindowStore);
           return;
         }
 
         await executeContentScriptOnAllTabs(activeWindowStore);
+        debugger;
         sendStoreToContentScripts(activeWindowStore);
 
         return true;
@@ -120,6 +123,7 @@ chrome.runtime.onMessage.addListener(
         //   showMatches: false,
         // });
         // sendStoreToContentScripts(store);
+        debugger;
         updateAndSendActiveWindowStore(store, {
           showLayover: false,
           showMatches: false,
@@ -150,7 +154,9 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 
   // TODO: if showMatches then search the new tab and update everything? Otherwise, if you open a new tab, go back to the previously opened tab and search the same value again, it doesn't know to search the new tab because it uses nextMatch(). There are other solutions if you change your mind on this one.
 
+  console.log('activeWindowStore:: ', activeWindowStore);
   if (activeWindowStore.showLayover) {
+    debugger;
     sendStoreToContentScripts(activeWindowStore);
   }
 });
@@ -182,6 +188,7 @@ chrome.tabs.onCreated.addListener(() => {
   }
 
   updateTotalTabsCount(activeWindowStore);
+  debugger;
   sendStoreToContentScripts(activeWindowStore);
 });
 
@@ -193,6 +200,7 @@ chrome.tabs.onRemoved.addListener(() => {
   }
 
   updateTotalTabsCount(activeWindowStore);
+  debugger;
   sendStoreToContentScripts(activeWindowStore);
 });
 
@@ -216,6 +224,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
     if (focusedWindow.type === 'normal') {
       updateTotalTabsCount(activeWindowStore);
       activeWindowStore.updatedTabsCount = 0;
+      // debugger;
       sendStoreToContentScripts(activeWindowStore);
     }
   });
@@ -235,5 +244,6 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!activeWindowStore.showMatches) {
     return;
   }
+  debugger;
   sendStoreToContentScripts(activeWindowStore);
 });
