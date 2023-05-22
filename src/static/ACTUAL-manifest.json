@@ -1,6 +1,6 @@
 {
-  "name": "Kntrl",
-  "description": "Kntrl",
+  "name": "Cntrl-F",
+  "description": "Cntrl-F in React!",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -9,10 +9,18 @@
     "128": "icon.png"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "Kntrl-F Extension",
     "default_icon": "icon.png"
   },
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": [
+    "tabs",
+    "notifications",
+    "activeTab",
+    "scripting",
+    "storage",
+    "unlimitedStorage"
+  ],
   "commands": {
     "toggle_search_layover": {
       "suggested_key": {
@@ -30,5 +38,6 @@
       "js": ["contentScript.js"],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "options_page": "options.html"
 }

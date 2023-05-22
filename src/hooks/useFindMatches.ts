@@ -134,6 +134,73 @@ export const useFindMatches = () => {
     sendMsgToBackground,
   ]);
 
+  const prevMatch = useCallback(async (): Promise<void> => {
+    if (state2.currentIndex === undefined) {
+      return;
+    }
+
+    const prevIndex = state2.currentIndex;
+
+    const newState2 = {
+      ...state2,
+      currentIndex:
+        (state2.currentIndex - 1 + state2.matchesObj.length) %
+        state2.matchesObj.length,
+    };
+
+    let updatedState: TabState;
+    if (newState2.currentIndex === 0) {
+      updatedState = updateHighlights(newState2, {
+        prevIndex: prevIndex,
+        endOfTab: true,
+      });
+
+      if (state2.matchesCount === totalMatchesCount) {
+        updatedState = updateHighlights(updatedState, { endOfTab: false });
+      } else {
+        const serializedState: SerializedTabState = serializeMatchesObj({
+          ...newState2,
+        });
+
+        const msg: SwitchTabMsg = {
+          from: 'content-script-match-utils',
+          type: 'switch-tab',
+          payload: {
+            serializedState: serializedState,
+            prevIndex: prevIndex, // I don't think you need this field
+          },
+        };
+
+        await sendMsgToBackground<SwitchTabMsg>(msg);
+      }
+    } else {
+      updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
+    }
+
+    const serializedState: SerializedTabState = serializeMatchesObj({
+      ...updatedState,
+    });
+
+    sendMsgToBackground<UpdateTabStatesObjMsg>({
+      from: 'content:match-utils',
+      type: 'update-tab-states-obj',
+      payload: { serializedState },
+    });
+
+    setState2(updatedState);
+    setTabStateContext(updatedState);
+  }, [
+    updateHighlights,
+    setTabStateContext,
+    state2,
+    totalMatchesCount,
+    globalMatchIdx,
+
+    setState2,
+    serializeMatchesObj,
+    sendMsgToBackground,
+  ]);
+
   // src/utils/scrollUtils.ts
   function scrollToElement(element: HTMLElement) {
     element.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -142,6 +209,7 @@ export const useFindMatches = () => {
   return {
     findAllMatches,
     nextMatch,
+    prevMatch,
     updateHighlights,
   };
 };

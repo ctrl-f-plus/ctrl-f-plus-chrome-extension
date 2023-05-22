@@ -98,6 +98,7 @@ DOM ELEMENTS TO LOCAL STORAGE:
   - updated all updates to store so that they also write to chrome storage
 - `BackgroundUtils.ts`
   - General/Complete refactor
+- Look into updating the codebase with the `activeTab` permission. You might be able to clean a few things up through using the permission.
 <!-- //- `htmlUtils.ts`
   <!-- //- remove `@ts-ignore` -->
   <!-- //- remove `any` types --> -->

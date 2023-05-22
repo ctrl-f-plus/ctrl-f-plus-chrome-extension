@@ -38,7 +38,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const [matchingCounts, setMatchingCounts] = useState('0/0');
 
-  const { nextMatch } = useFindMatches();
+  const { nextMatch, prevMatch } = useFindMatches();
   const { handleSearch, handlePrevious } = useSearchHandler();
 
   // TODO: CLEANUP:
@@ -114,7 +114,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
         <div className=" flex justify-evenly items-center">
           <button
             type="button"
-            onClick={handlePrevious}
+            onClick={prevMatch}
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
             disabled={localSearchValue === ''}
           >
