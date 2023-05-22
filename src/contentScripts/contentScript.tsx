@@ -13,7 +13,7 @@ import {
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
+import { Messages } from '../types/message.types';
 import { ValidTabId, XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -25,9 +25,9 @@ import {
   sendMessageToBackground,
   sendMsgToBackground,
 } from '../utils/messageUtils/sendMessageToBackground';
+import { scrollToElement } from '../utils/scrollUtils';
 import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { scrollToElement } from '../utils/scrollUtils';
 
 const App: React.FC<{}> = () => {
   injectStyles(contentStyles);
@@ -64,16 +64,9 @@ const App: React.FC<{}> = () => {
       deserializeMatchesObj(serializedTabState);
     const tabState = restoreHighlightSpans(xPathTabState);
 
-    // debugger;
-    // tabState.currentIndex &&
-    //   tabState.matchesObj[tabState.currentIndex].classList.add(
-    //     'ctrl-f-highlight-focus'
-    //   );
     setTabStateContext(tabState);
-    // updateHighlights(newState, { endOfTab: false });
-    // debugger;
-    console.log('here');
-    // if (tabState.currentIndex) {
+
+    // FIXME: Hacky, see if you can move this logic elsewhere
     if (
       typeof tabState.currentIndex === 'number' &&
       tabState.matchesCount !== undefined &&
@@ -82,7 +75,6 @@ const App: React.FC<{}> = () => {
       const curMatch = tabState.matchesObj[tabState.currentIndex];
       curMatch && curMatch.classList.add('ctrl-f-highlight-focus');
       scrollToElement(curMatch);
-      // curMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -133,21 +125,16 @@ const App: React.FC<{}> = () => {
           });
           return true;
         // case 'update-highlights':
-        //   // debugger;
 
         //   newState = updateHighlights(
         //     { ...tabStateContext },
         //     { endOfTab: false }
         //   );
-        //   // debugger;
-        //   console.log('newState: ', newState);
-        //   console.log('tabStateContext (original): ', tabStateContext);
+
         //   setTabStateContext(newState);
-        //   console.log('tabStateContext (updated): ', tabStateContext);
-        //   // debugger;
+
         //   const newSerializedState = serializeMatchesObj(newState);
 
-        //   console.log('newSerializedState: ', newSerializedState);
         //   sendMsgToBackground<UpdateTabStatesObjMsg>({
         //     from: 'content:match-utils',
         //     type: 'update-tab-states-obj',

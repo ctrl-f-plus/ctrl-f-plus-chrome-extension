@@ -18,6 +18,7 @@ import { TabStateContext } from '../contexts/TabStateContext';
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +41,14 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
 
   const { nextMatch, previousMatch } = useFindMatches();
   const { handleSearch, handlePrevious } = useSearchHandler();
+
+  // TODO: Review to decide if you want to handle this in another way
+  const closeSearchLayover = () => {
+    sendMessageToBackground({
+      from: 'content',
+      type: 'remove-styles-all-tabs',
+    });
+  };
 
   // TODO: CLEANUP:
   //  - Add debounce
@@ -148,8 +157,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </button>
 
           <button
-            // TODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERE
-            // onClick={() => toggleSearchLayover()} TODO: ADD FUNTION CALL
+            onClick={closeSearchLayover}
             type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >
