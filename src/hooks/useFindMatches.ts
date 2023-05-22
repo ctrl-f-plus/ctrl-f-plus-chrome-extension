@@ -63,7 +63,6 @@ export const useFindMatches = () => {
         const curMatch = newState.matchesObj[newState.currentIndex];
 
         curMatch.classList.add('ctrl-f-highlight-focus');
-        console.log('HERE');
         scrollToElement(curMatch);
       }
       return newState;
@@ -76,30 +75,26 @@ export const useFindMatches = () => {
       return;
     }
 
-    const prevIndex = state2.currentIndex; // 0 // 2
+    const prevIndex = state2.currentIndex;
 
     const newState2 = {
       ...state2,
       currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
-    }; // 1 // 0
+    };
 
     let updatedState: TabState;
-    // debugger;
     // checks if we have seen all of the matches
     if (newState2.currentIndex === 0) {
-      // debugger;
+      // removes the focus class from the last match
       updatedState = updateHighlights(newState2, {
         prevIndex: prevIndex,
         endOfTab: true,
-      }); // removes the focus class from the last match
+      });
 
-      // debugger;
       //checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
-        // debugger;
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
-        // debugger;
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
         });
@@ -110,7 +105,6 @@ export const useFindMatches = () => {
           payload: {
             serializedState: serializedState,
             direction: 'next',
-            prevIndex: prevIndex, // I don't think you need this field
           },
         };
 
@@ -118,10 +112,8 @@ export const useFindMatches = () => {
         sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      // debugger;
       updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); //1
     }
-    // debugger;
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
     });
@@ -147,7 +139,6 @@ export const useFindMatches = () => {
   ]);
 
   const previousMatch = useCallback(async (): Promise<void> => {
-    debugger;
     if (state2.currentIndex === undefined) {
       return;
     }
@@ -162,51 +153,42 @@ export const useFindMatches = () => {
     }; // 2
 
     let updatedState: TabState;
-    // debugger;
+
     // checks if we have seen all of the matches
     if (newState2.currentIndex === state2.matchesObj.length - 1) {
-      // debugger;
       updatedState = updateHighlights(newState2, {
+        // removes the focus class from the last match
         prevIndex: prevIndex,
         endOfTab: true,
-      }); // removes the focus class from the last match
+      });
 
-      // debugger;
       //checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
-        // debugger;
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
-        // debugger;
         // newState2.currentIndex:2 <- should maybe be undefined?
         const serializedState: SerializedTabState = serializeMatchesObj({
           ...newState2,
         });
-        debugger;
         const msg: SwitchTabMsg = {
           from: 'content-script-match-utils',
           type: 'switch-tab',
           payload: {
             serializedState: serializedState,
             direction: 'previous',
-            prevIndex: prevIndex, // I don't think you need this field
           },
         };
 
-        debugger;
         // await sendMsgToBackground<SwitchTabMsg>(msg);
         sendMsgToBackground<SwitchTabMsg>(msg);
-        debugger;
 
         setState2(updatedState);
         setTabStateContext(updatedState);
         return;
       }
     } else {
-      // debugger;
       updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
     }
-    // debugger;
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
     });
@@ -230,11 +212,6 @@ export const useFindMatches = () => {
     serializeMatchesObj,
     sendMsgToBackground,
   ]);
-
-  // // src/utils/scrollUtils.ts
-  // function scrollToElement(element: HTMLElement) {
-  //   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  // }
 
   return {
     findAllMatches,

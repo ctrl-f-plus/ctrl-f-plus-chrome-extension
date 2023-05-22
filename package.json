@@ -1,7 +1,7 @@
 {
-  "name": "Cntrl-f Chrome Extension!",
+  "name": "Ctrl-F Plus - Multi-Tab Search",
   "version": "1.0.0",
-  "description": "React Weather Extension",
+  "description": "Find Text Across All Open Tabs",
   "scripts": {
     "start": "webpack --watch --progress --config webpack.dev.js",
     "build": "webpack --watch --progress --config webpack.prod.js"

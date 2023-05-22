@@ -1,8 +1,5 @@
 // src/contentScripts/contentStyles.ts
 
-// light= #05fdb4
-// dark = #128da1
-
 const contentStyles = `
 .ctrl-f-highlight {
   background-color: #128da1 !important;

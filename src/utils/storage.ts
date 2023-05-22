@@ -11,7 +11,6 @@ export interface Match {
 
 // FIXME: review for duplicates
 export interface LocalStorage {
-  // findValue?: string;
   searchValue?: string;
   lastSearchValue?: string;
   allMatches?: Match[];

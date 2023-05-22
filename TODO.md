@@ -85,7 +85,7 @@ DOM ELEMENTS TO LOCAL STORAGE:
 - Add Error Handling
 - Potentially consolidate showMatches and showLayover
 - Add Testing
-- Add PrevMatch logic
+<!-- //- Add PrevMatch logic -->
 - Remove all `// @ts-ignore`, `// @ts-no-check`, and `debugger` usage
 - Review/Remove `any` types
 - Go through messaging
@@ -106,4 +106,5 @@ DOM ELEMENTS TO LOCAL STORAGE:
   <!-- //- remove `@ts-ignore` -->
   <!-- //- remove `any` types --> -->
 - Fix styling so that it is consistent accross pages
-- You might be injecting the style a bunch of times on each page
+<!-- //- You might be injecting the style a bunch of times on each page -->
+- When switching tabs manually, the current index in the searchInput changes, but may it shouldn't

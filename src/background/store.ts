@@ -162,7 +162,6 @@ export async function sendStoreToContentScripts(
   windowStore: WindowStore,
   tabIds: ValidTabId[] = []
 ): Promise<any> {
-  // const tabs = await queryCurrentWindowTabs();
   const currentWindowTabs = await queryWindowTabs();
 
   if (tabIds.length === 0) {

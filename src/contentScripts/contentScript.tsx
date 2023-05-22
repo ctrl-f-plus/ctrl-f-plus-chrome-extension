@@ -13,7 +13,7 @@ import {
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { Messages } from '../types/message.types';
+import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
 import { ValidTabId, XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -30,19 +30,14 @@ import { injectStyles } from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
 const App: React.FC<{}> = () => {
-  injectStyles(contentStyles);
   const {
     showLayover,
     setShowLayover,
-    searchValue,
     setSearchValue,
-    lastSearchValue,
     setLastSearchValue,
     showMatches,
     setShowMatches,
-    totalMatchesCount,
     setTotalMatchesCount,
-    layoverPosition,
     setLayoverPosition,
     activeTabId,
     setActiveTabId,
@@ -67,6 +62,7 @@ const App: React.FC<{}> = () => {
     setTabStateContext(tabState);
 
     // FIXME: Hacky, see if you can move this logic elsewhere
+    // TODO: when switching tab forwards, we don't highlight the first match
     if (
       typeof tabState.currentIndex === 'number' &&
       tabState.matchesCount !== undefined &&
@@ -110,7 +106,7 @@ const App: React.FC<{}> = () => {
           );
 
           const hasMatch = newState.matchesObj.length > 0;
-          debugger;
+
           if (hasMatch && !foundFirstMatch) {
             newState = updateHighlights(newState, { endOfTab: false });
           }
@@ -125,7 +121,6 @@ const App: React.FC<{}> = () => {
           });
           return true;
         // case 'update-highlights':
-
         //   newState = updateHighlights(
         //     { ...tabStateContext },
         //     { endOfTab: false }
@@ -212,9 +207,13 @@ const App: React.FC<{}> = () => {
     handleActiveTabChange();
   }, [activeTabId, showMatches]);
 
+  // useEffect(() => {
+  //   console.log('tabStateContext updated: ', tabStateContext);
+  // }, [tabStateContext]);
+
   useEffect(() => {
-    console.log('tabStateContext updated: ', tabStateContext);
-  }, [tabStateContext]);
+    injectStyles(contentStyles);
+  }, []);
 
   return (
     <>
@@ -238,11 +237,11 @@ document.body.appendChild(root);
 const reactRoot = createRoot(root);
 
 reactRoot.render(
-  <React.StrictMode>
-    <TabStateContextProvider>
-      <LayoverProvider>
-        <App />
-      </LayoverProvider>
-    </TabStateContextProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <TabStateContextProvider>
+    <LayoverProvider>
+      <App />
+    </LayoverProvider>
+  </TabStateContextProvider>
+  // </React.StrictMode>
 );

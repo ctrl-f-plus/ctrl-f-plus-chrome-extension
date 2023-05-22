@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener(
     switch (type) {
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
-        debugger;
+
         sendStoreToContentScripts(activeWindowStore);
         return true;
       case 'get-all-matches':
@@ -93,13 +93,12 @@ chrome.runtime.onMessage.addListener(
         // });
 
         if (searchValue === '') {
-          debugger;
           sendStoreToContentScripts(activeWindowStore);
           return;
         }
 
         await executeContentScriptOnAllTabs(activeWindowStore);
-        debugger;
+
         sendStoreToContentScripts(activeWindowStore);
 
         return true;
@@ -123,7 +122,7 @@ chrome.runtime.onMessage.addListener(
         //   showMatches: false,
         // });
         // sendStoreToContentScripts(store);
-        debugger;
+
         updateAndSendActiveWindowStore(store, {
           showLayover: false,
           showMatches: false,
@@ -156,7 +155,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 
   console.log('activeWindowStore:: ', activeWindowStore);
   if (activeWindowStore.showLayover) {
-    debugger;
     sendStoreToContentScripts(activeWindowStore);
   }
 });
@@ -188,7 +186,7 @@ chrome.tabs.onCreated.addListener(() => {
   }
 
   updateTotalTabsCount(activeWindowStore);
-  debugger;
+
   sendStoreToContentScripts(activeWindowStore);
 });
 
@@ -200,7 +198,7 @@ chrome.tabs.onRemoved.addListener(() => {
   }
 
   updateTotalTabsCount(activeWindowStore);
-  debugger;
+
   sendStoreToContentScripts(activeWindowStore);
 });
 
@@ -224,7 +222,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
     if (focusedWindow.type === 'normal') {
       updateTotalTabsCount(activeWindowStore);
       activeWindowStore.updatedTabsCount = 0;
-      // debugger;
+
       sendStoreToContentScripts(activeWindowStore);
     }
   });
@@ -244,6 +242,6 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (!activeWindowStore.showMatches) {
     return;
   }
-  debugger;
+
   sendStoreToContentScripts(activeWindowStore);
 });

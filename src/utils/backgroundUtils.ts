@@ -144,7 +144,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   const orderedTabs = await getOrderedTabs(windowStore);
   let foundFirstMatch = false;
   let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
-  // debugger;
+
   // Process tabs one by one until the first match
   for (let i = 0; i < orderedTabs.length; i++) {
     const tab = orderedTabs[i];
@@ -218,7 +218,7 @@ export async function switchTab(
   });
 
   const orderedTabs = await getOrderedTabs(windowStore);
-  // debugger;
+
   const storedTabs = await getAllStoredTabs();
 
   const matchesObject = storedTabs;
@@ -237,7 +237,6 @@ export async function switchTab(
     direction === 'next'
       ? (currentTabIndex + 1) % tabCount
       : (currentTabIndex - 1 + tabCount) % tabCount;
-  // debugger;
   const nextTabId = orderedTabIds[nextTabIndex];
   let targetMatchIndex: number | undefined;
 
@@ -259,15 +258,16 @@ export async function switchTab(
   }
 
   // sendStoreToContentScripts(windowStore);
+  chrome.tabs.update(nextTabId, { active: true });
 
-  chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
-    if (tab === undefined || tab.id === undefined) return;
+  // chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
+  //   if (tab === undefined || tab.id === undefined) return;
 
-    // sendStoreToContentScripts(windowStore);
+  //   // sendStoreToContentScripts(windowStore);
 
-    const msg = createUpdateHighlightsMsg(tab.id);
-    // await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
-  });
+  //   // const msg = createUpdateHighlightsMsg(tab.id);
+  //   // await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
+  // });
 }
 
 export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
@@ -343,8 +343,6 @@ export async function handleUpdateLayoverPosition(
   windowStore: WindowStore,
   newPosition: LayoverPosition
 ) {
-  // setStoredLayoverPosition(newPosition);
-
   updateStore(windowStore, {
     layoverPosition: newPosition,
   });
