@@ -127,6 +127,8 @@ export function updateStore(
 ): void {
   Object.assign(windowStore, updates);
 
+  console.log('windowStore: ', windowStore);
+
   if (updates.tabStores) {
     for (const tabId in updates.tabStores) {
       if (updates.tabStores.hasOwnProperty(tabId)) {

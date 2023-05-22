@@ -105,3 +105,4 @@ DOM ELEMENTS TO LOCAL STORAGE:
 <!-- //- `htmlUtils.ts`
   <!-- //- remove `@ts-ignore` -->
   <!-- //- remove `any` types --> -->
+- Fix styling so that it is consistent accross pages

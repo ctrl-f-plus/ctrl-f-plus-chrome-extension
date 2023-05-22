@@ -1,6 +1,6 @@
 {
   "name": "Kntrl",
-  "description": "Kntrl",
+  "description": "Kntrl is an extension for word searching through tabs - DEMO TEST VERSION",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -9,7 +9,7 @@
     "128": "icon.png"
   },
   "action": {
-    "default_title": "Kntrl-F Extension",
+    "default_title": "Kntrl Extension",
     "default_icon": "icon.png"
   },
   "permissions": ["tabs", "activeTab", "storage"],

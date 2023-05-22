@@ -148,7 +148,8 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </button>
 
           <button
-            // onClick={() => toggleSearchLayover()}
+            // TODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERETODO: START HERE
+            // onClick={() => toggleSearchLayover()} TODO: ADD FUNTION CALL
             type="button"
             className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
           >

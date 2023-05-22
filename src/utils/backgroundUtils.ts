@@ -245,7 +245,6 @@ export async function switchTab(
     serializedState.tabId = tab.id;
 
     const msg = createUpdateHighlightsMsg(tab.id);
-
     await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
   });
 }
