@@ -227,11 +227,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
   });
 });
 
-chrome.runtime.onInstalled.addListener(async (details) => {
+chrome.runtime.onInstalled.addListener(async () => {
   clearLocalStorage();
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async () => {
   const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');

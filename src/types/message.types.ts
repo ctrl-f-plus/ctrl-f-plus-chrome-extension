@@ -1,8 +1,7 @@
 // src/interfaces/message.types.ts
 
-import { Store, TabStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
-import { SerializedTabState, TabId, ValidTabId } from './tab.types';
+import { TabId } from './tab.types';
 
 export type TransactionId = Exclude<string, undefined>;
 

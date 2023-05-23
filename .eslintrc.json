@@ -25,12 +25,11 @@
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
     "prettier/prettier": "error",
-    "no-unused-vars": "warn",
+    // "no-unused-vars": "warn",
     "no-console": "off",
     "func-names": "off",
     "object-shorthand": "off",
     "class-methods-use-this": "off",
-    "import/extensions": "off",
     "import/extensions": [
       "error",
       "ignorePackages",
