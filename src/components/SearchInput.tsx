@@ -119,7 +119,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </div>
         </div>
 
-        <button type="submit" className="hidden" />
+        <button type="submit" className="hidden" aria-label="Submit" />
 
         <div className=" flex justify-evenly items-center">
           <button

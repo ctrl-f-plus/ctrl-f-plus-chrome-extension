@@ -140,12 +140,12 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
   // Process tabs one by one until the first match
-  for (let i = 0; i < orderedTabs.length; i++) {
+  for (let i = 0; i < orderedTabs.length; i += 1) {
     const tab = orderedTabs[i];
 
     if (tab.id) {
       const tabId: ValidTabId = tab.id as number;
-      const { hasMatch, state } = await executeContentScriptOnTab(
+      const { hasMatch } = await executeContentScriptOnTab(
         tab,
         windowStore,
         foundFirstMatch
@@ -304,7 +304,7 @@ export async function handleUpdateTabStatesObj(
   } = payload;
   await setStoredTabs(payload.serializedState);
 
-  windowStore.updatedTabsCount++;
+  windowStore.updatedTabsCount += 1;
 
   if (windowStore.updatedTabsCount === windowStore.totalTabs) {
     updateMatchesCount(windowStore);

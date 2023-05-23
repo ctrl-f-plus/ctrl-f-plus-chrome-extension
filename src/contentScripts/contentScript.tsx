@@ -30,6 +30,7 @@ import contentStyles from './contentStyles';
 import { TabStore } from '../types/Store.types';
 
 const App: React.FC<{}> = () => {
+  // const App: React.FC<{}> = function () {
   const {
     showLayover,
     setShowLayover,
@@ -66,7 +67,7 @@ const App: React.FC<{}> = () => {
     if (
       typeof tabState.currentIndex === 'number' &&
       tabState.matchesCount !== undefined &&
-      tabState.currentIndex == tabState.matchesCount - 1
+      tabState.currentIndex === tabState.matchesCount - 1
     ) {
       const curMatch = tabState.matchesObj[tabState.currentIndex];
       curMatch && curMatch.classList.add('ctrl-f-highlight-focus');
@@ -86,19 +87,20 @@ const App: React.FC<{}> = () => {
 
       if (transactionId && transactionId <= lastProcessedTransactionId) {
         console.log('Ignoring message:', message);
-        return;
+        return undefined;
       }
 
       switch (type) {
         case 'remove-all-highlight-matches':
           removeAllHighlightMatches();
           break;
-        case 'store-updated':
+        case 'store-updated': {
           const { tabStore } = message.payload;
           tabStore && updateContextFromStore(tabStore);
           sendResponse(true);
           break;
-        case 'highlight':
+        }
+        case 'highlight': {
           const { findValue, foundFirstMatch } = message.payload;
           newState = await findAllMatches(
             { ...tabStateContext, tabId },
@@ -120,6 +122,7 @@ const App: React.FC<{}> = () => {
             hasMatch,
           });
           return true;
+        }
         // case 'update-highlights':
         //   newState = updateHighlights(
         //     { ...tabStateContext },

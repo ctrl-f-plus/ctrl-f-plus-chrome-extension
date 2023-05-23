@@ -31,7 +31,7 @@ function getXPath(element: Node): string {
       sibling.nodeType === Node.ELEMENT_NODE &&
       sibling.tagName === htmlElement.tagName
     ) {
-      siblingIndex++;
+      siblingIndex += 1;
     }
   }
 

@@ -6,6 +6,17 @@ const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HtmlPlugin({
+        title: 'Cntrl-F',
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      })
+  );
+}
+
 module.exports = {
   entry: {
     // popup: path.resolve('src/popup/popup.tsx'),
@@ -69,14 +80,3 @@ module.exports = {
     },
   },
 };
-
-function getHtmlPlugins(chunks) {
-  return chunks.map(
-    (chunk) =>
-      new HtmlPlugin({
-        title: 'Cntrl-F',
-        filename: `${chunk}.html`,
-        chunks: [chunk],
-      })
-  );
-}

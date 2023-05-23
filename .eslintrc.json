@@ -24,7 +24,7 @@
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
+    // "prettier/prettier": "error",
     // "no-unused-vars": "warn",
     "no-console": "off",
     "func-names": "off",

@@ -1,7 +1,7 @@
 // src/utils/messageUtils/sendMessageToContentScripts.ts
 
 import { Messages } from '../../types/message.types';
-import { TabId, ValidTabId } from '../../types/tab.types';
+import { ValidTabId } from '../../types/tab.types';
 import { queryCurrentWindowTabs } from '../backgroundUtils';
 
 // FIXME: UNUSED

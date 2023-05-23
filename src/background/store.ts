@@ -242,23 +242,6 @@ export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   });
 }
 
-export async function initStore(): Promise<Store> {
-  const windows = await getAllOpenWindows();
-
-  const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
-  let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-
-  for (const window of windows) {
-    windowStores[window.id] = initWindowStore();
-    lastFocusedWindowId = window.id; // TODO: review
-  }
-
-  return {
-    lastFocusedWindowId,
-    windowStores,
-  };
-}
-
 export function initWindowStore(): WindowStore {
   // windowId: chrome.windows.Window['id']
   const windowStore: WindowStore = {
@@ -278,6 +261,23 @@ export function initWindowStore(): WindowStore {
   };
 
   return windowStore;
+}
+
+export async function initStore(): Promise<Store> {
+  const windows = await getAllOpenWindows();
+
+  const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
+  let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+
+  for (const window of windows) {
+    windowStores[window.id] = initWindowStore();
+    lastFocusedWindowId = window.id; // TODO: review
+  }
+
+  return {
+    lastFocusedWindowId,
+    windowStores,
+  };
 }
 
 // export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
