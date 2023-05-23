@@ -136,7 +136,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-white group-disabled:text-slate-200"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
 
           <button
@@ -153,7 +153,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-white mt-0.5"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
 
           <button
@@ -169,7 +169,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-red-400"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
         </div>
       </form>

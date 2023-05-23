@@ -1,23 +1,15 @@
 // src/utils/backgroundUtils.ts
 
 // import { store } from '../background/background';
-import {
-  WindowStore,
-  sendStoreToContentScripts,
-  updateStore,
-} from '../background/store';
+import { WindowStore, updateStore } from '../background/store';
 import { LayoverPosition } from '../components/Layover';
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
-  UpdateHighlightsMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
-import {
-  createHighlightMsg,
-  createUpdateHighlightsMsg,
-} from './messageUtils/createMessages';
+import { getAllStoredTabs, setStoredTabs } from './storage';
+import { createHighlightMsg } from './messageUtils/createMessages';
 import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
 
 /**
@@ -54,7 +46,7 @@ export function getActiveTabId(): Promise<number | undefined> {
 
 export async function getOrderedTabs(
   windowStore: WindowStore,
-  includeActiveTab: boolean = true
+  includeActiveTab = true
 ): Promise<chrome.tabs.Tab[]> {
   const tabs = await queryCurrentWindowTabs();
   const activeTabIndex = tabs.findIndex((tab) => tab.active);
@@ -180,7 +172,6 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   // });
 
   // await Promise.allSettled(tabPromises);
-  return;
 }
 
 export async function switchTab(
@@ -284,9 +275,8 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
         },
       };
       return sendMessageToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
-    } else {
-      return Promise.resolve(null);
     }
+    return Promise.resolve(null);
   });
 
   const responses = await Promise.all(tabPromises);

@@ -4,6 +4,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -54,6 +55,7 @@ module.exports = {
       ],
     }),
     ...getHtmlPlugins(['popup', 'options']),
+    new ESLintPlugin(),
   ],
   output: {
     filename: '[name].js',

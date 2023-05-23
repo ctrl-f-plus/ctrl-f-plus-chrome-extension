@@ -16,7 +16,7 @@ export const useSearchHandler = () => {
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
 
-      await clearAllStoredTabs(); //FIXME: review a) if you need this and b) its location
+      await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
       await sendMessageToBackground({
         from: 'content',

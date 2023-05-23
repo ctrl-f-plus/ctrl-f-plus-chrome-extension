@@ -91,7 +91,7 @@ export const useFindMatches = () => {
         endOfTab: true,
       });
 
-      //checks if the current tab is the last tab
+      // checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
@@ -112,7 +112,7 @@ export const useFindMatches = () => {
         sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); //1
+      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); // 1
     }
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
@@ -143,7 +143,7 @@ export const useFindMatches = () => {
       return;
     }
 
-    const prevIndex = state2.currentIndex; //0
+    const prevIndex = state2.currentIndex; // 0
 
     const newState2 = {
       ...state2,
@@ -162,7 +162,7 @@ export const useFindMatches = () => {
         endOfTab: true,
       });
 
-      //checks if the current tab is the last tab
+      // checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {

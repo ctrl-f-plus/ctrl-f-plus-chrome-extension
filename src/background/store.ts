@@ -58,7 +58,7 @@ export async function initStore(): Promise<Store> {
 
   for (const window of windows) {
     windowStores[window.id] = initWindowStore(window.id);
-    lastFocusedWindowId = window.id; //TODO: review
+    lastFocusedWindowId = window.id; // TODO: review
   }
 
   return {

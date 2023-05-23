@@ -147,7 +147,7 @@ export function removeAllHighlightMatches() {
   );
 
   highlightElements.forEach((elem) => {
-    const textContent = elem.textContent;
+    const { textContent } = elem;
 
     if (!textContent) {
       console.warn('removeAllHighlights: Missing textContent for elem:', elem);

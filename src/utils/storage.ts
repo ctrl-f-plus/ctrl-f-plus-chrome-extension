@@ -77,7 +77,7 @@ export function setStoredLayoverPosition(
 //   // });
 // }
 
-//////////////////////////////////////////
+/// ///////////////////////////////////////
 export function getStoredLastSearchValue(): Promise<string> {
   const key: LocalStorageKeys = 'lastSearchValue';
 
@@ -94,7 +94,7 @@ export function setStoredLastSearchValue(
   return setLocalStorageItem(key, lastSearchValue);
 }
 
-//////////////////////////////////////////
+/// ///////////////////////////////////////
 
 export function getAllStoredTabs(): Promise<{
   [tabId: number]: SerializedTabState;

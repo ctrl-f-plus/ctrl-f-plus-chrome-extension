@@ -85,7 +85,7 @@ function getElementByXPath(xpath: string) {
     ).singleNodeValue;
   } else {
     // If it doesn't start with "//", prepend it with "/html/"
-    const modifiedXpath = '/html/' + xpath;
+    const modifiedXpath = `/html/${xpath}`;
     result = document.evaluate(
       modifiedXpath,
       document,

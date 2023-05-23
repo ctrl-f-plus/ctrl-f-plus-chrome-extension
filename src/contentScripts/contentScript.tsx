@@ -13,7 +13,7 @@ import {
 import { useFindMatches } from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
-import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
+import { Messages } from '../types/message.types';
 import { ValidTabId, XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -54,7 +54,7 @@ const App: React.FC<{}> = () => {
     setLayoverPosition(tabStore.layoverPosition);
     setActiveTabId(tabStore.activeTabId);
 
-    const serializedTabState = tabStore.serializedTabState;
+    const { serializedTabState } = tabStore;
     const xPathTabState: XPathTabState =
       deserializeMatchesObj(serializedTabState);
     const tabState = restoreHighlightSpans(xPathTabState);
@@ -74,7 +74,7 @@ const App: React.FC<{}> = () => {
     }
   };
 
-  let lastProcessedTransactionId = '0'; //FIXME: Should this be state?
+  const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
 
   const handleMessage = useCallback(
     async (message: Messages, sender: any, sendResponse: any) => {
@@ -187,13 +187,14 @@ const App: React.FC<{}> = () => {
     };
   }, [showLayover]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (showMatches) {
         removeAllHighlightMatches();
       }
-    };
-  }, [showMatches]);
+    },
+    [showMatches]
+  );
 
   useEffect(() => {
     const handleActiveTabChange = () => {
