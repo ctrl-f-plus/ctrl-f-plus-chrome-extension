@@ -226,43 +226,9 @@
 // }
 // src/background/store.ts
 
-import { LayoverPosition } from '../types/Layover.types';
-import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
+import { Store, TabStore, WindowStore } from '../types/Store.types';
+import { ValidTabId } from '../types/tab.types';
 import { queryWindowTabs } from '../utils/backgroundUtils';
-
-export interface WindowStore extends SharedStore {
-  updatedTabsCount: number;
-  totalTabs: number | undefined;
-  tabStores: Record<ValidTabId, SimplifiedTabState>;
-}
-
-export interface SimplifiedTabState {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
-}
-
-export interface TabStore extends SharedStore {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
-}
-
-export interface Store {
-  lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-  windowStores: Record<chrome.windows.Window['id'], WindowStore>;
-}
-
-// Store Interface
-export interface SharedStore {
-  totalMatchesCount: number;
-  layoverPosition: LayoverPosition;
-  showLayover: boolean;
-  showMatches: boolean;
-  activeTabId: TabId;
-  searchValue: string;
-
-  // GLOBAL: yes - will need to review after logic changes to immediate searching
-  lastSearchValue: string;
-}
 
 export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   return new Promise((resolve, reject) => {
@@ -283,7 +249,7 @@ export async function initStore(): Promise<Store> {
   let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
 
   for (const window of windows) {
-    windowStores[window.id] = initWindowStore(window.id);
+    windowStores[window.id] = initWindowStore();
     lastFocusedWindowId = window.id; // TODO: review
   }
 
@@ -293,9 +259,8 @@ export async function initStore(): Promise<Store> {
   };
 }
 
-export function initWindowStore(
-  windowId: chrome.windows.Window['id']
-): WindowStore {
+export function initWindowStore(): WindowStore {
+  // windowId: chrome.windows.Window['id']
   const windowStore: WindowStore = {
     // SharedStore properties:
     totalMatchesCount: 0,

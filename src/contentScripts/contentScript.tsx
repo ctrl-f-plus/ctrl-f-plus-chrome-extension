@@ -2,7 +2,6 @@
 
 import React, { useCallback, useContext, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { TabStore } from '../background/store';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
@@ -10,7 +9,7 @@ import {
   TabStateContext,
   TabStateContextProvider,
 } from '../contexts/TabStateContext';
-import { useFindMatches } from '../hooks/useFindMatches';
+import useFindMatches from '../hooks/useFindMatches';
 import { useMessageHandler } from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { Messages } from '../types/message.types';
@@ -25,9 +24,10 @@ import {
   sendMessageToBackground,
   sendMsgToBackground,
 } from '../utils/messageUtils/sendMessageToBackground';
-import { scrollToElement } from '../utils/scrollUtils';
+import scrollToElement from '../utils/scrollUtils';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import { TabStore } from '../types/Store.types';
 
 const App: React.FC<{}> = () => {
   const {

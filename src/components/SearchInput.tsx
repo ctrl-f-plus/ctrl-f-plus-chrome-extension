@@ -15,7 +15,7 @@ import React, {
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
-import { useFindMatches } from '../hooks/useFindMatches';
+import useFindMatches from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
 import { SearchInputProps } from '../types/searchInput.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';

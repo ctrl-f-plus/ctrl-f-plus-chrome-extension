@@ -1,5 +1,6 @@
 // src/background/background.ts
 
+import { Store, WindowStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
@@ -12,8 +13,6 @@ import {
 } from '../utils/backgroundUtils';
 import { clearLocalStorage } from '../utils/storage';
 import {
-  Store,
-  WindowStore,
   initStore,
   resetPartialStore,
   sendStoreToContentScripts,
