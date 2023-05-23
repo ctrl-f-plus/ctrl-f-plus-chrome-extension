@@ -1,6 +1,6 @@
 // src/components/DraggableModal.tsx
 
-import React, { useContext } from 'react';
+import React, { useContext, FC } from 'react';
 import Draggable, {
   DraggableData,
   DraggableEventHandler,
@@ -9,15 +9,7 @@ import { LayoverContext } from '../contexts/LayoverContext';
 import { UpdateLayoverPositionMsg } from '../types/message.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
-
-export interface LayoverPosition {
-  x: number;
-  y: number;
-}
-
-interface LayoverProps {
-  children: React.ReactNode;
-}
+import { LayoverPosition, LayoverProps } from '../types/Layover.types';
 
 const Layover: React.FC<LayoverProps> = ({ children }) => {
   const nodeRef = React.useRef(null);

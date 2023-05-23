@@ -1,6 +1,6 @@
 // src/interfaces/message.types.ts
 
-import { LayoverPosition } from '../components/Layover';
+import { LayoverPosition } from './Layover.types';
 import { TabId } from './tab.types';
 
 export type TransactionId = Exclude<string, undefined>;

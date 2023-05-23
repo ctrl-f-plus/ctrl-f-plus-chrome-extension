@@ -26,7 +26,7 @@ import {
   sendMsgToBackground,
 } from '../utils/messageUtils/sendMessageToBackground';
 import { scrollToElement } from '../utils/scrollUtils';
-import { injectStyles } from '../utils/styleUtils';
+import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
 const App: React.FC<{}> = () => {

@@ -226,7 +226,7 @@
 // }
 // src/background/store.ts
 
-import { LayoverPosition } from '../components/Layover';
+import { LayoverPosition } from '../types/Layover.types';
 import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
 import { queryWindowTabs } from '../utils/backgroundUtils';
 

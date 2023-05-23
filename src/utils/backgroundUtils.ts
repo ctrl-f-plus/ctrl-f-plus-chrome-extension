@@ -2,15 +2,16 @@
 
 // import { store } from '../background/background';
 import { WindowStore, updateStore } from '../background/store';
-import { LayoverPosition } from '../components/Layover';
+
+import { LayoverPosition } from '../types/Layover.types';
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import { getAllStoredTabs, setStoredTabs } from './storage';
 import { createHighlightMsg } from './messageUtils/createMessages';
 import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
+import { getAllStoredTabs, setStoredTabs } from './storage';
 
 /**
  *  Utility/Helper Functions:

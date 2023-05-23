@@ -21,7 +21,7 @@ function isVisible(node: Node): boolean {
 function createCustomTreeWalker() {
   return document.createTreeWalker(
     document.body,
-    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    NodeFilter.SHOW_TEXT || NodeFilter.SHOW_ELEMENT,
     {
       acceptNode: (node) => {
         if (

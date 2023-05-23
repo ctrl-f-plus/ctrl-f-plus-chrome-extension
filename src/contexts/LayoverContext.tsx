@@ -1,8 +1,8 @@
 // src/contexts/LayoverContext.tsx
 
 import React, { createContext } from 'react';
-import { LayoverPosition } from '../components/Layover';
 import { useLayoverHandler } from '../hooks/useLayoverHandler';
+import { LayoverPosition } from '../types/Layover.types';
 import {
   LayoverContextData,
   LayoverProviderProps,

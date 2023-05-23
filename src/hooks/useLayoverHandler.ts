@@ -1,13 +1,14 @@
 // src/hooks/useLayoverHandler.ts
 
 import { useReducer } from 'react';
-import { LayoverPosition } from '../components/Layover';
+
 import {
   ActionTypes,
   LayoverAction,
   LayoverState,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
+import { LayoverPosition } from '../types/Layover.types';
 
 const initialState: LayoverState = {
   showLayover: false,
