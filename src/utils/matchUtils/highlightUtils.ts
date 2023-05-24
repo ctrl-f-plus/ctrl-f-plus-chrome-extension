@@ -59,10 +59,14 @@ function getAllTextNodesToProcess({
   const textNodesToProcess = [];
   const treeWalker = createCustomTreeWalker();
   let currentNode = treeWalker.nextNode();
+  const regexClone = regex;
 
   while (currentNode) {
-    regex.lastIndex = 0;
-    if (currentNode.nodeType === 3 && regex.test((currentNode as Text).data)) {
+    regexClone.lastIndex = 0;
+    if (
+      currentNode.nodeType === 3 &&
+      regexClone.test((currentNode as Text).data)
+    ) {
       textNodesToProcess.push(currentNode);
     }
     currentNode = treeWalker.nextNode();
@@ -85,9 +89,11 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
   let match;
   let lastIndex = 0;
   const fragment = document.createDocumentFragment();
+  const regexClone = regex;
 
-  regex.lastIndex = 0;
-  while ((match = regex.exec(textNodeAsText.data)) !== null) {
+  regexClone.lastIndex = 0;
+  match = regexClone.exec(textNodeAsText.data);
+  while (match) {
     const beforeMatch = textNodeAsText.data.slice(lastIndex, match.index);
     const matchText = match[0];
     lastIndex = match.index + matchText.length;
@@ -99,8 +105,10 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
     const span = createHighlightSpan({ matchText });
 
     updateMatchesObject({ state2, span });
-    state2.matchesCount += 1;
+    state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
     fragment.appendChild(span);
+
+    match = regexClone.exec(textNodeAsText.data);
   }
 
   const afterMatch = textNodeAsText.data.slice(lastIndex);
@@ -132,6 +140,7 @@ export function searchAndHighlight({
       textNodesToProcess.forEach((textNode) => {
         processTextNode({ textNode, regex, state2 });
       });
+      console.log(state2);
 
       resolve();
     } catch (error) {
@@ -155,6 +164,9 @@ export function removeAllHighlightMatches() {
     }
 
     // Replace the innerHTML of the element with its textContent
-    elem.outerHTML = textContent;
+    // elem.outerHTML = textContent;
+
+    const textNode = document.createTextNode(textContent);
+    elem.parentNode?.replaceChild(textNode, elem);
   });
 }

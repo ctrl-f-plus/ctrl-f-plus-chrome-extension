@@ -37,3 +37,10 @@ Browser Extension, Chrome Web Store, Website Navbar Icon
 Designers:
   - https://99designs.com/profiles/corne/services
   - https://99designs.com/profiles/jpsdesign/about
+
+____________________________________-
+Hero Section:
+  - Headline: "Ctrl-F Plus: Search Across All Tabs in an Instant"
+  - Subheadline: "Enhance your browsing experience with Ctrl-F Plus, the Chrome extension that takes the find function to the next level."
+  - CTA button: "Add Ctrl-F Plus to Chrome"
+  Hero image: A graphic that represents the function of your extension, such as a browser window with multiple tabs and highlighted search terms.
