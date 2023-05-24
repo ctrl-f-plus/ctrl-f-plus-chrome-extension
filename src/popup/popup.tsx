@@ -14,7 +14,7 @@ function App() {
 
       <div id="cntrl-f-extension" className="">
         <div className="">
-          <SearchInput />
+          <SearchInput focus />
         </div>
       </div>
     </>

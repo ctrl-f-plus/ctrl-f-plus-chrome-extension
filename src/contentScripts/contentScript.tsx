@@ -29,8 +29,9 @@ import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 import { TabStore } from '../types/Store.types';
 
-const App: React.FC<{}> = () => {
-  // const App: React.FC<{}> = function () {
+// function App(): React.ReactElement {
+// const App: React.FC<{}> = () => {
+function App() {
   const {
     showLayover,
     setShowLayover,
@@ -70,7 +71,9 @@ const App: React.FC<{}> = () => {
       tabState.currentIndex === tabState.matchesCount - 1
     ) {
       const curMatch = tabState.matchesObj[tabState.currentIndex];
-      curMatch && curMatch.classList.add('ctrl-f-highlight-focus');
+      if (curMatch) {
+        curMatch.classList.add('ctrl-f-highlight-focus');
+      }
       scrollToElement(curMatch);
     }
   };
@@ -96,7 +99,9 @@ const App: React.FC<{}> = () => {
           break;
         case 'store-updated': {
           const { tabStore } = message.payload;
-          tabStore && updateContextFromStore(tabStore);
+          if (tabStore) {
+            updateContextFromStore(tabStore);
+          }
           sendResponse(true);
           break;
         }
@@ -221,6 +226,7 @@ const App: React.FC<{}> = () => {
 
   return (
     <>
+      {' '}
       {showLayover && (
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
@@ -233,7 +239,7 @@ const App: React.FC<{}> = () => {
       )}
     </>
   );
-};
+}
 
 const root = document.createElement('div');
 document.body.appendChild(root);
@@ -241,11 +247,11 @@ document.body.appendChild(root);
 const reactRoot = createRoot(root);
 
 reactRoot.render(
-  // <React.StrictMode>
-  <TabStateContextProvider>
-    <LayoverProvider>
-      <App />
-    </LayoverProvider>
-  </TabStateContextProvider>
-  // </React.StrictMode>
+  <React.StrictMode>
+    <TabStateContextProvider>
+      <LayoverProvider>
+        <App />
+      </LayoverProvider>
+    </TabStateContextProvider>
+  </React.StrictMode>
 );

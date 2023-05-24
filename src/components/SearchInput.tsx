@@ -17,10 +17,14 @@ import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useFindMatches from '../hooks/useFindMatches';
 import { useSearchHandler } from '../hooks/useSearchHandler';
-import { SearchInputProps } from '../types/searchInput.types';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
-const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
+// FIXME: Test this to see if you can just use showLayover directly instead of focus
+interface SearchInputProps {
+  focus: boolean; // or whatever type `focus` is supposed to be
+}
+
+function SearchInput({ focus }: SearchInputProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
 
@@ -175,6 +179,6 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
       </form>
     </>
   );
-};
+}
 
 export default SearchInput;

@@ -140,7 +140,9 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
         element as Element
       ).querySelector('span');
 
-      spanElement && tabState.matchesObj.push(spanElement);
+      if (spanElement) {
+        tabState.matchesObj.push(spanElement);
+      }
     }
   });
 
