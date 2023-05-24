@@ -186,27 +186,27 @@ export function clearLocalStorage() {
   });
 }
 
-export function clearStoredTab(tabId: TabId): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (!tabId) {
-      reject(new Error('tabId not provided'));
-      return;
-    }
+// export function clearStoredTab(tabId: TabId): Promise<void> {
+//   return new Promise((resolve, reject) => {
+//     if (!tabId) {
+//       reject(new Error('tabId not provided'));
+//       return;
+//     }
 
-    chrome.storage.local.get(['tabs'], (res) => {
-      const currentData = res.tabs || {};
-      if (currentData.hasOwnProperty(tabId)) {
-        delete currentData[tabId];
+//     chrome.storage.local.get(['tabs'], (res) => {
+//       const currentData = res.tabs || {};
+//       if (currentData.hasOwnProperty(tabId)) {
+//         delete currentData[tabId];
 
-        chrome.storage.local.set({ tabs: currentData }, () => {
-          resolve();
-        });
-      } else {
-        reject(new Error('tabId not found in storage'));
-      }
-    });
-  });
-}
+//         chrome.storage.local.set({ tabs: currentData }, () => {
+//           resolve();
+//         });
+//       } else {
+//         reject(new Error('tabId not found in storage'));
+//       }
+//     });
+//   });
+// }
 
 export function clearAllStoredTabs(): Promise<void> {
   const key: LocalStorageKeys = 'tabs';

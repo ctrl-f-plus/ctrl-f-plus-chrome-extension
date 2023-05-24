@@ -28,7 +28,7 @@ export default function useFindMatches() {
   }, [tabStateContext]);
 
   const findAllMatches = useCallback(
-    async (tabStateContext: TabState, findValue: string) => {
+    async (findValue: string) => {
       const newState = { ...tabStateContext };
 
       newState.currentIndex = 0;

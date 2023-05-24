@@ -108,7 +108,7 @@ function App() {
         case 'highlight': {
           const { findValue, foundFirstMatch } = message.payload;
           newState = await findAllMatches(
-            { ...tabStateContext, tabId },
+            // { ...tabStateContext, tabId },
             findValue
           );
 

@@ -8,7 +8,7 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import { clearAllStoredTabs } from '../utils/storage';
 
-export const useSearchHandler = () => {
+export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(
@@ -45,4 +45,4 @@ export const useSearchHandler = () => {
     handleSearch,
     handlePrevious,
   };
-};
+}

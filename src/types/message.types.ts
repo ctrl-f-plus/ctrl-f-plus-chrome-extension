@@ -117,11 +117,11 @@ export interface HighlightMsg extends BaseMessage {
   payload: any;
 }
 
-export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
-  from: 'content';
-  type: 'CLOSE_SEARCH_OVERLAY';
-  payload: any;
-}
+// export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
+//   from: 'content';
+//   type: 'CLOSE_SEARCH_OVERLAY';
+//   payload: any;
+// }
 
 export type Messages =
   | GetAllMatchesMsg
@@ -133,5 +133,5 @@ export type Messages =
   | HighlightMsg
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
-  | UpdateLayoverPositionMsg
-  | CLOSE_SEARCH_OVERLAY_MESSAGE;
+  | UpdateLayoverPositionMsg;
+// | CLOSE_SEARCH_OVERLAY_MESSAGE;

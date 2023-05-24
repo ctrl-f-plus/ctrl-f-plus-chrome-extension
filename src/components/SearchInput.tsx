@@ -16,7 +16,7 @@ import React, {
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useFindMatches from '../hooks/useFindMatches';
-import { useSearchHandler } from '../hooks/useSearchHandler';
+import useSearchHandler from '../hooks/useSearchHandler';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 // FIXME: Test this to see if you can just use showLayover directly instead of focus

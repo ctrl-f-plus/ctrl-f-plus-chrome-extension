@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */ // FIXME: remove this and add class for windowStore?
 // src/utils/backgroundUtils.ts
 
 // import { store } from '../background/background';
@@ -66,11 +67,18 @@ export async function updateMatchesCount(windowStore: WindowStore) {
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
-  for (const tabId in storedTabs) {
-    if (storedTabs.hasOwnProperty(tabId)) {
-      totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
-    }
-  }
+
+  // for (const tabId in storedTabs) {
+  //   if (storedTabs.hasOwnProperty(tabId)) {
+  //     totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
+  //   }
+  // }
+
+  Object.keys(storedTabs).forEach((tabId) => {
+    // const numericTabId = Number(tabId);
+    const validTabId = tabId as unknown as ValidTabId;
+    totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
+  });
 
   updateStore(windowStore, {
     totalMatchesCount,
