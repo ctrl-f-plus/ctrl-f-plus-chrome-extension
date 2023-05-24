@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 type MessageHandler = (message: any, sender: any, sendResponse: any) => void;
 
-export const useMessageHandler = (messageHandler: MessageHandler) => {
+export default function useMessageHandler(messageHandler: MessageHandler) {
   useEffect(() => {
     chrome.runtime.onMessage.addListener(messageHandler);
 
@@ -12,4 +12,4 @@ export const useMessageHandler = (messageHandler: MessageHandler) => {
       chrome.runtime.onMessage.removeListener(messageHandler);
     };
   }, [messageHandler]);
-};
+}

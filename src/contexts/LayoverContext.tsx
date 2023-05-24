@@ -2,7 +2,6 @@
 
 import React, { createContext, useMemo } from 'react';
 import { useLayoverHandler } from '../hooks/useLayoverHandler';
-import { LayoverPosition } from '../types/Layover.types';
 import {
   LayoverContextData,
   LayoverProviderProps,

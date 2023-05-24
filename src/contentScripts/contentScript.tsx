@@ -10,8 +10,9 @@ import {
   TabStateContextProvider,
 } from '../contexts/TabStateContext';
 import useFindMatches from '../hooks/useFindMatches';
-import { useMessageHandler } from '../hooks/useMessageHandler';
+import useMessageHandler from '../hooks/useMessageHandler';
 import '../tailwind.css';
+import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
 import { ValidTabId, XPathTabState } from '../types/tab.types';
 import {
@@ -27,7 +28,6 @@ import {
 import scrollToElement from '../utils/scrollUtils';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import { TabStore } from '../types/Store.types';
 
 // function App(): React.ReactElement {
 // const App: React.FC<{}> = () => {
