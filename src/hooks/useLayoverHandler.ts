@@ -69,7 +69,7 @@ const reducer = (state: LayoverState, action: LayoverAction): LayoverState => {
   }
 };
 
-export const useLayoverHandler = () => {
+export default function useLayoverHandler() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const setSearchValue = (value: string) => {
@@ -119,4 +119,4 @@ export const useLayoverHandler = () => {
     setTabStateContext,
     setActiveTabId,
   };
-};
+}

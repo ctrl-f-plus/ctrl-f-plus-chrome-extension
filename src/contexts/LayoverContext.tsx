@@ -1,7 +1,7 @@
 // src/contexts/LayoverContext.tsx
 
 import React, { createContext, useMemo } from 'react';
-import { useLayoverHandler } from '../hooks/useLayoverHandler';
+import useLayoverHandler from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
