@@ -105,6 +105,8 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
     const span = createHighlightSpan({ matchText });
 
     updateMatchesObject({ state2, span });
+    // FIXME: REMOVE `eslint-disable`
+    // eslint-disable-next-line no-param-reassign
     state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
     fragment.appendChild(span);
 

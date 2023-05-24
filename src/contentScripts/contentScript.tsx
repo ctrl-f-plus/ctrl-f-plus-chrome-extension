@@ -85,7 +85,7 @@ function App() {
       console.log('Received message:', message);
 
       const { type, transactionId } = message;
-      const { tabId }: { tabId: ValidTabId } = message.payload;
+      // const { tabId }: { tabId: ValidTabId } = message.payload;
       let newState;
 
       if (transactionId && transactionId <= lastProcessedTransactionId) {

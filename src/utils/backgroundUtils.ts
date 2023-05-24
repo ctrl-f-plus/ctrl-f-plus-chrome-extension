@@ -11,6 +11,7 @@ import {
   RemoveAllHighlightMatchesMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
+import { queryCurrentWindowTabs } from './chromeUtils';
 import { createHighlightMsg } from './messageUtils/createMessages';
 import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
 import { getAllStoredTabs, setStoredTabs } from './storage';
@@ -18,22 +19,6 @@ import { getAllStoredTabs, setStoredTabs } from './storage';
 /**
  *  Utility/Helper Functions:
  */
-export async function queryCurrentWindowTabs(
-  activeTab: boolean | undefined = undefined
-): Promise<chrome.tabs.Tab[]> {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: activeTab, currentWindow: true }, resolve);
-  });
-}
-
-export async function queryWindowTabs(
-  windowId?: chrome.windows.Window['id'],
-  activeTab: boolean | undefined = undefined
-): Promise<chrome.tabs.Tab[]> {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ windowId, active: activeTab }, resolve);
-  });
-}
 
 export function getActiveTabId(): Promise<number | undefined> {
   return new Promise((resolve) => {
