@@ -108,8 +108,11 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
 
     updateMatchesObject({ state2, span });
     // FIXME: REMOVE `eslint-disable`
+    /*  eslint-disable-next-line no-param-reassign, @typescript-eslint/ban-ts-comment */
+    // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
+
     fragment.appendChild(span);
 
     match = regexClone.exec(textNodeAsText.data);
@@ -144,7 +147,6 @@ export function searchAndHighlight({
       textNodesToProcess.forEach((textNode) => {
         processTextNode({ textNode, regex, state2 });
       });
-      console.log(state2);
 
       resolve();
     } catch (error) {

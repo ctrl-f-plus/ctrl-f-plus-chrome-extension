@@ -82,7 +82,7 @@ export function createTabStore(
 
   if (serializedTabState === undefined) {
     serializedTabState = {
-      tabId: tabId,
+      tabId,
       currentIndex: 0,
       matchesCount: 0,
       serializedMatches: '',
@@ -110,8 +110,6 @@ export function updateStore(
   updates: Partial<WindowStore>
 ): void {
   Object.assign(windowStore, updates);
-
-  console.log('windowStore: ', windowStore);
 
   const updatesTabStores = updates.tabStores;
 
@@ -193,6 +191,5 @@ export async function sendStoreToContentScripts(
     });
   });
 
-  console.log(promises);
   return Promise.all(promises);
 }

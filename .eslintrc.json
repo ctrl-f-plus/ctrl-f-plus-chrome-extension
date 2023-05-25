@@ -12,7 +12,8 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:prettier/recommended"
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
@@ -24,13 +25,13 @@
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
-    // "prettier/prettier": "error",
-    // "no-unused-vars": "warn",
-    // "@typescript-eslint/no-explicit-any": "off",
-    "no-console": "off",
-    "func-names": "off",
-    "object-shorthand": "off",
-    "class-methods-use-this": "off",
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    // "no-console": "off",
+    // "func-names": "off",
+    // "object-shorthand": "off",
+    // "class-methods-use-this": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

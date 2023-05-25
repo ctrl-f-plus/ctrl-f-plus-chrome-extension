@@ -58,7 +58,8 @@ chrome.runtime.onMessage.addListener(
 
     console.log('Received message:', message, ' \n Store: ', store);
 
-    const { type,
+    const {
+      type,
       payload,
       // transactionId
     } = message;
@@ -154,7 +155,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 
   // TODO: if showMatches then search the new tab and update everything? Otherwise, if you open a new tab, go back to the previously opened tab and search the same value again, it doesn't know to search the new tab because it uses nextMatch(). There are other solutions if you change your mind on this one.
 
-  console.log('activeWindowStore:: ', activeWindowStore);
   if (activeWindowStore.showLayover) {
     sendStoreToContentScripts(activeWindowStore);
   }

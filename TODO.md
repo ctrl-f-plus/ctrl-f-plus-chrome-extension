@@ -113,3 +113,22 @@ DOM ELEMENTS TO LOCAL STORAGE:
 
 
 
+
+
+
+
+what would these look like if they were corrected?
+```
+const myFunc = function() {
+  return 'Hello, world!';
+}
+
+```
+```
+const obj = {
+  x: x,
+  y: y,
+  myFunc: function() {
+    return 'Hello, world!';
+  },
+};

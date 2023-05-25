@@ -24,7 +24,7 @@ export function createHighlightMsg(
     payload: {
       findValue: searchValue,
       foundFirstMatch,
-      tabId: tabId,
+      tabId,
       // tabState: {},
     },
   };
@@ -36,7 +36,7 @@ export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
     from: 'background',
     type: 'update-highlights',
     payload: {
-      tabId: tabId,
+      tabId,
     },
   };
 }

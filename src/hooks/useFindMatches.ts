@@ -87,7 +87,7 @@ export default function useFindMatches() {
     if (newState2.currentIndex === 0) {
       // removes the focus class from the last match
       updatedState = updateHighlights(newState2, {
-        prevIndex: prevIndex,
+        prevIndex,
         endOfTab: true,
       });
 
@@ -103,7 +103,7 @@ export default function useFindMatches() {
           from: 'content-script-match-utils',
           type: 'switch-tab',
           payload: {
-            serializedState: serializedState,
+            serializedState,
             direction: 'next',
           },
         };
@@ -112,7 +112,7 @@ export default function useFindMatches() {
         sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); // 1
+      updatedState = updateHighlights(newState2, { prevIndex }); // 1
     }
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
@@ -158,7 +158,7 @@ export default function useFindMatches() {
     if (newState2.currentIndex === state2.matchesObj.length - 1) {
       updatedState = updateHighlights(newState2, {
         // removes the focus class from the last match
-        prevIndex: prevIndex,
+        prevIndex,
         endOfTab: true,
       });
 
@@ -174,7 +174,7 @@ export default function useFindMatches() {
           from: 'content-script-match-utils',
           type: 'switch-tab',
           payload: {
-            serializedState: serializedState,
+            serializedState,
             direction: 'previous',
           },
         };
@@ -187,7 +187,7 @@ export default function useFindMatches() {
         return;
       }
     } else {
-      updatedState = updateHighlights(newState2, { prevIndex: prevIndex });
+      updatedState = updateHighlights(newState2, { prevIndex });
     }
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
