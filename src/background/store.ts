@@ -161,6 +161,7 @@ export async function sendStoreToContentScripts(
   tabIds: ValidTabId[] = []
 ): Promise<(boolean | Error)[]> {
   const currentWindowTabs = await queryWindowTabs();
+  const test = 1;
 
   if (tabIds.length === 0) {
     tabIds = currentWindowTabs
