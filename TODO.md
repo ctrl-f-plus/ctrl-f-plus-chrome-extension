@@ -109,3 +109,7 @@ DOM ELEMENTS TO LOCAL STORAGE:
 <!-- //- You might be injecting the style a bunch of times on each page -->
 - When switching tabs manually, the current index in the searchInput changes, but may it shouldn't
 - add `.eslintignore` file?
+
+
+
+

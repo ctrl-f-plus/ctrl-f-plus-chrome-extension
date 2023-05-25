@@ -43,17 +43,28 @@ export function initWindowStore(): WindowStore {
 export async function initStore(): Promise<Store> {
   const windows = await getAllOpenWindows();
 
-  const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
-  let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+  // const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
+  // let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+
+  const windowStores: { [K in number]: WindowStore } = {};
+  let lastFocusedWindowId: chrome.windows.Window['id'] = -1; // initialize with a default value
 
   // for (const window of windows) {
   //   windowStores[window.id] = initWindowStore();
   //   lastFocusedWindowId = window.id; // TODO: review
   // }
 
+  // windows.forEach((window) => {
+  //   windowStores[window.id] = initWindowStore();
+  //   lastFocusedWindowId = window.id; // TODO: review
+  // });
+
   windows.forEach((window) => {
-    windowStores[window.id] = initWindowStore();
-    lastFocusedWindowId = window.id; // TODO: review
+    if (window.id !== undefined) {
+      // ensure the id is not undefined before using it
+      windowStores[window.id] = initWindowStore();
+      lastFocusedWindowId = window.id; // TODO: review
+    }
   });
 
   return {

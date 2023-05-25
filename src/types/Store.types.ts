@@ -19,10 +19,24 @@ export interface TabStore extends SharedStore {
   serializedTabState: SerializedTabState;
 }
 
+// export type Store = {
+//   lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+//   windowStores: Record<chrome.windows.Window['id'], WindowStore>;
+// };
+
 export interface Store {
-  lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-  windowStores: Record<chrome.windows.Window['id'], WindowStore>;
+  lastFocusedWindowId: chrome.windows.Window['id'];
+  windowStores: {
+    [K in number]: WindowStore;
+  };
 }
+
+// export interface Store {
+//   lastFocusedWindowId: chrome.windows.Window['id'];
+//   windowStores: {
+//     [K in chrome.windows.Window['id']]?: WindowStore;
+//   };
+// }
 
 // Store Interface
 export interface SharedStore {
