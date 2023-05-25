@@ -26,6 +26,7 @@
   "rules": {
     // "prettier/prettier": "error",
     // "no-unused-vars": "warn",
+    // "@typescript-eslint/no-explicit-any": "off",
     "no-console": "off",
     "func-names": "off",
     "object-shorthand": "off",

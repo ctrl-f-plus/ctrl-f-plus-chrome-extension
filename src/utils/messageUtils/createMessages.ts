@@ -25,7 +25,7 @@ export function createHighlightMsg(
       findValue: searchValue,
       foundFirstMatch,
       tabId: tabId,
-      tabState: {},
+      // tabState: {},
     },
   };
 }

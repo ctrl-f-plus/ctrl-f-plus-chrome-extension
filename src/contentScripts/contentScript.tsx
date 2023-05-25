@@ -14,7 +14,7 @@ import useMessageHandler from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
-import { ValidTabId, XPathTabState } from '../types/tab.types';
+import { XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
   restoreHighlightSpans,
@@ -81,7 +81,11 @@ function App() {
   const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
 
   const handleMessage = useCallback(
-    async (message: Messages, sender: any, sendResponse: any) => {
+    async (
+      message: Messages,
+      sender: chrome.runtime.MessageSender,
+      sendResponse: (response?: any) => void
+    ) => {
       console.log('Received message:', message);
 
       const { type, transactionId } = message;
@@ -176,6 +180,7 @@ function App() {
     ]
   );
 
+  // FIXME: (***878)
   useMessageHandler(handleMessage);
 
   useEffect(() => {

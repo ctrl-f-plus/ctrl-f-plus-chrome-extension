@@ -1,8 +1,15 @@
 // src/hooks/useMessageHandler.ts
 
 import { useEffect } from 'react';
+import { Messages } from '../types/message.types';
 
-type MessageHandler = (message: any, sender: any, sendResponse: any) => void;
+// FIXME: (***878) review the return type here:
+type MessageHandler = (
+  message: Messages,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: any) => void
+  // ) => Promise<void>;
+) => Promise<boolean | undefined>;
 
 export default function useMessageHandler(messageHandler: MessageHandler) {
   useEffect(() => {

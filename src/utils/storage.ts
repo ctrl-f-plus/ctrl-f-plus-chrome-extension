@@ -108,7 +108,7 @@ export function getAllStoredTabs(): Promise<{
   //   });
   // });
 
-  const key: LocalStorageKeys = 'tabs';
+  // const key: LocalStorageKeys = 'tabs';
   return getLocalStorageItem('tabs').then((tabs) => tabs ?? {});
 }
 
@@ -165,8 +165,7 @@ export function setStoredTabs(
   //   });
   // });
   const key: LocalStorageKeys = 'tabs';
-  const { tabId, currentIndex, serializedMatches, matchesCount } =
-    serializedState;
+  const { tabId, serializedMatches, matchesCount } = serializedState;
 
   if (!tabId || !serializedMatches || !matchesCount) {
     throw new Error('Invalid tab storage object');

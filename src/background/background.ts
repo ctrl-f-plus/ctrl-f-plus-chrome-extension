@@ -58,7 +58,10 @@ chrome.runtime.onMessage.addListener(
 
     console.log('Received message:', message, ' \n Store: ', store);
 
-    const { type, payload, transactionId } = message;
+    const { type,
+      payload,
+      // transactionId
+    } = message;
     const activeWindowStore = getActiveWindowStore();
 
     if (!activeWindowStore) {

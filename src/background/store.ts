@@ -148,7 +148,7 @@ export function resetPartialStore(windowStore: WindowStore): void {
 export async function sendStoreToContentScripts(
   windowStore: WindowStore,
   tabIds: ValidTabId[] = []
-): Promise<any> {
+): Promise<(boolean | Error)[]> {
   const currentWindowTabs = await queryWindowTabs();
 
   if (tabIds.length === 0) {
@@ -169,16 +169,19 @@ export async function sendStoreToContentScripts(
       },
     };
 
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
+    return new Promise<boolean | Error>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          resolve(response);
+          // resolve(response);
+          resolve(response as boolean);
         }
       });
     });
   });
 
+  console.log(promises);
   return Promise.all(promises);
 }

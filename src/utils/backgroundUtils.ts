@@ -127,10 +127,11 @@ async function executeContentScriptOnTab(
   }
 }
 
+/* eslint-disable no-await-in-loop */ // FIXME: might make sense to refactor the loop to get all matches and then update the start indexes after
 export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   const orderedTabs = await getOrderedTabs(windowStore);
   let foundFirstMatch = false;
-  let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
+  // let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
   // Process tabs one by one until the first match
   for (let i = 0; i < orderedTabs.length; i += 1) {
@@ -138,6 +139,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
 
     if (tab.id) {
       const tabId: ValidTabId = tab.id as number;
+
       const { hasMatch } = await executeContentScriptOnTab(
         tab,
         windowStore,
@@ -146,7 +148,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
 
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
-        firstMatchTabIndex = i;
+        // firstMatchTabIndex = i; // TODO: REVIEW THIS <- figure out how it was previously used and if it would be helpful to add back
 
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tabId) {
@@ -157,6 +159,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
       }
     }
   }
+  /* eslint-enable no-await-in-loop */
 
   // Process the remaining tabs asynchronously
   // const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
@@ -215,7 +218,7 @@ export async function switchTab(
     .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
 
   const currentTabIndex = orderedTabIds.findIndex(
-    (tabId) => tabId === serializedState.tabId
+    (currentTabId) => currentTabId === serializedState.tabId
   );
 
   const tabCount = orderedTabIds.length;
@@ -256,7 +259,10 @@ export async function switchTab(
   // });
 }
 
-export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+// FIXME: Create a ts type of sendResponse and update throughout codebase
+export async function handleRemoveAllHighlightMatches(
+  sendResponse: (response?: any) => void
+) {
   const tabs = await queryCurrentWindowTabs();
 
   const tabPromises = tabs.map((tab) => {
@@ -283,8 +289,11 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(
   windowStore: WindowStore,
-  payload: any,
-  sendResponse: Function
+  payload: {
+    serializedState: SerializedTabState;
+  },
+  // sendResponse: Function
+  sendResponse: (response?: any) => void
 ) {
   const {
     serializedState: {
@@ -295,6 +304,12 @@ export async function handleUpdateTabStatesObj(
       tabId,
     },
   } = payload;
+
+  if (tabId === undefined) {
+    console.warn('handleUpdateTabStatesObj: Tab ID is undefined:', payload);
+    return;
+  }
+
   await setStoredTabs(payload.serializedState);
 
   windowStore.updatedTabsCount += 1;
@@ -307,8 +322,8 @@ export async function handleUpdateTabStatesObj(
   updateStore(windowStore, {
     tabStores: {
       ...windowStore.tabStores,
-      [payload.serializedState.tabId]: {
-        ...windowStore.tabStores[payload.serializedState.tabId],
+      [tabId]: {
+        ...windowStore.tabStores[tabId],
         tabId,
         serializedTabState: {
           tabId,

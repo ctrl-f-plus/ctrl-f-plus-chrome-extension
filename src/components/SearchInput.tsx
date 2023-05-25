@@ -44,7 +44,7 @@ function SearchInput({ focus }: SearchInputProps) {
   const [matchingCounts, setMatchingCounts] = useState('0/0');
 
   const { nextMatch, previousMatch } = useFindMatches();
-  const { handleSearch, handlePrevious } = useSearchHandler();
+  const { handleSearch } = useSearchHandler();
 
   // TODO: Review to decide if you want to handle this in another way
   const closeSearchLayover = () => {
