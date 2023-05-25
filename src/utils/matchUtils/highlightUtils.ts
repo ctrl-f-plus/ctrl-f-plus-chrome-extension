@@ -50,7 +50,7 @@ function createHighlightSpan({
 }
 
 function updateMatchesObject({ state2, span }: UpdateMatchesObjectProps) {
-  if(state2) {
+  if (state2) {
     state2.matchesObj.push(span);
   }
 }
@@ -108,10 +108,8 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
 
     updateMatchesObject({ state2, span });
     // FIXME: REMOVE `eslint-disable`
-    if (state2 && state2.matchesCount) {
-      // eslint-disable-next-line no-param-reassign
-      state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
-    }
+    // eslint-disable-next-line no-param-reassign
+    state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
     fragment.appendChild(span);
 
     match = regexClone.exec(textNodeAsText.data);

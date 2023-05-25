@@ -4,7 +4,7 @@ import { TabState } from './tab.types';
 
 export interface MatchUtilsBase {
   currentIndex?: number;
-  state2?: TabState;
+  state2?: any;
 }
 
 export interface CreateHighlightSpanProps {
