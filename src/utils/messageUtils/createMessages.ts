@@ -1,6 +1,6 @@
 // src/utils/messageUtils/createMessages.ts
 
-import { LayoverPosition } from '../../components/Layover';
+import { LayoverPosition } from '../../types/Layover.types';
 import {
   HighlightMsg,
   UpdateHighlightsMsg,
@@ -25,7 +25,7 @@ export function createHighlightMsg(
       findValue: searchValue,
       foundFirstMatch,
       tabId: tabId,
-      tabState: {},
+      // tabState: {},
     },
   };
 }

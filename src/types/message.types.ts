@@ -1,8 +1,8 @@
 // src/interfaces/message.types.ts
 
-import { Store, TabStore } from '../background/store';
-import { LayoverPosition } from '../components/Layover';
-import { SerializedTabState, TabId, ValidTabId } from './tab.types';
+import { LayoverPosition } from './Layover.types';
+import { TabStore } from './Store.types';
+import { SerializedTabState, ValidTabId } from './tab.types';
 
 export type TransactionId = Exclude<string, undefined>;
 
@@ -30,6 +30,7 @@ export interface BaseMessage {
     | 'content:layover-component';
   async?: boolean | true;
   type: string;
+  // payload?: unknown; // TODO: you might need to add this back, but i think you are fine without it
   payload?: any;
   transactionId?: TransactionId;
 }
@@ -37,7 +38,7 @@ export interface BaseMessage {
 export interface GetAllMatchesMsg extends BaseMessage {
   from: 'content';
   type: 'get-all-matches';
-  payload: any;
+  payload: { searchValue: string };
 }
 
 export interface RemoveAllHighlightMatches extends BaseMessage {
@@ -50,7 +51,10 @@ export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
   async: false;
   from: 'background:backgroundUtils';
   type: 'remove-all-highlight-matches';
-  payload: any;
+  // payload: any;
+  payload: {
+    tabId: ValidTabId;
+  };
 }
 
 export interface RemoveStylesAllTabs extends BaseMessage {
@@ -61,24 +65,24 @@ export interface RemoveStylesAllTabs extends BaseMessage {
 export interface SwitchTabMsg extends BaseMessage {
   from: 'content-script-match-utils';
   type: 'switch-tab';
-  payload: any;
-  // payload: {
-  //   serializedState: SerializedTabState;
-  //   direction: string
-  //   prevIndex: number | undefined;
-  // };
+  // payload: any;
+  // TODO: direction probably shouild be a boolean or it should use CONSTANTS
+  payload: {
+    serializedState: SerializedTabState;
+    direction: 'next' | 'previous';
+  };
 }
 
-export interface MessageFixMe {
-  async: boolean | true;
-  type: string;
-  command?: string;
-  payload?: any;
-  prevIndex?: number;
-  tabId?: TabId;
-  transactionId?: TransactionId;
-  foundFirstMatch?: boolean;
-}
+// export interface MessageFixMe {
+//   async: boolean | true;
+//   type: string;
+//   command?: string;
+//   payload?: any;
+//   prevIndex?: number;
+//   tabId?: TabId;
+//   transactionId?: TransactionId;
+//   foundFirstMatch?: boolean;
+// }
 
 export interface UpdateHighlightsMsg extends BaseMessage {
   async: true;
@@ -89,18 +93,24 @@ export interface UpdateHighlightsMsg extends BaseMessage {
 export interface UpdateTabStatesObjMsg extends BaseMessage {
   from: 'content:match-utils';
   type: 'update-tab-states-obj';
-  payload: any;
+  // payload: any;
+  payload: { serializedState: SerializedTabState };
 }
 
 export interface UpdateStoreMsg extends BaseMessage {
   from: 'background:store';
   type: 'store-updated';
-  payload: any;
+  // payload: any;
   // payload: {
   //   tabId: ValidTabId;
   //   store?: Store;
   //   tabStore?: TabStore;
   // };
+
+  payload: {
+    tabId: ValidTabId;
+    tabStore?: TabStore;
+  };
 }
 
 export interface UpdateLayoverPositionMsg extends BaseMessage {
@@ -115,14 +125,21 @@ export interface HighlightMsg extends BaseMessage {
   async: true;
   from: 'background';
   type: 'highlight';
-  payload: any;
+  // payload: any;
+  // TODO: change findValue to searchValue?
+  payload: {
+    findValue: string;
+    // searchValue: string;
+    tabId: ValidTabId;
+    foundFirstMatch: boolean;
+  };
 }
 
-export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
-  from: 'content';
-  type: 'CLOSE_SEARCH_OVERLAY';
-  payload: any;
-}
+// export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
+//   from: 'content';
+//   type: 'CLOSE_SEARCH_OVERLAY';
+//   payload: any;
+// }
 
 export type Messages =
   | GetAllMatchesMsg
@@ -134,5 +151,5 @@ export type Messages =
   | HighlightMsg
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
-  | UpdateLayoverPositionMsg
-  | CLOSE_SEARCH_OVERLAY_MESSAGE;
+  | UpdateLayoverPositionMsg;
+// | CLOSE_SEARCH_OVERLAY_MESSAGE;

@@ -15,12 +15,16 @@ import React, {
 } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
-import { useFindMatches } from '../hooks/useFindMatches';
-import { useSearchHandler } from '../hooks/useSearchHandler';
-import { SearchInputProps } from '../types/searchInput.types';
+import useFindMatches from '../hooks/useFindMatches';
+import useSearchHandler from '../hooks/useSearchHandler';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
-const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
+// FIXME: Test this to see if you can just use showLayover directly instead of focus
+interface SearchInputProps {
+  focus: boolean; // or whatever type `focus` is supposed to be
+}
+
+function SearchInput({ focus }: SearchInputProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
 
@@ -40,7 +44,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
   const [matchingCounts, setMatchingCounts] = useState('0/0');
 
   const { nextMatch, previousMatch } = useFindMatches();
-  const { handleSearch, handlePrevious } = useSearchHandler();
+  const { handleSearch } = useSearchHandler();
 
   // TODO: Review to decide if you want to handle this in another way
   const closeSearchLayover = () => {
@@ -119,7 +123,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
           </div>
         </div>
 
-        <button type="submit" className="hidden" />
+        <button type="submit" className="hidden" aria-label="Submit" />
 
         <div className=" flex justify-evenly items-center">
           <button
@@ -136,7 +140,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-white group-disabled:text-slate-200"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
 
           <button
@@ -153,7 +157,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-white mt-0.5"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
 
           <button
@@ -169,12 +173,12 @@ const SearchInput: React.FC<SearchInputProps> = ({ focus }) => {
                 className="text-slate-200 z-10 group-hover:text-red-400"
               />
             </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity"></div>
+            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
           </button>
         </div>
       </form>
     </>
   );
-};
+}
 
 export default SearchInput;

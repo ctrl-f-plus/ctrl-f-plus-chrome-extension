@@ -1,7 +1,7 @@
 // src/interfaces/layoverContext.types.ts
 
 import { ReactNode } from 'react';
-import { LayoverPosition } from '../components/Layover';
+import { LayoverPosition } from './Layover.types';
 import { TabId, TabState } from './tab.types';
 
 export interface LayoverContextData {

@@ -1,42 +1,11 @@
+/* eslint-disable no-param-reassign */
+// FIXME: remove this `eslint-disable` - maybe add a class?
+
 // src/background/store.ts
 
-import { LayoverPosition } from '../components/Layover';
-import { SerializedTabState, TabId, ValidTabId } from '../types/tab.types';
-import { queryWindowTabs } from '../utils/backgroundUtils';
-
-export interface WindowStore extends SharedStore {
-  updatedTabsCount: number;
-  totalTabs: number | undefined;
-  tabStores: Record<ValidTabId, SimplifiedTabState>;
-}
-
-export interface SimplifiedTabState {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
-}
-
-export interface TabStore extends SharedStore {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
-}
-
-export interface Store {
-  lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-  windowStores: Record<chrome.windows.Window['id'], WindowStore>;
-}
-
-// Store Interface
-export interface SharedStore {
-  totalMatchesCount: number;
-  layoverPosition: LayoverPosition;
-  showLayover: boolean;
-  showMatches: boolean;
-  activeTabId: TabId;
-  searchValue: string;
-
-  // GLOBAL: yes - will need to review after logic changes to immediate searching
-  lastSearchValue: string;
-}
+import { Store, TabStore, WindowStore } from '../types/Store.types';
+import { ValidTabId } from '../types/tab.types';
+import { queryWindowTabs } from '../utils/chromeUtils';
 
 export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   return new Promise((resolve, reject) => {
@@ -50,26 +19,8 @@ export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   });
 }
 
-export async function initStore(): Promise<Store> {
-  const windows = await getAllOpenWindows();
-
-  const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
-  let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-
-  for (const window of windows) {
-    windowStores[window.id] = initWindowStore(window.id);
-    lastFocusedWindowId = window.id; //TODO: review
-  }
-
-  return {
-    lastFocusedWindowId,
-    windowStores,
-  };
-}
-
-export function initWindowStore(
-  windowId: chrome.windows.Window['id']
-): WindowStore {
+export function initWindowStore(): WindowStore {
+  // windowId: chrome.windows.Window['id']
   const windowStore: WindowStore = {
     // SharedStore properties:
     totalMatchesCount: 0,
@@ -87,6 +38,39 @@ export function initWindowStore(
   };
 
   return windowStore;
+}
+
+export async function initStore(): Promise<Store> {
+  const windows = await getAllOpenWindows();
+
+  // const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
+  // let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
+
+  const windowStores: { [K in number]: WindowStore } = {};
+  let lastFocusedWindowId: chrome.windows.Window['id'] = -1; // initialize with a default value
+
+  // for (const window of windows) {
+  //   windowStores[window.id] = initWindowStore();
+  //   lastFocusedWindowId = window.id; // TODO: review
+  // }
+
+  // windows.forEach((window) => {
+  //   windowStores[window.id] = initWindowStore();
+  //   lastFocusedWindowId = window.id; // TODO: review
+  // });
+
+  windows.forEach((window) => {
+    if (window.id !== undefined) {
+      // ensure the id is not undefined before using it
+      windowStores[window.id] = initWindowStore();
+      lastFocusedWindowId = window.id; // TODO: review
+    }
+  });
+
+  return {
+    lastFocusedWindowId,
+    windowStores,
+  };
 }
 
 // export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
@@ -129,16 +113,30 @@ export function updateStore(
 
   console.log('windowStore: ', windowStore);
 
-  if (updates.tabStores) {
-    for (const tabId in updates.tabStores) {
-      if (updates.tabStores.hasOwnProperty(tabId)) {
-        if (!windowStore.tabStores[tabId]) {
-          windowStore.tabStores[tabId] = updates.tabStores[tabId];
-        } else {
-          Object.assign(windowStore.tabStores[tabId], updates.tabStores[tabId]);
-        }
+  const updatesTabStores = updates.tabStores;
+
+  if (updatesTabStores) {
+    // for (const tabId in updates.tabStores) {
+    //   if (updates.tabStores.hasOwnProperty(tabId)) {
+    //     if (!windowStore.tabStores[tabId]) {
+    //       windowStore.tabStores[tabId] = updates.tabStores[tabId];
+    //     } else {
+    //       Object.assign(windowStore.tabStores[tabId], updates.tabStores[tabId]);
+    //     }
+    //   }
+    // }
+    Object.keys(updatesTabStores).forEach((tabId) => {
+      const validTabId = tabId as unknown as ValidTabId;
+
+      if (!windowStore.tabStores[validTabId]) {
+        windowStore.tabStores[validTabId] = updatesTabStores[validTabId];
+      } else {
+        Object.assign(
+          windowStore.tabStores[validTabId],
+          updatesTabStores[validTabId]
+        );
       }
-    }
+    });
   }
 }
 
@@ -161,7 +159,7 @@ export function resetPartialStore(windowStore: WindowStore): void {
 export async function sendStoreToContentScripts(
   windowStore: WindowStore,
   tabIds: ValidTabId[] = []
-): Promise<any> {
+): Promise<(boolean | Error)[]> {
   const currentWindowTabs = await queryWindowTabs();
 
   if (tabIds.length === 0) {
@@ -182,16 +180,19 @@ export async function sendStoreToContentScripts(
       },
     };
 
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
+    return new Promise<boolean | Error>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          resolve(response);
+          // resolve(response);
+          resolve(response as boolean);
         }
       });
     });
   });
 
+  console.log(promises);
   return Promise.all(promises);
 }

@@ -6,20 +6,12 @@ import Draggable, {
   DraggableEventHandler,
 } from 'react-draggable';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { LayoverPosition, LayoverProps } from '../types/Layover.types';
 import { UpdateLayoverPositionMsg } from '../types/message.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
-export interface LayoverPosition {
-  x: number;
-  y: number;
-}
-
-interface LayoverProps {
-  children: React.ReactNode;
-}
-
-const Layover: React.FC<LayoverProps> = ({ children }) => {
+function Layover({ children }: LayoverProps): React.ReactElement | null {
   const nodeRef = React.useRef(null);
 
   const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);
@@ -51,6 +43,6 @@ const Layover: React.FC<LayoverProps> = ({ children }) => {
       </div>
     </Draggable>
   ) : null;
-};
+}
 
 export default Layover;

@@ -1,5 +1,6 @@
 // src/background/background.ts
 
+import { Store, WindowStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
@@ -12,8 +13,6 @@ import {
 } from '../utils/backgroundUtils';
 import { clearLocalStorage } from '../utils/storage';
 import {
-  Store,
-  WindowStore,
   initStore,
   resetPartialStore,
   sendStoreToContentScripts,
@@ -34,7 +33,7 @@ initStore().then((initializedStore) => {
   }
 });
 
-function getActiveWindowStore(store: Store): WindowStore | undefined {
+function getActiveWindowStore(): WindowStore | undefined {
   const { lastFocusedWindowId } = store;
   if (lastFocusedWindowId !== undefined) {
     return store.windowStores[lastFocusedWindowId];
@@ -42,11 +41,8 @@ function getActiveWindowStore(store: Store): WindowStore | undefined {
   return undefined;
 }
 
-function updateAndSendActiveWindowStore(
-  store: Store,
-  update: Partial<WindowStore>
-) {
-  const activeWindowStore = getActiveWindowStore(store);
+function updateAndSendActiveWindowStore(update: Partial<WindowStore>) {
+  const activeWindowStore = getActiveWindowStore();
   if (activeWindowStore) {
     Object.assign(activeWindowStore, update);
     sendStoreToContentScripts(activeWindowStore);
@@ -57,17 +53,20 @@ chrome.runtime.onMessage.addListener(
   async (message: Messages, sender, sendResponse) => {
     if (!store) {
       console.error('Store is not yet initialized');
-      return;
+      return undefined;
     }
 
     console.log('Received message:', message, ' \n Store: ', store);
 
-    const { type, payload, transactionId } = message;
-    const activeWindowStore = getActiveWindowStore(store);
+    const { type,
+      payload,
+      // transactionId
+    } = message;
+    const activeWindowStore = getActiveWindowStore();
 
     if (!activeWindowStore) {
       console.error('No active window store available');
-      return;
+      return undefined;
     }
 
     switch (type) {
@@ -76,7 +75,7 @@ chrome.runtime.onMessage.addListener(
 
         sendStoreToContentScripts(activeWindowStore);
         return true;
-      case 'get-all-matches':
+      case 'get-all-matches': {
         const { searchValue } = payload;
 
         // resetPartialStore(activeWindowStore);
@@ -94,7 +93,7 @@ chrome.runtime.onMessage.addListener(
 
         if (searchValue === '') {
           sendStoreToContentScripts(activeWindowStore);
-          return;
+          return undefined;
         }
 
         await executeContentScriptOnAllTabs(activeWindowStore);
@@ -102,6 +101,7 @@ chrome.runtime.onMessage.addListener(
         sendStoreToContentScripts(activeWindowStore);
 
         return true;
+      }
       case 'update-tab-states-obj':
         await handleUpdateTabStatesObj(
           activeWindowStore,
@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(
         // });
         // sendStoreToContentScripts(store);
 
-        updateAndSendActiveWindowStore(store, {
+        updateAndSendActiveWindowStore({
           showLayover: false,
           showMatches: false,
         });
@@ -135,15 +135,16 @@ chrome.runtime.onMessage.addListener(
           activeWindowStore,
           payload.newPosition
         );
-        return;
+        break;
       default:
-        return;
+        break;
     }
+    return true;
   }
 );
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  const activeWindowStore = getActiveWindowStore(store);
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
@@ -160,7 +161,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
-  const activeWindowStore = getActiveWindowStore(store);
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
@@ -179,7 +180,7 @@ chrome.commands.onCommand.addListener(async (command) => {
 });
 
 chrome.tabs.onCreated.addListener(() => {
-  const activeWindowStore = getActiveWindowStore(store);
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
@@ -191,7 +192,7 @@ chrome.tabs.onCreated.addListener(() => {
 });
 
 chrome.tabs.onRemoved.addListener(() => {
-  const activeWindowStore = getActiveWindowStore(store);
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
@@ -210,7 +211,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
   const activeTabId = await getActiveTabId();
   store.lastFocusedWindowId = windowId;
 
-  const activeWindowStore = getActiveWindowStore(store);
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
@@ -228,12 +229,12 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
   });
 });
 
-chrome.runtime.onInstalled.addListener(async (details) => {
+chrome.runtime.onInstalled.addListener(async () => {
   clearLocalStorage();
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  const activeWindowStore = getActiveWindowStore(store);
+chrome.tabs.onUpdated.addListener(async () => {
+  const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;

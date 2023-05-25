@@ -1,8 +1,7 @@
 // src/contexts/LayoverContext.tsx
 
-import React, { createContext } from 'react';
-import { LayoverPosition } from '../components/Layover';
-import { useLayoverHandler } from '../hooks/useLayoverHandler';
+import React, { createContext, useMemo } from 'react';
+import useLayoverHandler from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
@@ -22,15 +21,13 @@ export const LayoverContext = createContext<LayoverContextData>({
   globalMatchIdx: 0,
   setGlobalMatchIdx: () => {},
   layoverPosition: null,
-  setLayoverPosition: (value: LayoverPosition | null) => {},
+  setLayoverPosition: () => {},
   activeTabId: undefined,
   setActiveTabId: () => {},
   incrementMatchIndices: () => {},
 });
 
-export const LayoverProvider: React.FC<LayoverProviderProps> = ({
-  children,
-}) => {
+export function LayoverProvider({ children }: LayoverProviderProps) {
   const {
     showLayover,
     setShowLayover,
@@ -51,29 +48,42 @@ export const LayoverProvider: React.FC<LayoverProviderProps> = ({
     incrementMatchIndices,
   } = useLayoverHandler();
 
+  // const foo = useMemo(() => ({ foo: 'bar' }), []);
+  const contextValue = useMemo(
+    () => ({
+      showLayover,
+      setShowLayover,
+      searchValue,
+      setSearchValue,
+      lastSearchValue,
+      setLastSearchValue,
+      showMatches,
+      setShowMatches,
+      totalMatchesCount,
+      setTotalMatchesCount,
+      globalMatchIdx,
+      setGlobalMatchIdx,
+      layoverPosition,
+      setLayoverPosition,
+      activeTabId,
+      setActiveTabId,
+      incrementMatchIndices,
+    }),
+    [
+      showLayover,
+      searchValue,
+      lastSearchValue,
+      showMatches,
+      totalMatchesCount,
+      globalMatchIdx,
+      layoverPosition,
+      activeTabId,
+    ]
+  );
+
   return (
-    <LayoverContext.Provider
-      value={{
-        showLayover,
-        setShowLayover,
-        searchValue,
-        setSearchValue,
-        lastSearchValue,
-        setLastSearchValue,
-        showMatches,
-        setShowMatches,
-        totalMatchesCount,
-        setTotalMatchesCount,
-        globalMatchIdx,
-        setGlobalMatchIdx,
-        layoverPosition,
-        setLayoverPosition,
-        activeTabId,
-        setActiveTabId,
-        incrementMatchIndices,
-      }}
-    >
+    <LayoverContext.Provider value={contextValue}>
       {children}
     </LayoverContext.Provider>
   );
-};
+}

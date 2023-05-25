@@ -2,23 +2,17 @@
 
 import { Messages } from '../../types/message.types';
 
-export const sendMessageToBackground = async (
-  message: Messages
-): Promise<any> => {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      return resolve(response);
-    });
-    sendMsgToBackground;
-  });
-};
-
 export const sendMsgToBackground = <T extends Messages>(
   message: T
-): Promise<any> => {
-  return new Promise((resolve) => {
-    chrome.runtime.sendMessage(message, (response) => {
-      return resolve(response);
-    });
+): Promise<any> =>
+  new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => resolve(response));
   });
-};
+
+export const sendMessageToBackground = async (
+  message: Messages
+): Promise<any> =>
+  new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => resolve(response));
+    // sendMsgToBackground;
+  });

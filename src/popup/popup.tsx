@@ -6,19 +6,20 @@ import '../tailwind.css';
 // import './popup.css';
 import SearchInput from '../components/SearchInput';
 
-const App: React.FC<{}> = () => {
+// const App: React.FC = () => (
+function App() {
   return (
     <>
       <h1>Popup!</h1>
 
       <div id="cntrl-f-extension" className="">
         <div className="">
-          <SearchInput />
+          <SearchInput focus />
         </div>
       </div>
     </>
   );
-};
+}
 
 const root = document.createElement('div');
 document.body.appendChild(root);

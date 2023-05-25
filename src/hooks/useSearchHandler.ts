@@ -8,7 +8,7 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import { clearAllStoredTabs } from '../utils/storage';
 
-export const useSearchHandler = () => {
+export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
 
   const handleSearch = useCallback(
@@ -16,7 +16,7 @@ export const useSearchHandler = () => {
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
 
-      await clearAllStoredTabs(); //FIXME: review a) if you need this and b) its location
+      await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
       await sendMessageToBackground({
         from: 'content',
@@ -45,4 +45,4 @@ export const useSearchHandler = () => {
     handleSearch,
     handlePrevious,
   };
-};
+}

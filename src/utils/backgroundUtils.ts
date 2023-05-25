@@ -1,44 +1,24 @@
+/* eslint-disable no-param-reassign */ // FIXME: remove this and add class for windowStore?
 // src/utils/backgroundUtils.ts
 
 // import { store } from '../background/background';
-import {
-  WindowStore,
-  sendStoreToContentScripts,
-  updateStore,
-} from '../background/store';
-import { LayoverPosition } from '../components/Layover';
+
+import { updateStore } from '../background/store';
+import { LayoverPosition } from '../types/Layover.types';
+import { WindowStore } from '../types/Store.types';
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
-  UpdateHighlightsMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import { getAllStoredTabs, setStoredTabs } from '../utils/storage';
-import {
-  createHighlightMsg,
-  createUpdateHighlightsMsg,
-} from './messageUtils/createMessages';
+import { queryCurrentWindowTabs } from './chromeUtils';
+import { createHighlightMsg } from './messageUtils/createMessages';
 import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
+import { getAllStoredTabs, setStoredTabs } from './storage';
 
 /**
  *  Utility/Helper Functions:
  */
-export async function queryCurrentWindowTabs(
-  activeTab: boolean | undefined = undefined
-): Promise<chrome.tabs.Tab[]> {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: activeTab, currentWindow: true }, resolve);
-  });
-}
-
-export async function queryWindowTabs(
-  windowId?: chrome.windows.Window['id'],
-  activeTab: boolean | undefined = undefined
-): Promise<chrome.tabs.Tab[]> {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ windowId, active: activeTab }, resolve);
-  });
-}
 
 export function getActiveTabId(): Promise<number | undefined> {
   return new Promise((resolve) => {
@@ -54,7 +34,7 @@ export function getActiveTabId(): Promise<number | undefined> {
 
 export async function getOrderedTabs(
   windowStore: WindowStore,
-  includeActiveTab: boolean = true
+  includeActiveTab = true
 ): Promise<chrome.tabs.Tab[]> {
   const tabs = await queryCurrentWindowTabs();
   const activeTabIndex = tabs.findIndex((tab) => tab.active);
@@ -72,11 +52,18 @@ export async function updateMatchesCount(windowStore: WindowStore) {
   const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
-  for (const tabId in storedTabs) {
-    if (storedTabs.hasOwnProperty(tabId)) {
-      totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
-    }
-  }
+
+  // for (const tabId in storedTabs) {
+  //   if (storedTabs.hasOwnProperty(tabId)) {
+  //     totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
+  //   }
+  // }
+
+  Object.keys(storedTabs).forEach((tabId) => {
+    // const numericTabId = Number(tabId);
+    const validTabId = tabId as unknown as ValidTabId;
+    totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
+  });
 
   updateStore(windowStore, {
     totalMatchesCount,
@@ -140,18 +127,20 @@ async function executeContentScriptOnTab(
   }
 }
 
+/* eslint-disable no-await-in-loop */ // FIXME: might make sense to refactor the loop to get all matches and then update the start indexes after
 export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   const orderedTabs = await getOrderedTabs(windowStore);
   let foundFirstMatch = false;
-  let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
+  // let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
   // Process tabs one by one until the first match
-  for (let i = 0; i < orderedTabs.length; i++) {
+  for (let i = 0; i < orderedTabs.length; i += 1) {
     const tab = orderedTabs[i];
 
     if (tab.id) {
       const tabId: ValidTabId = tab.id as number;
-      const { hasMatch, state } = await executeContentScriptOnTab(
+
+      const { hasMatch } = await executeContentScriptOnTab(
         tab,
         windowStore,
         foundFirstMatch
@@ -159,7 +148,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
 
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;
-        firstMatchTabIndex = i;
+        // firstMatchTabIndex = i; // TODO: REVIEW THIS <- figure out how it was previously used and if it would be helpful to add back
 
         const activeTab = orderedTabs[0];
         if (activeTab.id !== tabId) {
@@ -170,6 +159,7 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
       }
     }
   }
+  /* eslint-enable no-await-in-loop */
 
   // Process the remaining tabs asynchronously
   // const remainingTabs = orderedTabs.slice(firstMatchTabIndex + 1);
@@ -180,7 +170,6 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   // });
 
   // await Promise.allSettled(tabPromises);
-  return;
 }
 
 export async function switchTab(
@@ -229,7 +218,7 @@ export async function switchTab(
     .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
 
   const currentTabIndex = orderedTabIds.findIndex(
-    (tabId) => tabId === serializedState.tabId
+    (currentTabId) => currentTabId === serializedState.tabId
   );
 
   const tabCount = orderedTabIds.length;
@@ -270,7 +259,10 @@ export async function switchTab(
   // });
 }
 
-export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
+// FIXME: Create a ts type of sendResponse and update throughout codebase
+export async function handleRemoveAllHighlightMatches(
+  sendResponse: (response?: any) => void
+) {
   const tabs = await queryCurrentWindowTabs();
 
   const tabPromises = tabs.map((tab) => {
@@ -284,9 +276,8 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
         },
       };
       return sendMessageToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
-    } else {
-      return Promise.resolve(null);
     }
+    return Promise.resolve(null);
   });
 
   const responses = await Promise.all(tabPromises);
@@ -298,8 +289,11 @@ export async function handleRemoveAllHighlightMatches(sendResponse: Function) {
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(
   windowStore: WindowStore,
-  payload: any,
-  sendResponse: Function
+  payload: {
+    serializedState: SerializedTabState;
+  },
+  // sendResponse: Function
+  sendResponse: (response?: any) => void
 ) {
   const {
     serializedState: {
@@ -310,9 +304,15 @@ export async function handleUpdateTabStatesObj(
       tabId,
     },
   } = payload;
+
+  if (tabId === undefined) {
+    console.warn('handleUpdateTabStatesObj: Tab ID is undefined:', payload);
+    return;
+  }
+
   await setStoredTabs(payload.serializedState);
 
-  windowStore.updatedTabsCount++;
+  windowStore.updatedTabsCount += 1;
 
   if (windowStore.updatedTabsCount === windowStore.totalTabs) {
     updateMatchesCount(windowStore);
@@ -322,8 +322,8 @@ export async function handleUpdateTabStatesObj(
   updateStore(windowStore, {
     tabStores: {
       ...windowStore.tabStores,
-      [payload.serializedState.tabId]: {
-        ...windowStore.tabStores[payload.serializedState.tabId],
+      [tabId]: {
+        ...windowStore.tabStores[tabId],
         tabId,
         serializedTabState: {
           tabId,

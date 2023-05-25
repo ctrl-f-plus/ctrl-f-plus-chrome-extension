@@ -1,7 +1,7 @@
 // src/contexts/TabStateContext.tsx
 
-import React, { ReactNode, createContext, useReducer } from 'react';
-import { useLayoverHandler } from '../hooks/useLayoverHandler';
+import React, { ReactNode, createContext, useMemo } from 'react';
+import useLayoverHandler from '../hooks/useLayoverHandler';
 import { TabState } from '../types/tab.types';
 
 export interface TabStateContextData {
@@ -31,17 +31,23 @@ export const TabStateContext = createContext<TabStateContextData>({
   setTabStateContext: () => {},
 });
 
-export const TabStateContextProvider: React.FC<
-  TabStateContextProviderProps
-> = ({ children }) => {
+export function TabStateContextProvider({
+  children,
+}: TabStateContextProviderProps) {
   const { tabStateContext, setTabStateContext } = useLayoverHandler();
 
+  const contextValue = useMemo(
+    () => ({ tabStateContext, setTabStateContext }),
+    // [tabStateContext, setTabStateContext]
+    [tabStateContext]
+  );
+
   return (
-    <TabStateContext.Provider value={{ tabStateContext, setTabStateContext }}>
+    <TabStateContext.Provider value={contextValue}>
       {children}
     </TabStateContext.Provider>
   );
-};
+}
 
 // export type TabStateAction = {
 //   type: TabStateActionTypes;

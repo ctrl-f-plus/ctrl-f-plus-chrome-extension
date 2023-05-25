@@ -31,7 +31,7 @@ function getXPath(element: Node): string {
       sibling.nodeType === Node.ELEMENT_NODE &&
       sibling.tagName === htmlElement.tagName
     ) {
-      siblingIndex++;
+      siblingIndex += 1;
     }
   }
 
@@ -85,7 +85,7 @@ function getElementByXPath(xpath: string) {
     ).singleNodeValue;
   } else {
     // If it doesn't start with "//", prepend it with "/html/"
-    const modifiedXpath = '/html/' + xpath;
+    const modifiedXpath = `/html/${xpath}`;
     result = document.evaluate(
       modifiedXpath,
       document,
@@ -140,7 +140,9 @@ export function restoreHighlightSpans(xPathTabState: XPathTabState): TabState {
         element as Element
       ).querySelector('span');
 
-      spanElement && tabState.matchesObj.push(spanElement);
+      if (spanElement) {
+        tabState.matchesObj.push(spanElement);
+      }
     }
   });
 

@@ -8,14 +8,14 @@ import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import { searchAndHighlight } from '../utils/matchUtils/highlightUtils';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
-import { scrollToElement } from '../utils/scrollUtils';
+import scrollToElement from '../utils/scrollUtils';
 
 type UpdateHighlightsOptions = {
   prevIndex?: number;
   endOfTab?: boolean;
 };
 
-export const useFindMatches = () => {
+export default function useFindMatches() {
   const { totalMatchesCount, globalMatchIdx } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
@@ -28,7 +28,7 @@ export const useFindMatches = () => {
   }, [tabStateContext]);
 
   const findAllMatches = useCallback(
-    async (tabStateContext: TabState, findValue: string) => {
+    async (findValue: string) => {
       const newState = { ...tabStateContext };
 
       newState.currentIndex = 0;
@@ -91,7 +91,7 @@ export const useFindMatches = () => {
         endOfTab: true,
       });
 
-      //checks if the current tab is the last tab
+      // checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
@@ -112,7 +112,7 @@ export const useFindMatches = () => {
         sendMsgToBackground<SwitchTabMsg>(msg);
       }
     } else {
-      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); //1
+      updatedState = updateHighlights(newState2, { prevIndex: prevIndex }); // 1
     }
     const serializedState: SerializedTabState = serializeMatchesObj({
       ...updatedState,
@@ -143,7 +143,7 @@ export const useFindMatches = () => {
       return;
     }
 
-    const prevIndex = state2.currentIndex; //0
+    const prevIndex = state2.currentIndex; // 0
 
     const newState2 = {
       ...state2,
@@ -162,7 +162,7 @@ export const useFindMatches = () => {
         endOfTab: true,
       });
 
-      //checks if the current tab is the last tab
+      // checks if the current tab is the last tab
       if (state2.matchesCount === totalMatchesCount) {
         updatedState = updateHighlights(updatedState, { endOfTab: false });
       } else {
@@ -219,4 +219,4 @@ export const useFindMatches = () => {
     previousMatch,
     updateHighlights,
   };
-};
+}
