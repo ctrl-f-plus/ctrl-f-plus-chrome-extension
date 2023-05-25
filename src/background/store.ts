@@ -42,7 +42,6 @@ export function initWindowStore(): WindowStore {
 
 export async function initStore(): Promise<Store> {
   const windows = await getAllOpenWindows();
-  const STORE_HERE_msg;
 
   // const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
   // let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
