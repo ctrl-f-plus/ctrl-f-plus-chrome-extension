@@ -31,7 +31,7 @@ export interface BaseMessage {
   async?: boolean | true;
   type: string;
   // payload?: unknown; // TODO: you might need to add this back, but i think you are fine without it
-  payload: any;
+  payload?: any;
   transactionId?: TransactionId;
 }
 
