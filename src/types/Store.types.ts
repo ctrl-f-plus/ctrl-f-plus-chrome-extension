@@ -1,3 +1,5 @@
+// src/types/Store.types.ts
+
 import { LayoverPosition } from './Layover.types';
 import { SerializedTabState, TabId, ValidTabId } from './tab.types';
 
