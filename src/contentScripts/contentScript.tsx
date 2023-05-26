@@ -13,7 +13,7 @@ import useFindMatches from '../hooks/useFindMatches';
 import useMessageHandler from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
-import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
+import { Messages } from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -25,12 +25,9 @@ import {
   sendMessageToBackground,
   sendMsgToBackground,
 } from '../utils/messageUtils/sendMessageToBackground';
-import scrollToElement from '../utils/scrollUtils';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
-// function App(): React.ReactElement {
-// const App: React.FC<{}> = () => {
 function App() {
   const {
     showLayover,
@@ -62,20 +59,6 @@ function App() {
     const tabState = restoreHighlightSpans(xPathTabState);
 
     setTabStateContext(tabState);
-
-    // FIXME: Hacky, see if you can move this logic elsewhere
-    // TODO: when switching tab forwards, we don't highlight the first match
-    // if (
-    //   typeof tabState.currentIndex === 'number' &&
-    //   tabState.matchesCount !== undefined &&
-    //   tabState.currentIndex === tabState.matchesCount - 1
-    // ) {
-    //   const curMatch = tabState.matchesObj[tabState.currentIndex];
-    //   if (curMatch) {
-    //     curMatch.classList.add('ctrl-f-highlight-focus');
-    //   }
-    //   scrollToElement(curMatch);
-    // }
   };
 
   const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
@@ -89,7 +72,7 @@ function App() {
       console.log('Received message:', message);
 
       const { type, transactionId } = message;
-      // const { tabId }: { tabId: ValidTabId } = message.payload;
+
       let newState;
 
       if (transactionId && transactionId <= lastProcessedTransactionId) {
@@ -135,7 +118,6 @@ function App() {
           return true;
         }
         case 'update-highlights': {
-          console.log('tsc: ', tabStateContext);
           newState = updateHighlights(
             { ...tabStateContext },
             { endOfTab: false }
@@ -144,12 +126,6 @@ function App() {
           setTabStateContext(newState);
 
           const newSerializedState = serializeMatchesObj(newState);
-
-          // sendMsgToBackground<UpdateTabStatesObjMsg>({
-          //   from: 'content:match-utils',
-          //   type: 'update-tab-states-obj',
-          //   payload: { serializedState: newSerializedState },
-          // });
 
           sendResponse({ status: 'success', newSerializedState });
           return true;
@@ -224,10 +200,6 @@ function App() {
 
     handleActiveTabChange();
   }, [activeTabId, showMatches]);
-
-  // useEffect(() => {
-  //   console.log('tabStateContext updated: ', tabStateContext);
-  // }, [tabStateContext]);
 
   useEffect(() => {
     injectStyles(contentStyles);

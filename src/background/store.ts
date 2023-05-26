@@ -192,6 +192,6 @@ export async function sendStoreToContentScripts(
       });
     });
   });
-  console.log(promises);
+
   return Promise.all(promises);
 }

@@ -120,10 +120,8 @@ chrome.runtime.onMessage.addListener(
           payload.direction
         );
         const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
-        // console.log('store: ', store);
 
         await sendStoreToContentScripts(activeWindowStore);
-        // console.log('store: ', store);
 
         const { newSerializedState } =
           await sendMessageToTab<UpdateHighlightsMsg>(activeTabId, {
