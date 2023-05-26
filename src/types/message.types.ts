@@ -88,6 +88,10 @@ export interface UpdateHighlightsMsg extends BaseMessage {
   async: true;
   from: 'background';
   type: 'update-highlights';
+  payload: {
+    tabId: ValidTabId;
+    direction: 'next' | 'previous';
+  };
 }
 
 export interface UpdateTabStatesObjMsg extends BaseMessage {

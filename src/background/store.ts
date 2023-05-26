@@ -178,10 +178,12 @@ export async function sendStoreToContentScripts(
       },
     };
 
+    // FIXME: this may be trying to send messages to tabs in all windows
     // return new Promise((resolve, reject) => {
     return new Promise<boolean | Error>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {
+          console.log(tabId);
           reject(chrome.runtime.lastError);
         } else {
           // resolve(response);
@@ -190,6 +192,6 @@ export async function sendStoreToContentScripts(
       });
     });
   });
-
+  console.log(promises);
   return Promise.all(promises);
 }

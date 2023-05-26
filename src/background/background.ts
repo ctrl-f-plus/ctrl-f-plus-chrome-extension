@@ -1,7 +1,8 @@
 // src/background/background.ts
 
 import { Store, WindowStore } from '../types/Store.types';
-import { Messages } from '../types/message.types';
+import { Messages, UpdateHighlightsMsg } from '../types/message.types';
+import { ValidTabId } from '../types/tab.types';
 import {
   executeContentScriptOnAllTabs,
   getActiveTabId,
@@ -11,6 +12,8 @@ import {
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
+// import { createUpdateHighlightsMsg } from '../utils/messageUtils/createMessages';
+import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import {
   initStore,
@@ -110,13 +113,35 @@ chrome.runtime.onMessage.addListener(
           sendResponse
         );
         return true;
-      case 'switch-tab':
+      case 'switch-tab': {
         await switchTab(
           activeWindowStore,
           payload.serializedState,
           payload.direction
         );
+        const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
+        // console.log('store: ', store);
+
+        await sendStoreToContentScripts(activeWindowStore);
+        // console.log('store: ', store);
+
+        const { newSerializedState } =
+          await sendMessageToTab<UpdateHighlightsMsg>(activeTabId, {
+            async: true,
+            from: 'background',
+            type: 'update-highlights',
+            payload: {
+              tabId: activeTabId,
+              direction: payload.direction,
+            },
+          });
+        if (activeWindowStore) {
+          // Object.assign(activeWindowStore);
+          activeWindowStore.tabStores[activeTabId].serializedTabState =
+            newSerializedState;
+        }
         return true;
+      }
       case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
         // updateStore(store, {
         //   showLayover: false,

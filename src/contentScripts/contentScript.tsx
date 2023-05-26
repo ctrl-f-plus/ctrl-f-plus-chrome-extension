@@ -13,7 +13,7 @@ import useFindMatches from '../hooks/useFindMatches';
 import useMessageHandler from '../hooks/useMessageHandler';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
-import { Messages } from '../types/message.types';
+import { Messages, UpdateTabStatesObjMsg } from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -65,17 +65,17 @@ function App() {
 
     // FIXME: Hacky, see if you can move this logic elsewhere
     // TODO: when switching tab forwards, we don't highlight the first match
-    if (
-      typeof tabState.currentIndex === 'number' &&
-      tabState.matchesCount !== undefined &&
-      tabState.currentIndex === tabState.matchesCount - 1
-    ) {
-      const curMatch = tabState.matchesObj[tabState.currentIndex];
-      if (curMatch) {
-        curMatch.classList.add('ctrl-f-highlight-focus');
-      }
-      scrollToElement(curMatch);
-    }
+    // if (
+    //   typeof tabState.currentIndex === 'number' &&
+    //   tabState.matchesCount !== undefined &&
+    //   tabState.currentIndex === tabState.matchesCount - 1
+    // ) {
+    //   const curMatch = tabState.matchesObj[tabState.currentIndex];
+    //   if (curMatch) {
+    //     curMatch.classList.add('ctrl-f-highlight-focus');
+    //   }
+    //   scrollToElement(curMatch);
+    // }
   };
 
   const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
@@ -104,10 +104,12 @@ function App() {
         case 'store-updated': {
           const { tabStore } = message.payload;
           if (tabStore) {
-            updateContextFromStore(tabStore);
+            await updateContextFromStore(tabStore);
+            sendResponse(true);
           }
-          sendResponse(true);
-          break;
+
+          // break;
+          return true;
         }
         case 'highlight': {
           const { findValue, foundFirstMatch } = message.payload;
@@ -132,24 +134,26 @@ function App() {
           });
           return true;
         }
-        // case 'update-highlights':
-        //   newState = updateHighlights(
-        //     { ...tabStateContext },
-        //     { endOfTab: false }
-        //   );
+        case 'update-highlights': {
+          console.log('tsc: ', tabStateContext);
+          newState = updateHighlights(
+            { ...tabStateContext },
+            { endOfTab: false }
+          );
 
-        //   setTabStateContext(newState);
+          setTabStateContext(newState);
 
-        //   const newSerializedState = serializeMatchesObj(newState);
+          const newSerializedState = serializeMatchesObj(newState);
 
-        //   sendMsgToBackground<UpdateTabStatesObjMsg>({
-        //     from: 'content:match-utils',
-        //     type: 'update-tab-states-obj',
-        //     payload: { serializedState: newSerializedState },
-        //   });
+          // sendMsgToBackground<UpdateTabStatesObjMsg>({
+          //   from: 'content:match-utils',
+          //   type: 'update-tab-states-obj',
+          //   payload: { serializedState: newSerializedState },
+          // });
 
-        //   sendResponse({ status: 'success' });
-        //   return true;
+          sendResponse({ status: 'success', newSerializedState });
+          return true;
+        }
         default:
           break;
       }

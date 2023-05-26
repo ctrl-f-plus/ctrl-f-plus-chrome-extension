@@ -13,6 +13,7 @@ export async function queryWindowTabs(
   activeTab: boolean | undefined = undefined
 ): Promise<chrome.tabs.Tab[]> {
   return new Promise((resolve) => {
-    chrome.tabs.query({ windowId, active: activeTab }, resolve);
+    // chrome.tabs.query({ windowId, active: activeTab }, resolve);
+    chrome.tabs.query({ active: activeTab, currentWindow: true }, resolve);
   });
 }

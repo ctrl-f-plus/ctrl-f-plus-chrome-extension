@@ -65,6 +65,7 @@ export default function useFindMatches() {
         curMatch.classList.add('ctrl-f-highlight-focus');
         scrollToElement(curMatch);
       }
+
       return newState;
     },
     []

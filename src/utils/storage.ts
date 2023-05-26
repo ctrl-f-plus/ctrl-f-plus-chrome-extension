@@ -137,7 +137,7 @@ export function getStoredTab(tabId: TabId): Promise<SerializedTabState> {
   });
 }
 
-export function setStoredTabs(
+export async function setStoredTabs(
   serializedState: SerializedTabState
 ): Promise<void> {
   // const vals: LocalStorage = { tabs };
@@ -171,10 +171,9 @@ export function setStoredTabs(
     throw new Error('Invalid tab storage object');
   }
 
-  return getLocalStorageItem(key).then((currentData) => {
-    const updatedData = { ...currentData, [tabId]: serializedState };
-    return setLocalStorageItem(key, updatedData);
-  });
+  const currentData = await getLocalStorageItem(key);
+  const updatedData = { ...currentData, [tabId]: serializedState };
+  return setLocalStorageItem(key, updatedData);
 }
 
 export function clearLocalStorage() {

@@ -3,7 +3,7 @@
 
 // import { store } from '../background/background';
 
-import { updateStore } from '../background/store';
+import { sendStoreToContentScripts, updateStore } from '../background/store';
 import { LayoverPosition } from '../types/Layover.types';
 import { WindowStore } from '../types/Store.types';
 import {
@@ -252,7 +252,7 @@ export async function switchTab(
   // chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
   //   if (tab === undefined || tab.id === undefined) return;
 
-  //   // sendStoreToContentScripts(windowStore);
+  // await sendStoreToContentScripts(windowStore);
 
   //   // const msg = createUpdateHighlightsMsg(tab.id);
   //   // await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
