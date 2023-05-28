@@ -1,4 +1,8 @@
-/* body {
-  background-color: #1c1c1c;
-  margin: 0 !important;
-} */
+/* src/popup/popup.css */
+
+body {
+  background-color: red !important;
+  width: 460px;
+  height: 512px;
+  font-family: 'Roboto';
+}

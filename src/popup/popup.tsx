@@ -1,28 +1,38 @@
 // src/popup/popup.tsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
+import InputForm from '../components/InputForm';
+import { LayoverProvider } from '../contexts/LayoverContext';
+import { TabStateContextProvider } from '../contexts/TabStateContext';
 import '../tailwind.css';
-// import './popup.css';
-import SearchInput from '../components/SearchInput';
+import injectStyles from '../utils/styleUtils';
+import popupStyles from './popupStyles';
 
-// const App: React.FC = () => (
 function App() {
-  return (
-    <>
-      <h1>Popup!</h1>
+  useEffect(() => {
+    injectStyles(popupStyles);
+  }, []);
 
-      <div id="cntrl-f-extension" className="">
-        <div className="">
-          <SearchInput focus />
-        </div>
+  return (
+    <div id="cntrl-f-extension" className="popup ">
+      <div className="w-[434px] h-full ">
+        <InputForm />
       </div>
-    </>
+    </div>
   );
 }
 
 const root = document.createElement('div');
 document.body.appendChild(root);
-
 const reactRoot = createRoot(root);
-reactRoot.render(<App />);
+
+reactRoot.render(
+  <React.StrictMode>
+    <TabStateContextProvider>
+      <LayoverProvider>
+        <App />
+      </LayoverProvider>
+    </TabStateContextProvider>
+  </React.StrictMode>
+);

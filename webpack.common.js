@@ -19,8 +19,8 @@ function getHtmlPlugins(chunks) {
 
 module.exports = {
   entry: {
-    // popup: path.resolve('src/popup/popup.tsx'),
-    // options: path.resolve('src/options/options.tsx'),
+    popup: path.resolve('src/popup/popup.tsx'),
+    options: path.resolve('src/options/options.tsx'),
     background: path.resolve('src/background/background.ts'),
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
   },

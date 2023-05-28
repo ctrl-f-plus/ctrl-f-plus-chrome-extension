@@ -10,6 +10,7 @@
   },
   "author": "",
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.3",
     "@types/chrome": "^0.0.237",
     "@types/react": "^18.2.7",
     "@types/react-dom": "^18.2.4",
@@ -44,6 +45,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.14",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",

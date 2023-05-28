@@ -124,3 +124,12 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
   - `https://www.youtube.com/channel/UC6bQ5cJIHV0f7PeQNsorQhg`
   - This part of your github profile doesn't work either: `Listen Here: aminchavez.com`
 - When switching tabs manually, the current index in the searchInput changes, but may it shouldn't
+
+
+
+
+
+
+
+https://github.com/bmchavez/Cntrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
+https://github.com/bmchavez/Cntrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json

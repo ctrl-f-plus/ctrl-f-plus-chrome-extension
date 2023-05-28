@@ -1,0 +1,72 @@
+// // src/popup/popup.tsx
+
+// import React, { useEffect } from 'react';
+// import { createRoot } from 'react-dom/client';
+// import { LayoverProvider } from '../contexts/LayoverContext';
+// import { TabStateContextProvider } from '../contexts/TabStateContext';
+// import '../tailwind.css';
+// import injectStyles from '../utils/styleUtils';
+// import popupStyles from './popupStyles';
+// import SearchInputPop from '../components/SearchInputPop';
+// // import './popup.css';
+// // import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+
+// function App() {
+//   useEffect(() => {
+//     injectStyles(popupStyles);
+//   }, []);
+
+//   return (
+//     <div id="cntrl-f-extension" className="popup dark">
+//       <div className="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
+//         <h3 className="text-slate-900 dark:text-white mt-5 text-base font-medium tracking-tight">
+//           Writes Upside-Down
+//         </h3>
+//         <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+//           The Zero Gravity Pen can be used to write in any orientation,
+//           including upside-down. It even works in outer space.
+//         </p>
+//       </div>
+//       {/* <div className="w-[434px] p-4"> */}
+//       <div className="w-[434px] bg-red-500">
+//         {/* <SearchInputPop focus /> */}
+//         <form className=" text-white">
+//           {/* <div> */}
+//           <input
+//             type="text"
+//             placeholder="Find on page"
+//             className=" text-white border-transparent focus:border-transparent focus:ring-0"
+//           />
+//           {/* </div> */}
+//           <div className="sm:col-span-4">
+//             <div className="mt-2">
+//               <input
+//                 type="text"
+//                 name="username"
+//                 id="username"
+//                 autoComplete="username"
+//                 // className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6"
+//                 className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm  sm:text-sm sm:leading-6"
+//                 placeholder="Find on page"
+//               />
+//             </div>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// }
+
+// const root = document.createElement('div');
+// document.body.appendChild(root);
+// const reactRoot = createRoot(root);
+
+// reactRoot.render(
+//   <React.StrictMode>
+//     <TabStateContextProvider>
+//       <LayoverProvider>
+//         <App />
+//       </LayoverProvider>
+//     </TabStateContextProvider>
+//   </React.StrictMode>
+// );

@@ -1,5 +1,8 @@
+/* eslint-disable global-require */
+/* eslint-disable import/no-extraneous-dependencies */
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  // darkMode: 'class',
   darkMode: false,
   theme: {
     extend: {},
@@ -11,6 +14,6 @@ module.exports = {
       opacity: ['disabled'],
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
   important: true,
 };

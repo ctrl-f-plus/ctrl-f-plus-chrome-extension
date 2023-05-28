@@ -9,12 +9,13 @@
     "128": "icon.png"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "Kntrl Extension",
     "default_icon": "icon.png"
   },
   "permissions": ["tabs", "activeTab", "storage"],
   "commands": {
-    "toggle_search_layover": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F",
