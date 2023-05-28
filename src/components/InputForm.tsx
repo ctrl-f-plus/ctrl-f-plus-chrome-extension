@@ -1,17 +1,71 @@
+// src/components/InputForm.tsx
+
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   XMarkIcon,
 } from '@heroicons/react/20/solid';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { PopupMessage } from '../types/message.types';
 
 export default function InputForm() {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  // FIXME:
+  let searchValue = '';
+  const [localSearchValue, setLocalSearchValue] = useState(searchValue);
+
+  // useEffect(() => {
+  //   setLocalSearchValue(searchValue);
+  // }, [searchValue]);
+
+  // FormEvent;????
+  const handleAction = (action: string) => {
+    return (e: React.SyntheticEvent) => {
+      e.preventDefault();
+
+      const message: PopupMessage = {
+        from: 'popup',
+        type: 'popup-message',
+        payload: {
+          action,
+          searchValue: localSearchValue,
+        },
+      };
+
+      if (action === 'closeSearchLayover') {
+        window.close();
+      }
+
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        if (tabs[0].id !== undefined) {
+          chrome.tabs.sendMessage(tabs[0].id, message);
+        }
+      });
+    };
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    setLocalSearchValue(newValue);
+    setInitialLoad(false);
+  };
+
   return (
     <div className="">
-      <form className="pt-0.5 pb-0.5 text-white bg-white/5 grid grid-cols-4 ">
+      <form
+        // onSubmit={handleSearchSubmit}
+        onSubmit={handleAction('handleSearchSubmit')}
+        className="pt-0.5 pb-0.5 text-white bg-white/5 grid grid-cols-4 "
+      >
         <div className="relative col-span-3 grid grid-cols-6 gap-0 ">
           <input
             type="text"
+            ref={searchInputRef}
+            value={localSearchValue}
+            onChange={handleInputChange}
             placeholder="Find on page"
             className="col-start-1 col-end-6 border-transparent focus:border-transparent focus:ring-0 text-white bg-transparent placeholder-gray-500 text-base"
           />
@@ -33,8 +87,7 @@ export default function InputForm() {
 
           <button
             // onClick={previousMatch}
-            // focus:ring-offset-2
-            // focus:ring-offset-red-50
+            onClick={handleAction('previousMatch')}
             type="button"
             className="inline-flex rounded-full p-0.5 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-white
             "
@@ -46,6 +99,7 @@ export default function InputForm() {
 
           <button
             // onClick={nextMatch}
+            onClick={handleAction('nextMatch')}
             type="button"
             className="inline-flex rounded-full p-0.5 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-white
             "
@@ -57,6 +111,7 @@ export default function InputForm() {
 
           <button
             // onClick={closeSearchLayover}
+            onClick={handleAction('closeSearchLayover')}
             type="button"
             className="inline-flex rounded-full p-0.5 text-white hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600
             hover:text-red-400"

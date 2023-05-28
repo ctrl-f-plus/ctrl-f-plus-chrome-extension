@@ -133,3 +133,11 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
 
 https://github.com/bmchavez/Cntrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
 https://github.com/bmchavez/Cntrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json
+
+
+inspo:
+- https://motion.dev/tools
+- https://chrome.google.com/webstore/detail/motion-devtools/mnbliiaiiflhmnndmoidhddombbmgcdk
+
+Iframe:
+- https://itnext.io/create-chrome-extension-with-reactjs-using-inject-page-strategy-137650de1f39#6186

@@ -3,7 +3,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import Layover from '../components/Layover';
-import SearchInput from '../components/SearchInput';
+// import SearchInput from '../components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import {
   TabStateContext,
@@ -11,6 +11,7 @@ import {
 } from '../contexts/TabStateContext';
 import useFindMatches from '../hooks/useFindMatches';
 import useMessageHandler from '../hooks/useMessageHandler';
+import useSearchHandler from '../hooks/useSearchHandler';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
@@ -42,7 +43,31 @@ function App() {
     setActiveTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
-  const { updateHighlights, findAllMatches } = useFindMatches();
+  const { nextMatch, previousMatch, updateHighlights, findAllMatches } =
+    useFindMatches();
+
+  const { handleSearch } = useSearchHandler();
+  const handleSearchSubmit = async (searchValue: string) => {
+    // if (searchInputRef.current) {
+    //   if (localSearchValue === lastSearchValue) {
+    //     nextMatch();
+    //   } else {
+    // handleSearch(localSearchValue);
+    // }
+    // }
+
+    handleSearch(searchValue);
+  };
+
+  // TODO: Review to decide if you want to handle this in another way
+  function closeSearchLayover() {
+    window.close();
+
+    sendMessageToBackground({
+      from: 'content',
+      type: 'remove-styles-all-tabs',
+    });
+  }
 
   const updateContextFromStore = async (tabStore: TabStore) => {
     setSearchValue(tabStore.searchValue);
@@ -91,8 +116,8 @@ function App() {
             sendResponse(true);
           }
 
-          // break;
-          return true;
+          // return true;
+          break;
         }
         case 'highlight': {
           const { findValue, foundFirstMatch } = message.payload;
@@ -115,7 +140,8 @@ function App() {
             serializedState,
             hasMatch,
           });
-          return true;
+          // return true;
+          break;
         }
         case 'update-highlights': {
           newState = updateHighlights(
@@ -128,7 +154,29 @@ function App() {
           const newSerializedState = serializeMatchesObj(newState);
 
           sendResponse({ status: 'success', newSerializedState });
-          return true;
+          // return true;
+          break;
+        }
+        case 'popup-message': {
+          console.log(message);
+
+          const { action } = message.payload;
+
+          if (action === `handleSearchSubmit`) {
+            const searchValue = message.payload.searchValue;
+            handleSearchSubmit(searchValue);
+          } else if (action === `previousMatch`) {
+            // TODO:
+          } else if (action === `nextMatch`) {
+            console.log('contentScript: in nextMatch case');
+            await nextMatch();
+            console.log('contentScript: after calling nextMatch()');
+          } else if (action === `closeSearchLayover`) {
+            closeSearchLayover();
+          }
+          // eslint-disable-next-line no-debugger
+          // debugger;
+          break;
         }
         default:
           break;
@@ -149,6 +197,8 @@ function App() {
       // showMatches,
       // totalMatchesCount,
       // layoverPosition,
+      nextMatch,
+      updateHighlights,
 
       lastProcessedTransactionId,
       removeAllHighlightMatches,
@@ -203,6 +253,14 @@ function App() {
 
   useEffect(() => {
     injectStyles(contentStyles);
+
+    chrome.runtime.sendMessage({
+      type: 'create-popup',
+      payload: {
+        left: window.screenLeft + window.outerWidth,
+        top: window.screenTop,
+      },
+    });
   }, []);
 
   return (
@@ -212,9 +270,7 @@ function App() {
         <div id="cntrl-f-extension">
           <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
-            <Layover>
-              <SearchInput focus={showLayover} />
-            </Layover>
+            <Layover>{/* <SearchInput focus={showLayover} /> */}</Layover>
           </div>
         </div>
       )}

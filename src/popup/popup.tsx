@@ -8,10 +8,16 @@ import { TabStateContextProvider } from '../contexts/TabStateContext';
 import '../tailwind.css';
 import injectStyles from '../utils/styleUtils';
 import popupStyles from './popupStyles';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 
 function App() {
   useEffect(() => {
     injectStyles(popupStyles);
+
+    sendMessageToBackground({
+      from: 'popup',
+      type: 'pop-up-init',
+    });
   }, []);
 
   return (

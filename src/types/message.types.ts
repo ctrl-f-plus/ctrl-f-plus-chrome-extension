@@ -27,7 +27,8 @@ export interface BaseMessage {
     | 'inner-match-utils'
     | 'content-script-match-utils'
     | 'background:backgroundUtils'
-    | 'content:layover-component';
+    | 'content:layover-component'
+    | 'popup';
   async?: boolean | true;
   type: string;
   // payload?: unknown; // TODO: you might need to add this back, but i think you are fine without it
@@ -139,6 +140,25 @@ export interface HighlightMsg extends BaseMessage {
   };
 }
 
+export interface PopupMessage extends BaseMessage {
+  from: 'popup';
+  type: 'popup-message';
+  payload: {
+    action: string;
+    searchValue: string;
+  };
+}
+
+export interface PopupInitMessage extends BaseMessage {
+  from: 'popup';
+  type: 'pop-up-init';
+}
+
+export interface CreatePopupMessage extends BaseMessage {
+  from: 'popup';
+  type: 'create-popup';
+}
+
 // export interface CLOSE_SEARCH_OVERLAY_MESSAGE extends BaseMessage {
 //   from: 'content';
 //   type: 'CLOSE_SEARCH_OVERLAY';
@@ -155,5 +175,8 @@ export type Messages =
   | HighlightMsg
   | UpdateTabStatesObjMsg
   | UpdateStoreMsg
-  | UpdateLayoverPositionMsg;
+  | UpdateLayoverPositionMsg
+  | PopupMessage
+  | PopupInitMessage
+  | CreatePopupMessage;
 // | CLOSE_SEARCH_OVERLAY_MESSAGE;

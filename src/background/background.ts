@@ -24,6 +24,7 @@ import {
 } from './store';
 
 let store: Store;
+console.log('background script running');
 
 initStore().then((initializedStore) => {
   store = initializedStore;
@@ -75,6 +76,19 @@ chrome.runtime.onMessage.addListener(
     }
 
     switch (type) {
+      case 'create-popup':
+        // if (message && message.payload) {
+        //   chrome.windows.create({
+        //     url: chrome.runtime.getURL('popup.html'), // replace "popup.html" with your popup HTML file
+        //     type: 'popup',
+        //     top: message.payload.top,
+        //     left: message.payload.left,
+        //     width: 400,
+        //     height: 600,
+        //   });
+        // }
+        return true;
+
       case 'remove-all-highlight-matches':
         await handleRemoveAllHighlightMatches(sendResponse);
 
@@ -161,6 +175,27 @@ chrome.runtime.onMessage.addListener(
           payload.newPosition
         );
         break;
+      case 'pop-up-init': {
+        const activeWindowStore = getActiveWindowStore();
+
+        if (!activeWindowStore) {
+          console.error('No active window store available');
+          debugger;
+          return;
+        }
+
+        // if (command === 'toggle_search_layover') {
+        const addStyles = !activeWindowStore.showLayover;
+
+        updateStore(activeWindowStore, {
+          showLayover: addStyles,
+          showMatches: addStyles,
+        });
+
+        sendStoreToContentScripts(activeWindowStore);
+        // }
+        return false;
+      }
       default:
         break;
     }
@@ -185,12 +220,19 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
+  if (command === '_execute_action') {
+    console.log('background');
+    debugger;
+  }
+
+  debugger;
   const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
     console.error('No active window store available');
     return;
   }
 
+  debugger;
   if (command === 'toggle_search_layover') {
     const addStyles = !activeWindowStore.showLayover;
 

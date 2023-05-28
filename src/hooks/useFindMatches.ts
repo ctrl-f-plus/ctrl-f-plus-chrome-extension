@@ -48,6 +48,8 @@ export default function useFindMatches() {
 
   const updateHighlights = useCallback(
     (state: TabState, options?: UpdateHighlightsOptions): TabState => {
+      console.log('useFindMatches: inside of updateHighlights()');
+
       const { prevIndex, endOfTab } = options || {};
       const newState = { ...state };
       if (!newState.matchesObj.length) {
@@ -72,6 +74,7 @@ export default function useFindMatches() {
   );
 
   const nextMatch = useCallback(async (): Promise<void> => {
+    console.log('useFindMatches: inside of nextMatch()');
     if (state2.currentIndex === undefined) {
       return;
     }
