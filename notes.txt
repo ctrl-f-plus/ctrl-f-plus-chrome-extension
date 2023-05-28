@@ -44,3 +44,5 @@ Hero Section:
   - Subheadline: "Enhance your browsing experience with Ctrl-F Plus, the Chrome extension that takes the find function to the next level."
   - CTA button: "Add Ctrl-F Plus to Chrome"
   Hero image: A graphic that represents the function of your extension, such as a browser window with multiple tabs and highlighted search terms.
+
+git reset to commit b20ec507d9cc8e2dadcae0556a259d0540369db9
