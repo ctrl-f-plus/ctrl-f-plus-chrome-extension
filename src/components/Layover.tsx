@@ -71,23 +71,8 @@ function Layover({ children }: LayoverProps): React.ReactElement | null {
       position={layoverPosition}
       onStop={handleDragStop}
     >
-      <div
-        id="testingtesting"
-        className="absolute w-[434px] rounded-lg cursor-move"
-        ref={nodeRef}
-      >
-        {/* <Frame
-          head={[
-            // eslint-disable-next-line react/jsx-key
-            <link
-              type="text/css"
-              rel="stylesheet"
-              href={chrome.runtime.getURL('contentScript.css')}
-            />,
-          ]}
-        > */}
+      <div className="absolute w-[434px] cursor-move rounded-lg" ref={nodeRef}>
         {children}
-        {/* </Frame> */}
       </div>
     </Draggable>
   ) : null;

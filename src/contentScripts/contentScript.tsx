@@ -240,7 +240,7 @@ function App() {
       {' '}
       {showLayover && (
         <div id="cntrl-f-extension">
-          <div className="fixed left-5 top-10 z-[9999] w-screen bg-red-500">
+          <div className="fixed left-5 top-10 z-[9999] w-screen">
             {' '}
             <Layover>
               <SearchInput focus={showLayover} />
@@ -263,20 +263,7 @@ reactRoot.render(
   <React.StrictMode>
     <TabStateContextProvider>
       <LayoverProvider>
-        {/* <Draggable>
-          <Frame
-            head={[
-              // eslint-disable-next-line react/jsx-key
-              <link
-                type="text/css"
-                rel="stylesheet"
-                href={chrome.runtime.getURL('contentScript.css')}
-              />,
-            ]}
-          > */}
         <App />
-        {/* </Frame>
-        </Draggable> */}
       </LayoverProvider>
     </TabStateContextProvider>
   </React.StrictMode>

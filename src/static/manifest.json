@@ -34,6 +34,7 @@
       "run_at": "document_idle"
     }
   ],
+  "options_page": "options.html",
   "web_accessible_resources": [
     {
       "resources": ["contentScript.css"],
