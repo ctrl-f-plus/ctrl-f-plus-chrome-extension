@@ -6,6 +6,10 @@ const HtmlPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const tailwindcss = require('tailwindcss');
+const autoprefixer = require('autoprefixer');
+
 function getHtmlPlugins(chunks) {
   return chunks.map(
     (chunk) =>
@@ -31,17 +35,54 @@ module.exports = {
         use: 'ts-loader',
         exclude: /(?:node_modules|\.tmp)/,
       },
+      // {
+      //   test: /\.css$/i,
+      //   use: [
+      //     'style-loader',
+      //     {
+      //       loader: 'css-loader',
+      //       options: {
+      //         importLoaders: 1,
+      //       },
+      //     },
+      //     // 'postcss-loader',
+      //     {
+      //       loader: MiniCssExtractPlugin.loader,
+      //       options: {
+      //         // you can specify a publicPath here
+      //         // by default it uses publicPath in webpackOptions.output
+      //         publicPath: '../',
+      //       },
+      //     },
+      //     'css-loader',
+      //     {
+      //       loader: 'postcss-loader',
+      //       options: {
+      //         postcssOptions: {
+      //           plugins: [tailwindcss, autoprefixer],
+      //         },
+      //       },
+      //     },
+      //   ],
+      // },
       {
         test: /\.css$/i,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader, // Changed
           {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
             },
           },
-          'postcss-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [tailwindcss, autoprefixer],
+              },
+            },
+          },
         ],
       },
       {
@@ -67,6 +108,10 @@ module.exports = {
     }),
     ...getHtmlPlugins(['popup', 'options']),
     new ESLintPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
   ],
   output: {
     filename: '[name].js',

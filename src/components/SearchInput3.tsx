@@ -114,90 +114,62 @@ body {
 }
 `;
 
-// .testingtesting123 {
-// width: 434px !important;
-// height: 36px !important;
-// position: fixed !important;
-// top: 0px !important;
-// right: 0px !important;
-// z-index: 2147483647 !important;
-// background-color: red !important;
-// box-shadow: 0px 0px 5px #0000009e !important;
-// padding: 0px !important;
-// margin: 0px !important;
-// --tw-bg-opacity: 1 !important;
-// background-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
-// font-family: sans-serif;
-// }
-
-/*
-.x-mark-btn:focus {
- box-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
---ring-color: #DC2626;
-outline: 0;
- }
-*/
-
 const additionalStyles = `
 .testingtesting123 {
-      width: 434px !important;
+    width: 434px !important;
     height: 36px !important;
     position: fixed !important;
     top: 0px !important;
     right: 0px !important;
     z-index: 2147483647 !important;
+    background-color: red !important;
     box-shadow: 0px 0px 5px #0000009e !important;
     padding: 0px !important;
     margin: 0px !important;
+    --tw-bg-opacity: 1 !important;
+    background-color: rgb(30 41 59 / var(--tw-bg-opacity)) !important;
     font-family: sans-serif;
-    background-color: #111827;
-
 }
 
-
 .form-wrap {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  padding-top: 0.125rem;
-  padding-bottom: 0.125rem;
-  color: #ffffff !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-top: 0.125rem /* 2px */ !important;
+  padding-bottom: 0.125rem /* 2px */ !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
 }
 
 .form-div {
-display: grid;
-position: relative;
-grid-template-columns: repeat(6, minmax(0, 1fr));
-grid-column: span 3 / span 3;
-gap: 0;
-  font-size: 16px !important;
-line-height: 24px !important;
-
+  position: relative !important;
+  display: grid !important;
+  grid-column: span 3 / span 3 !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 0px !important;
 }
 
 .input-style {
-background-color: transparent;
-color: #ffffff;
-
-/*color: #6B7280;
-
-*/
-border-color: transparent;
-grid-column-start: 1;
-grid-column-end: 6;
-    font-size: 16px !important;
-line-height: 24px !important;
-
-
-}
-
-.input-style:focus{
-   border-color: transparent !important;
-   outline: none !important;
+  grid-column-start: 1 !important;
+  grid-column-end: 6 !important;
+  border-color: transparent !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+  background-color: transparent !important;
+  font-size: 1rem /* 16px */ !important;
+  line-height: 1.5rem /* 24px */ !important;
 }
 
 
+.input-style:focus {
+  border-color: transparent !important;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
+    var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+    calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+    var(--tw-shadow, 0 0 #0000) !important;
+}
 
 .input-style::placeholder {
   --tw-placeholder-opacity: 1 !important;
@@ -205,23 +177,20 @@ line-height: 24px !important;
 }
 
 .matching-counts-wrapper {
-display: flex;
-position: absolute;
-top: 0;
-bottom: 0;
-right: 0;
-padding-right: 0.75rem;
-align-items: center;
-pointer-events: none;
-
+  pointer-events: none !important;
+  position: absolute !important;
+  top: 0px !important;
+  bottom: 0px !important;
+  top: 0px !important;
+  bottom: 0px !important;
+  display: flex !important;
 }
 
 .matching-counts {
-color: #6B7280;
-/*font-size: 1rem;
-line-height: 1.5rem;*/
-    font-size: 16px !important;
-line-height: 24px !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(107 114 128 / var(--tw-text-opacity)) !important;
+  font-size: 1rem /* 16px */ !important;
+  line-height: 1.5rem /* 24px */ !important;
 }
 
 .hidden {
@@ -229,65 +198,84 @@ line-height: 24px !important;
 }
 
 .btn-group {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-
+  display: flex !important;
+  justify-content: space-evenly !important;
+  align-items: center !important;
 }
 
 .divider-x {
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: 0;
-  margin-right: 0;
-  border-left-width: 1px;
-  border-color: #6B7280;
-  border-color: #FFFFFF;
-
-}
-.h5w5{
-  height: 20px !important;
-  width: 20px !important;
+  border-left-width: 1px !important;
+  height: 1.75rem /* 28px */ !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(107 114 128 / var(--tw-border-opacity)) !important;
 }
 
 .next-prev-btn {
-  display: inline-flex;
-  padding: 0.125rem;
-  color: #ffffff;
-  border-radius: 9999px;
-  background-color: #111827;
+   display: inline-flex !important;
+  border-radius: 9999px !important;
+    padding: 0.125rem/* 2px */ !important;
+     --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
 }
 
 .next-prev-btn:hover {
-  background-color: #6B7280;
+   --tw-bg-opacity: 1 !important;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity)) !important;
 }
 
+.next-prev-btn:focus {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
+  --tw-ring-opacity: 1 !important;
+  --tw-ring-color: rgb(255 255 255 / var(--tw-ring-opacity)) !important;
+}
 
 .sr-only {
-position: absolute;
-width: 1px;
-height: 1px;
-padding: 0;
-margin: -1px;
-overflow: hidden;
-clip: rect(0, 0, 0, 0);
-whiteSpace: nowrap;
-borderWidth: 0;
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
 
+.h-5 {
+  height: 1.25rem/* 20px */ !important;
+}
+
+.w-5 {
+  width: 1.25rem/* 20px */ !important;
 }
 
 
 .x-mark-btn {
-  display: inline-flex;
-  padding: 0.125rem;
-  color: #ffffff;
-  border-radius: 9999px;
-  background-color: #111827;
+  display: inline-flex !important;
+  border-radius: 9999px !important;
+  padding: 0.125rem /* 2px */ !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
 }
 
 .x-mark-btn:hover {
-  background-color: #6B7280;
-  color: #F87171;
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity)) !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(248 113 113 / var(--tw-text-opacity)) !important;
+}
+
+.x-mark-btn:focus {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
 }
 
 `;
@@ -406,7 +394,7 @@ function SearchInput({ focus }: SearchInputProps) {
             </p>
           </div> */}
           <div className="matching-counts-wrapper">
-            <span className="matching-counts">{matchingCounts}</span>
+            <span className="text-gray-500 text-base">{matchingCounts}</span>
           </div>
         </div>
 
@@ -422,7 +410,7 @@ function SearchInput({ focus }: SearchInputProps) {
             disabled={localSearchValue === ''}
           >
             <span className="sr-only">Previous</span>
-            <ChevronUpIcon className="h5w5" aria-hidden="true" />
+            <ChevronUpIcon className="h-5 w-5" aria-hidden="true" />
           </button>
 
           <button
@@ -432,7 +420,7 @@ function SearchInput({ focus }: SearchInputProps) {
             disabled={localSearchValue === ''}
           >
             <span className="sr-only">Previous</span>
-            <ChevronDownIcon className="h5w5" aria-hidden="true" />
+            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
           </button>
 
           <button
@@ -441,7 +429,7 @@ function SearchInput({ focus }: SearchInputProps) {
             className="x-mark-btn"
           >
             <span className="sr-only">Dismiss</span>
-            <XMarkIcon className="h5w5" aria-hidden="true" />
+            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
       </form>

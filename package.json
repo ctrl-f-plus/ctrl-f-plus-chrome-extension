@@ -29,6 +29,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.2",
+    "mini-css-extract-plugin": "^2.7.6",
     "postcss-loader": "^7.3.0",
     "postcss-nested": "^6.0.1",
     "prettier": "^2.8.8",
@@ -44,6 +45,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.14",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
@@ -55,6 +57,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.5",
+    "react-frame-component": "^5.2.6",
     "webpack-merge": "^5.9.0"
   },
   "husky": {

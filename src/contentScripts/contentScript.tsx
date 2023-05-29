@@ -28,6 +28,33 @@ import {
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
+// New CSS rules
+// const additionalStyles = `
+// body {
+//     margin: 0;
+//     padding: 0;
+//     font-family: sans-serif;
+// }
+
+// #my-extension-root{
+//     width: 434px !important;
+//     height: 36px !important;
+//     position: fixed !important;
+//     top: 0px !important;
+//     right: 0px !important;
+//     z-index: 2147483647 !important;
+//     /*background-color: red !important;*/
+//     box-shadow: 0px 0px 5px #0000009e !important;
+// }
+
+// #my-extension-root iframe {
+//     width: 100% !important;
+//     height: 100% !important;
+//     border: none !important;
+// }
+
+// `;
+
 function App() {
   const {
     showLayover,
@@ -203,6 +230,9 @@ function App() {
 
   useEffect(() => {
     injectStyles(contentStyles);
+    // const styleElement = document.createElement('style');
+    // styleElement.textContent = additionalStyles;
+    // document.head.appendChild(styleElement);
   }, []);
 
   return (
@@ -210,10 +240,11 @@ function App() {
       {' '}
       {showLayover && (
         <div id="cntrl-f-extension">
-          <div className="fixed left-5 top-10 z-[9999] w-screen">
+          <div className="fixed left-5 top-10 z-[9999] w-screen bg-red-500">
             {' '}
             <Layover>
               <SearchInput focus={showLayover} />
+              {/* <InputForm /> */}
             </Layover>
           </div>
         </div>
@@ -223,6 +254,7 @@ function App() {
 }
 
 const root = document.createElement('div');
+// root.id = 'my-extension-root';
 document.body.appendChild(root);
 
 const reactRoot = createRoot(root);
@@ -231,7 +263,20 @@ reactRoot.render(
   <React.StrictMode>
     <TabStateContextProvider>
       <LayoverProvider>
+        {/* <Draggable>
+          <Frame
+            head={[
+              // eslint-disable-next-line react/jsx-key
+              <link
+                type="text/css"
+                rel="stylesheet"
+                href={chrome.runtime.getURL('contentScript.css')}
+              />,
+            ]}
+          > */}
         <App />
+        {/* </Frame>
+        </Draggable> */}
       </LayoverProvider>
     </TabStateContextProvider>
   </React.StrictMode>

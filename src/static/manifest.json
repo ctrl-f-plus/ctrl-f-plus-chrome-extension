@@ -33,5 +33,11 @@
       "js": ["contentScript.js"],
       "run_at": "document_idle"
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["contentScript.css"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }
