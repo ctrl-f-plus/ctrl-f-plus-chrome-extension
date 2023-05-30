@@ -1,11 +1,10 @@
 // src/components/SearchInput.tsx
 
 import {
-  faAngleDown,
-  faAngleUp,
-  faXmark,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  ChevronDownIcon,
+  ChevronUpIcon,
+  XMarkIcon,
+} from '@heroicons/react/20/solid';
 import React, {
   FormEvent,
   useContext,
@@ -18,6 +17,7 @@ import { TabStateContext } from '../contexts/TabStateContext';
 import useFindMatches from '../hooks/useFindMatches';
 import useSearchHandler from '../hooks/useSearchHandler';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import './SearchInputStyles.css';
 
 // FIXME: Test this to see if you can just use showLayover directly instead of focus
 interface SearchInputProps {
@@ -103,81 +103,129 @@ function SearchInput({ focus }: SearchInputProps) {
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
   return (
-    <>
-      {' '}
-      <form
-        onSubmit={handleSearchSubmit}
-        className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
-      >
-        <div className="col-span-3 grid grid-cols-6 gap-0 ">
-          <input
-            ref={searchInputRef}
-            type="text"
-            value={localSearchValue}
-            onChange={handleInputChange}
-            className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
-            placeholder="Find on page"
-          />
-          <div className="mx-2 my-auto">
-            <p className="text-right float-right">{matchingCounts}</p>
+    <div id="cntrl-f-search-input">
+      <div className="overlay-wrapper">
+        <form
+          onSubmit={handleSearchSubmit}
+          // className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
+          className="form-wrapper"
+        >
+          <div
+            // className="col-span-3 grid grid-cols-6 gap-0 "
+            className="form-div"
+          >
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={localSearchValue}
+              onChange={handleInputChange}
+              // className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
+              className="input-style"
+              placeholder="Find on page"
+            />
+            <div
+              // className="mx-2 my-auto"
+              className="matching-counts-wrapper"
+            >
+              <p
+                // className="text-right float-right"
+                className="matching-counts"
+              >
+                {matchingCounts}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <button type="submit" className="hidden" aria-label="Submit" />
+          <button type="submit" className="hidden" aria-label="Submit" />
 
-        <div className=" flex justify-evenly items-center">
-          <button
-            type="button"
-            onClick={previousMatch}
-            className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            disabled={localSearchValue === ''}
+          <div
+            // className=" flex justify-evenly items-center"
+            className="btn-group"
           >
-            {' '}
-            <div className="flex items-center justify-center h-full">
-              <FontAwesomeIcon
-                size="sm"
-                icon={faAngleUp}
-                className="text-slate-200 z-10 group-hover:text-white group-disabled:text-slate-200"
-              />
-            </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-          </button>
+            <div className="divider-x" />
 
-          <button
-            type="button"
-            onClick={nextMatch}
-            className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            disabled={localSearchValue === ''}
-          >
-            {' '}
-            <div className="flex items-center justify-center h-full">
-              <FontAwesomeIcon
-                size="sm"
-                icon={faAngleDown}
-                className="text-slate-200 z-10 group-hover:text-white mt-0.5"
-              />
-            </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-          </button>
+            {/* <button
+              type="button"
+              onClick={previousMatch}
+              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
+              disabled={localSearchValue === ''}
+            >
+              {' '}
+              <div className="flex items-center justify-center h-full">
+                <FontAwesomeIcon
+                  size="sm"
+                  icon={faAngleUp}
+                  className="text-slate-200 z-10 group-hover:text-white group-disabled:text-slate-200"
+                />
+              </div>
+              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
+            </button>
 
-          <button
-            onClick={closeSearchLayover}
-            type="button"
-            className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-          >
-            {' '}
-            <div className="flex items-center justify-center h-full">
-              <FontAwesomeIcon
-                size="sm"
-                icon={faXmark}
-                className="text-slate-200 z-10 group-hover:text-red-400"
-              />
-            </div>
-            <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-          </button>
-        </div>
-      </form>
-    </>
+            <button
+              type="button"
+              onClick={nextMatch}
+              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
+              disabled={localSearchValue === ''}
+            >
+              {' '}
+              <div className="flex items-center justify-center h-full">
+                <FontAwesomeIcon
+                  size="sm"
+                  icon={faAngleDown}
+                  className="text-slate-200 z-10 group-hover:text-white mt-0.5"
+                />
+              </div>
+              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
+            </button>
+
+            <button
+              onClick={closeSearchLayover}
+              type="button"
+              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
+            >
+              {' '}
+              <div className="flex items-center justify-center h-full">
+                <FontAwesomeIcon
+                  size="sm"
+                  icon={faXmark}
+                  className="text-slate-200 z-10 group-hover:text-red-400"
+                />
+              </div>
+              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
+            </button> */}
+
+            <button
+              onClick={previousMatch}
+              type="button"
+              className="next-prev-btn"
+              disabled={localSearchValue === ''}
+            >
+              <span className="sr-only">Previous</span>
+              <ChevronUpIcon className="h5w5" aria-hidden="true" />
+            </button>
+
+            <button
+              onClick={nextMatch}
+              type="button"
+              className="next-prev-btn"
+              disabled={localSearchValue === ''}
+            >
+              <span className="sr-only">Previous</span>
+              <ChevronDownIcon className="h5w5" aria-hidden="true" />
+            </button>
+
+            <button
+              onClick={closeSearchLayover}
+              type="button"
+              className="x-mark-btn"
+            >
+              <span className="sr-only">Dismiss</span>
+              <XMarkIcon className="h5w5" aria-hidden="true" />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
