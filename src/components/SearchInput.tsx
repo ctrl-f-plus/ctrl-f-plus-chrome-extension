@@ -18,6 +18,7 @@ import useFindMatches from '../hooks/useFindMatches';
 import useSearchHandler from '../hooks/useSearchHandler';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import './SearchInputStyles.css';
+import '../tailwind.css';
 
 // FIXME: Test this to see if you can just use showLayover directly instead of focus
 interface SearchInputProps {
@@ -94,6 +95,8 @@ function SearchInput({ focus }: SearchInputProps) {
       tabStateContext.globalMatchIdxStart !== undefined &&
       tabStateContext.currentIndex !== undefined
     ) {
+      // TODO: undo this
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const curIdxRENAME_ME =
         tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
@@ -194,33 +197,34 @@ function SearchInput({ focus }: SearchInputProps) {
               <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
             </button> */}
 
+            {/* FIXME: Hacky, intermixing custom css and tailwind css on button elements to implement the active:rings */}
             <button
               onClick={previousMatch}
               type="button"
-              className="next-prev-btn"
+              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
               <span className="sr-only">Previous</span>
-              <ChevronUpIcon className="h5w5" aria-hidden="true" />
+              <ChevronUpIcon className="btn-icon" aria-hidden="true" />
             </button>
 
             <button
               onClick={nextMatch}
               type="button"
-              className="next-prev-btn"
+              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
               <span className="sr-only">Previous</span>
-              <ChevronDownIcon className="h5w5" aria-hidden="true" />
+              <ChevronDownIcon className="btn-icon" aria-hidden="true" />
             </button>
 
             <button
               onClick={closeSearchLayover}
               type="button"
-              className="x-mark-btn"
+              className="x-mark-btn focus:ctrl-ring-2 focus:ctrl-ring-red-600"
             >
               <span className="sr-only">Dismiss</span>
-              <XMarkIcon className="h5w5" aria-hidden="true" />
+              <XMarkIcon className="btn-icon" aria-hidden="true" />
             </button>
           </div>
         </form>

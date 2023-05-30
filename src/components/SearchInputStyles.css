@@ -144,7 +144,7 @@ line-height: 1.5rem;*/
   border-left-style: double !important;
 }
 
-#cntrl-f-search-input .h5w5 {
+#cntrl-f-search-input .btn-icon {
   height: 20px !important;
   width: 20px !important;
 }
@@ -160,6 +160,10 @@ line-height: 1.5rem;*/
 
 #cntrl-f-search-input .next-prev-btn:hover {
   background-color: #6b7280;
+}
+
+#cntrl-f-search-input .next-prev-btn:active {
+  border-radius: 9999px;
 }
 
 #cntrl-f-search-input .sr-only {
