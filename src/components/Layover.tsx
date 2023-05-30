@@ -10,6 +10,7 @@ import { LayoverPosition, LayoverProps } from '../types/Layover.types';
 import { UpdateLayoverPositionMsg } from '../types/message.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import './SearchInputStyles.css';
 
 function Layover({ children }: LayoverProps): React.ReactElement | null {
   const nodeRef = React.useRef(null);
@@ -38,7 +39,10 @@ function Layover({ children }: LayoverProps): React.ReactElement | null {
       position={layoverPosition}
       onStop={handleDragStop}
     >
-      <div className="absolute w-[434px] rounded-lg cursor-move" ref={nodeRef}>
+      <div
+        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg ctrl-ring-1 ctrl-ring-gray-900/5 ctrl-ring-white/10 "
+        ref={nodeRef}
+      >
         {children}
       </div>
     </Draggable>
