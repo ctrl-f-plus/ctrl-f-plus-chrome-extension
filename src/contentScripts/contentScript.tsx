@@ -211,7 +211,7 @@ function App() {
       {' '}
       {showLayover && (
         <div id="cntrl-f-extension">
-          <div className="ctrl-fixed ctrl-left-5 ctrl-z-[9999] ctrl-w-screen ctrl-top-10 ctrl-bg-red-500">
+          <div className="ctrl-fixed ctrl-left-5 ctrl-z-[9999] ctrl-w-screen ctrl-top-10 ctrl-bg-red-500 ">
             {' '}
             <Layover>
               <SearchInput focus={showLayover} />

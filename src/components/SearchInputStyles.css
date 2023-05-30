@@ -13,7 +13,7 @@
   outline: inherit;
 }
 
-#cntrl-f-search-input .testingtesting123 {
+#cntrl-f-search-input .overlay-wrapper {
   /* min-width: 434px !important; */
   /* min-height: 36px !important; */
   /* position: fixed !important; */
@@ -48,6 +48,7 @@
   color: #ffffff;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   isolation: isolate !important;
+  align-items: center;
 }
 
 #cntrl-f-search-input input {

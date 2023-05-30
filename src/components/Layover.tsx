@@ -40,7 +40,9 @@ function Layover({ children }: LayoverProps): React.ReactElement | null {
       onStop={handleDragStop}
     >
       <div
-        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg ctrl-ring-1 ctrl-ring-gray-900/5 ctrl-ring-white/10 "
+        // ctrl-shadow-green-500/50
+        // ctrl-ring-gray-900/5
+        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg  ctrl-ring-1  ctrl-ring-white/10 "
         ref={nodeRef}
       >
         {children}

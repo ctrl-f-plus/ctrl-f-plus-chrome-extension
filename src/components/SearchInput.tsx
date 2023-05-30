@@ -104,11 +104,7 @@ function SearchInput({ focus }: SearchInputProps) {
 
   return (
     <div id="cntrl-f-search-input">
-      <div
-        // className="redClass"
-        className="testingtesting123"
-      >
-        {/* <h1>Testing</h1> */}
+      <div className="overlay-wrapper">
         <form
           onSubmit={handleSearchSubmit}
           // className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
