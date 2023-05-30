@@ -10,7 +10,6 @@ import { LayoverPosition, LayoverProps } from '../types/Layover.types';
 import { UpdateLayoverPositionMsg } from '../types/message.types';
 import { createUpdateLayoverPositionMsg } from '../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
-import './SearchInputStyles.css';
 
 function Layover({ children }: LayoverProps): React.ReactElement | null {
   const nodeRef = React.useRef(null);
@@ -42,7 +41,7 @@ function Layover({ children }: LayoverProps): React.ReactElement | null {
       <div
         // ctrl-shadow-green-500/50
         // ctrl-ring-gray-900/5
-        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg  ctrl-ring-1  ctrl-ring-white/10 "
+        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg ctrl-ring-1 ctrl-ring-white/10"
         ref={nodeRef}
       >
         {children}

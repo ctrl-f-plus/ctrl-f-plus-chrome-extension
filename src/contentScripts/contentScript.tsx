@@ -27,7 +27,6 @@ import {
 } from '../utils/messageUtils/sendMessageToBackground';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
-import '../components/SearchInputStyles.css';
 
 function App() {
   const {
@@ -211,7 +210,7 @@ function App() {
       {' '}
       {showLayover && (
         <div id="cntrl-f-extension">
-          <div className="ctrl-fixed ctrl-left-5 ctrl-z-[9999] ctrl-w-screen ctrl-top-10 ctrl-bg-red-500 ">
+          <div className="ctrl-fixed ctrl-left-5 ctrl-top-10 ctrl-z-[9999] ctrl-w-screen">
             {' '}
             <Layover>
               <SearchInput focus={showLayover} />
