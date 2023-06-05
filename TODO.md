@@ -99,7 +99,7 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
 - TabId is getting reset to undefined in `newState2`
 - - If you search an empty string twice, then you get `NaN/0`. fix this
   - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
-- Fix styling so that it is consistent accross pages
+<!-- -// Fix styling so that it is consistent accross pages -->
 
 - add `.eslintignore` file?
 - Add Error Handling
