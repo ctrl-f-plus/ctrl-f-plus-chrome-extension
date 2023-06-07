@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // webpack.common.js;
 
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
-const HtmlPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
-function getHtmlPlugins(chunks) {
+function getHtmlWebpackPlugins(chunks) {
   return chunks.map(
     (chunk) =>
-      new HtmlPlugin({
+      new HtmlWebpackPlugin({
         title: 'Cntrl-F',
         filename: `${chunk}.html`,
         chunks: [chunk],
@@ -26,11 +27,14 @@ module.exports = {
   },
   module: {
     rules: [
+      // TYPESCRIPT LOADER
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /(?:node_modules|\.tmp)/,
       },
+
+      // CSS/STYLE LOADER
       {
         test: /\.css$/i,
         use: [
@@ -50,13 +54,18 @@ module.exports = {
       },
     ],
   },
+
+  // APPLIES THE MODULES TO THESE TYPES OF FILES
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
+
   plugins: [
     new CleanWebpackPlugin({
       cleanStaleWebpackAssets: false,
     }),
+
+    // CopyPlugin allows us to copy static files into our distribution folder
     new CopyPlugin({
       patterns: [
         {
@@ -65,13 +74,17 @@ module.exports = {
         },
       ],
     }),
-    ...getHtmlPlugins(['popup', 'options']),
+
+    ...getHtmlWebpackPlugins(['popup', 'options']),
     new ESLintPlugin(),
   ],
+
+  // OUTPUT
   output: {
     filename: '[name].js',
     path: path.resolve('dist'),
   },
+
   optimization: {
     splitChunks: {
       chunks(chunk) {
