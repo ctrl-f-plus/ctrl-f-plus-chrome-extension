@@ -12,11 +12,11 @@ function App() {
     <>
       <h1>Popup!</h1>
 
-      <div id="cntrl-f-extension" className="">
+      {/* <div id="cntrl-f-extension" className="">
         <div className="">
           <SearchInput focus />
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

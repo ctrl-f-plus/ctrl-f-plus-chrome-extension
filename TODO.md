@@ -138,3 +138,15 @@ Notes from: `replace-layover-with-popup` branch:
 
   - Iframe:
     - https://itnext.io/create-chrome-extension-with-reactjs-using-inject-page-strategy-137650de1f39#6186
+
+
+- Double check styling leakage:
+  - https://thebyteseffect.com/posts/crx-extractor-features/
+
+
+Testing Packages:
+@babel/plugin-transform-runtime
+@babel/runtime
+babel-jest
+ts-jest
+ts-node

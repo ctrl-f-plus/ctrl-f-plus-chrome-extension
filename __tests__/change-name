@@ -1,0 +1,96 @@
+// const puppeteer = require('puppeteer');
+// let browser, page;
+
+// const puppeteerArgs = [
+//   `--disable-extensions-except=${__dirname}`,
+//   `--load-extension=${__dirname}`,
+//   '--disable-features=DialMediaRouteProvider',
+// ];
+
+// describe('App.js', () => {
+//   beforeAll(async () => {
+//     browser = await puppeteer.launch({
+//       headless: false,
+//       slowMo: 250, // slow down by 250ms
+//       args: puppeteerArgs,
+//     });
+//     // page = await browser.newPage();
+//     [page] = await browser.pages();
+//   });
+
+//   afterEach(() => browser.close());
+
+//   // it('contains the welcome text', async () => {
+//   //   await page.goto('http://benjamin-chavez.com');
+//   //   // await page.goto('http://localhost:5000');
+//   //   await page.waitForSelector('.App-welcome-text');
+//   //   const text = await page.$eval('.App-welcome-text', (e) => e.textContent);
+//   //   expect(text).toContain('Edit src/App.js and save to reload.');
+//   // });
+
+//   // afterAll(() => browser.close());
+// e2e.test.js;
+
+//   it('displays popup', async () => {
+//     const targets = await browser.targets();
+//     const extensionTarget = targets.find(
+//       (target) => target.type() === 'service_worker'
+//     );
+//     const partialExtensionUrl = extensionTarget.url() || '';
+//     const [, , extensionId] = partialExtensionUrl.split('/');
+
+//     const extensionUrl = `chrome-extension://${extensionId}/popup/hello.html`;
+
+//     await page.goto(extensionUrl, {
+//       waitUntil: ['domcontentloaded', 'networkidle2'],
+//     });
+
+//     const popupHeading = await page.$eval('h1', (e) => e.innerText);
+//     expect(popupHeading).toEqual('Hello Extensions');
+//   });
+// });
+
+const getExtensionId = async (browser) => {
+  // Review/update to work with manifest version 3
+  const targets = await browser.targets();
+  // console.log(targets);
+  // // debugger;
+  // await new Promise((r) => setTimeout(r, 5000));
+  // const extensionTarget = targets.find(({ _targetInfo }) => {
+  //   return (
+  //     _targetInfo.title === extensionName &&
+  //     _targetInfo.type === 'service_worker'
+  //   );
+  // });
+
+  // // Extract URL
+  // const extensionURL = extensionTarget._targetInfo.url;
+  // const urlSplit = extensionURL.split('/');
+  // const extensionID = urlSplit[2];
+  // return extensionID;
+  return 'lpbjbjlijokjnkfojhegklacjjdejdjk';
+};
+
+// it('test 2', async () => {
+//   const browser = await puppeteer.launch({
+//     headless: false,
+//     devtools: true,
+//     args: [
+//       `--disable-extensions-except=${EXTENSION_PATH}`,
+//       `--load-extension=${EXTENSION_PATH}`,
+//     ],
+//   });
+
+//   browserArray.push(browser);
+//   // const extensionId = await getExtensionId(browser);
+
+//   var [page] = await browser.pages();
+//   await page.goto(`chrome-extension://${EXTENSION_ID}/popup.html`);
+//   await page.bringToFront();
+//   await page.waitForSelector('h1');
+
+//   const textEl = await page.$('h1');
+//   const text = await textEl.evaluate((e) => e.innerText);
+//   console.log('string: ', text);
+//   expect(text).toEqual(expect.stringContaining('Popup!'));
+// });
