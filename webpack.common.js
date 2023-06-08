@@ -85,7 +85,7 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve('dist'),
-    // clean: true,
+    clean: true,
   },
 
   optimization: {
