@@ -16,12 +16,13 @@
     "plugin:prettier/recommended"
   ],
   "overrides": [],
-  "parser": "@typescript-eslint/parser",
-
+  // "parser": "@typescript-eslint/parser",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "requireConfigFile": true
   },
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {

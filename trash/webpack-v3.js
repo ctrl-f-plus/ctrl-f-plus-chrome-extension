@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+```js
 // webpack.common.js;
 
 const path = require('path');
@@ -27,10 +27,10 @@ module.exports = {
   },
   module: {
     rules: [
-      // BABEL & TYPESCRIPT LOADER
+      // TYPESCRIPT LOADER
       {
-        test: /\.(t|j)sx?$/,
-        use: 'babel-loader',
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /(?:node_modules|\.tmp)/,
       },
 
@@ -85,7 +85,7 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve('dist'),
-    clean: true,
+    // clean: true,
   },
 
   optimization: {
@@ -96,3 +96,24 @@ module.exports = {
     },
   },
 };
+
+// webpack.dev.js;
+
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
+
+module.exports = merge(common, {
+  mode: 'development',
+  // devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
+});
+
+
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common.js');
+
+module.exports = merge(common, {
+  mode: 'production',
+});
+
+```
