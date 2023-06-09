@@ -260,11 +260,13 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             const matchingCountsSelector =
               '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
 
+            await page.waitForSelector(matchingCountsSelector);
+
             initialIndex = await page.evaluate(() => {
               const nodeList = document.querySelectorAll('.ctrl-f-highlight');
               const elements = Array.from(nodeList);
               return elements.findIndex((el) => {
-                el.classList.contains('ctrl-f-highlight-focus');
+                return el.classList.contains('ctrl-f-highlight-focus');
               });
             });
 
@@ -285,7 +287,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               const nodeList = document.querySelectorAll('.ctrl-f-highlight');
               const elements = Array.from(nodeList);
               return elements.findIndex((el) => {
-                el.classList.contains('ctrl-f-highlight-focus');
+                return el.classList.contains('ctrl-f-highlight-focus');
               });
             });
 
@@ -356,7 +358,6 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             const matchingCountsSelector =
               '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
 
-            await page.waitForSelector(previousButtonSelector);
             await page.waitForSelector(matchingCountsSelector);
 
             let matchingCounts = await page.$eval(
@@ -364,6 +365,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               (el: Element) => (el as HTMLElement).innerText
             );
 
+            await page.waitForSelector(previousButtonSelector);
             await page.click(previousButtonSelector);
             await page.waitForTimeout(1000);
 
@@ -372,10 +374,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               (el: Element) => (el as HTMLElement).innerText
             );
 
-            // let currentMatchCount = matchingCounts.split('/')[0];
-            // let totalMatchCount = matchingCounts.split('/')[1];
+            let currentMatchCount = matchingCounts.split('/')[0];
+            let totalMatchCount = matchingCounts.split('/')[1];
 
-            expect(matchingCounts).toEqual('3/3'); // FIXME: This should be dynamic
+            expect(currentMatchCount).toEqual(totalMatchCount); // FIXME: This should be dynamic
 
             let finalIndex = await page.evaluate(() => {
               const nodeList = document.querySelectorAll('.ctrl-f-highlight');
@@ -384,7 +386,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
                 el.classList.contains('ctrl-f-highlight-focus')
               );
             });
-
+            console.log(finalIndex);
             expect(finalIndex).toBe(2);
           });
 
@@ -441,6 +443,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
   // describe('Multi-tab Search Tests', () => {
   //   // TODO:
   //   expect(false).toBe(true);
+  // });
+
+  // afterAll(async () => {
+  //   await cleanupBrowsers();
   // });
 });
 
