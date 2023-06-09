@@ -150,3 +150,60 @@ Testing Packages:
 babel-jest
 ts-jest
 ts-node
+
+
+
+
+
+what about if i wanted to use puppeteer to find all elements on a page that match the string `ben` and then i wanted to wrap all of those elements in the  `<span class="highlight">...</span>` tag.
+
+For example:
+from
+```<div class="container-fluid">
+        <a href="#home" class="navbar-brand font-alt">Benjamin Chavez</a>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="#home" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="#portfolio" class="nav-link">Portfolio</a>
+            </li>
+            <li class="nav-item">
+              <a href="#my-story" class="nav-link">My Story</a>
+            </li>
+            <li class="nav-item">
+              <a href="#contact" class="nav-link">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      ```
+to
+```
+      <div class="container-fluid">
+        <a href="#home" class="navbar-brand font-alt"><span class="highlight>Ben</span>jamin Chavez</a>
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarCollapse" class="collapse navbar-collapse">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="#home" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="#portfolio" class="nav-link">Portfolio</a>
+            </li>
+            <li class="nav-item">
+              <a href="#my-story" class="nav-link">My Story</a>
+            </li>
+            <li class="nav-item">
+              <a href="#contact" class="nav-link">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+```

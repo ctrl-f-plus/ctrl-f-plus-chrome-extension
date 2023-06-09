@@ -1,0 +1,129 @@
+// ext.test.js
+
+import puppeteer from 'puppeteer';
+const EXTENSION_PATH = 'dist/';
+const EXTENSION_ID = 'lpbjbjlijokjnkfojhegklacjjdejdjk';
+const TEST_URL = 'https://benjamin-chavez.com';
+const SEARCH_QUERY = 'ben';
+const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
+const TIMEOUT = SLOW_MO ? 10000 : 5000;
+
+let browserArray = [];
+let page;
+describe('Test Extension', () => {
+  // beforeEach(async () => {
+  //   const browser = await puppeteer.launch({
+  //     headless: false,
+  //     devtools: true,
+  //     args: [
+  //       `--disable-extensions-except=${EXTENSION_PATH}`,
+  //       `--load-extension=${EXTENSION_PATH}`,
+  //     ],
+  //   });
+
+  //   browserArray.push(browser);
+  // });
+
+  afterAll(async () => {
+    console.log('clean up');
+
+    try {
+      await Promise.all(
+        browserArray.map(async (browser) => {
+          try {
+            const closeBrowser = await browser.close();
+          } catch (error) {
+            // no-op
+          }
+        })
+      );
+    } catch (error) {
+      // no-op
+    }
+  });
+
+  it(
+    'should successfully inject the extension into the page',
+    async () => {
+      const browser = await puppeteer.launch({
+        headless: false,
+        devtools: true,
+        slowMo: SLOW_MO,
+        args: [
+          `--disable-extensions-except=${EXTENSION_PATH}`,
+          `--load-extension=${EXTENSION_PATH}`,
+        ],
+      });
+
+      browserArray.push(browser);
+      [page] = await browser.pages();
+
+      await page.goto(TEST_URL);
+      await page.bringToFront();
+      await page.waitForSelector('#cntrl-f-extension');
+
+      const injectedElement = await page.$('#cntrl-f-extension');
+      expect(injectedElement).not.toBeNull();
+    },
+    TIMEOUT
+  );
+
+  it(
+    'should allow the user to type in the search field',
+    async () => {
+      const inputSelector = '#cntrl-f-extension .form-div .input-style';
+      await page.waitForSelector(inputSelector);
+      await page.type(inputSelector, SEARCH_QUERY);
+      const inputText = await page.$eval(inputSelector, (el) => el.value);
+      expect(inputText).toBe(SEARCH_QUERY);
+    },
+    TIMEOUT
+  );
+
+  it(
+    'should add the highlight classes to all matches ',
+    async () => {
+      const inputSelector = '#cntrl-f-extension .form-div .input-style';
+      await page.waitForSelector(inputSelector);
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(1000);
+
+      const content = await page.content();
+
+      const highlightRegex =
+        /<span class="(ctrl-f-highlight|ctrl-f-highlight ctrl-f-highlight-focus)">ben<\/span>/gi;
+
+      const benRegex = /\bben\b/g;
+
+      const highlightCount = (content.match(highlightRegex) || []).length;
+      const benCount = (content.match(benRegex) || []).length;
+
+      console.log(highlightCount);
+      console.log('benCount: ', benCount);
+      expect(highlightCount).toBe(benCount);
+    },
+    TIMEOUT
+  );
+});
+
+// Tests the initial state of the search overlay
+//  - overlay should not be visible on startup
+//  - should be visible after being issued the `ctrl-shift-f` keyboard command
+//  - should not have an input value
+//  - count value should be `0/0`
+//  - next button should be disabled
+//  - previous button should be disabled
+//  - close button should close the overlay
+
+// Tests open/close functionality of the overlay
+//  - overlay should not be visible on startup
+//  - overlay should be visible after being issued the `ctrl-shift-f` keyboard command once
+//  - overlay should NOT be visible after being issued the `ctrl-shift-f` keyboard command twice
+//  - overlay should be visible after being issued the `ctrl-shift-f` keyboard command three times
+//  - overlay should NOT be visible after being issued the `Escape` keyboard command
+//  - closed overaly should open after being issued the `ctrl-shift-f` keyboard command three times
+
+// Test next/prev buttons
+//  - The next button should
+
+// Should

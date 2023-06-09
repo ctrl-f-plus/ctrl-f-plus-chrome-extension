@@ -7,7 +7,8 @@
     "build": "webpack --watch --progress --config webpack.prod.js",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
-    "test": "jest"
+    "test": "jest",
+    "test:slow": "SLOW_MO=250 jest"
   },
   "author": "",
   "devDependencies": {
@@ -83,4 +84,3 @@
     ]
   }
 }
-

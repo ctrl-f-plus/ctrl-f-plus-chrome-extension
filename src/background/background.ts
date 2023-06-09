@@ -202,6 +202,26 @@ chrome.commands.onCommand.addListener(async (command) => {
   }
 });
 
+// TODO: Verify that you have feauter flags setup
+if (process.env.NODE_ENV !== 'production') {
+  window.toggleLayover = function () {
+    const activeWindowStore = getActiveWindowStore();
+    if (!activeWindowStore) {
+      console.error('No active window store available');
+      return;
+    }
+
+    const addStyles = !activeWindowStore.showLayover;
+
+    updateStore(activeWindowStore, {
+      showLayover: addStyles,
+      showMatches: addStyles,
+    });
+
+    sendStoreToContentScripts(activeWindowStore);
+  };
+}
+
 chrome.tabs.onCreated.addListener(() => {
   const activeWindowStore = getActiveWindowStore();
   if (!activeWindowStore) {
