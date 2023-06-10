@@ -390,7 +390,48 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             expect(finalIndex).toBe(2);
           });
 
-          // it('should navigate to the previous match and update the match count when the previous button is clicked', async () => {});
+          it('should navigate to the previous match and update the match count when the previous button is clicked', async () => {
+            const previousButtonSelector =
+              '#cntrl-f-extension #cfp-previous-match-btn';
+            const matchingCountsSelector =
+              '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
+
+            initialIndex = await page.evaluate(() => {
+              const nodeList = document.querySelectorAll('.ctrl-f-highlight');
+              const elements = Array.from(nodeList);
+              return elements.findIndex((el) =>
+                el.classList.contains('ctrl-f-highlight-focus')
+              );
+            });
+
+            await page.waitForSelector(matchingCountsSelector);
+            let matchingCounts = await page.$eval(
+              matchingCountsSelector,
+              (el: Element) => (el as HTMLElement).innerText
+            );
+            expect(matchingCounts).toEqual('3/3'); // FIXME: This should be dynamic
+
+            await page.waitForSelector(previousButtonSelector);
+            await page.click(previousButtonSelector);
+            await page.waitForTimeout(1000);
+
+            await page.waitForSelector(matchingCountsSelector);
+            matchingCounts = await page.$eval(
+              matchingCountsSelector,
+              (el: Element) => (el as HTMLElement).innerText
+            );
+            expect(matchingCounts).toEqual('2/3'); // FIXME: This should be dynamic
+
+            let finalIndex = await page.evaluate(() => {
+              const nodeList = document.querySelectorAll('.ctrl-f-highlight');
+              const elements = Array.from(nodeList);
+              return elements.findIndex((el) =>
+                el.classList.contains('ctrl-f-highlight-focus')
+              );
+            });
+
+            expect(finalIndex).toBe(initialIndex - 1); //FIXME: review this logic
+          });
 
           // it('should toggle the search overlay from open to closed state after the hotkey is issued', async () => {
           //   // TODO:

@@ -30,7 +30,6 @@ export async function launchBrowser() {
 }
 
 export async function cleanupBrowsers() {
-  console.log('clean up');
   try {
     await Promise.all(
       browserArray.map(async (browser: any) => {
