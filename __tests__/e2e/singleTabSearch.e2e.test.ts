@@ -1,4 +1,4 @@
-// __tests__/e2e/extension.test.js
+// __tests__/e2e/singleTabSearch.e2e.test.ts
 
 import { Browser, Page } from 'puppeteer';
 import { cleanupBrowsers, launchBrowser } from './testSetup';
