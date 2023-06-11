@@ -24,6 +24,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           ({ browser, page } = await launchBrowser());
         });
 
+        afterAll(async () => {
+          await cleanupBrowsers();
+        });
+
         it('should NOT highlight any matches if the search query does not exist on the page', async () => {
           await page.waitForSelector(INPUT_SELECTOR);
           await page.type(INPUT_SELECTOR, BAD_SEARCH_QUERY);
@@ -47,10 +51,6 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           const matchingCounts = await getInnerTextFromSelector(page);
 
           expect(matchingCounts).toEqual('0/0');
-        });
-
-        afterAll(async () => {
-          await cleanupBrowsers();
         });
       });
 
