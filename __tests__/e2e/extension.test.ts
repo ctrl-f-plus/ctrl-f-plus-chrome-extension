@@ -41,7 +41,6 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           );
 
           const highlightCount = (content.match(highlightRegex) || []).length;
-
           expect(highlightCount).toBe(0);
 
           await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
@@ -64,7 +63,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
         // });
 
         describe('Navigation with Next Button', () => {
-          const nextButtonSelector = '#cntrl-f-extension #cfp-next-match-btn';
+          const nextButtonSelector = '#cntrl-f-extension #next-match-btn';
 
           beforeAll(async () => {
             ({ browser, page } = await launchBrowser());
@@ -197,7 +196,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
         describe('Navigation with Previous Button', () => {
           const previousButtonSelector =
-            '#cntrl-f-extension #cfp-previous-match-btn';
+            '#cntrl-f-extension #previous-match-btn';
 
           beforeAll(async () => {
             ({ browser, page } = await launchBrowser());
@@ -222,6 +221,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               matchingCounts
             );
             let currentMatchCount = matchingCounts.split('/')[0];
+            // let currentMatchCount = parseInt(matchingCounts.split('/')[0]);
             let totalMatchCount = matchingCounts.split('/')[1];
 
             expect(currentMatchCount).toEqual(totalMatchCount); // FIXME: This should be dynamic

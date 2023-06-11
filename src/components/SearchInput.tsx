@@ -201,7 +201,7 @@ function SearchInput({ focus }: SearchInputProps) {
             <button
               onClick={previousMatch}
               type="button"
-              id="cfp-previous-match-btn"
+              id="previous-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
@@ -212,7 +212,7 @@ function SearchInput({ focus }: SearchInputProps) {
             <button
               onClick={nextMatch}
               type="button"
-              id="cfp-next-match-btn"
+              id="next-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
@@ -223,7 +223,7 @@ function SearchInput({ focus }: SearchInputProps) {
             <button
               onClick={closeSearchLayover}
               type="button"
-              id="cfp-close-layover-btn"
+              id="close-layover-btn"
               className="x-mark-btn focus:ctrl-ring-2 focus:ctrl-ring-red-600"
             >
               <span className="sr-only">Dismiss</span>
