@@ -28,11 +28,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
         it('should NOT highlight any matches if the search query does not exist on the page', async () => {
           await page.waitForSelector(INPUT_SELECTOR);
           await page.type(INPUT_SELECTOR, BAD_SEARCH_QUERY);
-          const inputText = await page.$eval(
-            INPUT_SELECTOR,
-            (el) => (el as HTMLInputElement).value
-          );
-          expect(inputText).toBe(BAD_SEARCH_QUERY);
+
+          const inputValue = await getInputValueFromSelector(page);
+
+          expect(inputValue).toBe(BAD_SEARCH_QUERY);
 
           await page.keyboard.press('Enter');
           await page.waitForTimeout(1000);
@@ -46,11 +45,13 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
           const highlightCount = (content.match(highlightRegex) || []).length;
 
-          expect(highlightCount).toBe(0);
-
           await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-          const matchingCounts = await getMatchingCounts(page);
+          const matchingCounts = await getInnerTextFromSelector(
+            page,
+            MATCHING_COUNTS_SELECTOR
+          );
 
+          expect(highlightCount).toBe(0);
           expect(matchingCounts).toEqual('0/0');
         });
 
@@ -83,7 +84,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             await page.waitForTimeout(1000);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-            const matchingCounts = await getMatchingCounts(page);
+            const matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
 
             expect(matchingCounts).toEqual('2/3'); // FIXME: This should be dynamic
 
@@ -97,7 +101,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             await page.waitForSelector(nextButtonSelector);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-            let matchingCounts = await getMatchingCounts(page);
+            let matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
             let currentMatchCount = matchingCounts.split('/')[0];
             let totalMatchCount = matchingCounts.split('/')[1];
             while (currentMatchCount !== totalMatchCount) {
@@ -151,7 +158,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
 
-            const matchingCounts = await getMatchingCounts(page);
+            const matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
 
             expect(matchingCounts).toEqual('2/3'); //FIXME: this should be dynamic
 
@@ -165,7 +175,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             await page.focus(INPUT_SELECTOR);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-            let matchingCounts = await getMatchingCounts(page);
+            let matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
 
             let currentMatchCount = matchingCounts.split('/')[0];
             let totalMatchCount = matchingCounts.split('/')[1];
@@ -215,7 +228,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           it('should navigate to the last match and update the match count when the previous button is clicked on the first match', async () => {
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
 
-            let matchingCounts = await getMatchingCounts(page);
+            let matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
 
             await page.waitForSelector(previousButtonSelector);
             await page.click(previousButtonSelector);
@@ -240,7 +256,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             initialIndex = await getHighlightFocusMatchIndex(page);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-            let matchingCounts = await getMatchingCounts(page);
+            let matchingCounts = await getInnerTextFromSelector(
+              page,
+              MATCHING_COUNTS_SELECTOR
+            );
             expect(matchingCounts).toEqual('3/3'); // FIXME: This should be dynamic
 
             await page.waitForSelector(previousButtonSelector);
@@ -275,8 +294,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 async function highlightMatches(page: Page, query: string) {
   await page.waitForSelector(INPUT_SELECTOR);
   await page.type(INPUT_SELECTOR, query);
-  const inputText = await page.$eval(INPUT_SELECTOR, (el) => el.value);
-  expect(inputText).toBe(query);
+
+  const inputValue = await getInputValueFromSelector(page);
+
+  expect(inputValue).toBe(query);
 
   await page.keyboard.press('Enter');
   await page.waitForTimeout(1000);
@@ -307,11 +328,22 @@ async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
   });
 }
 
-async function getMatchingCounts(page: Page) {
-  return await page.$eval(
-    MATCHING_COUNTS_SELECTOR,
-    (el: Element) => (el as HTMLElement).innerText
-  );
+// async function getMatchingCounts(page: Page) {
+//   return await page.$eval(
+//     MATCHING_COUNTS_SELECTOR,
+//     (el) => (el as HTMLElement).innerText
+//   );
+// }
+
+async function getInputValueFromSelector(
+  page: Page,
+  selector: string = INPUT_SELECTOR
+) {
+  return await page.$eval(selector, (el) => (el as HTMLInputElement).value);
+}
+
+async function getInnerTextFromSelector(page: Page, selector: string) {
+  return await page.$eval(selector, (el) => (el as HTMLElement).innerText);
 }
 
 // FIXME: Review and maybe refactor to call using await page.waitForFunction(waitForElementTextChange())?
