@@ -1,0 +1,10 @@
+
+          // it('should toggle the search overlay from open to closed state after the hotkey is issued', async () => {
+          //   // TODO:
+          //   expect(false).toBe(true);
+          // });
+
+          // it('should not have any highlighted matches after closing the overlay', async () => {
+          //   // TODO:
+          //   expect(false).toBe(true);
+          // });

@@ -1,0 +1,61 @@
+
+    // TODO: KEYBOARD COMMANDS WON'T WORK TO TOGGLE LAYOVER - REVIEW THESE TESTS
+    // describe('Initial State and Toggle Tests', () => {
+    //   beforeAll(async () => {
+    //     const browser = await puppeteer.launch({
+    //       headless: false,
+    //       devtools: true,
+    //       slowMo: SLOW_MO,
+    //       args: [
+    //         `--disable-extensions-except=${EXTENSION_PATH}`,
+    //         `--load-extension=${EXTENSION_PATH}`,
+    //       ],
+    //     });
+    //     browserArray.push(browser);
+    //     [page] = await browser.pages();
+    //     await page.goto(TEST_URL);
+    //     await page.bringToFront();
+    //   });
+
+    //   it('should not display the search overlay on startup', async () => {
+    //     const layoverElement = await page.evaluate(() =>
+    //       document.querySelector('#cntrl-f-extension')
+    //     );
+    //     expect(layoverElement).toBeNull();
+    //   });
+
+    //   it('should toggle the search overlay from closed to open state after the hotkey is issued', async () => {
+    //     const extensionUrl = `chrome-extension://${EXTENSION_ID}/_generated_background_page.html`;
+    //     const backgroundPage = await browser.newPage();
+    //     await backgroundPage.goto(extensionUrl);
+    //     await page.bringToFront();
+
+    //     await backgroundPage.evaluate(() => {
+    //       toggleLayover();
+    //     });
+
+    //     await page.waitForSelector('#cntrl-f-extension');
+
+    //     const layoverElement = await page.evaluate(() =>
+    //       document.querySelector('#cntrl-f-extension')
+    //     );
+    //     expect(layoverElement).not.toBeNull();
+    //   });
+
+    //   afterAll(async () => {
+    //     console.log('clean up');
+    //     try {
+    //       await Promise.all(
+    //         browserArray.map(async (browser) => {
+    //           try {
+    //             const closeBrowser = await browser.close();
+    //           } catch (error) {
+    //             // no-op
+    //           }
+    //         })
+    //       );
+    //     } catch (error) {
+    //       // no-op
+    //     }
+    //   });
+    // });
