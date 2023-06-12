@@ -86,23 +86,11 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             expect(finalIndex).toBe(initialIndex + 1);
           });
 
-          it('should navigate back to the first match and update the match count when next button is clicked on the last match', async () => {
+          it('should wrap around to the first match and update the match count when next button is clicked on the last match', async () => {
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             let matchingCounts = await getInnerTextFromSelector(page);
 
-            let currentMatchCount = matchingCounts.split('/')[0];
-            let totalMatchCount = matchingCounts.split('/')[1];
-
-            while (currentMatchCount !== totalMatchCount) {
-              await navigateWithNextButton(page);
-              matchingCounts = await waitForElementTextChange(
-                page,
-                MATCHING_COUNTS_SELECTOR,
-                matchingCounts
-              );
-              currentMatchCount = matchingCounts.split('/')[0];
-              totalMatchCount = matchingCounts.split('/')[1];
-            }
+            await navigateToLastMatch(page, navigateWithNextButton);
 
             await navigateWithNextButton(page);
 
@@ -113,9 +101,6 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             );
 
             expect(matchingCounts).toEqual('1/3'); // FIXME: This should be dynamic
-
-            // currentMatchCount = matchingCounts.split('/')[0];
-            // totalMatchCount = matchingCounts.split('/')[1];
 
             const finalIndex = await getHighlightFocusMatchIndex(page);
 
@@ -150,30 +135,14 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           });
 
           it('should navigate back to the first match and update the match count when the enter key is pressed on the last match', async () => {
-            const INPUT_SELECTOR = `#cntrl-f-extension .form-div .input-style`;
-
-            await page.focus(INPUT_SELECTOR);
-            await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
+            await navigateToLastMatch(page, navigateWithEnterKey);
 
             let matchingCounts = await getInnerTextFromSelector(page);
-            let currentMatchCount = matchingCounts.split('/')[0];
-            let totalMatchCount = matchingCounts.split('/')[1];
 
-            while (currentMatchCount !== totalMatchCount) {
-              await navigateWithEnterKey(page);
-
-              matchingCounts = await waitForElementTextChange(
-                page,
-                MATCHING_COUNTS_SELECTOR,
-                matchingCounts
-              );
-
-              currentMatchCount = matchingCounts.split('/')[0];
-              totalMatchCount = matchingCounts.split('/')[1];
-            }
-
+            // await page.focus(INPUT_SELECTOR);
             await navigateWithEnterKey(page);
 
+            await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             matchingCounts = await waitForElementTextChange(
               page,
               MATCHING_COUNTS_SELECTOR,
@@ -210,11 +179,11 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               MATCHING_COUNTS_SELECTOR,
               matchingCounts
             );
-            let currentMatchCount = matchingCounts.split('/')[0];
-            // let currentMatchCount = parseInt(matchingCounts.split('/')[0]);
-            let totalMatchCount = matchingCounts.split('/')[1];
+            let currentMatchIndex = matchingCounts.split('/')[0];
+            // let currentMatchIndex = parseInt(matchingCounts.split('/')[0]);
+            let totalMatchesCount = matchingCounts.split('/')[1];
 
-            expect(currentMatchCount).toEqual(totalMatchCount); // FIXME: This should be dynamic
+            expect(currentMatchIndex).toEqual(totalMatchesCount); // FIXME: This should be dynamic
 
             const finalIndex = await getHighlightFocusMatchIndex(page);
 
@@ -248,6 +217,35 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
     });
   });
 });
+
+function parseMatchingCounts(matchingCounts: string) {
+  const [currentMatchIndex, totalMatchesCount] = matchingCounts
+    .split('/')
+    .map(Number);
+  return { currentMatchIndex, totalMatchesCount };
+}
+
+async function navigateToLastMatch(
+  page: Page,
+  navigateFunction: (page: Page) => Promise<void>
+) {
+  let matchingCounts = await getInnerTextFromSelector(page);
+  let { currentMatchIndex, totalMatchesCount } =
+    parseMatchingCounts(matchingCounts);
+
+  while (currentMatchIndex !== totalMatchesCount) {
+    await navigateFunction(page);
+
+    matchingCounts = await waitForElementTextChange(
+      page,
+      MATCHING_COUNTS_SELECTOR,
+      matchingCounts
+    );
+
+    ({ currentMatchIndex, totalMatchesCount } =
+      parseMatchingCounts(matchingCounts));
+  }
+}
 
 async function navigateWithNextButton(page: Page) {
   await page.waitForSelector(NEXT_BUTTON_SELECTOR);
@@ -320,6 +318,8 @@ async function waitForElementTextChange(
 //   }
 // }
 
+// TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE
+// TODO: Split this into two functions and then I think you should have all of your helper functions to finish implementing the rest of the e2e tests
 async function searchAndHighlightMatches(page: Page, query: string) {
   await page.waitForSelector(INPUT_SELECTOR);
   await page.type(INPUT_SELECTOR, query);

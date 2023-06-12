@@ -95,12 +95,10 @@ function SearchInput({ focus }: SearchInputProps) {
       tabStateContext.globalMatchIdxStart !== undefined &&
       tabStateContext.currentIndex !== undefined
     ) {
-      // TODO: undo this
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const curIdxRENAME_ME =
+      const currentMatchIndex =
         tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
-      setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
+      setMatchingCounts(`${currentMatchIndex}/${totalMatchesCount}`);
       // console.log(`${new Date().getTime()}`, ': ', matchingCounts);
     }
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
