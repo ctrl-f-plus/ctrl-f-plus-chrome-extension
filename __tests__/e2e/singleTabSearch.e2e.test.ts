@@ -12,16 +12,21 @@ const TIMEOUT = SLOW_MO ? 10000 : 5000;
 const INPUT_SELECTOR = '#cntrl-f-extension .form-div .input-style';
 const MATCHING_COUNTS_SELECTOR =
   '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
+const NUMBER_OF_TABS: number = 1;
+const NEXT_BUTTON_SELECTOR = '#cntrl-f-extension #next-match-btn';
+const PREVIOUS_BUTTON_SELECTOR = '#cntrl-f-extension #previous-match-btn';
 
 describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
   describe('Single-tab Search Tests', () => {
     let browser: Browser;
+    let pages: Page[];
     let page: Page;
 
     describe('Highlight and Navigation Tests', () => {
       describe('When Matches DO NOT Exist', () => {
         beforeAll(async () => {
-          ({ browser, page } = await launchBrowser());
+          ({ browser, pages } = await launchBrowser(NUMBER_OF_TABS));
+          page = pages[0];
         });
 
         afterAll(async () => {
@@ -35,8 +40,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           const inputValue = await getInputValueFromSelector(page);
           expect(inputValue).toBe(BAD_SEARCH_QUERY);
 
-          await page.keyboard.press('Enter');
-          await page.waitForTimeout(1000);
+          await navigateWithEnterKey(page);
 
           const content = await page.content();
           const highlightRegex = new RegExp(
@@ -56,18 +60,11 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
       let initialIndex;
       describe('When Matches Exist', () => {
-        // it('should correctly highlight matches in the tab when a query is entered', async () => {
-        //   ({ browser, page } = await launchBrowser());
-        //   await highlightMatches(page, GOOD_SEARCH_QUERY);
-        //   await cleanupBrowsers();
-        // });
-
         describe('Navigation with Next Button', () => {
-          const nextButtonSelector = '#cntrl-f-extension #next-match-btn';
-
           beforeAll(async () => {
-            ({ browser, page } = await launchBrowser());
-            await highlightMatches(page, GOOD_SEARCH_QUERY);
+            ({ browser, pages } = await launchBrowser(NUMBER_OF_TABS));
+            page = pages[0];
+            await searchAndHighlightMatches(page, GOOD_SEARCH_QUERY);
           });
 
           afterAll(async () => {
@@ -77,9 +74,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           it('should navigate to the next match and update the match count when the next button is clicked', async () => {
             initialIndex = await getHighlightFocusMatchIndex(page);
 
-            await page.waitForSelector(nextButtonSelector);
-            await page.click(nextButtonSelector);
-            await page.waitForTimeout(1000);
+            await navigateWithNextButton(page);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             const matchingCounts = await getInnerTextFromSelector(page);
@@ -92,8 +87,6 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           });
 
           it('should navigate back to the first match and update the match count when next button is clicked on the last match', async () => {
-            await page.waitForSelector(nextButtonSelector);
-
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             let matchingCounts = await getInnerTextFromSelector(page);
 
@@ -101,7 +94,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             let totalMatchCount = matchingCounts.split('/')[1];
 
             while (currentMatchCount !== totalMatchCount) {
-              await page.click(nextButtonSelector);
+              await navigateWithNextButton(page);
               matchingCounts = await waitForElementTextChange(
                 page,
                 MATCHING_COUNTS_SELECTOR,
@@ -111,7 +104,8 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               totalMatchCount = matchingCounts.split('/')[1];
             }
 
-            await page.click(nextButtonSelector);
+            await navigateWithNextButton(page);
+
             matchingCounts = await waitForElementTextChange(
               page,
               MATCHING_COUNTS_SELECTOR,
@@ -131,8 +125,9 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
         describe('Navigation with Enter Key', () => {
           beforeAll(async () => {
-            ({ browser, page } = await launchBrowser());
-            await highlightMatches(page, GOOD_SEARCH_QUERY);
+            ({ browser, pages } = await launchBrowser(NUMBER_OF_TABS));
+            page = pages[0];
+            await searchAndHighlightMatches(page, GOOD_SEARCH_QUERY);
           });
 
           afterAll(async () => {
@@ -143,9 +138,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             initialIndex = await getHighlightFocusMatchIndex(page);
 
-            await page.focus(INPUT_SELECTOR);
-            await page.keyboard.press('Enter');
-            await page.waitForTimeout(1000);
+            await navigateWithEnterKey(page);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             const matchingCounts = await getInnerTextFromSelector(page);
@@ -167,7 +160,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             let totalMatchCount = matchingCounts.split('/')[1];
 
             while (currentMatchCount !== totalMatchCount) {
-              await page.keyboard.press('Enter');
+              await navigateWithEnterKey(page);
 
               matchingCounts = await waitForElementTextChange(
                 page,
@@ -179,7 +172,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
               totalMatchCount = matchingCounts.split('/')[1];
             }
 
-            await page.keyboard.press('Enter');
+            await navigateWithEnterKey(page);
 
             matchingCounts = await waitForElementTextChange(
               page,
@@ -195,12 +188,10 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
         });
 
         describe('Navigation with Previous Button', () => {
-          const previousButtonSelector =
-            '#cntrl-f-extension #previous-match-btn';
-
           beforeAll(async () => {
-            ({ browser, page } = await launchBrowser());
-            await highlightMatches(page, GOOD_SEARCH_QUERY);
+            ({ browser, pages } = await launchBrowser(NUMBER_OF_TABS));
+            page = pages[0];
+            await searchAndHighlightMatches(page, GOOD_SEARCH_QUERY);
           });
 
           afterAll(async () => {
@@ -212,8 +203,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
             let matchingCounts = await getInnerTextFromSelector(page);
 
-            await page.waitForSelector(previousButtonSelector);
-            await page.click(previousButtonSelector);
+            await navigateWithPreviousButton(page);
 
             matchingCounts = await waitForElementTextChange(
               page,
@@ -239,8 +229,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
 
             expect(matchingCounts).toEqual('3/3'); // FIXME: This should be dynamic
 
-            await page.waitForSelector(previousButtonSelector);
-            await page.click(previousButtonSelector);
+            await navigateWithPreviousButton(page);
 
             matchingCounts = await waitForElementTextChange(
               page,
@@ -259,6 +248,24 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
     });
   });
 });
+
+async function navigateWithNextButton(page: Page) {
+  await page.waitForSelector(NEXT_BUTTON_SELECTOR);
+  await page.click(NEXT_BUTTON_SELECTOR);
+  // await page.waitForTimeout(1000);
+}
+
+const navigateWithEnterKey = async (page: Page) => {
+  // await page.focus(INPUT_SELECTOR);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(1000);
+};
+
+const navigateWithPreviousButton = async (page: Page) => {
+  await page.waitForSelector(PREVIOUS_BUTTON_SELECTOR);
+  await page.click(PREVIOUS_BUTTON_SELECTOR);
+  // await page.waitForTimeout(1000);
+};
 
 async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
   return await page.evaluate(() => {
@@ -313,7 +320,7 @@ async function waitForElementTextChange(
 //   }
 // }
 
-async function highlightMatches(page: Page, query: string) {
+async function searchAndHighlightMatches(page: Page, query: string) {
   await page.waitForSelector(INPUT_SELECTOR);
   await page.type(INPUT_SELECTOR, query);
 
@@ -321,8 +328,7 @@ async function highlightMatches(page: Page, query: string) {
 
   expect(inputValue).toBe(query);
 
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(1000);
+  await navigateWithEnterKey(page); // FIXME: consider renaming as this is actually submitting the form
 
   const content = await page.content();
   const bodyContent = await page.evaluate(() => document.body.innerText);

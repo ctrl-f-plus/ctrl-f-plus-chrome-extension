@@ -150,7 +150,3 @@ Testing Packages:
 babel-jest
 ts-jest
 ts-node
-
-
-
-can you provide this update: `Make use of async/await: While you're already using async/await in your code, there are few places where it can be improved. For instance, you can refactor the getHighlightFocusMatchIndex function to use await within the evaluate function.`
