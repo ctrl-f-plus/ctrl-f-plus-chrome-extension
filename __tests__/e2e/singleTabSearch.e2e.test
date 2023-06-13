@@ -1,7 +1,7 @@
 // __tests__/e2e/singleTabSearch.e2e.test.ts
 
 import { Browser, Page } from 'puppeteer';
-import { verifyAllMatchesAreHighlighted } from './helper';
+// import { verifyAllMatchesAreHighlighted } from './helper';
 import { cleanupBrowsers, launchBrowser } from './testSetup';
 const GOOD_SEARCH_QUERY = 'ben';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
