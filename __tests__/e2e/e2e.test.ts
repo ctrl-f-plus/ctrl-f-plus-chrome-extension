@@ -12,18 +12,29 @@ const MATCHING_COUNTS_SELECTOR =
 const NUMBER_OF_TABS: number = 1;
 const NEXT_BUTTON_SELECTOR = '#cntrl-f-extension #next-match-btn';
 const PREVIOUS_BUTTON_SELECTOR = '#cntrl-f-extension #previous-match-btn';
-const TEST_URL0 = 'https://benjamin-chavez.com';
-const TEST_URL1 = 'https://github.com/bmchavez';
-const TEST_URL2 = 'https://benjamin-chavez.com';
+
+// TODO: NEED TO ADD ACTUAL URLs. May need to add them to the tabScenarios' objects
+const TEST_URLS = [
+  'https://benjamin-chavez.com',
+  'https://github.com/bmchavez',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+  'https://benjamin-chavez.com',
+];
 
 describe('Tab Navigation Extension', () => {
   const tabScenarios = [
-    'Single Tab: Basic Match Navigation',
-    'Two Tabs: Tab Switching and Skipping',
-    'Three Tabs: Multiple Tab Switching and Skipping',
-    'Three Tabs: All Tabs with Matches',
-    'Three Tabs: No Matches in Any Tab',
-    'Eight Tabs: Mixed Matches',
+    { name: 'Single Tab: Basic Match Navigation', tabCount: 1 },
+    { name: 'Two Tabs: Tab Switching and Skipping', tabCount: 2 },
+    { name: 'Three Tabs: Multiple Tab Switching and Skipping', tabCount: 3 },
+    { name: 'Three Tabs: All Tabs with Matches', tabCount: 3 },
+    { name: 'Three Tabs: No Matches in Any Tab', tabCount: 3 },
+    { name: 'Eight Tabs: Mixed Matches', tabCount: 8 },
   ];
 
   for (const scenario of tabScenarios) {
@@ -34,7 +45,7 @@ describe('Tab Navigation Extension', () => {
     let page: Page;
     let query: string;
 
-    describe(scenario, () => {
+    describe(scenario.name, () => {
       beforeAll(async () => {
         browser = await puppeteer.launch({
           headless: false,
@@ -49,16 +60,18 @@ describe('Tab Navigation Extension', () => {
         // browserArray.push(browser);
         pages = await browser.pages();
         page = pages[0];
-        await pages[0].goto(TEST_URL0);
-        await pages[0].bringToFront();
-        query = GOOD_SEARCH_QUERY;
+        await page.goto(TEST_URLS[0]);
 
-        if (scenario === 'Two Tabs: Tab Switching and Skipping') {
-          const page2 = await browser.newPage();
-          pages.push(page2);
-          await pages[1].goto(TEST_URL1);
-          await pages[1].bringToFront();
+        for (let i = 1; i < scenario.tabCount; i++) {
+          let newPage = await browser.newPage();
+          pages.push(newPage);
+
+          await newPage.goto(TEST_URLS[i]);
+          await newPage.bringToFront();
         }
+
+        await page.bringToFront();
+        query = GOOD_SEARCH_QUERY;
       });
 
       afterAll(async () => {
@@ -67,6 +80,7 @@ describe('Tab Navigation Extension', () => {
 
       describe('Match Highlighting', () => {
         test('Extension finds and highlights correct number of matches', async () => {
+          // page = pages[0];
           // Get the actual count of query matches - Iterate through the tabs and count the number of query matches
           const queryMatchCount = await countQueryMatches(pages, query);
 
@@ -108,6 +122,11 @@ describe('Tab Navigation Extension', () => {
       //   });
       // });
 
+      // TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE
+      // TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE
+      // TODO: 1) Finish this `Count Display` test.
+      // TODO: 2) Update the testing URLs.
+      // TODO: 2) Move on to the navigation methods tests
       describe('Count Display', () => {
         test.todo('Total Matches Count is accurate');
       });
@@ -119,7 +138,7 @@ describe('Tab Navigation Extension', () => {
         });
 
         test('closing the search input hides the overlay', async () => {
-          const searchInput = await page.$(INPUT_SELECTOR);
+          const searchInput = await page.$(INPUT_SELECTOR); // TODO: Consider making this a loop too (to check all tabs)
           expect(searchInput).toBe(null);
           // expect(searchInput).toBeNull();
         });
