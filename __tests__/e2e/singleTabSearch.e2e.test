@@ -49,7 +49,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           const inputValue = await getInputValueFromSelector(page);
           expect(inputValue).toBe(BAD_SEARCH_QUERY);
 
-          await navigateMatchesWithEnterKey(page);
+          await ney(page);
 
           expect(highlightCount).toBe(0);
 
@@ -135,7 +135,7 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             initialIndex = await getHighlightFocusMatchIndex(page);
 
-            await navigateMatchesWithEnterKey(page);
+            await ney(page);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             const matchingCounts = await getInnerTextFromSelector(page);
@@ -147,12 +147,12 @@ describe('Ctrl-F Plus Chrome Extension E2E tests', () => {
           });
 
           it('should navigate back to the first match and update the match count when the enter key is pressed on the last match', async () => {
-            await navigateToLastMatch(page, navigateMatchesWithEnterKey);
+            await navigateToLastMatch(page, ney);
 
             let matchingCounts = await getInnerTextFromSelector(page);
 
             // await page.focus(INPUT_SELECTOR);
-            await navigateMatchesWithEnterKey(page);
+            await ney(page);
 
             await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
             matchingCounts = await waitForElementTextChange(
@@ -248,7 +248,7 @@ async function navigateMatchesWithNextButton(page: Page) {
   // await page.waitForTimeout(1000);
 }
 
-const navigateMatchesWithEnterKey = async (page: Page) => {
+const ney = async (page: Page) => {
   // await page.focus(INPUT_SELECTOR);
   await page.keyboard.press('Enter');
   await page.waitForTimeout(1000);
@@ -343,7 +343,7 @@ async function searchAndHighlightMatches(page: Page, query: string) {
 
   expect(inputValue).toBe(query);
 
-  await navigateMatchesWithEnterKey(page); // FIXME: consider renaming as this is actually submitting the form
+  await ney(page); // FIXME: consider renaming as this is actually submitting the form
 }
 
 async function getMatchCountsFromHtml(page: Page, query: string) {
