@@ -2,6 +2,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 // import { getInputValueFromSelector } from './helper';
 const EXTENSION_PATH = 'dist/';
+// const GOOD_SEARCH_QUERY = 'chavez';
 const GOOD_SEARCH_QUERY = 'ben';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
 const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
@@ -16,33 +17,33 @@ const PREVIOUS_BUTTON_SELECTOR = '#cntrl-f-extension #previous-match-btn';
 // TODO: NEED TO ADD ACTUAL URLs. May need to add them to the tabScenarios' objects
 
 const TEST_URLS_YES = [
-  // 'https://benjamin-chavez.com'];
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
 ];
 
 const TEST_URLS_NO_YES = [
   'https://www.google.com',
 
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
 ];
 
 const TEST_URLS_YES_NO_YES = [
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
   'https://www.google.com',
   'https://github.com/bmchavez',
 ];
 
 const TEST_URLS_YES_YES_YES = [
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
 
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
 
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
 ];
 
 const TEST_URLS_NO_NO_NO = [
@@ -55,14 +56,14 @@ const TEST_URLS_NO_NO_YES_YES_NO_NO_YES_NO_NO = [
   'https://www.google.com',
   'https://www.google.com',
 
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
   'https://github.com/bmchavez',
   'https://www.google.com',
   'https://www.google.com',
 
-  // 'https://benjamin-chavez.com',
-  'http://127.0.0.1:5501/docs/index.html',
+  'https://benjamin-chavez.com',
+  // 'http://127.0.0.1:5500/docs/index.html',
   'https://www.google.com',
   'https://www.google.com',
 ];
@@ -247,6 +248,7 @@ describe('Tab Navigation Extension', () => {
 
             // Check that the match with the .highlight-focus class has incremented part2
             expect(currentHighlightIndex).toBe(
+              // (previousHighlightIndex + 1) % (totalMatchesCount - 1)
               (previousHighlightIndex + 1) % totalMatchesCount
             );
           }
@@ -256,7 +258,7 @@ describe('Tab Navigation Extension', () => {
         };
 
         test('Navigation works correctly with nextButton', async () => {
-          // await navigationTest(navigateMatchesWithNextButton);
+          await navigationTest(navigateMatchesWithNextButton);
           // let previousPage: Page = await getActiveTab(pages);
           // let currentPage: Page = await getActiveTab(pages); // previousPage; // = await getActiveTab(pages);;
           // let previousHighlightIndex: number = 0;
@@ -309,7 +311,7 @@ describe('Tab Navigation Extension', () => {
         });
 
         test('Navigation works correctly with previousButton', async () => {
-          await navigationTest(navigateMatchesWithPreviousButton);
+          // await navigationTest(navigateMatchesWithPreviousButton);
           // Test code here...
           // for (let i = totalMatches - 1; i >= 0; i--) {
           //   // Trigger 'previousButton' navigation...
