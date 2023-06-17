@@ -70,42 +70,42 @@ const TEST_URLS_NO_NO_YES_YES_NO_NO_YES_NO_NO = [
 
 describe('Tab Navigation Extension', () => {
   const tabScenarios = [
-    // {
-    //   name: 'Single Tab: Basic Match Navigation',
-    //   tabCount: 1,
-    //   testUrls: TEST_URLS_YES,
-    //   expectedTabPath: [0],
-    // },
-    // {
-    //   name: 'Two Tabs: Tab Switching and Skipping',
-    //   tabCount: 2,
-    //   testUrls: TEST_URLS_NO_YES,
-    //   expectedTabPath: [1],
-    // },
+    {
+      name: 'Single Tab: Basic Match Navigation',
+      tabCount: 1,
+      testUrls: TEST_URLS_YES,
+      expectedTabPath: [0],
+    },
+    {
+      name: 'Two Tabs: Tab Switching and Skipping',
+      tabCount: 2,
+      testUrls: TEST_URLS_NO_YES,
+      expectedTabPath: [1],
+    },
     {
       name: 'Three Tabs: Multiple Tab Switching and Skipping',
       tabCount: 3,
       testUrls: TEST_URLS_YES_NO_YES,
       expectedTabPath: [0, 2, 0], // <- correct
     },
-    // {
-    //   name: 'Three Tabs: All Tabs with Matches',
-    //   tabCount: 3,
-    //   testUrls: TEST_URLS_YES_YES_YES,
-    //   expectedTabPath: [0, 1, 2, 0],
-    // },
-    // {
-    //   name: 'Three Tabs: No Matches in Any Tab',
-    //   tabCount: 3,
-    //   testUrls: TEST_URLS_NO_NO_NO,
-    //   expectedTabPath: [0],
-    // },
-    // {
-    //   name: 'Eight Tabs: Mixed Matches',
-    //   tabCount: 9,
-    //   testUrls: TEST_URLS_NO_NO_YES_YES_NO_NO_YES_NO_NO,
-    //   expectedTabPath: [2, 3, 6, 2],
-    // },
+    {
+      name: 'Three Tabs: All Tabs with Matches',
+      tabCount: 3,
+      testUrls: TEST_URLS_YES_YES_YES,
+      expectedTabPath: [0, 1, 2, 0],
+    },
+    {
+      name: 'Three Tabs: No Matches in Any Tab',
+      tabCount: 3,
+      testUrls: TEST_URLS_NO_NO_NO,
+      expectedTabPath: [0],
+    },
+    {
+      name: 'Eight Tabs: Mixed Matches',
+      tabCount: 9,
+      testUrls: TEST_URLS_NO_NO_YES_YES_NO_NO_YES_NO_NO,
+      expectedTabPath: [2, 3, 6, 2],
+    },
   ];
 
   for (const scenario of tabScenarios) {
@@ -126,7 +126,7 @@ describe('Tab Navigation Extension', () => {
         browser = await puppeteer.launch({
           headless: false,
           devtools: true,
-          slowMo: 25,
+          slowMo: 15,
           defaultViewport: null,
           args: [
             `--disable-extensions-except=${EXTENSION_PATH}`,
@@ -203,11 +203,19 @@ describe('Tab Navigation Extension', () => {
 
       // MAybe start keeping track of tab index and match index and keep all of this information stored in a data structure
       describe('Navigation Methods', () => {
-        const navigationTest = async (navigationFunction: Function) => {
+        const navigationTest = async (
+          navigationFunction: Function,
+          isNavigatingFowards: boolean = true
+        ) => {
           let previousPage: Page = await getActiveTab(pages);
           let currentPage: Page = await getActiveTab(pages);
           let previousHighlightIndex: number = 0;
-          let currentHighlightIndex = 0;
+          // let currentHighlightIndex = 0;
+          let currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
+            currentPage,
+            pages
+          );
+          // console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
 
           for (let i = 0; i < totalMatchesCount; i++) {
             previousPage = currentPage;
@@ -216,42 +224,33 @@ describe('Tab Navigation Extension', () => {
             await navigationFunction(currentPage);
 
             currentPage = await getActiveTab(pages);
-            // currentHighlightIndex = await getHighlightFocusMatchIndex(
-            //   currentPage
-            // );
-            // console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
 
             // Check that the match with the .highlight-focus class has incremented part1
             if (currentPage !== previousPage) {
               const previousTabFinalHighlightIndex =
                 await getHighlightFocusMatchIndex(previousPage);
 
-              console.log('tabswitch');
-
               // Test that the .highlight-focus class has been removed from the previous tab
               expect(previousTabFinalHighlightIndex).toBe(-1);
 
               const activeTabIndex = await getActiveTabIndex(pages);
               navigatedTabPath.push(activeTabIndex);
-
-              // TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE
-              // TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE TODO: START HERE
-              // TODO: backwards iteration is not working properly, i think it may be due to the previousHighlightIndex
-              // previousHighlightIndex = -1;
-              previousHighlightIndex = totalMatchesCount;
             }
+
             currentPage = await getActiveTab(pages);
-            currentHighlightIndex = await getHighlightFocusMatchIndex(
-              currentPage
+
+            currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
+              currentPage,
+              pages
             );
-            console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
+            // console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
 
-            // globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //**FWD
-            globalMatchIndex =
-              (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //**BCKWD
-
-            // currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
-            // currentIndex: (state2.currentIndex - 1 + state2.matchesObj.length) % state2.matchesObj.length,
+            if (isNavigatingFowards) {
+              globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //**FWD
+            } else {
+              globalMatchIndex =
+                (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //**BCKWD
+            }
 
             let matchingCounts = await getInnerTextFromSelector(
               currentPage,
@@ -263,11 +262,23 @@ describe('Tab Navigation Extension', () => {
             // Test that the displayed index is the same as the actual index in the list of matches
             expect(globalMatchIndex).toBe(currentMatchIndex - 1);
 
+            let expectedValue;
+            if (isNavigatingFowards) {
+              expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //**FWD - 1-indexed
+              // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
+            } else {
+              expectedValue =
+                (previousHighlightIndex - 1 + totalMatchesCount) %
+                  totalMatchesCount || totalMatchesCount; //**BCKWD
+            }
+
             // Check that the match with the .highlight-focus class has incremented part2
             expect(currentHighlightIndex).toBe(
-              // (previousHighlightIndex + 1) % totalMatchesCount //**FWD
-              (previousHighlightIndex - 1 + totalMatchesCount) %
-                totalMatchesCount //**BCKWD
+              expectedValue
+              // (previousHighlightIndex % totalMatchesCount) + 1 //**FWD - 1-indexed
+              // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
+              // (previousHighlightIndex - 1 + totalMatchesCount) %
+              //   totalMatchesCount || totalMatchesCount //**BCKWD
             );
 
             // currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
@@ -275,27 +286,43 @@ describe('Tab Navigation Extension', () => {
           }
 
           // Check that we wrapped back around to the first match on the first tab containing matches and that tabs without matches were skipped
+          console.log(navigatedTabPath);
+
+          let expectedNavPath = scenario.expectedTabPath;
+          if (!isNavigatingFowards) {
+            expectedNavPath = expectedNavPath.reverse(); //**BCKWD
+          }
           // expect(navigatedTabPath).toStrictEqual(scenario.expectedTabPath);
+          expect(navigatedTabPath).toStrictEqual(expectedNavPath);
         };
 
-        // describe('Navigation works correctly with nextButton', () => {
-        //   test('Navigation works correctly with nextButton', async () => {
-        //     await navigationTest(navigateMatchesWithNextButton);
-        //   });
-        // });
-
-        // describe('Navigation works correctly with Enter Key', () => {
-        //   test('Navigation works correctly with Enter key', async () => {
-        //     navigatedTabPath = [];
-        //     const activeTabIndex = await getActiveTabIndex(pages);
-        //     navigatedTabPath.push(activeTabIndex);
-        //     await navigationTest(navigateMatchesWithEnterKey);
-        //   });
-        // });
+        describe('Navigation works correctly with nextButton', () => {
+          test('Navigation works correctly with nextButton', async () => {
+            await navigationTest(navigateMatchesWithNextButton);
+          });
+        });
 
         describe('Navigation works correctly with Enter Key', () => {
+          test('Navigation works correctly with Enter key', async () => {
+            navigatedTabPath = [];
+            const activeTabIndex = await getActiveTabIndex(pages);
+            navigatedTabPath.push(activeTabIndex);
+
+            await navigationTest(navigateMatchesWithEnterKey);
+          });
+        });
+
+        describe('Navigation works correctly with Previous Button', () => {
           test('Navigation works correctly with previousButton', async () => {
-            await navigationTest(navigateMatchesWithPreviousButton);
+            const isNavigatingFowards = false;
+            navigatedTabPath = [];
+            const activeTabIndex = await getActiveTabIndex(pages);
+            navigatedTabPath.push(activeTabIndex);
+
+            await navigationTest(
+              navigateMatchesWithPreviousButton,
+              isNavigatingFowards
+            );
           });
         });
       });
@@ -305,7 +332,7 @@ describe('Tab Navigation Extension', () => {
           page = await getActiveTab(pages);
           await page.keyboard.press('Escape');
           await page.waitForTimeout(1000);
-          console.log(navigatedTabPath);
+          // console.log(navigatedTabPath);
         });
 
         test('closing the search input hides the overlay', async () => {
@@ -463,4 +490,29 @@ async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
       el.classList.contains('ctrl-f-highlight-focus')
     );
   });
+}
+
+async function getHighlightFocusMatchGlobalIndex(
+  currentPage: Page,
+  pages: Page[]
+): Promise<number> {
+  let globalIndex = 0;
+  for (const page of pages) {
+    if (page === currentPage) {
+      break;
+    }
+
+    globalIndex += await countHighlightsOnPage(page, GOOD_SEARCH_QUERY);
+  }
+
+  const addIndex = await currentPage.evaluate(() => {
+    const nodeList = document.querySelectorAll('.ctrl-f-highlight');
+    const elements = Array.from(nodeList);
+
+    return elements.findIndex((el) =>
+      el.classList.contains('ctrl-f-highlight-focus')
+    );
+  });
+
+  return (globalIndex += addIndex + 1);
 }
