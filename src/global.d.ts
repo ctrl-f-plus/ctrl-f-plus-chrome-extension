@@ -11,6 +11,7 @@ declare global {
       searchInFrames?: boolean,
       showDialog?: boolean
     ) => boolean;
+    toggleLayover: () => void;
   }
 }
 

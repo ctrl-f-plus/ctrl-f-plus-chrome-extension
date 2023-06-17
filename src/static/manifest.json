@@ -1,5 +1,5 @@
 {
-  "name": "Kntrl",
+  "name": "Ctrl-F Plus",
   "description": "Kntrl is an extension for word searching through tabs - DEMO TEST VERSION",
   "version": "1.0.0",
   "manifest_version": 3,
@@ -9,6 +9,7 @@
     "128": "icon.png"
   },
   "action": {
+    "default_popup": "popup.html",
     "default_title": "Kntrl Extension",
     "default_icon": "icon.png"
   },
@@ -31,6 +32,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["contentScript.js"],
+      "all_frames": true,
       "run_at": "document_idle"
     }
   ]

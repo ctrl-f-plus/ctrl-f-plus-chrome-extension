@@ -95,12 +95,10 @@ function SearchInput({ focus }: SearchInputProps) {
       tabStateContext.globalMatchIdxStart !== undefined &&
       tabStateContext.currentIndex !== undefined
     ) {
-      // TODO: undo this
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const curIdxRENAME_ME =
+      const currentMatchIndex =
         tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
-      setMatchingCounts(`${curIdxRENAME_ME}/${totalMatchesCount}`);
+      setMatchingCounts(`${currentMatchIndex}/${totalMatchesCount}`);
       // console.log(`${new Date().getTime()}`, ': ', matchingCounts);
     }
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
@@ -201,6 +199,7 @@ function SearchInput({ focus }: SearchInputProps) {
             <button
               onClick={previousMatch}
               type="button"
+              id="previous-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
@@ -211,16 +210,18 @@ function SearchInput({ focus }: SearchInputProps) {
             <button
               onClick={nextMatch}
               type="button"
+              id="next-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
-              <span className="sr-only">Previous</span>
+              <span className="sr-only">Next</span>
               <ChevronDownIcon className="btn-icon" aria-hidden="true" />
             </button>
 
             <button
               onClick={closeSearchLayover}
               type="button"
+              id="close-layover-btn"
               className="x-mark-btn focus:ctrl-ring-2 focus:ctrl-ring-red-600"
             >
               <span className="sr-only">Dismiss</span>
