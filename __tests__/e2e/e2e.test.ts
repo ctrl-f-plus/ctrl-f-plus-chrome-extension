@@ -1,5 +1,7 @@
+// __tests__/e2e/e2e.test.ts
 // Import puppeteer
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { setupTest } from './testSetup';
 // import { getInputValueFromSelector } from './helper';
 const EXTENSION_PATH = 'dist/';
 // const GOOD_SEARCH_QUERY = 'chavez';
@@ -109,17 +111,17 @@ describe('Tab Navigation Extension', () => {
   ];
 
   for (const scenario of tabScenarios) {
-    let browserArray: Browser[];
+    let browserArray: Browser[] = [];
     let browser: Browser;
-
-    let globalMatchIndex = 0;
-
     let pages: Page[];
     let page: Page;
+
     let query: string;
-    // let matches: { totalMatches: number; matchesPerTab: number[] };
     let queryMatchCount: number;
     let navigatedTabPath: number[] = [];
+
+    let totalHighlightCount: number;
+    let totalMatchesCount: number;
 
     describe(scenario.name, () => {
       beforeAll(async () => {
@@ -134,8 +136,10 @@ describe('Tab Navigation Extension', () => {
           ],
         });
 
+        totalHighlightCount = 0;
+        totalMatchesCount = 0;
         const testUrls = scenario.testUrls;
-        // browserArray.push(browser);
+        browserArray.push(browser);
         pages = await browser.pages();
         page = pages[0];
         await page.goto(testUrls[0]);
@@ -146,26 +150,20 @@ describe('Tab Navigation Extension', () => {
 
           await newPage.goto(testUrls[i]);
           await newPage.bringToFront();
-
-          // const matches = await countQueryMatches(pages, query);
-          // queryMatchCount = await countQueryMatches(pages, query);
         }
 
         await page.bringToFront();
         query = GOOD_SEARCH_QUERY;
-        // page = getActiveTab(pages);
       });
 
       afterAll(async () => {
-        await browser.close();
+        browserArray.map(async (browser: Browser) => {
+          await browser.close();
+        });
       });
-
-      let totalHighlightCount = 0;
-      let totalMatchesCount = 0;
 
       describe('Match Highlighting', () => {
         test('Extension finds and highlights correct number of matches', async () => {
-          // Get the actual count of query matches - Iterate through the tabs and count the number of query matches
           queryMatchCount = await countQueryMatches(pages, query);
 
           // async function performSearch(page: Page, query: string) {
@@ -178,14 +176,9 @@ describe('Tab Navigation Extension', () => {
           const activeTabIndex = await getActiveTabIndex(pages);
           navigatedTabPath.push(activeTabIndex);
 
-          // Get the count of all highlighted matches - Iterate through the tabs and count elements that have the .highlight class
           totalHighlightCount = await countHighlightedMatches(pages, query);
           expect(totalHighlightCount).toBe(queryMatchCount);
         });
-
-        test.todo(
-          'TESTS THAT THE SEARCH SWITCHES THE ACTIVE TAB TO THE FIRST TAB THAT HAS MATCHES'
-        );
       });
 
       describe('Count Display', () => {
@@ -201,104 +194,16 @@ describe('Tab Navigation Extension', () => {
         });
       });
 
-      // MAybe start keeping track of tab index and match index and keep all of this information stored in a data structure
       describe('Navigation Methods', () => {
-        const navigationTest = async (
-          navigationFunction: Function,
-          isNavigatingFowards: boolean = true
-        ) => {
-          let previousPage: Page = await getActiveTab(pages);
-          let currentPage: Page = await getActiveTab(pages);
-          let previousHighlightIndex: number = 0;
-          // let currentHighlightIndex = 0;
-          let currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
-            currentPage,
-            pages
-          );
-          // console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
-
-          for (let i = 0; i < totalMatchesCount; i++) {
-            previousPage = currentPage;
-            previousHighlightIndex = currentHighlightIndex;
-
-            await navigationFunction(currentPage);
-
-            currentPage = await getActiveTab(pages);
-
-            // Check that the match with the .highlight-focus class has incremented part1
-            if (currentPage !== previousPage) {
-              const previousTabFinalHighlightIndex =
-                await getHighlightFocusMatchIndex(previousPage);
-
-              // Test that the .highlight-focus class has been removed from the previous tab
-              expect(previousTabFinalHighlightIndex).toBe(-1);
-
-              const activeTabIndex = await getActiveTabIndex(pages);
-              navigatedTabPath.push(activeTabIndex);
-            }
-
-            currentPage = await getActiveTab(pages);
-
-            currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
-              currentPage,
-              pages
-            );
-            // console.log(`currentHighlightIndex: ${currentHighlightIndex}`);
-
-            if (isNavigatingFowards) {
-              globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //**FWD
-            } else {
-              globalMatchIndex =
-                (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //**BCKWD
-            }
-
-            let matchingCounts = await getInnerTextFromSelector(
-              currentPage,
-              MATCHING_COUNTS_SELECTOR
-            );
-
-            let currentMatchIndex = parseInt(matchingCounts.split('/')[0]);
-
-            // Test that the displayed index is the same as the actual index in the list of matches
-            expect(globalMatchIndex).toBe(currentMatchIndex - 1);
-
-            let expectedValue;
-            if (isNavigatingFowards) {
-              expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //**FWD - 1-indexed
-              // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
-            } else {
-              expectedValue =
-                (previousHighlightIndex - 1 + totalMatchesCount) %
-                  totalMatchesCount || totalMatchesCount; //**BCKWD
-            }
-
-            // Check that the match with the .highlight-focus class has incremented part2
-            expect(currentHighlightIndex).toBe(
-              expectedValue
-              // (previousHighlightIndex % totalMatchesCount) + 1 //**FWD - 1-indexed
-              // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
-              // (previousHighlightIndex - 1 + totalMatchesCount) %
-              //   totalMatchesCount || totalMatchesCount //**BCKWD
-            );
-
-            // currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
-            // currentIndex: (previousHighlightIndex - 1 + totalMatchesCount) % totalMatchesCount,
-          }
-
-          // Check that we wrapped back around to the first match on the first tab containing matches and that tabs without matches were skipped
-          console.log(navigatedTabPath);
-
-          let expectedNavPath = scenario.expectedTabPath;
-          if (!isNavigatingFowards) {
-            expectedNavPath = expectedNavPath.reverse(); //**BCKWD
-          }
-          // expect(navigatedTabPath).toStrictEqual(scenario.expectedTabPath);
-          expect(navigatedTabPath).toStrictEqual(expectedNavPath);
-        };
-
         describe('Navigation works correctly with nextButton', () => {
           test('Navigation works correctly with nextButton', async () => {
-            await navigationTest(navigateMatchesWithNextButton);
+            await navigationTest(
+              pages,
+              scenario.expectedTabPath,
+              totalMatchesCount,
+              navigateMatchesWithNextButton,
+              true
+            );
           });
         });
 
@@ -308,7 +213,13 @@ describe('Tab Navigation Extension', () => {
             const activeTabIndex = await getActiveTabIndex(pages);
             navigatedTabPath.push(activeTabIndex);
 
-            await navigationTest(navigateMatchesWithEnterKey);
+            await navigationTest(
+              pages,
+              scenario.expectedTabPath,
+              totalMatchesCount,
+              navigateMatchesWithEnterKey,
+              true
+            );
           });
         });
 
@@ -320,6 +231,9 @@ describe('Tab Navigation Extension', () => {
             navigatedTabPath.push(activeTabIndex);
 
             await navigationTest(
+              pages,
+              scenario.expectedTabPath,
+              totalMatchesCount,
               navigateMatchesWithPreviousButton,
               isNavigatingFowards
             );
@@ -332,7 +246,6 @@ describe('Tab Navigation Extension', () => {
           page = await getActiveTab(pages);
           await page.keyboard.press('Escape');
           await page.waitForTimeout(1000);
-          // console.log(navigatedTabPath);
         });
 
         test('closing the search input hides the overlay', async () => {
@@ -484,8 +397,7 @@ async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
   return await page.evaluate(() => {
     const nodeList = document.querySelectorAll('.ctrl-f-highlight');
     const elements = Array.from(nodeList);
-    console.log(elements);
-    console.log('test');
+
     return elements.findIndex((el) =>
       el.classList.contains('ctrl-f-highlight-focus')
     );
@@ -515,4 +427,92 @@ async function getHighlightFocusMatchGlobalIndex(
   });
 
   return (globalIndex += addIndex + 1);
+}
+
+async function navigationTest(
+  pages: Page[],
+  expectedTabPath: number[],
+  totalMatchesCount: number,
+  navigationFunction: Function,
+  isNavigatingFowards: boolean = true
+) {
+  let navigatedTabPath2 = [];
+  let globalMatchIndex = 0;
+  let previousPage: Page = await getActiveTab(pages);
+  let currentPage: Page = await getActiveTab(pages);
+  let previousHighlightIndex: number = 0;
+  let currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
+    currentPage,
+    pages
+  );
+  let activeTabIndex = await getActiveTabIndex(pages);
+  navigatedTabPath2.push(activeTabIndex);
+
+  for (let i = 0; i < totalMatchesCount; i++) {
+    previousPage = currentPage;
+    previousHighlightIndex = currentHighlightIndex;
+
+    await navigationFunction(currentPage);
+
+    currentPage = await getActiveTab(pages);
+
+    if (currentPage !== previousPage) {
+      const previousTabFinalHighlightIndex = await getHighlightFocusMatchIndex(
+        previousPage
+      );
+
+      expect(previousTabFinalHighlightIndex).toBe(-1);
+
+      activeTabIndex = await getActiveTabIndex(pages);
+      navigatedTabPath2.push(activeTabIndex);
+    }
+
+    currentPage = await getActiveTab(pages);
+
+    currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
+      currentPage,
+      pages
+    );
+
+    if (isNavigatingFowards) {
+      globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //**FWD
+    } else {
+      globalMatchIndex =
+        (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //**BCKWD
+    }
+
+    let matchingCounts = await getInnerTextFromSelector(
+      currentPage,
+      MATCHING_COUNTS_SELECTOR
+    );
+
+    let currentMatchIndex = parseInt(matchingCounts.split('/')[0]);
+
+    expect(globalMatchIndex).toBe(currentMatchIndex - 1);
+
+    let expectedValue;
+    if (isNavigatingFowards) {
+      expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //**FWD - 1-indexed
+      // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
+    } else {
+      expectedValue =
+        (previousHighlightIndex - 1 + totalMatchesCount) % totalMatchesCount ||
+        totalMatchesCount; //**BCKWD
+    }
+
+    expect(currentHighlightIndex).toBe(
+      expectedValue
+      // (previousHighlightIndex % totalMatchesCount) + 1 //**FWD - 1-indexed
+      // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
+      // (previousHighlightIndex - 1 + totalMatchesCount) %
+      //   totalMatchesCount || totalMatchesCount //**BCKWD
+    );
+  }
+
+  let expectedNavPath = expectedTabPath;
+  if (!isNavigatingFowards) {
+    expectedNavPath = expectedNavPath.reverse(); //**BCKWD
+  }
+
+  expect(navigatedTabPath2).toStrictEqual(expectedNavPath);
 }
