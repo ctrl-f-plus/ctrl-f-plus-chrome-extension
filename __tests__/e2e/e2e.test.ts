@@ -1,5 +1,5 @@
 // __tests__/e2e/e2e.test.ts
-// Import puppeteer
+
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { setupTest } from './testSetup';
 // import { getInputValueFromSelector } from './helper';
@@ -268,15 +268,15 @@ describe('Tab Navigation Extension', () => {
 });
 
 // Helper Functions
-async function checkMatchIndexAccuracy(
-  page: Page,
-  currentIndex: number,
-  expectedIndex: number
-) {
-  //  TODO:
-  const matchIndex = await page.evaluate(() => currentIndex);
-  expect(matchIndex).toBe(expectedIndex);
-}
+// async function checkMatchIndexAccuracy(
+//   page: Page,
+//   currentIndex: number,
+//   expectedIndex: number
+// ) {
+//   //  TODO:
+//   const matchIndex = await page.evaluate(() => currentIndex);
+//   expect(matchIndex).toBe(expectedIndex);
+// }
 
 async function typeInSearch(page: Page, query: string) {
   await page.waitForSelector(INPUT_SELECTOR);
@@ -515,4 +515,102 @@ async function navigationTest(
   }
 
   expect(navigatedTabPath2).toStrictEqual(expectedNavPath);
+}
+
+/////////
+
+export function parseMatchingCounts(matchingCounts: string) {
+  const [currentMatchIndex, totalMatchesCount] = matchingCounts
+    .split('/')
+    .map(Number);
+  return { currentMatchIndex, totalMatchesCount };
+}
+
+export async function navigateToLastMatch(
+  page: Page,
+  navigateFunction: (page: Page) => Promise<void>
+) {
+  let matchingCounts = await getInnerTextFromSelector(page);
+  let { currentMatchIndex, totalMatchesCount } =
+    parseMatchingCounts(matchingCounts);
+
+  while (currentMatchIndex !== totalMatchesCount) {
+    await navigateFunction(page);
+
+    matchingCounts = await waitForElementTextChange(
+      page,
+      MATCHING_COUNTS_SELECTOR,
+      matchingCounts
+    );
+
+    ({ currentMatchIndex, totalMatchesCount } =
+      parseMatchingCounts(matchingCounts));
+  }
+}
+
+export async function waitForElementTextChange(
+  page: Page,
+  selector: string,
+  initialText: string
+): Promise<string> {
+  await page.waitForFunction(
+    (selector: string, initialText: string) => {
+      const newText = document.querySelector(selector)?.textContent;
+      return newText !== initialText;
+    },
+    {},
+    selector,
+    initialText
+  );
+
+  return await page.$eval(
+    selector,
+    (el: Element) => (el as HTMLElement).innerText
+  );
+}
+
+//export  async function waitForCondition(page, condition, timeout = 30000) {
+//   try {
+//     await page.waitForFunction(condition, { timeout });
+//   } catch (error) {
+//     console.error(`Error waiting for condition: ${error}`);
+//   }
+// }
+
+async function searchAndHighlightMatches(page: Page, query: string) {
+  await page.waitForSelector(INPUT_SELECTOR);
+  await page.type(INPUT_SELECTOR, query);
+
+  const inputValue = await getInputValueFromSelector(page);
+
+  expect(inputValue).toBe(query);
+
+  await navigateMatchesWithEnterKey(page); // FIXME: consider renaming as this is actually submitting the form
+}
+
+export async function getMatchCountsFromHtml(page: Page, query: string) {
+  const content = await page.content();
+  const bodyContent = await page.evaluate(() => document.body.innerText);
+
+  const highlightRegex = new RegExp(
+    `<span class="(ctrl-f-highlight|ctrl-f-highlight ctrl-f-highlight-focus)">${query}<\/span>`,
+    'gi'
+  );
+
+  const searchQueryRegex = new RegExp(`${query}`, 'gi');
+
+  const highlightCount = (content.match(highlightRegex) || []).length;
+  const searchQueryCount = (bodyContent.match(searchQueryRegex) || []).length;
+
+  return { highlightCount, searchQueryCount };
+}
+
+// TESTS
+export function verifyAllMatchesAreHighlighted(
+  highlightCount: number,
+  searchQueryCount: number
+) {
+  it('should have matching counts for highlighted matches and search query matches', () => {
+    expect(highlightCount).toBe(searchQueryCount);
+  });
 }
