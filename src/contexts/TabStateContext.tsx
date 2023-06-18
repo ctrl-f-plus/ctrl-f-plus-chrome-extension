@@ -23,7 +23,7 @@ export interface TabStateContextProviderProps {
 export const TabStateContext = createContext<TabStateContextData>({
   tabStateContext: {
     tabId: undefined,
-    currentIndex: undefined,
+    currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
     globalMatchIdxStart: undefined,
@@ -48,7 +48,8 @@ export function TabStateContextProvider({
     </TabStateContext.Provider>
   );
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 // export type TabStateAction = {
 //   type: TabStateActionTypes;
 //   payload: TabState;

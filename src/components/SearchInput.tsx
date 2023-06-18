@@ -99,7 +99,6 @@ function SearchInput({ focus }: SearchInputProps) {
         tabStateContext.globalMatchIdxStart + tabStateContext.currentIndex + 1;
 
       setMatchingCounts(`${currentMatchIndex}/${totalMatchesCount}`);
-      // console.log(`${new Date().getTime()}`, ': ', matchingCounts);
     }
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
@@ -139,61 +138,8 @@ function SearchInput({ focus }: SearchInputProps) {
 
           <button type="submit" className="hidden" aria-label="Submit" />
 
-          <div
-            // className=" flex justify-evenly items-center"
-            className="btn-group"
-          >
+          <div className="btn-group">
             <div className="divider-x" />
-
-            {/* <button
-              type="button"
-              onClick={previousMatch}
-              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-              disabled={localSearchValue === ''}
-            >
-              {' '}
-              <div className="flex items-center justify-center h-full">
-                <FontAwesomeIcon
-                  size="sm"
-                  icon={faAngleUp}
-                  className="text-slate-200 z-10 group-hover:text-white group-disabled:text-slate-200"
-                />
-              </div>
-              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-            </button>
-
-            <button
-              type="button"
-              onClick={nextMatch}
-              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-              disabled={localSearchValue === ''}
-            >
-              {' '}
-              <div className="flex items-center justify-center h-full">
-                <FontAwesomeIcon
-                  size="sm"
-                  icon={faAngleDown}
-                  className="text-slate-200 z-10 group-hover:text-white mt-0.5"
-                />
-              </div>
-              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-            </button>
-
-            <button
-              onClick={closeSearchLayover}
-              type="button"
-              className="group relative focus:outline-none w-5 h-5 p-1 rounded-full"
-            >
-              {' '}
-              <div className="flex items-center justify-center h-full">
-                <FontAwesomeIcon
-                  size="sm"
-                  icon={faXmark}
-                  className="text-slate-200 z-10 group-hover:text-red-400"
-                />
-              </div>
-              <div className="absolute inset-0 rounded-full bg-white bg-opacity-0 group-hover:bg-opacity-30 transition-opacity" />
-            </button> */}
 
             {/* FIXME: Hacky, intermixing custom css and tailwind css on button elements to implement the active:rings */}
             <button

@@ -7,7 +7,7 @@ export type JSONString = string;
 interface Tab {
   tabId: TabId;
   active?: boolean;
-  currentIndex: number | undefined;
+  currentIndex: number;
   matchesCount: number | undefined;
   globalMatchIdxStart?: number;
 }

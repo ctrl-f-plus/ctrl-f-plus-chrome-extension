@@ -1,6 +1,3 @@
-/* eslint-disable no-param-reassign */
-// FIXME: remove this `eslint-disable` - maybe add a class?
-
 // src/background/store.ts
 
 import { Store, TabStore, WindowStore } from '../types/Store.types';
@@ -25,10 +22,10 @@ export function initWindowStore(): WindowStore {
     // SharedStore properties:
     totalMatchesCount: 0,
     layoverPosition: { x: 0, y: 0 },
-    // showLayover: false,
-    // showMatches: false,
-    showLayover: true,
-    showMatches: true,
+    showLayover: false,
+    showMatches: false,
+    // showLayover: true,
+    // showMatches: true,
     activeTabId: undefined,
     searchValue: '',
     lastSearchValue: '',
@@ -45,25 +42,11 @@ export function initWindowStore(): WindowStore {
 export async function initStore(): Promise<Store> {
   const windows = await getAllOpenWindows();
 
-  // const windowStores: Record<chrome.windows.Window['id'], WindowStore> = {};
-  // let lastFocusedWindowId: chrome.windows.Window['id'] | undefined;
-
   const windowStores: { [K in number]: WindowStore } = {};
   let lastFocusedWindowId: chrome.windows.Window['id'] = -1; // initialize with a default value
 
-  // for (const window of windows) {
-  //   windowStores[window.id] = initWindowStore();
-  //   lastFocusedWindowId = window.id; // TODO: review
-  // }
-
-  // windows.forEach((window) => {
-  //   windowStores[window.id] = initWindowStore();
-  //   lastFocusedWindowId = window.id; // TODO: review
-  // });
-
   windows.forEach((window) => {
     if (window.id !== undefined) {
-      // ensure the id is not undefined before using it
       windowStores[window.id] = initWindowStore();
       lastFocusedWindowId = window.id; // TODO: review
     }
@@ -75,7 +58,6 @@ export async function initStore(): Promise<Store> {
   };
 }
 
-// export function createTabStore(store: Store, tabId: ValidTabId): TabStore {
 export function createTabStore(
   windowStore: WindowStore,
   tabId: ValidTabId
@@ -116,15 +98,6 @@ export function updateStore(
   const updatesTabStores = updates.tabStores;
 
   if (updatesTabStores) {
-    // for (const tabId in updates.tabStores) {
-    //   if (updates.tabStores.hasOwnProperty(tabId)) {
-    //     if (!windowStore.tabStores[tabId]) {
-    //       windowStore.tabStores[tabId] = updates.tabStores[tabId];
-    //     } else {
-    //       Object.assign(windowStore.tabStores[tabId], updates.tabStores[tabId]);
-    //     }
-    //   }
-    // }
     Object.keys(updatesTabStores).forEach((tabId) => {
       const validTabId = tabId as unknown as ValidTabId;
 
@@ -188,7 +161,6 @@ export async function sendStoreToContentScripts(
           console.log(tabId);
           reject(chrome.runtime.lastError);
         } else {
-          // resolve(response);
           resolve(response as boolean);
         }
       });

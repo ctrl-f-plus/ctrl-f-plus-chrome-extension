@@ -1,6 +1,4 @@
-/* eslint-disable no-param-reassign */ // FIXME: remove this and add class for windowStore?
 // src/utils/backgroundUtils.ts
-
 // import { store } from '../background/background';
 
 import { sendStoreToContentScripts, updateStore } from '../background/store';
@@ -154,8 +152,6 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
         if (activeTab.id !== tabId) {
           chrome.tabs.update(tabId, { active: true });
         }
-
-        // break;
       }
     }
   }

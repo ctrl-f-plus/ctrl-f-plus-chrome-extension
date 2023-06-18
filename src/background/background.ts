@@ -12,7 +12,6 @@ import {
   switchTab,
   updateTotalTabsCount,
 } from '../utils/backgroundUtils';
-// import { createUpdateHighlightsMsg } from '../utils/messageUtils/createMessages';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { clearLocalStorage } from '../utils/storage';
 import {
@@ -61,11 +60,7 @@ chrome.runtime.onMessage.addListener(
 
     console.log('Received message:', message, ' \n Store: ', store);
 
-    const {
-      type,
-      payload,
-      // transactionId
-    } = message;
+    const { type, payload } = message;
     const activeWindowStore = getActiveWindowStore();
 
     if (!activeWindowStore) {
@@ -82,7 +77,6 @@ chrome.runtime.onMessage.addListener(
       case 'get-all-matches': {
         const { searchValue } = payload;
 
-        // resetPartialStore(activeWindowStore);
         resetPartialStore(activeWindowStore);
 
         updateStore(activeWindowStore, {
@@ -203,24 +197,24 @@ chrome.commands.onCommand.addListener(async (command) => {
 });
 
 // TODO: Verify that you have feauter flags setup
-if (process.env.NODE_ENV !== 'production') {
-  window.toggleLayover = function () {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
+// if (process.env.NODE_ENV !== 'production') {
+//   window.toggleLayover = function () {
+//     const activeWindowStore = getActiveWindowStore();
+//     if (!activeWindowStore) {
+//       console.error('No active window store available');
+//       return;
+//     }
 
-    const addStyles = !activeWindowStore.showLayover;
+//     const addStyles = !activeWindowStore.showLayover;
 
-    updateStore(activeWindowStore, {
-      showLayover: addStyles,
-      showMatches: addStyles,
-    });
+//     updateStore(activeWindowStore, {
+//       showLayover: addStyles,
+//       showMatches: addStyles,
+//     });
 
-    sendStoreToContentScripts(activeWindowStore);
-  };
-}
+//     sendStoreToContentScripts(activeWindowStore);
+//   };
+// }
 
 chrome.tabs.onCreated.addListener(() => {
   const activeWindowStore = getActiveWindowStore();

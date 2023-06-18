@@ -42,12 +42,11 @@ async function setLocalStorageItem<T extends LocalStorageKeys>(
 }
 
 // FIXME: S/b async await instead?
-export function getStoredLayoverPosition(): Promise<LayoverPosition> {
+export async function getStoredLayoverPosition(): Promise<LayoverPosition> {
   const key: LocalStorageKeys = 'layoverPosition';
 
-  return getLocalStorageItem(key).then(
-    (position) => position ?? { x: 0, y: 0 }
-  );
+  const position = await getLocalStorageItem(key);
+  return position ?? { x: 0, y: 0 };
 }
 
 export function setStoredLayoverPosition(
@@ -78,12 +77,11 @@ export function setStoredLayoverPosition(
 // }
 
 /// ///////////////////////////////////////
-export function getStoredLastSearchValue(): Promise<string> {
+export async function getStoredLastSearchValue(): Promise<string> {
   const key: LocalStorageKeys = 'lastSearchValue';
 
-  return getLocalStorageItem(key).then(
-    (lastSearchValue) => lastSearchValue ?? ''
-  );
+  const lastSearchValue = await getLocalStorageItem(key);
+  return lastSearchValue ?? '';
 }
 
 export function setStoredLastSearchValue(
