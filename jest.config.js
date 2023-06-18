@@ -1,10 +1,11 @@
+// jest.config.js;
+
 module.exports = {
-  preset: 'jest-puppeteer',
+  testEnvironment: 'jsdom',
   testTimeout: 20000,
-  // testPathIgnorePatterns: ['<rootDir>/__tests__/e2e/testSetup.ts'],
-  testMatch: [
-    '**/__tests__/**/*.ts',
-    '!**/__tests__/e2e/testSetup.ts',
-    '!**/__tests__/e2e/helper.ts',
-  ],
+  // transform: {
+  //   '^.+\\.tsx?$': 'babel-jest',
+  // },
+  // testMatch: ['**/__tests__/**/*.ts', '!**/__tests__/e2e/**/*'],
+  testMatch: ['**/__tests__/**/*.ts?(x)', '!**/__tests__/e2e/**/*.ts?(x)'],
 };

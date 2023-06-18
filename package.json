@@ -7,8 +7,9 @@
     "build": "webpack --watch --progress --config webpack.prod.js",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
-    "test": "jest --verbose",
-    "test:slow": "SLOW_MO=250 jest"
+    "test": "jest --verbose --config jest.config.js",
+    "test:e2e": "jest --verbose --config  jest.e2e.config.js",
+    "e2e:slow": "SLOW_MO=250 jest"
   },
   "author": "",
   "devDependencies": {
@@ -18,7 +19,7 @@
     "@babel/preset-react": "^7.22.3",
     "@babel/preset-typescript": "^7.21.5",
     "@tailwindcss/forms": "^0.5.3",
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/react": "^13.4.0",
     "@types/chrome": "^0.0.237",
     "@types/jest": "^29.5.2",
     "@types/react": "^18.2.7",
@@ -40,6 +41,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
     "jest-puppeteer": "^9.0.0",
     "lint-staged": "^13.2.2",
     "postcss-loader": "^7.3.0",
