@@ -78,12 +78,14 @@ export default function useFindMatches() {
 
     const prevIndex = state2.currentIndex;
 
+    // TODO: ***987 0 SearchInput Component Testing
     const currentIndex = state2.matchesObj.length
       ? (state2.currentIndex + 1) % state2.matchesObj.length
       : 0;
 
     const newState2 = {
       ...state2,
+      // currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
       currentIndex,
     };
 

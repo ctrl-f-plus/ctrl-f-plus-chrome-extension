@@ -109,6 +109,7 @@ function SearchInput({ focus }: SearchInputProps) {
           onSubmit={handleSearchSubmit}
           // className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
           className="form-wrapper"
+          data-testid="inputForm"
         >
           <div
             // className="col-span-3 grid grid-cols-6 gap-0 "
@@ -146,6 +147,7 @@ function SearchInput({ focus }: SearchInputProps) {
               onClick={previousMatch}
               type="button"
               id="previous-match-btn"
+              data-testid="previous-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
@@ -157,6 +159,7 @@ function SearchInput({ focus }: SearchInputProps) {
               onClick={nextMatch}
               type="button"
               id="next-match-btn"
+              data-testid="next-match-btn"
               className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
               disabled={localSearchValue === ''}
             >
@@ -168,6 +171,7 @@ function SearchInput({ focus }: SearchInputProps) {
               onClick={closeSearchLayover}
               type="button"
               id="close-layover-btn"
+              data-testid="close-layover-btn"
               className="x-mark-btn focus:ctrl-ring-2 focus:ctrl-ring-red-600"
             >
               <span className="sr-only">Dismiss</span>

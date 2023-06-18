@@ -3,7 +3,8 @@
     "browser": true,
     // "es2021": true
     "es6": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "extends": [
     "airbnb",
@@ -17,7 +18,17 @@
     "plugin:import/typescript",
     "plugin:prettier/recommended"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "files": [
+        "**/__tests__/**/*.{j,t}s?(x)",
+        "**/?(*.)+(spec|test).{j,t}s?(x)"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   // "parser": "@babel/eslint-parser",
   "parserOptions": {

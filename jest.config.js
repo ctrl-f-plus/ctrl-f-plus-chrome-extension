@@ -8,4 +8,7 @@ module.exports = {
   // },
   // testMatch: ['**/__tests__/**/*.ts', '!**/__tests__/e2e/**/*'],
   testMatch: ['**/__tests__/**/*.ts?(x)', '!**/__tests__/e2e/**/*.ts?(x)'],
+  moduleNameMapper: {
+    '\\.(css)$': '<rootDir>/__tests__/mocks/styleMock.js',
+  },
 };
