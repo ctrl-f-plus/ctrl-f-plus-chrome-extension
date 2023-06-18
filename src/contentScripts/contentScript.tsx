@@ -41,22 +41,35 @@ function App() {
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
 
-  const updateContextFromStore = async (tabStore: TabStore) => {
-    setSearchValue(tabStore.searchValue);
-    setLastSearchValue(tabStore.lastSearchValue);
-    setShowLayover(tabStore.showLayover);
-    setShowMatches(tabStore.showMatches);
-    setTotalMatchesCount(tabStore.totalMatchesCount);
-    setLayoverPosition(tabStore.layoverPosition);
-    setActiveTabId(tabStore.activeTabId);
+  // TODO: review how often this is rendered
+  const updateContextFromStore = useCallback(
+    async (tabStore: TabStore) => {
+      setSearchValue(tabStore.searchValue);
+      setLastSearchValue(tabStore.lastSearchValue);
+      setShowLayover(tabStore.showLayover);
+      setShowMatches(tabStore.showMatches);
+      setTotalMatchesCount(tabStore.totalMatchesCount);
+      setLayoverPosition(tabStore.layoverPosition);
+      setActiveTabId(tabStore.activeTabId);
 
-    const { serializedTabState } = tabStore;
-    const xPathTabState: XPathTabState =
-      deserializeMatchesObj(serializedTabState);
-    const tabState = restoreHighlightSpans(xPathTabState);
+      const { serializedTabState } = tabStore;
+      const xPathTabState: XPathTabState =
+        deserializeMatchesObj(serializedTabState);
+      const tabState = restoreHighlightSpans(xPathTabState);
 
-    setTabStateContext(tabState);
-  };
+      setTabStateContext(tabState);
+    },
+    [
+      setActiveTabId,
+      setLastSearchValue,
+      setLayoverPosition,
+      setSearchValue,
+      setShowLayover,
+      setShowMatches,
+      setTabStateContext,
+      setTotalMatchesCount,
+    ]
+  );
 
   const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
 
