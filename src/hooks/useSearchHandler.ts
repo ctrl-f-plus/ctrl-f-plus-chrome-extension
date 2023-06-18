@@ -2,10 +2,7 @@
 
 import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import {
-  sendMessageToBackground,
-  sendMsgToBackground,
-} from '../utils/messageUtils/sendMessageToBackground';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import { clearAllStoredTabs } from '../utils/storage';
 
 export default function useSearchHandler() {
@@ -31,18 +28,10 @@ export default function useSearchHandler() {
         },
       });
     },
-    [sendMessageToBackground, sendMsgToBackground]
+    [setSearchValue, setLastSearchValue]
   );
-
-  const handlePrevious = useCallback((): void => {
-    // sendMessageToBackground({
-    //   from: 'content',
-    //   type: 'prev-match',
-    // });
-  }, [sendMessageToBackground]);
 
   return {
     handleSearch,
-    handlePrevious,
   };
 }
