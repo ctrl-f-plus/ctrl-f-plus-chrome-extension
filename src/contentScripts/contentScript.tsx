@@ -21,10 +21,7 @@ import {
   serializeMatchesObj,
 } from '../utils/htmlUtils';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
-import {
-  sendMessageToBackground,
-  sendMsgToBackground,
-} from '../utils/messageUtils/sendMessageToBackground';
+import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
@@ -76,7 +73,6 @@ function App() {
       let newState;
 
       if (transactionId && transactionId <= lastProcessedTransactionId) {
-        console.log('Ignoring message:', message);
         return undefined;
       }
 
@@ -140,23 +136,9 @@ function App() {
       tabStateContext,
       setTabStateContext,
       updateHighlights,
-      LayoverContext,
-
-      // FIXME: REVIEW THESE
-      // showLayover,
-      // searchValue,
-      // lastSearchValue,
-      // showMatches,
-      // totalMatchesCount,
-      // layoverPosition,
-
       lastProcessedTransactionId,
-      removeAllHighlightMatches,
       updateContextFromStore,
       findAllMatches,
-
-      sendMsgToBackground,
-      serializeMatchesObj,
     ]
   );
 
@@ -199,7 +181,7 @@ function App() {
     };
 
     handleActiveTabChange();
-  }, [activeTabId, showMatches]);
+  }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
 
   useEffect(() => {
     injectStyles(contentStyles);

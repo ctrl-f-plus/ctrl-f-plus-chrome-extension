@@ -88,7 +88,7 @@ function SearchInput({ focus }: SearchInputProps) {
         setInitialLoad(false);
       }
     }
-  }, [focus, localSearchValue]);
+  }, [focus, initialLoad, localSearchValue]);
 
   useEffect(() => {
     if (

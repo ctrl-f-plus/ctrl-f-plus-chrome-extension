@@ -71,13 +71,22 @@ export function LayoverProvider({ children }: LayoverProviderProps) {
     }),
     [
       showLayover,
+      setShowLayover,
       searchValue,
+      setSearchValue,
       lastSearchValue,
+      setLastSearchValue,
       showMatches,
+      setShowMatches,
       totalMatchesCount,
+      setTotalMatchesCount,
       globalMatchIdx,
+      setGlobalMatchIdx,
       layoverPosition,
+      setLayoverPosition,
       activeTabId,
+      setActiveTabId,
+      incrementMatchIndices,
     ]
   );
 
