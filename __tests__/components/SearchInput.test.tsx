@@ -1,4 +1,6 @@
-// <!-- Test that `currentMatchIndex` is not NaN -->
+//  Test that `currentMatchIndex` is not NaN
+//  Test that the navigation buttons are disabled when search has not been submitted
+
 // @ts-nocheck
 
 import React from 'react';
