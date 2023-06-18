@@ -14,5 +14,6 @@
     "strict": true,
     "sourceMap": true
   },
-  "exclude": ["node_modules", ".tmp", "trash"]
+  "exclude": ["node_modules", ".tmp", "trash"],
+  "types": ["node", "jest", "@testing-library/jest-dom"]
 }
