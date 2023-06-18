@@ -11,12 +11,12 @@ import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackgrou
 import scrollToElement from '../utils/scrollUtils';
 
 type UpdateHighlightsOptions = {
-  prevIndex?: number;
+  previousIndex?: number;
   endOfTab?: boolean;
 };
 
 export default function useFindMatches() {
-  const { totalMatchesCount, globalMatchIdx } = useContext(LayoverContext);
+  const { totalMatchesCount } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
   const [state2, setState2] = useState(tabStateContext);
@@ -25,7 +25,7 @@ export default function useFindMatches() {
     if (JSON.stringify(state2) !== JSON.stringify(tabStateContext)) {
       setState2(tabStateContext);
     }
-  }, [tabStateContext]);
+  }, [state2, tabStateContext]);
 
   const findAllMatches = useCallback(
     async (findValue: string) => {
@@ -48,14 +48,14 @@ export default function useFindMatches() {
 
   const updateHighlights = useCallback(
     (state: TabState, options?: UpdateHighlightsOptions): TabState => {
-      const { prevIndex, endOfTab } = options || {};
+      const { previousIndex, endOfTab } = options || {};
       const newState = { ...state };
       if (!newState.matchesObj.length) {
         return newState;
       }
 
-      if (typeof prevIndex === 'number') {
-        const prevMatch = newState.matchesObj[prevIndex];
+      if (typeof previousIndex === 'number') {
+        const prevMatch = newState.matchesObj[previousIndex];
         prevMatch.classList.remove('ctrl-f-highlight-focus');
       }
 
@@ -71,154 +71,107 @@ export default function useFindMatches() {
     []
   );
 
-  const nextMatch = useCallback(async (): Promise<void> => {
-    if (state2.currentIndex === undefined) {
-      return;
-    }
-
-    const prevIndex = state2.currentIndex;
-
-    // TODO: ***987 0 SearchInput Component Testing
-    const currentIndex = state2.matchesObj.length
-      ? (state2.currentIndex + 1) % state2.matchesObj.length
-      : 0;
-
-    const newState2 = {
-      ...state2,
-      // currentIndex: (state2.currentIndex + 1) % state2.matchesObj.length,
-      currentIndex,
-    };
-
-    let updatedState: TabState;
-    // checks if we have seen all of the matches
-    if (newState2.currentIndex === 0) {
-      // removes the focus class from the last match
-      updatedState = updateHighlights(newState2, {
-        prevIndex,
-        endOfTab: true,
-      });
-
-      // checks if the current tab is the last tab
-      if (state2.matchesCount === totalMatchesCount) {
-        updatedState = updateHighlights(updatedState, { endOfTab: false });
-      } else {
-        const serializedState: SerializedTabState = serializeMatchesObj({
-          ...newState2,
-        });
-
-        const msg: SwitchTabMsg = {
-          from: 'content-script-match-utils',
-          type: 'switch-tab',
-          payload: {
-            serializedState,
-            direction: 'next',
-          },
-        };
-
-        // await sendMsgToBackground<SwitchTabMsg>(msg);
-        sendMsgToBackground<SwitchTabMsg>(msg);
-      }
-    } else {
-      updatedState = updateHighlights(newState2, { prevIndex }); // 1
-    }
-    const serializedState: SerializedTabState = serializeMatchesObj({
-      ...updatedState,
-    });
-
-    sendMsgToBackground<UpdateTabStatesObjMsg>({
-      from: 'content:match-utils',
-      type: 'update-tab-states-obj',
-      payload: { serializedState },
-    });
-
-    setState2(updatedState);
-    setTabStateContext(updatedState);
-  }, [
-    updateHighlights,
-    setTabStateContext,
-    state2,
-    totalMatchesCount,
-    globalMatchIdx,
-
-    setState2,
-    serializeMatchesObj,
-    sendMsgToBackground,
-  ]);
-
-  const previousMatch = useCallback(async (): Promise<void> => {
-    if (state2.currentIndex === undefined) {
-      return;
-    }
-
-    const prevIndex = state2.currentIndex; // 0
-
-    const newState2 = {
-      ...state2,
-      currentIndex:
-        (state2.currentIndex - 1 + state2.matchesObj.length) %
-        state2.matchesObj.length,
-    }; // 2
-
-    let updatedState: TabState;
-
-    // checks if we have seen all of the matches
-    if (newState2.currentIndex === state2.matchesObj.length - 1) {
-      updatedState = updateHighlights(newState2, {
-        // removes the focus class from the last match
-        prevIndex,
-        endOfTab: true,
-      });
-
-      // checks if the current tab is the last tab
-      if (state2.matchesCount === totalMatchesCount) {
-        updatedState = updateHighlights(updatedState, { endOfTab: false });
-      } else {
-        // newState2.currentIndex:2 <- should maybe be undefined?
-        const serializedState: SerializedTabState = serializeMatchesObj({
-          ...newState2,
-        });
-        const msg: SwitchTabMsg = {
-          from: 'content-script-match-utils',
-          type: 'switch-tab',
-          payload: {
-            serializedState,
-            direction: 'previous',
-          },
-        };
-
-        // await sendMsgToBackground<SwitchTabMsg>(msg);
-        sendMsgToBackground<SwitchTabMsg>(msg);
-
-        setState2(updatedState);
-        setTabStateContext(updatedState);
+  const navigateMatches = useCallback(
+    (
+      // traversalDirection: 'forward' | 'backward',
+      traversalDirection: 'next' | 'previous',
+      indexCalc: (state2: TabState) => number
+    ) => {
+      if (state2.currentIndex === undefined) {
         return;
       }
-    } else {
-      updatedState = updateHighlights(newState2, { prevIndex });
-    }
-    const serializedState: SerializedTabState = serializeMatchesObj({
-      ...updatedState,
-    });
 
-    sendMsgToBackground<UpdateTabStatesObjMsg>({
-      from: 'content:match-utils',
-      type: 'update-tab-states-obj',
-      payload: { serializedState },
-    });
+      const previousIndex = state2.currentIndex;
 
-    setState2(updatedState);
-    setTabStateContext(updatedState);
-  }, [
-    updateHighlights,
-    setTabStateContext,
-    state2,
-    totalMatchesCount,
-    globalMatchIdx,
+      const newState2 = {
+        ...state2,
+        currentIndex: indexCalc(state2),
+      };
 
-    setState2,
-    serializeMatchesObj,
-    sendMsgToBackground,
-  ]);
+      let updatedState: TabState;
+      // let updatedState = {
+      //   ...tabStateContext,
+      //   currentIndex,
+      // };
+
+      const isEnd =
+        // traversalDirection === 'forward'
+        traversalDirection === 'next'
+          ? newState2.currentIndex === 0
+          : newState2.currentIndex === state2.matchesObj.length - 1;
+
+      if (isEnd) {
+        // removes the focus class from the last match
+        updatedState = updateHighlights(newState2, {
+          previousIndex,
+          endOfTab: true,
+        });
+
+        if (newState2.matchesCount === totalMatchesCount) {
+          updatedState = updateHighlights(updatedState, { endOfTab: false });
+        } else {
+          const serializedState: SerializedTabState = serializeMatchesObj({
+            ...newState2,
+          });
+
+          const message: SwitchTabMsg = {
+            from: 'content-script-match-utils',
+            type: 'switch-tab',
+            payload: {
+              serializedState,
+              direction: traversalDirection,
+            },
+          };
+
+          sendMsgToBackground<SwitchTabMsg>(message);
+
+          // setState2(updatedState);
+          // setTabStateContext(updatedState);
+          // return;
+        }
+      } else {
+        updatedState = updateHighlights(newState2, { previousIndex });
+      }
+
+      const serializedState: SerializedTabState = serializeMatchesObj({
+        ...updatedState,
+      });
+
+      sendMsgToBackground<UpdateTabStatesObjMsg>({
+        from: 'content:match-utils',
+        type: 'update-tab-states-obj',
+        payload: { serializedState },
+      });
+
+      setState2(updatedState);
+      setTabStateContext(updatedState);
+    },
+    [updateHighlights, setTabStateContext, state2, totalMatchesCount, setState2]
+  );
+
+  // TODO: ***987 0 SearchInput Component Testing
+  const nextMatch = useCallback(
+    () =>
+      navigateMatches('next', (state2: TabState) =>
+        // navigateMatches('forward', (state2: TabState) =>
+        state2.matchesObj.length
+          ? (state2.currentIndex + 1) % state2.matchesObj.length
+          : 0
+      ),
+    [navigateMatches]
+  );
+
+  const previousMatch = useCallback(
+    () =>
+      navigateMatches(
+        'previous',
+        // 'backward',
+        (state2: TabState) =>
+          (state2.currentIndex - 1 + state2.matchesObj.length) %
+          state2.matchesObj.length
+      ),
+    [navigateMatches]
+  );
 
   return {
     findAllMatches,
