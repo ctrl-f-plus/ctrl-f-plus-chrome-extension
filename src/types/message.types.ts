@@ -74,17 +74,6 @@ export interface SwitchTabMsg extends BaseMessage {
   };
 }
 
-// export interface MessageFixMe {
-//   async: boolean | true;
-//   type: string;
-//   command?: string;
-//   payload?: any;
-//   prevIndex?: number;
-//   tabId?: TabId;
-//   transactionId?: TransactionId;
-//   foundFirstMatch?: boolean;
-// }
-
 export interface UpdateHighlightsMsg extends BaseMessage {
   async: true;
   from: 'background';

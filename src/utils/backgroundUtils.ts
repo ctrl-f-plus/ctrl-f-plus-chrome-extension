@@ -1,7 +1,6 @@
 // src/utils/backgroundUtils.ts
-// import { store } from '../background/background';
 
-import { sendStoreToContentScripts, updateStore } from '../background/store';
+import { updateStore } from '../background/store';
 import { LayoverPosition } from '../types/Layover.types';
 import { WindowStore } from '../types/Store.types';
 import {

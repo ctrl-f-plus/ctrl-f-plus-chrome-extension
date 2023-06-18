@@ -3,7 +3,6 @@
 import { LayoverPosition } from '../../types/Layover.types';
 import {
   HighlightMsg,
-  UpdateHighlightsMsg,
   UpdateLayoverPositionMsg,
 } from '../../types/message.types';
 import { ValidTabId } from '../../types/tab.types';
@@ -25,22 +24,9 @@ export function createHighlightMsg(
       findValue: searchValue,
       foundFirstMatch,
       tabId,
-      // tabState: {},
     },
   };
 }
-
-// export function createUpdateHighlightsMsg(tabId: number): UpdateHighlightsMsg {
-//   return {
-//     async: true,
-//     from: 'background',
-//     type: 'update-highlights',
-//     payload: {
-//       tabId,
-//       direction:
-//     },
-//   };
-// }
 
 /**
  * FROM: Content
