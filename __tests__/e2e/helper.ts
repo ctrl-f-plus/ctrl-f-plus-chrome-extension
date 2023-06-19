@@ -6,11 +6,11 @@ import { cleanupBrowsers, launchBrowser } from './testSetup';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
 const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
 const TIMEOUT = SLOW_MO ? 10000 : 5000;
-const INPUT_SELECTOR = '#cntrl-f-extension .form-div .input-style';
+const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
 const MATCHING_COUNTS_SELECTOR =
-  '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
-const NEXT_BUTTON_SELECTOR = '#cntrl-f-extension #next-match-btn';
-const PREVIOUS_BUTTON_SELECTOR = '#cntrl-f-extension #previous-match-btn';
+  '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
+const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
+const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
 
 export function parseMatchingCounts(matchingCounts: string) {
   const [currentMatchIndex, totalMatchesCount] = matchingCounts

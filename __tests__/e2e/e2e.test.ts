@@ -9,12 +9,12 @@ const GOOD_SEARCH_QUERY = 'ben';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
 const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
 const TIMEOUT = SLOW_MO ? 10000 : 5000;
-const INPUT_SELECTOR = '#cntrl-f-extension .form-div .input-style';
+const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
 const MATCHING_COUNTS_SELECTOR =
-  '#cntrl-f-extension .form-div .matching-counts-wrapper .matching-counts';
+  '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
 const NUMBER_OF_TABS: number = 1;
-const NEXT_BUTTON_SELECTOR = '#cntrl-f-extension #next-match-btn';
-const PREVIOUS_BUTTON_SELECTOR = '#cntrl-f-extension #previous-match-btn';
+const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
+const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
 
 // TODO: NEED TO ADD ACTUAL URLs. May need to add them to the tabScenarios' objects
 

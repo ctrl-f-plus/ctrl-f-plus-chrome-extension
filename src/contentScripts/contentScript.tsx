@@ -163,7 +163,7 @@ function App() {
     <>
       {' '}
       {showLayover && (
-        <div id="cntrl-f-extension">
+        <div id="ctrl-f-plus-extension">
           <div className="ctrl-fixed ctrl-left-5 ctrl-top-10 ctrl-z-[9999] ctrl-w-screen">
             {' '}
             <Layover>
