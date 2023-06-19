@@ -1,6 +1,6 @@
 // src/contentScript/contentScript.tsx
 
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { createRoot } from 'react-dom/client';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
@@ -12,7 +12,9 @@ import {
 import useActiveTabChange from '../hooks/useActiveTabChange';
 import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
+import useInjectStyles from '../hooks/useInjectStyles';
 import useMessageHandler from '../hooks/useMessageHandler';
+import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
@@ -22,11 +24,9 @@ import {
   restoreHighlightSpans,
   serializeMatchesObj,
 } from '../utils/htmlUtils';
-import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
-import injectStyles from '../utils/styleUtils';
+
+import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
 import contentStyles from './contentStyles';
-import useInjectStyles from '../hooks/useInjectStyles';
-import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 
 function App() {
   const {
