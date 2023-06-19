@@ -9,6 +9,8 @@ import {
   TabStateContext,
   TabStateContextProvider,
 } from '../contexts/TabStateContext';
+import useActiveTabChange from '../hooks/useActiveTabChange';
+import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
 import useMessageHandler from '../hooks/useMessageHandler';
 import '../tailwind.css';
@@ -21,7 +23,6 @@ import {
   serializeMatchesObj,
 } from '../utils/htmlUtils';
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
 
@@ -100,15 +101,11 @@ function App() {
             sendResponse(true);
           }
 
-          // break;
           return true;
         }
         case 'highlight': {
           const { findValue, foundFirstMatch } = message.payload;
-          newState = await findAllMatches(
-            // { ...tabStateContext, tabId },
-            findValue
-          );
+          newState = await findAllMatches(findValue);
 
           const hasMatch = newState.matchesObj.length > 0;
 
@@ -158,22 +155,7 @@ function App() {
   // FIXME: (***878)
   useMessageHandler(handleMessage);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showLayover) {
-        sendMessageToBackground({
-          from: 'content',
-          type: 'remove-styles-all-tabs',
-        });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [showLayover]);
+  useEscapeKeyDown(showLayover);
 
   useEffect(
     () => () => {
@@ -183,18 +165,19 @@ function App() {
     },
     [showMatches]
   );
+  useActiveTabChange();
 
-  useEffect(() => {
-    const handleActiveTabChange = () => {
-      if (showMatches && activeTabId === tabStateContext.tabId) {
-        setShowLayover(true);
-      } else {
-        setShowLayover(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleActiveTabChange = () => {
+  //     if (showMatches && activeTabId === tabStateContext.tabId) {
+  //       setShowLayover(true);
+  //     } else {
+  //       setShowLayover(false);
+  //     }
+  //   };
 
-    handleActiveTabChange();
-  }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
+  //   handleActiveTabChange();
+  // }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
 
   useEffect(() => {
     injectStyles(contentStyles);
