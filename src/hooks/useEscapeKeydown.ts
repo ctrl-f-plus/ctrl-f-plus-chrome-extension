@@ -2,10 +2,13 @@
 
 // FIXME: This hook is actually quite specific. Consider refactoring and generalizing
 
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { LayoverContext } from '../contexts/LayoverContext';
 
-export default function useEscapeKeyDown(showLayover: boolean) {
+export default function useEscapeKeyDown() {
+  const { showLayover } = useContext(LayoverContext);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showLayover) {

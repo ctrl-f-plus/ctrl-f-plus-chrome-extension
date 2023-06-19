@@ -25,6 +25,8 @@ import {
 import { removeAllHighlightMatches } from '../utils/matchUtils/highlightUtils';
 import injectStyles from '../utils/styleUtils';
 import contentStyles from './contentStyles';
+import useInjectStyles from '../hooks/useInjectStyles';
+import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 
 function App() {
   const {
@@ -32,11 +34,9 @@ function App() {
     setShowLayover,
     setSearchValue,
     setLastSearchValue,
-    showMatches,
     setShowMatches,
     setTotalMatchesCount,
     setLayoverPosition,
-    activeTabId,
     setActiveTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
@@ -154,34 +154,10 @@ function App() {
 
   // FIXME: (***878)
   useMessageHandler(handleMessage);
-
-  useEscapeKeyDown(showLayover);
-
-  useEffect(
-    () => () => {
-      if (showMatches) {
-        removeAllHighlightMatches();
-      }
-    },
-    [showMatches]
-  );
+  useEscapeKeyDown();
   useActiveTabChange();
-
-  // useEffect(() => {
-  //   const handleActiveTabChange = () => {
-  //     if (showMatches && activeTabId === tabStateContext.tabId) {
-  //       setShowLayover(true);
-  //     } else {
-  //       setShowLayover(false);
-  //     }
-  //   };
-
-  //   handleActiveTabChange();
-  // }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
-
-  useEffect(() => {
-    injectStyles(contentStyles);
-  }, []);
+  useInjectStyles(contentStyles);
+  useRemoveAllHighlightMatches();
 
   return (
     <>

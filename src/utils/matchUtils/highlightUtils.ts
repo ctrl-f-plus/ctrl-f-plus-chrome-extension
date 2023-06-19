@@ -127,7 +127,7 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
 }
 
 // `searchAndHighlight()` is only called from within `matchUtils.ts`
-export function searchAndHighlight({
+export default function searchAndHighlight({
   state2,
   findValue,
 }: SearchAndHighlightProps) {
@@ -152,27 +152,5 @@ export function searchAndHighlight({
     } catch (error) {
       reject(error);
     }
-  });
-}
-
-//  TODO: maybe move to contentScript as `removeAllHighlightMatches()` is only called from within `contentScript.tsx`
-export function removeAllHighlightMatches() {
-  const highlightElements = document.querySelectorAll(
-    '.ctrl-f-highlight, .ctrl-f-highlight-focus'
-  );
-
-  highlightElements.forEach((elem) => {
-    const { textContent } = elem;
-
-    if (!textContent) {
-      console.warn('removeAllHighlights: Missing textContent for elem:', elem);
-      return;
-    }
-
-    // Replace the innerHTML of the element with its textContent
-    // elem.outerHTML = textContent;
-
-    const textNode = document.createTextNode(textContent);
-    elem.parentNode?.replaceChild(textNode, elem);
   });
 }
