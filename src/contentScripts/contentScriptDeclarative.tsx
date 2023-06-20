@@ -9,8 +9,12 @@ import {
   TabStateContext,
   TabStateContextProvider,
 } from '../contexts/TabStateContext';
+import useActiveTabChange from '../hooks/useActiveTabChange';
+import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
+import useInjectStyles from '../hooks/useInjectStyles';
 import useMessageHandler from '../hooks/useMessageHandler';
+import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
@@ -22,13 +26,9 @@ import {
 } from '../utils/htmlUtils';
 
 import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
-import useEscapeKeyDown from '../hooks/useEscapeKeydown';
-import useActiveTabChange from '../hooks/useActiveTabChange';
-import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
+import contentStyles from './contentStyles';
 
-console.log('cs-deck running1');
 function App() {
-  console.log('cs-deck running2');
   const {
     showLayover,
     setShowLayover,
@@ -82,7 +82,7 @@ function App() {
       sender: chrome.runtime.MessageSender,
       sendResponse: (response?: any) => void
     ) => {
-      console.log('Received message (cs-Deck):', message);
+      console.log('Received message:', message);
 
       const { type, transactionId } = message;
 
@@ -151,10 +151,6 @@ function App() {
       lastProcessedTransactionId,
       updateContextFromStore,
       findAllMatches,
-      findAllMatches,
-      setTabStateContext,
-      tabStateContext,
-      updateHighlights,
     ]
   );
 
@@ -162,7 +158,7 @@ function App() {
   useMessageHandler(handleMessage);
   useEscapeKeyDown();
   useActiveTabChange();
-  // useInjectStyles(contentStyles);
+  useInjectStyles(contentStyles);
   useRemoveAllHighlightMatches();
 
   return (

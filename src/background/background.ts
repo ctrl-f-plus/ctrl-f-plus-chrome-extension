@@ -187,14 +187,14 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !activeWindowStore.showLayover;
 
-    updateStore(activeWindowStore, {
-      // showLayover: addStyles,
-      // showMatches: addStyles,
-      showLayover: true,
-      showMatches: true,
-    });
+    // updateStore(activeWindowStore, {
+    //   showLayover: addStyles,
+    //   showMatches: addStyles,
+    //   // showLayover: true,
+    //   // showMatches: true,
+    // });
 
-    sendStoreToContentScripts(activeWindowStore);
+    // sendStoreToContentScripts(activeWindowStore);
 
     const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
       chrome.tabs.query({ currentWindow: true }, resolve);
@@ -206,14 +206,25 @@ chrome.commands.onCommand.addListener(async (command) => {
       ...tabs.slice(0, activeTabIndex),
     ];
 
+    // FIXME:remove eslint-disable
     // eslint-disable-next-line no-restricted-syntax
     for (const tab of orderedTabs) {
       if (tab.id) {
-        chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          files: ['contentScript.js'],
-          // files: ['app.js', 'contentScript.js'],
-        });
+        chrome.scripting.executeScript(
+          {
+            target: { tabId: tab.id },
+            files: ['contentScript.js'],
+          },
+          () => {
+            updateStore(activeWindowStore, {
+              showLayover: addStyles,
+              showMatches: addStyles,
+              // showLayover: true,
+              // showMatches: true,
+            });
+            sendStoreToContentScripts(activeWindowStore);
+          }
+        );
       }
     }
   }

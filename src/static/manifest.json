@@ -23,7 +23,7 @@
         "chromeos": "Ctrl+Shift+F",
         "linux": "Ctrl+Shift+F"
       },
-      "description": "Toggle the Ctrl-F search layover"
+      "description": "Toggle the Cntrl-F search layover"
     }
   },
   "background": {
