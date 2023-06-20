@@ -23,16 +23,7 @@ module.exports = {
     popup: path.resolve('src/popup/popup.tsx'),
     // options: path.resolve('src/options/options.tsx'),
     background: path.resolve('src/background/background.ts'),
-
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
-    contentScriptDeclarative: path.resolve(
-      'src/contentScripts/contentScriptDeclarative.tsx'
-    ),
-
-    // App: path.resolve('src/contentScripts/App.tsx'),
-    // // contentScriptIndex: path.resolve('src/contentScripts/index.tsx'),
-    // indexEntry: path.resolve('src/contentScripts/indexEntry.tsx'),
-    // Providers: path.resolve('src/contentScripts/Providers.tsx'),
   },
   module: {
     rules: [
