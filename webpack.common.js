@@ -89,7 +89,6 @@ module.exports = {
   },
 
   // optimization: {
-  //
   //   splitChunks: {
   //     chunks(chunk) {
   //       return chunk.name !== 'contentScript';
