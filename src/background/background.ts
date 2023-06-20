@@ -187,46 +187,12 @@ chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggle_search_layover') {
     const addStyles = !activeWindowStore.showLayover;
 
-    // updateStore(activeWindowStore, {
-    //   showLayover: addStyles,
-    //   showMatches: addStyles,
-    //   // showLayover: true,
-    //   // showMatches: true,
-    // });
-
-    // sendStoreToContentScripts(activeWindowStore);
-
-    const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
-      chrome.tabs.query({ currentWindow: true }, resolve);
+    updateStore(activeWindowStore, {
+      showLayover: addStyles,
+      showMatches: addStyles,
     });
 
-    const activeTabIndex = tabs.findIndex((tab) => tab.active);
-    const orderedTabs = [
-      ...tabs.slice(activeTabIndex),
-      ...tabs.slice(0, activeTabIndex),
-    ];
-
-    // FIXME:remove eslint-disable
-    // eslint-disable-next-line no-restricted-syntax
-    for (const tab of orderedTabs) {
-      if (tab.id) {
-        chrome.scripting.executeScript(
-          {
-            target: { tabId: tab.id },
-            files: ['contentScript.js'],
-          },
-          () => {
-            updateStore(activeWindowStore, {
-              showLayover: addStyles,
-              showMatches: addStyles,
-              // showLayover: true,
-              // showMatches: true,
-            });
-            sendStoreToContentScripts(activeWindowStore);
-          }
-        );
-      }
-    }
+    sendStoreToContentScripts(activeWindowStore);
   }
 });
 

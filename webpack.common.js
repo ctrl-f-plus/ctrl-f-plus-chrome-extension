@@ -88,18 +88,11 @@ module.exports = {
     clean: true,
   },
 
-  // optimization: {
-  //   splitChunks: {
-  //     chunks(chunk) {
-  //       return chunk.name !== 'contentScript';
-  //       // return (
-  //       //   // chunk.name !== 'contentScript'
-  //       //   // &&
-  //       //   chunk.name !== 'App' &&
-  //       //   chunk.name !== 'index' &&
-  //       //   chunk.name !== 'Providers'
-  //       // );
-  //     },
-  //   },
-  // },
+  optimization: {
+    splitChunks: {
+      chunks(chunk) {
+        return chunk.name !== 'contentScript';
+      },
+    },
+  },
 };
