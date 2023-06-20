@@ -1,6 +1,6 @@
 {
-  "name": "Cntrl-F",
-  "description": "Cntrl-F in React!",
+  "name": "Ctrl-F",
+  "description": "Ctrl-F in React!",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -26,7 +26,7 @@
       "suggested_key": {
         "default": "Ctrl+Shift+F"
       },
-      "description": "Toggle the Cntrl-F search layover"
+      "description": "Toggle the Ctrl-F search layover"
     }
   },
   "background": {

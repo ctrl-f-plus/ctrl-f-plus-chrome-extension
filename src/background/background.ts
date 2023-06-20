@@ -188,11 +188,34 @@ chrome.commands.onCommand.addListener(async (command) => {
     const addStyles = !activeWindowStore.showLayover;
 
     updateStore(activeWindowStore, {
-      showLayover: addStyles,
-      showMatches: addStyles,
+      // showLayover: addStyles,
+      // showMatches: addStyles,
+      showLayover: true,
+      showMatches: true,
     });
 
     sendStoreToContentScripts(activeWindowStore);
+
+    const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
+      chrome.tabs.query({ currentWindow: true }, resolve);
+    });
+
+    const activeTabIndex = tabs.findIndex((tab) => tab.active);
+    const orderedTabs = [
+      ...tabs.slice(activeTabIndex),
+      ...tabs.slice(0, activeTabIndex),
+    ];
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const tab of orderedTabs) {
+      if (tab.id) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['contentScript.js'],
+          // files: ['app.js', 'contentScript.js'],
+        });
+      }
+    }
   }
 });
 

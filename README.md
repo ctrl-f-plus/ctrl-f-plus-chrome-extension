@@ -1,4 +1,4 @@
-# Cntrl-F
+# Ctrl-F
 
 ### Getting Started
 

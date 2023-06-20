@@ -13,7 +13,8 @@
     "default_title": "Kntrl Extension",
     "default_icon": "icon.png"
   },
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["tabs", "activeTab", "storage", "scripting"],
+  "host_permissions": ["https://*/*"],
   "commands": {
     "toggle_search_layover": {
       "suggested_key": {
@@ -22,18 +23,10 @@
         "chromeos": "Ctrl+Shift+F",
         "linux": "Ctrl+Shift+F"
       },
-      "description": "Toggle the Cntrl-F search layover"
+      "description": "Toggle the Ctrl-F search layover"
     }
   },
   "background": {
     "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "all_frames": true,
-      "run_at": "document_idle"
-    }
-  ]
+  }
 }

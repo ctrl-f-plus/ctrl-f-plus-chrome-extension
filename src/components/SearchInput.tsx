@@ -103,7 +103,7 @@ function SearchInput({ focus }: SearchInputProps) {
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
   return (
-    <div id="cntrl-f-search-input">
+    <div id="ctrl-f-search-input">
       <div className="overlay-wrapper">
         <form
           onSubmit={handleSearchSubmit}

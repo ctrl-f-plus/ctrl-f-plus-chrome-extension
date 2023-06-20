@@ -1,5 +1,7 @@
 // ctrl-f-plus-chrome-extension/src/hooks/useActiveTabChange.ts
 
+// TODO: Review if you even need/want to keep this functionality. I don't really think it is necesary, though it might help ensure that we never have a layover left open somewhere from a bug.
+
 import { useContext, useEffect } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';

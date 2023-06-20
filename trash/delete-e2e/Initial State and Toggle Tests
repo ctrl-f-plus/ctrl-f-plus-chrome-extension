@@ -19,7 +19,7 @@
 
     //   it('should not display the search overlay on startup', async () => {
     //     const layoverElement = await page.evaluate(() =>
-    //       document.querySelector('#cntrl-f-extension')
+    //       document.querySelector('#ctrl-f-extension')
     //     );
     //     expect(layoverElement).toBeNull();
     //   });
@@ -34,10 +34,10 @@
     //       toggleLayover();
     //     });
 
-    //     await page.waitForSelector('#cntrl-f-extension');
+    //     await page.waitForSelector('#ctrl-f-extension');
 
     //     const layoverElement = await page.evaluate(() =>
-    //       document.querySelector('#cntrl-f-extension')
+    //       document.querySelector('#ctrl-f-extension')
     //     );
     //     expect(layoverElement).not.toBeNull();
     //   });

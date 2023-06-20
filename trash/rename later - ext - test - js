@@ -60,9 +60,9 @@ describe('Test Extension', () => {
 
       await page.goto(TEST_URL);
       await page.bringToFront();
-      await page.waitForSelector('#cntrl-f-extension');
+      await page.waitForSelector('#ctrl-f-extension');
 
-      const injectedElement = await page.$('#cntrl-f-extension');
+      const injectedElement = await page.$('#ctrl-f-extension');
       expect(injectedElement).not.toBeNull();
     },
     TIMEOUT
@@ -71,7 +71,7 @@ describe('Test Extension', () => {
   it(
     'should allow the user to type in the search field',
     async () => {
-      const inputSelector = '#cntrl-f-extension .form-div .input-style';
+      const inputSelector = '#ctrl-f-extension .form-div .input-style';
       await page.waitForSelector(inputSelector);
       await page.type(inputSelector, SEARCH_QUERY);
       const inputText = await page.$eval(inputSelector, (el) => el.value);
@@ -83,7 +83,7 @@ describe('Test Extension', () => {
   it(
     'should add the highlight classes to all matches ',
     async () => {
-      const inputSelector = '#cntrl-f-extension .form-div .input-style';
+      const inputSelector = '#ctrl-f-extension .form-div .input-style';
       await page.waitForSelector(inputSelector);
       await page.keyboard.press('Enter');
       await page.waitForTimeout(1000);

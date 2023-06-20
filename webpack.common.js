@@ -11,7 +11,7 @@ function getHtmlWebpackPlugins(chunks) {
   return chunks.map(
     (chunk) =>
       new HtmlWebpackPlugin({
-        title: 'Cntrl-F',
+        title: 'Ctrl-F',
         filename: `${chunk}.html`,
         chunks: [chunk],
       })
@@ -23,7 +23,11 @@ module.exports = {
     popup: path.resolve('src/popup/popup.tsx'),
     // options: path.resolve('src/options/options.tsx'),
     background: path.resolve('src/background/background.ts'),
+
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
+    // app: path.resolve('src/contentScripts/App.tsx'),
+    // contentScript: path.resolve('src/contentScripts/index.tsx'),
+    // providers: path.resolve('src/contentScripts/Providers.tsx'),
   },
   module: {
     rules: [
@@ -92,6 +96,11 @@ module.exports = {
     splitChunks: {
       chunks(chunk) {
         return chunk.name !== 'contentScript';
+        // return (
+        //   chunk.name !== 'app' &&
+        //   chunk.name !== 'contentScript' &&
+        //   chunk.name !== 'Ppoviders'
+        // );
       },
     },
   },

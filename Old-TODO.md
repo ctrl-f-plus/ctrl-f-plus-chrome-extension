@@ -103,7 +103,7 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
 - FIX: if new tab is created automatically update the search count
 - Fix: if you search a value and you aren't on the very first tab, then the globalIndex value should not show 1, it should show the starting point for that tab
 - FIX: match total should be window specific. probably need to fix the context
-  - FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="cntrl-f-extension"` which we don't need to do
+  - FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="ctrl-f-extension"` which we don't need to do
 - TabId is getting reset to undefined in `newState2`
 - - If you search an empty string twice, then you get `NaN/0`. fix this
   - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
@@ -136,8 +136,8 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
 - I don't think you actually need this package: `"@tailwindcss/forms": "^0.5.3",`
 
 Notes from: `replace-layover-with-popup` branch:
-  - https://github.com/bmchavez/Cntrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
-  - https://github.com/bmchavez/Cntrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json
+  - https://github.com/bmchavez/Ctrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
+  - https://github.com/bmchavez/Ctrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json
 
 
   - inspo:

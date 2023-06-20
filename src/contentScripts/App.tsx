@@ -1,14 +1,10 @@
-// src/contentScript/contentScript.tsx
+// src/contentScripts/App.tsx
 
 import React, { useCallback, useContext } from 'react';
-import { createRoot } from 'react-dom/client';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
-import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
-import {
-  TabStateContext,
-  TabStateContextProvider,
-} from '../contexts/TabStateContext';
+import { LayoverContext } from '../contexts/LayoverContext';
+import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
 import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
@@ -27,6 +23,7 @@ import {
 
 import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
 import contentStyles from './contentStyles';
+import Providers from './Providers';
 
 function App() {
   const {
@@ -38,8 +35,6 @@ function App() {
     setTotalMatchesCount,
     setLayoverPosition,
     setActiveTabId,
-    showMatches,
-    activeTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
@@ -162,7 +157,7 @@ function App() {
   useRemoveAllHighlightMatches();
 
   return (
-    <>
+    <Providers>
       {' '}
       {showLayover && (
         <div id="ctrl-f-plus-extension">
@@ -174,21 +169,8 @@ function App() {
           </div>
         </div>
       )}
-    </>
+    </Providers>
   );
 }
 
-const root = document.createElement('div');
-document.body.appendChild(root);
-
-const reactRoot = createRoot(root);
-
-reactRoot.render(
-  <React.StrictMode>
-    <TabStateContextProvider>
-      <LayoverProvider>
-        <App />
-      </LayoverProvider>
-    </TabStateContextProvider>
-  </React.StrictMode>
-);
+export default App;

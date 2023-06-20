@@ -11,7 +11,7 @@ function getHtmlWebpackPlugins(chunks) {
   return chunks.map(
     (chunk) =>
       new HtmlWebpackPlugin({
-        title: 'Cntrl-F',
+        title: 'Ctrl-F',
         filename: `${chunk}.html`,
         chunks: [chunk],
       })

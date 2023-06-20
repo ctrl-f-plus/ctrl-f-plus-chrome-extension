@@ -8,7 +8,7 @@ I am looking for a custom logo design for a chrome extension that I built. Below
 I am looking for something that is simple, but also conveys the functionality of the extension.
 
 Some ideas:
- - A big "C" and "ntrl-f +" in much smaller letters
+ - A big "C" and "trl-f +" in much smaller letters
  - Just a big "C",
 - A big "C" with a "+" inside of it
 - spy glass
@@ -23,7 +23,7 @@ I am currently using these two colors for the text selection when using the exte
 I have included a screen shot of the extension being used to search for the term "google" on the google wikipedia.
 
 Some ideas:
- - A big "C" and "ntrl-f +" in much smaller letters
+ - A big "C" and "trl-f +" in much smaller letters
  - Just a big "C",
 - A big "C" with a "+" inside of it
 - spy glass
