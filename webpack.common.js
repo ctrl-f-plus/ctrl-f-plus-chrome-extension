@@ -25,9 +25,14 @@ module.exports = {
     background: path.resolve('src/background/background.ts'),
 
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
-    // app: path.resolve('src/contentScripts/App.tsx'),
-    // contentScript: path.resolve('src/contentScripts/index.tsx'),
-    // providers: path.resolve('src/contentScripts/Providers.tsx'),
+    contentScriptDeclarative: path.resolve(
+      'src/contentScripts/contentScriptDeclarative.tsx'
+    ),
+
+    // App: path.resolve('src/contentScripts/App.tsx'),
+    // // contentScriptIndex: path.resolve('src/contentScripts/index.tsx'),
+    // indexEntry: path.resolve('src/contentScripts/indexEntry.tsx'),
+    // Providers: path.resolve('src/contentScripts/Providers.tsx'),
   },
   module: {
     rules: [
@@ -92,16 +97,18 @@ module.exports = {
     clean: true,
   },
 
-  optimization: {
-    splitChunks: {
-      chunks(chunk) {
-        return chunk.name !== 'contentScript';
-        // return (
-        //   chunk.name !== 'app' &&
-        //   chunk.name !== 'contentScript' &&
-        //   chunk.name !== 'Ppoviders'
-        // );
-      },
-    },
-  },
+  // optimization: {
+  //   splitChunks: {
+  //     chunks(chunk) {
+  //       return chunk.name !== 'contentScript';
+  //       // return (
+  //       //   // chunk.name !== 'contentScript'
+  //       //   // &&
+  //       //   chunk.name !== 'App' &&
+  //       //   chunk.name !== 'index' &&
+  //       //   chunk.name !== 'Providers'
+  //       // );
+  //     },
+  //   },
+  // },
 };

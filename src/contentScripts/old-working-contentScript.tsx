@@ -1,10 +1,14 @@
-// src/contentScripts/App.tsx
+// src/contentScript/contentScript.tsx
 
 import React, { useCallback, useContext } from 'react';
+import { createRoot } from 'react-dom/client';
 import Layover from '../components/Layover';
 import SearchInput from '../components/SearchInput';
-import { LayoverContext } from '../contexts/LayoverContext';
-import { TabStateContext } from '../contexts/TabStateContext';
+import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
+import {
+  TabStateContext,
+  TabStateContextProvider,
+} from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
 import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
@@ -12,8 +16,8 @@ import useInjectStyles from '../hooks/useInjectStyles';
 import useMessageHandler from '../hooks/useMessageHandler';
 import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import '../tailwind.css';
-import { Messages } from '../types/message.types';
 import { TabStore } from '../types/Store.types';
+import { Messages } from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
 import {
   deserializeMatchesObj,
@@ -22,27 +26,9 @@ import {
 } from '../utils/htmlUtils';
 
 import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
-// import contentStyles from './contentStyles';
-import Providers from './Providers';
+import contentStyles from './contentStyles';
 
 function App() {
-  const contentStyles = `
-.ctrl-f-highlight {
-  background-color: #128da1 !important;
-  color: #010100;
-  border-radius: 0.25rem;
-  border-width: 1px;
-  border-style: solid;
-  border-color: #128da1;
-}
-
-.ctrl-f-highlight-focus {
-  background-color: #05fdb4 !important;
-  border-color: #05fdb4;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /*Tailwind: .box-shadow-medium */
-}
-`;
-
   const {
     showLayover,
     setShowLayover,
@@ -52,6 +38,8 @@ function App() {
     setTotalMatchesCount,
     setLayoverPosition,
     setActiveTabId,
+    showMatches,
+    activeTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
@@ -174,7 +162,7 @@ function App() {
   useRemoveAllHighlightMatches();
 
   return (
-    <Providers>
+    <>
       {' '}
       {showLayover && (
         <div id="ctrl-f-plus-extension">
@@ -186,8 +174,21 @@ function App() {
           </div>
         </div>
       )}
-    </Providers>
+    </>
   );
 }
 
-export default App;
+const root = document.createElement('div');
+document.body.appendChild(root);
+
+const reactRoot = createRoot(root);
+
+reactRoot.render(
+  <React.StrictMode>
+    <TabStateContextProvider>
+      <LayoverProvider>
+        <App />
+      </LayoverProvider>
+    </TabStateContextProvider>
+  </React.StrictMode>
+);
