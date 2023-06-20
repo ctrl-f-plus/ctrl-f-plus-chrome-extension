@@ -38,6 +38,8 @@ function App() {
     setTotalMatchesCount,
     setLayoverPosition,
     setActiveTabId,
+    showMatches,
+    activeTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
