@@ -13,8 +13,6 @@ import { LayoverPosition } from '../types/Layover.types';
 const initialState: LayoverState = {
   showLayover: false,
   showMatches: false,
-  // showLayover: true,
-  // showMatches: true,
   searchValue: '',
   lastSearchValue: '',
   totalMatchesCount: 0,

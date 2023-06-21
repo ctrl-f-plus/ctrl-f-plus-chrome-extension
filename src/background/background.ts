@@ -27,13 +27,35 @@ initStore().then((initializedStore) => {
   store = initializedStore;
 
   const lastFocusedWindowId = store?.lastFocusedWindowId;
-  if (lastFocusedWindowId !== undefined) {
-    const lastFocusedWindowStore = store.windowStores[lastFocusedWindowId];
-    if (lastFocusedWindowStore) {
-      sendStoreToContentScripts(lastFocusedWindowStore);
-    }
+
+  if (lastFocusedWindowId === undefined) {
+    return;
   }
+
+  // const activeWindowStore = getActiveWindowStore(); //FIXME: refactor/DRY as this is the same as the next line
+  const lastFocusedWindowStore = store.windowStores[lastFocusedWindowId];
+  // TODO: verify that `lastFocusedWindowStore` will never be undefined
+  // if (lastFocusedWindowStore) {
+  //   return;
+  // }
+
+  if (process.env.E2E_TESTING === 'true') {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    updateStoreForTesting();
+  }
+  sendStoreToContentScripts(lastFocusedWindowStore);
 });
+
+function updateStoreForTesting() {
+  Object.keys(store.windowStores).forEach((windowId) => {
+    const windowStore = store.windowStores[windowId];
+
+    updateStore(windowStore, {
+      showLayover: true,
+      showMatches: true,
+    });
+  });
+}
 
 function getActiveWindowStore(): WindowStore | undefined {
   const { lastFocusedWindowId } = store;

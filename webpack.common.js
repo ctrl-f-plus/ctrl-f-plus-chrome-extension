@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // webpack.common.js;
 
+const webpack = require('webpack');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -18,7 +19,7 @@ function getHtmlWebpackPlugins(chunks) {
   );
 }
 
-module.exports = {
+module.exports = (env) => ({
   entry: {
     popup: path.resolve('src/popup/popup.tsx'),
     // options: path.resolve('src/options/options.tsx'),
@@ -78,7 +79,13 @@ module.exports = {
     }),
 
     ...getHtmlWebpackPlugins(['popup', 'options']),
+
     new ESLintPlugin(),
+
+    new webpack.DefinePlugin({
+      // 'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV),
+      'process.env.E2E_TESTING': JSON.stringify(env.E2E_TESTING || false),
+    }),
   ],
 
   // OUTPUT
@@ -95,4 +102,4 @@ module.exports = {
       },
     },
   },
-};
+});

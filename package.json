@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Find Text Across All Open Tabs",
   "scripts": {
-    "start": "webpack --watch --progress --config webpack.dev.js",
+    "start": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
     "build": "webpack --watch --progress --config webpack.prod.js",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
+    "build:test:e2e": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=true",
     "test": "jest --verbose --config jest.config.js",
-    "test:e2e": "jest --verbose --config  jest.e2e.config.js",
-    "e2e:slow": "SLOW_MO=250 jest"
+    "test:e2e": "webpack --config webpack.dev.js --env E2E_TESTING=true && jest --verbose --config jest.e2e.config.js",
+    "e2e:slow": "SLOW_MO=250 jest",
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "author": "",
   "devDependencies": {
