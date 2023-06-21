@@ -4,7 +4,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '../tailwind.css';
 // import './popup.css';
-import SearchInput from '../components/SearchInput';
+import SearchInput from '../layover/components/SearchInput';
 
 // const App: React.FC = () => (
 function App() {

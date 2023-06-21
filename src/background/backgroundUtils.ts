@@ -1,6 +1,6 @@
 // src/utils/backgroundUtils.ts
 
-import { updateStore } from '../background/store';
+import { updateStore } from './store';
 import { LayoverPosition } from '../types/Layover.types';
 import { WindowStore } from '../types/Store.types';
 import {
@@ -8,9 +8,9 @@ import {
   RemoveAllHighlightMatchesMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from './chromeUtils';
-import { createHighlightMsg } from './messageUtils/createMessages';
-import { sendMessageToTab } from './messageUtils/sendMessageToContentScripts';
+import { queryCurrentWindowTabs } from '../utils/chromeUtils';
+import { createHighlightMsg } from '../utils/messageUtils/createMessages';
+import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { getAllStoredTabs, setStoredTabs } from './storage';
 
 /**

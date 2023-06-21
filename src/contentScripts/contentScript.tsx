@@ -2,8 +2,8 @@
 
 import React, { useCallback, useContext } from 'react';
 import { createRoot } from 'react-dom/client';
-import Layover from '../components/Layover';
-import SearchInput from '../components/SearchInput';
+import Layover from '../layover/Layover';
+import SearchInput from '../layover/components/SearchInput';
 import { LayoverContext, LayoverProvider } from '../contexts/LayoverContext';
 import {
   TabStateContext,

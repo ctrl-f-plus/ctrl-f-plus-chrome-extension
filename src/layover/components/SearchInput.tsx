@@ -12,13 +12,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { LayoverContext } from '../contexts/LayoverContext';
-import { TabStateContext } from '../contexts/TabStateContext';
-import useFindMatches from '../hooks/useFindMatches';
-import useSearchHandler from '../hooks/useSearchHandler';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { LayoverContext } from '../../contexts/LayoverContext';
+import { TabStateContext } from '../../contexts/TabStateContext';
+import useFindMatches from '../../hooks/useFindMatches';
+import useSearchHandler from '../../hooks/useSearchHandler';
+import { sendMessageToBackground } from '../../utils/messageUtils/sendMessageToBackground';
 import './SearchInputStyles.css';
-import '../tailwind.css';
+import '../../tailwind.css';
 
 // FIXME: Test this to see if you can just use showLayover directly instead of focus
 interface SearchInputProps {

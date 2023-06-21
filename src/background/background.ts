@@ -11,9 +11,9 @@ import {
   handleUpdateTabStatesObj,
   switchTab,
   updateTotalTabsCount,
-} from '../utils/backgroundUtils';
+} from './backgroundUtils';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
-import { clearLocalStorage } from '../utils/storage';
+import { clearLocalStorage } from './storage';
 import {
   initStore,
   resetPartialStore,
