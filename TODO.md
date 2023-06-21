@@ -15,7 +15,7 @@
   - Review the use of `async` on your messages and update this hook accordingly
   - Rename?
   - See if you can use it in more places
-- Fix the `popup` button so that it opens the search component
+<!-- - Fix the `popup` button so that it opens the search component -->
 - Finalize the manifest file
 - Cleanup all uses of `state2`
 - Cleanup the use of `searchValue` and `findValue`
