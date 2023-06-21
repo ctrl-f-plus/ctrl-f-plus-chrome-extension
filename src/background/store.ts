@@ -24,8 +24,6 @@ export function initWindowStore(): WindowStore {
     layoverPosition: { x: 0, y: 0 },
     showLayover: false,
     showMatches: false,
-    // showLayover: true,
-    // showMatches: true,
     activeTabId: undefined,
     searchValue: '',
     lastSearchValue: '',
