@@ -305,3 +305,15 @@ chrome.tabs.onUpdated.addListener(async () => {
 
   sendStoreToContentScripts(activeWindowStore);
 });
+
+chrome.action.onClicked.addListener(() => {
+  const activeWindowStore = getActiveWindowStore();
+  const addStyles = !activeWindowStore.showLayover;
+
+  updateStore(activeWindowStore, {
+    showLayover: addStyles,
+    showMatches: addStyles,
+  });
+
+  sendStoreToContentScripts(activeWindowStore);
+});

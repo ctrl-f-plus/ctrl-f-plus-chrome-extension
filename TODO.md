@@ -1,6 +1,6 @@
 - Re-implement the chrome storage utility
-- Add Environment Variables
-  - Set showLayover and showMatches to true for testing
+<!-- - Add Environment Variables
+  - Set showLayover and showMatches to true for testing -->
 - See if you can get tailwind styles to work in the `SearchInput` component so that you don't have to mix tailwind with vanilla css
 - Add logging to the application:
   - Move the `console.log('Received message:', message);` output to the logger
