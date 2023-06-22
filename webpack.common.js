@@ -27,6 +27,12 @@ module.exports = (env) => ({
     background: path.join(__dirname, 'src', 'background', 'index.ts'),
     // contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
     layover: path.join(__dirname, 'src', 'layover', 'index.tsx'),
+    contentStyles: path.join(
+      __dirname,
+      'src',
+      'contentScripts',
+      'contentStyles.ts'
+    ),
     // layover: path.resolve('src/layover/index.tsx'),
   },
   module: {

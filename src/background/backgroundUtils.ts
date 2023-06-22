@@ -8,7 +8,7 @@ import {
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from '../utils/chromeUtils';
-import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
+import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
 import { getAllStoredTabs, setStoredTabs } from './storage';
 import { updateStore } from './store';
 

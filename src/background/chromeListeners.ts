@@ -3,7 +3,7 @@
 import { Store, WindowStore } from '../types/Store.types';
 import { Messages, UpdateHighlightsMsg } from '../types/message.types';
 import { ValidTabId } from '../types/tab.types';
-import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
+import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
 import {
   executeContentScriptOnAllTabs,
   getActiveTabId,

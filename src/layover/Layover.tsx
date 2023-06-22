@@ -5,7 +5,7 @@ import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
 import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
-import useInjectStyles from '../hooks/useInjectStyles';
+// import useInjectStyles from '../hooks/useInjectStyles';
 import useMessageHandler from '../hooks/useMessageHandler';
 import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import SearchInput from './components/SearchInput';
@@ -20,7 +20,7 @@ import {
 } from '../utils/htmlUtils';
 
 import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
-import contentStyles from './contentStyles';
+// import contentStyles from './contentStyles';
 import DraggableContainer from './components/DraggableContainer';
 
 function Layover() {
@@ -33,8 +33,8 @@ function Layover() {
     setTotalMatchesCount,
     setLayoverPosition,
     setActiveTabId,
-    showMatches,
-    activeTabId,
+    // showMatches,
+    // activeTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
@@ -69,8 +69,6 @@ function Layover() {
     ]
   );
 
-  const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
-
   const handleMessage = useCallback(
     async (
       message: Messages,
@@ -79,13 +77,9 @@ function Layover() {
     ) => {
       console.log('Received message:', message);
 
-      const { type, transactionId } = message;
+      const { type } = message;
 
       let newState;
-
-      if (transactionId && transactionId <= lastProcessedTransactionId) {
-        return undefined;
-      }
 
       switch (type) {
         case 'store-updated': {
@@ -143,7 +137,6 @@ function Layover() {
       tabStateContext,
       setTabStateContext,
       updateHighlights,
-      lastProcessedTransactionId,
       updateContextFromStore,
       findAllMatches,
     ]
@@ -153,7 +146,7 @@ function Layover() {
   useMessageHandler(handleMessage);
   useEscapeKeyDown();
   useActiveTabChange();
-  useInjectStyles(contentStyles);
+  // useInjectStyles(contentStyles);
   useRemoveAllHighlightMatches();
 
   return (
@@ -173,18 +166,3 @@ function Layover() {
   );
 }
 export default Layover;
-
-// const root = document.createElement('div');
-// document.body.appendChild(root);
-
-// const reactRoot = createRoot(root);
-
-// reactRoot.render(
-//   <React.StrictMode>
-//     <TabStateContextProvider>
-//       <LayoverProvider>
-//         <App />
-//       </LayoverProvider>
-//     </TabStateContextProvider>
-//   </React.StrictMode>
-// );

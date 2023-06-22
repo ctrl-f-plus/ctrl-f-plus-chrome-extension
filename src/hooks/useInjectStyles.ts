@@ -1,16 +1,16 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
-export default function useInjectStyles(css: string) {
-  useEffect(() => {
-    function injectStyles(): HTMLStyleElement {
-      const style = document.createElement('style');
+// export default function useInjectStyles(css: string) {
+//   useEffect(() => {
+//     function injectStyles(): HTMLStyleElement {
+//       const style = document.createElement('style');
 
-      style.appendChild(document.createTextNode(css));
-      document.head.appendChild(style);
+//       style.appendChild(document.createTextNode(css));
+//       document.head.appendChild(style);
 
-      return style;
-    }
+//       return style;
+//     }
 
-    injectStyles();
-  }, [css]);
-}
+//     injectStyles();
+//   }, [css]);
+// }
