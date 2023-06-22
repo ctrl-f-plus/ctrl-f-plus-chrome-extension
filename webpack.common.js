@@ -3,6 +3,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const fileSystem = require('fs-extra');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -22,7 +23,8 @@ function getHtmlWebpackPlugins(chunks) {
 module.exports = (env) => ({
   entry: {
     // options: path.resolve('src/options/options.tsx'),
-    background: path.resolve('src/background/background.ts'),
+    // background: path.resolve('src/background/index.ts'),
+    background: path.join(__dirname, 'src', 'background', 'index.ts'),
     contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
   },
   module: {

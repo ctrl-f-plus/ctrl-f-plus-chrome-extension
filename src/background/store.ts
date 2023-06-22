@@ -17,7 +17,6 @@ export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
 }
 
 export function initWindowStore(): WindowStore {
-  // windowId: chrome.windows.Window['id']
   const windowStore: WindowStore = {
     // SharedStore properties:
     totalMatchesCount: 0,
@@ -41,7 +40,7 @@ export async function initStore(): Promise<Store> {
   const windows = await getAllOpenWindows();
 
   const windowStores: { [K in number]: WindowStore } = {};
-  let lastFocusedWindowId: chrome.windows.Window['id'] = -1; // initialize with a default value
+  let lastFocusedWindowId: chrome.windows.Window['id'] = -1;
 
   windows.forEach((window) => {
     if (window.id !== undefined) {

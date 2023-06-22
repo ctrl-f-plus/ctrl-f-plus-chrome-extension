@@ -50,14 +50,7 @@ export async function updateMatchesCount(windowStore: WindowStore) {
 
   let totalMatchesCount = 0;
 
-  // for (const tabId in storedTabs) {
-  //   if (storedTabs.hasOwnProperty(tabId)) {
-  //     totalMatchesCount += storedTabs[tabId]?.matchesCount ?? 0;
-  //   }
-  // }
-
   Object.keys(storedTabs).forEach((tabId) => {
-    // const numericTabId = Number(tabId);
     const validTabId = tabId as unknown as ValidTabId;
     totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
   });
@@ -241,17 +234,7 @@ export async function switchTab(
       targetMatchIndex;
   }
 
-  // sendStoreToContentScripts(windowStore);
   chrome.tabs.update(nextTabId, { active: true });
-
-  // chrome.tabs.update(nextTabId, { active: true }, async (tab) => {
-  //   if (tab === undefined || tab.id === undefined) return;
-
-  // await sendStoreToContentScripts(windowStore);
-
-  //   // const msg = createUpdateHighlightsMsg(tab.id);
-  //   // await sendMessageToTab<UpdateHighlightsMsg>(tab.id, msg);
-  // });
 }
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
@@ -287,7 +270,6 @@ export async function handleUpdateTabStatesObj(
   payload: {
     serializedState: SerializedTabState;
   },
-  // sendResponse: Function
   sendResponse: (response?: any) => void
 ) {
   const {
