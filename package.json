@@ -4,7 +4,7 @@
   "description": "Find Text Across All Open Tabs",
   "scripts": {
     "start": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
-    "build": "webpack --watch --progress --config webpack.prod.js",
+    "build": "webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
     "build:test:e2e": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=true",
     "test": "jest --verbose --config jest.config.js",
     "test:e2e": "webpack --config webpack.dev.js --env E2E_TESTING=true && jest --verbose --config jest.e2e.config.js",

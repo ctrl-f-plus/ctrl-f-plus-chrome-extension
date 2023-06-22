@@ -3,7 +3,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const fileSystem = require('fs-extra');
+// const fileSystem = require('fs-extra');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -25,7 +25,9 @@ module.exports = (env) => ({
     // options: path.resolve('src/options/options.tsx'),
     // background: path.resolve('src/background/index.ts'),
     background: path.join(__dirname, 'src', 'background', 'index.ts'),
-    contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
+    // contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
+    layover: path.join(__dirname, 'src', 'layover', 'index.tsx'),
+    // layover: path.resolve('src/layover/index.tsx'),
   },
   module: {
     rules: [
@@ -99,7 +101,8 @@ module.exports = (env) => ({
   optimization: {
     splitChunks: {
       chunks(chunk) {
-        return chunk.name !== 'contentScript';
+        // return chunk.name !== 'contentScript';
+        return chunk.name !== 'layover';
       },
     },
   },

@@ -1,3 +1,4 @@
+// src/background/chromeListeners.ts
 /* eslint-disable import/prefer-default-export */
 import { Store, WindowStore } from '../types/Store.types';
 import { Messages, UpdateHighlightsMsg } from '../types/message.types';
