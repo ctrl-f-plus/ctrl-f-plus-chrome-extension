@@ -1,6 +1,5 @@
 // src/utils/backgroundUtils.ts
 
-import { updateStore } from './store';
 import { LayoverPosition } from '../types/Layover.types';
 import { WindowStore } from '../types/Store.types';
 import {
@@ -9,9 +8,9 @@ import {
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from '../utils/chromeUtils';
-import { createHighlightMsg } from '../utils/messageUtils/createMessages';
 import { sendMessageToTab } from '../utils/messageUtils/sendMessageToContentScripts';
 import { getAllStoredTabs, setStoredTabs } from './storage';
+import { updateStore } from './store';
 
 /**
  *  Utility/Helper Functions:
@@ -77,11 +76,16 @@ async function executeContentScriptOnTab(
   try {
     const tabId: ValidTabId = tab.id as number;
 
-    const msg = createHighlightMsg(
-      windowStore.searchValue,
-      tabId,
-      foundFirstMatch
-    );
+    const msg: HighlightMsg = {
+      async: true,
+      from: 'background',
+      type: 'highlight',
+      payload: {
+        findValue: windowStore.searchValue,
+        foundFirstMatch,
+        tabId,
+      },
+    };
     const response = await sendMessageToTab<HighlightMsg>(tabId, msg);
 
     const { currentIndex, matchesCount, serializedMatches } =

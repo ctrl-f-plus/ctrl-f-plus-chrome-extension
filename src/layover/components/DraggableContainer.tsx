@@ -30,7 +30,13 @@ function DraggableContainer({
       return;
     }
 
-    const msg = createUpdateLayoverPositionMsg(newPosition);
+    const msg: UpdateLayoverPositionMsg = {
+      from: 'content:layover-component',
+      type: 'update-layover-position',
+      payload: {
+        newPosition,
+      },
+    };
     sendMsgToBackground<UpdateLayoverPositionMsg>(msg);
   };
 

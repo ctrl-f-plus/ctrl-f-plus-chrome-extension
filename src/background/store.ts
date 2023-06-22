@@ -110,12 +110,6 @@ export function updateStore(
   }
 }
 
-// FIXME: Unused Function
-// export function resetStore(store: Store): void {
-//   const initialState = initStore();
-//   updateStore(store, initialState);
-// }
-
 export function resetPartialStore(windowStore: WindowStore): void {
   const partialInitialState = {
     totalMatchesCount: 0,
@@ -150,8 +144,6 @@ export async function sendStoreToContentScripts(
       },
     };
 
-    // FIXME: this may be trying to send messages to tabs in all windows
-    // return new Promise((resolve, reject) => {
     return new Promise<boolean | Error>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {

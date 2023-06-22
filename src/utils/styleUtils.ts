@@ -8,10 +8,3 @@ export default function injectStyles(css: string): HTMLStyleElement {
 
   return style;
 }
-
-// FIXME: UNUSED
-// export function removeStyles(styleElement: HTMLStyleElement): void {
-//   if (styleElement && styleElement.parentNode) {
-//     styleElement.parentNode.removeChild(styleElement);
-//   }
-// }
