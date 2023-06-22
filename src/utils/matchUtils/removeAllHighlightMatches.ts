@@ -13,7 +13,6 @@ export default function removeAllHighlightMatches() {
       return;
     }
 
-    const textNode = document.createTextNode(textContent);
-    elem.parentNode?.replaceChild(textNode, elem);
+    elem.outerHTML = textContent;
   });
 }
