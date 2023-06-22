@@ -3,7 +3,7 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { sendMessageToBackground } from '../../src/utils/messageUtils/sendMessageToBackground';
-import { clearAllStoredTabs } from '../../src/background/storage';
+// import { clearAllStoredTabs } from '../../src/background/storage';
 import useSearchHandler from '../../src/hooks/useSearchHandler';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');

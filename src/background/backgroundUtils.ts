@@ -9,7 +9,7 @@ import {
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from '../utils/chromeUtils';
 import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
-import { getAllStoredTabs, setStoredTabs } from './storage';
+// import { getAllStoredTabs, setStoredTabs } from './storage';
 import { updateStore } from './store';
 
 /**
@@ -45,7 +45,7 @@ export async function getOrderedTabs(
 }
 
 export async function updateMatchesCount(windowStore: WindowStore) {
-  const storedTabs = await getAllStoredTabs();
+  // const storedTabs = await getAllStoredTabs();
 
   let totalMatchesCount = 0;
 
@@ -91,7 +91,7 @@ async function executeContentScriptOnTab(
     const { currentIndex, matchesCount, serializedMatches } =
       response.serializedState;
 
-    await setStoredTabs(response.serializedState);
+    // await setStoredTabs(response.serializedState);
 
     const globalMatchIdxStart = windowStore.totalMatchesCount;
 

@@ -3,7 +3,7 @@
 import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
-import { clearAllStoredTabs } from '../background/storage';
+// import { clearAllStoredTabs } from '../background/storage';
 
 export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
@@ -13,7 +13,7 @@ export default function useSearchHandler() {
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
 
-      await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
+      // await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
       await sendMessageToBackground({
         from: 'content',

@@ -13,7 +13,7 @@ import {
   switchTab,
   updateTotalTabsCount,
 } from './backgroundUtils';
-import { clearLocalStorage } from './storage';
+// import { clearLocalStorage } from './storage';
 import {
   resetPartialStore,
   sendStoreToContentScripts,
@@ -29,9 +29,9 @@ function getActiveWindowStore(store: Store): WindowStore | undefined {
 }
 
 export function startListeners(store: Store) {
-  chrome.runtime.onInstalled.addListener(async () => {
-    clearLocalStorage();
-  });
+  // chrome.runtime.onInstalled.addListener(async () => {
+  //   clearLocalStorage();
+  // });
 
   chrome.runtime.onMessage.addListener(
     async (message: Messages, sender, sendResponse) => {
