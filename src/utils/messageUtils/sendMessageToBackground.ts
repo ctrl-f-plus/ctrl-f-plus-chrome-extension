@@ -14,5 +14,4 @@ export const sendMessageToBackground = async (
 ): Promise<any> =>
   new Promise((resolve) => {
     chrome.runtime.sendMessage(message, (response) => resolve(response));
-    // sendMsgToBackground;
   });

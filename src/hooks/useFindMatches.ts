@@ -6,7 +6,7 @@ import { TabStateContext } from '../contexts/TabStateContext';
 import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
-import searchAndHighlight from '../utils/matchUtils/highlightUtils';
+import searchAndHighlight from '../utils/matchUtils/searchAndHighlight';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import scrollToElement from '../utils/scrollUtil';
 
@@ -89,10 +89,6 @@ export default function useFindMatches() {
       };
 
       let updatedState: TabState;
-      // let updatedState = {
-      //   ...tabStateContext,
-      //   currentIndex,
-      // };
 
       const isEnd =
         // traversalDirection === 'forward'
@@ -124,10 +120,6 @@ export default function useFindMatches() {
           };
 
           sendMsgToBackground<SwitchTabMsg>(message);
-
-          // setState2(updatedState);
-          // setTabStateContext(updatedState);
-          // return;
         }
       } else {
         updatedState = updateHighlights(newState2, { previousIndex });

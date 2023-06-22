@@ -48,7 +48,6 @@ export function LayoverProvider({ children }: LayoverProviderProps) {
     incrementMatchIndices,
   } = useLayoverHandler();
 
-  // const foo = useMemo(() => ({ foo: 'bar' }), []);
   const contextValue = useMemo(
     () => ({
       showLayover,

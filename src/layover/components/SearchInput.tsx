@@ -57,7 +57,7 @@ function SearchInput({ focus }: SearchInputProps) {
 
   // TODO: CLEANUP:
   //  - Add debounce
-  //  - remove lastSearchValue and all realted code
+  //  - remove lastSearchValue and all related code
   //  - try adding e.preventDefault to handleNext()
   //  - update searchInput count
   const handleSearchSubmit = async (e: FormEvent) => {

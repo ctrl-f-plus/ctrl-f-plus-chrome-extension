@@ -7,6 +7,7 @@ import {
   SearchAndHighlightProps,
   UpdateMatchesObjectProps,
 } from '../../types/highlightUtils.types';
+import { HIGHLIGHT_CLASS } from '../constants';
 
 function isVisible(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
@@ -43,7 +44,7 @@ function createHighlightSpan({
   matchText,
 }: CreateHighlightSpanProps): HTMLElement {
   const span = document.createElement('span');
-  span.className = 'ctrl-f-highlight';
+  span.className = HIGHLIGHT_CLASS;
   span.textContent = matchText;
 
   return span;
@@ -126,16 +127,12 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
   parent.replaceChild(fragment, textNode);
 }
 
-// `searchAndHighlight()` is only called from within `matchUtils.ts`
 export default function searchAndHighlight({
   state2,
   findValue,
 }: SearchAndHighlightProps) {
-  // return new Promise((resolve, reject) => {
   return new Promise<void>((resolve, reject) => {
     try {
-      // const regex = new RegExp(findValue, 'gi');
-
       const normalizedFindValue = findValue.replace(/\s+/g, ' ');
       const findValueWithSpaceOrNBSP = normalizedFindValue
         .split(' ')

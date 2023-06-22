@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 // src/contentScripts/contentStyles.ts
 
 const contentStyles = `
