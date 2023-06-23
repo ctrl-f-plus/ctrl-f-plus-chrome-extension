@@ -59,20 +59,28 @@ async function executeContentScriptOnTab(
       totalMatchesCount: windowStore.totalMatchesCount + matchesCount,
     });
 
-    updateStore(windowStore, {
-      tabStores: {
-        ...windowStore.tabStores,
-        [tabId]: {
-          tabId,
-          serializedTabState: {
-            tabId,
-            currentIndex,
-            matchesCount,
-            serializedMatches,
-            globalMatchIdxStart,
-          },
-        },
-      },
+    // updateStore(windowStore, {
+    //   tabStores: {
+    //     ...windowStore.tabStores,
+    //     [tabId]: {
+    //       tabId,
+    //       serializedTabState: {
+    //         tabId,
+    //         currentIndex,
+    //         matchesCount,
+    //         serializedMatches,
+    //         globalMatchIdxStart,
+    //       },
+    //     },
+    //   },
+    // });
+    // updateTabStore(windowStore, response.serializedState);
+    updateTabStore(windowStore, {
+      tabId,
+      currentIndex,
+      matchesCount,
+      serializedMatches,
+      globalMatchIdxStart,
     });
 
     return response;

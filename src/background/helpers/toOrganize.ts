@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { WindowStore } from '../../types/Store.types';
 import { ValidTabId } from '../../types/tab.types';
+import { getAllStoredTabs } from '../storage';
 import { queryCurrentWindowTabs } from './chromeAPI';
 
 export async function getOrderedTabs(
@@ -27,12 +28,13 @@ export async function getOrderedTabIds(
   windowStore: WindowStore
 ): Promise<ValidTabId[]> {
   const orderedTabs = await getOrderedTabs(windowStore);
-  // const storedTabs = await getAllStoredTabs();
-  // const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
+  const storedTabs = await getAllStoredTabs();
+  const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
 
   const orderedTabIds: ValidTabId[] = orderedTabs
     .map((tab) => tab.id)
-    .filter((id): id is ValidTabId => id !== undefined); // && tabIds.includes(id));
+    // .filter((id): id is ValidTabId => id !== undefined); // && tabIds.includes(id));
+    .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
 
   return orderedTabIds;
 }

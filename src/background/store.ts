@@ -2,7 +2,7 @@
 
 import { LayoverPosition } from '../types/Layover.types';
 import { Store, TabStore, WindowStore } from '../types/Store.types';
-import { ValidTabId } from '../types/tab.types';
+import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from './helpers/chromeAPI';
 import { getAllStoredTabs } from './storage';
 
@@ -120,26 +120,34 @@ export function updateStoreNew(
   Object.assign(windowStore, updates);
 }
 
-export function updateTabStore(windowStore, serializedTabState): void {
-  const { tabId } = serializedTabState;
+// export function updateTabStore(windowStore, serializedTabState): void {
+//   const { tabId } = serializedTabState;
 
-  //////////////////////////////// TODO: review the update below
-  // if (!windowStore.tabStores[tabId]) {
-  //   windowStore.tabStores[tabId] = { tabId, serializedTabState };
-  // } else {
-  //   Object.assign(windowStore.tabStores[tabId], {
-  //     tabId,
-  //     serializedTabState,
-  //   });
-  // }
+//   windowStore.tabStores[tabId] ||= { tabId, serializedTabState };
 
-  windowStore.tabStores[tabId] ||= { tabId, serializedTabState };
+//   Object.assign(windowStore.tabStores[tabId], {
+//     tabId,
+//     serializedTabState,
+//   });
 
-  Object.assign(windowStore.tabStores[tabId], {
+//   updateStoreNew(windowStore, { tabStores: windowStore.tabStores });
+// }
+
+export function updateTabStore(
+  windowStore: WindowStore,
+  newSerializedTabState: SerializedTabState
+): void {
+  const { tabId } = newSerializedTabState;
+
+  windowStore.tabStores[tabId] = windowStore.tabStores[tabId] || {
     tabId,
-    serializedTabState,
-  });
-  ////////////////////////////////
+    serializedTabState: {},
+  };
+
+  Object.assign(
+    windowStore.tabStores[tabId].serializedTabState,
+    newSerializedTabState
+  );
 
   updateStoreNew(windowStore, { tabStores: windowStore.tabStores });
 }
