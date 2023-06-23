@@ -1,8 +1,10 @@
 // src/background/store.ts
 
+import { LayoverPosition } from '../types/Layover.types';
 import { Store, TabStore, WindowStore } from '../types/Store.types';
 import { ValidTabId } from '../types/tab.types';
-import { queryWindowTabs } from '../utils/chromeUtils';
+import { queryCurrentWindowTabs } from './helpers/chromeAPI';
+import { getAllStoredTabs } from './storage';
 
 export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   return new Promise((resolve, reject) => {
@@ -110,6 +112,38 @@ export function updateStore(
   }
 }
 
+// TODO: REPLACE PREVIOUS IMPLEMENTATION ONCE ALL CALLING INSTANCES ARE UPDATED
+export function updateStoreNew(
+  windowStore: WindowStore,
+  updates: Partial<WindowStore>
+): void {
+  Object.assign(windowStore, updates);
+}
+
+export function updateTabStore(windowStore, serializedTabState): void {
+  const { tabId } = serializedTabState;
+
+  //////////////////////////////// TODO: review the update below
+  // if (!windowStore.tabStores[tabId]) {
+  //   windowStore.tabStores[tabId] = { tabId, serializedTabState };
+  // } else {
+  //   Object.assign(windowStore.tabStores[tabId], {
+  //     tabId,
+  //     serializedTabState,
+  //   });
+  // }
+
+  windowStore.tabStores[tabId] ||= { tabId, serializedTabState };
+
+  Object.assign(windowStore.tabStores[tabId], {
+    tabId,
+    serializedTabState,
+  });
+  ////////////////////////////////
+
+  updateStoreNew(windowStore, { tabStores: windowStore.tabStores });
+}
+
 export function resetPartialStore(windowStore: WindowStore): void {
   const partialInitialState = {
     totalMatchesCount: 0,
@@ -124,7 +158,7 @@ export async function sendStoreToContentScripts(
   windowStore: WindowStore,
   tabIds: ValidTabId[] = []
 ): Promise<(boolean | Error)[]> {
-  const currentWindowTabs = await queryWindowTabs();
+  const currentWindowTabs = await queryCurrentWindowTabs();
 
   if (tabIds.length === 0) {
     tabIds = currentWindowTabs
@@ -157,4 +191,33 @@ export async function sendStoreToContentScripts(
   });
 
   return Promise.all(promises);
+}
+
+export async function handleUpdateLayoverPosition(
+  windowStore: WindowStore,
+  newPosition: LayoverPosition
+) {
+  updateStore(windowStore, {
+    layoverPosition: newPosition,
+  });
+}
+
+export async function updateMatchesCount(windowStore: WindowStore) {
+  const storedTabs = await getAllStoredTabs();
+
+  let totalMatchesCount = 0;
+
+  Object.keys(storedTabs).forEach((tabId) => {
+    const validTabId = tabId as unknown as ValidTabId;
+    totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
+  });
+
+  updateStore(windowStore, {
+    totalMatchesCount,
+  });
+}
+
+export async function updateTotalTabsCount(windowStore: WindowStore) {
+  const tabs = await queryCurrentWindowTabs();
+  windowStore.totalTabs = tabs.length;
 }

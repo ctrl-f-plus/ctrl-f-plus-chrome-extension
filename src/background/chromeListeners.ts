@@ -6,18 +6,20 @@ import { ValidTabId } from '../types/tab.types';
 import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
 import {
   executeContentScriptOnAllTabs,
-  getActiveTabId,
   handleRemoveAllHighlightMatches,
-  handleUpdateLayoverPosition,
   handleUpdateTabStatesObj,
-  switchTab,
-  updateTotalTabsCount,
+  handleSwitchTab,
 } from './backgroundUtils';
-// import { clearLocalStorage } from './storage';
+import { getActiveTabId } from './helpers/chromeAPI';
+import { switchToTargetTab, updateActiveTabState } from './helpers/tabHelpers';
+import { clearLocalStorage } from './storage';
 import {
+  handleUpdateLayoverPosition,
   resetPartialStore,
   sendStoreToContentScripts,
   updateStore,
+  updateTabStore,
+  updateTotalTabsCount,
 } from './store';
 
 function getActiveWindowStore(store: Store): WindowStore | undefined {
@@ -29,9 +31,9 @@ function getActiveWindowStore(store: Store): WindowStore | undefined {
 }
 
 export function startListeners(store: Store) {
-  // chrome.runtime.onInstalled.addListener(async () => {
-  //   clearLocalStorage();
-  // });
+  chrome.runtime.onInstalled.addListener(async () => {
+    clearLocalStorage();
+  });
 
   chrome.runtime.onMessage.addListener(
     async (message: Messages, sender, sendResponse) => {
@@ -84,32 +86,25 @@ export function startListeners(store: Store) {
             sendResponse
           );
           return true;
+
         case 'switch-tab': {
-          await switchTab(
+          await handleSwitchTab(
             activeWindowStore,
             payload.serializedState,
             payload.direction
           );
-          const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
+          // updateTabStore(activeWindowStore, payload.serializedState);
+          // await switchToTargetTab(
+          //   activeWindowStore,
+          //   payload.serializedState,
+          //   payload.direction
+          // );
+          // await sendStoreToContentScripts(activeWindowStore);
+          // await updateActiveTabState(activeWindowStore, payload.direction);
 
-          await sendStoreToContentScripts(activeWindowStore);
-
-          const { newSerializedState } =
-            await sendMessageToTab<UpdateHighlightsMsg>(activeTabId, {
-              async: true,
-              from: 'background',
-              type: 'update-highlights',
-              payload: {
-                tabId: activeTabId,
-                direction: payload.direction,
-              },
-            });
-          if (activeWindowStore) {
-            activeWindowStore.tabStores[activeTabId].serializedTabState =
-              newSerializedState;
-          }
           return true;
         }
+
         case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
           updateStore(activeWindowStore, {
             showLayover: false,

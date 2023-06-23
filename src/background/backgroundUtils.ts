@@ -1,69 +1,29 @@
 // src/utils/backgroundUtils.ts
 
-import { LayoverPosition } from '../types/Layover.types';
+import calculateTargetIndex from '../helpers/calculateTargetIndex';
 import { WindowStore } from '../types/Store.types';
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
+  UpdateHighlightsMsg,
 } from '../types/message.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from '../utils/chromeUtils';
 import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
-// import { getAllStoredTabs, setStoredTabs } from './storage';
-import { updateStore } from './store';
+import { getActiveTabId, queryCurrentWindowTabs } from './helpers/chromeAPI';
+import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
+import { setStoredTabs } from './storage';
+import {
+  sendStoreToContentScripts,
+  updateMatchesCount,
+  updateStore,
+  updateTabStore,
+} from './store';
 
 /**
  *  Utility/Helper Functions:
  */
 
-export function getActiveTabId(): Promise<number | undefined> {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length) {
-        resolve(tabs[0].id);
-      } else {
-        resolve(undefined);
-      }
-    });
-  });
-}
-
-export async function getOrderedTabs(
-  windowStore: WindowStore,
-  includeActiveTab = true
-): Promise<chrome.tabs.Tab[]> {
-  const tabs = await queryCurrentWindowTabs();
-  const activeTabIndex = tabs.findIndex((tab) => tab.active);
-  const startSliceIdx = includeActiveTab ? activeTabIndex : activeTabIndex + 1;
-
-  const orderedTabs = [
-    ...tabs.slice(startSliceIdx),
-    ...tabs.slice(0, activeTabIndex),
-  ];
-
-  return orderedTabs;
-}
-
-export async function updateMatchesCount(windowStore: WindowStore) {
-  // const storedTabs = await getAllStoredTabs();
-
-  let totalMatchesCount = 0;
-
-  Object.keys(storedTabs).forEach((tabId) => {
-    const validTabId = tabId as unknown as ValidTabId;
-    totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
-  });
-
-  updateStore(windowStore, {
-    totalMatchesCount,
-  });
-}
-
 // 'Match X/Y (Total: Z)';
-export async function updateTotalTabsCount(windowStore: WindowStore) {
-  const tabs = await queryCurrentWindowTabs();
-  windowStore.totalTabs = tabs.length;
-}
 
 async function executeContentScriptOnTab(
   tab: chrome.tabs.Tab,
@@ -91,7 +51,7 @@ async function executeContentScriptOnTab(
     const { currentIndex, matchesCount, serializedMatches } =
       response.serializedState;
 
-    // await setStoredTabs(response.serializedState);
+    await setStoredTabs(response.serializedState);
 
     const globalMatchIdxStart = windowStore.totalMatchesCount;
 
@@ -164,8 +124,16 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   // await Promise.allSettled(tabPromises);
 }
 
-export async function switchTab(
-  windowStore: WindowStore,
+// TODO: add ts type for direction
+export function calculateTargetMatchIndex(
+  direction: any,
+  matchesCount: number
+) {
+  return direction === 'next' ? 0 : matchesCount - 1;
+}
+
+export async function handleSwitchTab(
+  activeWindowStore: WindowStore,
   serializedState: SerializedTabState,
   direction: 'next' | 'previous'
 ): Promise<void> {
@@ -174,71 +142,51 @@ export async function switchTab(
     return;
   }
 
-  const {
-    tabId,
-    currentIndex,
-    matchesCount,
-    serializedMatches,
-    globalMatchIdxStart,
-  } = serializedState;
+  updateTabStore(activeWindowStore, serializedState);
 
-  updateStore(windowStore, {
-    tabStores: {
-      ...windowStore.tabStores,
-      [tabId]: {
-        tabId,
-        serializedTabState: {
-          tabId,
-          currentIndex,
-          matchesCount,
-          serializedMatches,
-          globalMatchIdxStart,
-        },
-      },
-    },
-  });
-
-  const orderedTabs = await getOrderedTabs(windowStore);
-
-  const storedTabs = await getAllStoredTabs();
-
-  const matchesObject = storedTabs;
-  const tabIds = Object.keys(matchesObject).map((key) => parseInt(key, 10));
-
-  const orderedTabIds: ValidTabId[] = orderedTabs
-    .map((tab) => tab.id)
-    .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
-
+  const orderedTabIds: ValidTabId[] = await getOrderedTabIds(activeWindowStore);
+  const tabCount = orderedTabIds.length;
   const currentTabIndex = orderedTabIds.findIndex(
     (currentTabId) => currentTabId === serializedState.tabId
   );
 
-  const tabCount = orderedTabIds.length;
-  const nextTabIndex =
-    direction === 'next'
-      ? (currentTabIndex + 1) % tabCount
-      : (currentTabIndex - 1 + tabCount) % tabCount;
-  const nextTabId = orderedTabIds[nextTabIndex];
-  let targetMatchIndex: number | undefined;
+  const targetTabIndex = calculateTargetIndex(
+    direction,
+    currentTabIndex,
+    tabCount
+  );
+  const targetTabId = orderedTabIds[targetTabIndex];
+  const targetTabSerializedTabState =
+    activeWindowStore.tabStores[targetTabId]?.serializedTabState;
 
-  if (
-    windowStore.tabStores[nextTabId] &&
-    windowStore.tabStores[nextTabId].serializedTabState &&
-    windowStore.tabStores[nextTabId].serializedTabState.matchesCount !==
-      undefined
-  ) {
-    targetMatchIndex =
-      direction === 'next'
-        ? 1
-        : (windowStore.tabStores[nextTabId].serializedTabState
-            .matchesCount as number);
-    targetMatchIndex -= 1;
+  targetTabSerializedTabState.currentIndex = calculateTargetMatchIndex(
+    direction,
+    targetTabSerializedTabState.matchesCount || 0
+  );
 
-    windowStore.tabStores[nextTabId].serializedTabState.currentIndex =
-      targetMatchIndex;
+  chrome.tabs.update(targetTabId, { active: true });
+
+  await sendStoreToContentScripts(activeWindowStore);
+
+  const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
+
+  const { newSerializedState } = await sendMessageToTab<UpdateHighlightsMsg>(
+    activeTabId,
+    {
+      async: true,
+      from: 'background',
+      type: 'update-highlights',
+      payload: {
+        tabId: activeTabId,
+        direction,
+      },
+    }
+  );
+
+  if (activeWindowStore) {
+    activeWindowStore.tabStores[activeTabId].serializedTabState =
+      newSerializedState;
   }
-
-  chrome.tabs.update(nextTabId, { active: true });
 }
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
@@ -318,13 +266,4 @@ export async function handleUpdateTabStatesObj(
   });
 
   sendResponse({ status: 'success' });
-}
-
-export async function handleUpdateLayoverPosition(
-  windowStore: WindowStore,
-  newPosition: LayoverPosition
-) {
-  updateStore(windowStore, {
-    layoverPosition: newPosition,
-  });
 }

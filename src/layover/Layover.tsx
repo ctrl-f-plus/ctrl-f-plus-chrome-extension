@@ -69,6 +69,8 @@ function Layover() {
     ]
   );
 
+  // const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
+
   const handleMessage = useCallback(
     async (
       message: Messages,
@@ -78,6 +80,11 @@ function Layover() {
       console.log('Received message:', message);
 
       const { type } = message;
+      // const { type, transactionId } = message;
+
+      // if (transactionId && transactionId <= lastProcessedTransactionId) {
+      //   return undefined;
+      // }
 
       let newState;
 
@@ -137,6 +144,7 @@ function Layover() {
       tabStateContext,
       setTabStateContext,
       updateHighlights,
+      // lastProcessedTransactionId,
       updateContextFromStore,
       findAllMatches,
     ]

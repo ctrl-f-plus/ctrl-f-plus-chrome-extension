@@ -69,7 +69,6 @@ export function serializeMatchesObj(
  * UTILS FOR RESTORING MATCHES HTML
  */
 
-// TODO: Need to add return type
 function getElementByXPath(xpath: string) {
   let result = null;
 
@@ -84,7 +83,6 @@ function getElementByXPath(xpath: string) {
       null
     ).singleNodeValue;
   } else {
-    // If it doesn't start with "//", prepend it with "/html/"
     const modifiedXpath = `/html/${xpath}`;
     result = document.evaluate(
       modifiedXpath,

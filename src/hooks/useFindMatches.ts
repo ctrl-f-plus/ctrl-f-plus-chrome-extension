@@ -9,6 +9,7 @@ import { serializeMatchesObj } from '../utils/htmlUtils';
 import searchAndHighlight from '../utils/matchUtils/searchAndHighlight';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import scrollToElement from '../utils/scrollUtil';
+import calculateTargetIndex from '../helpers/calculateTargetIndex';
 
 type UpdateHighlightsOptions = {
   previousIndex?: number;
@@ -147,7 +148,12 @@ export default function useFindMatches() {
       navigateMatches('next', (state2: TabState) =>
         // navigateMatches('forward', (state2: TabState) =>
         state2.matchesObj.length
-          ? (state2.currentIndex + 1) % state2.matchesObj.length
+          ? // ? (state2.currentIndex + 1) % state2.matchesObj.length
+            calculateTargetIndex(
+              'next',
+              state2.currentIndex,
+              state2.matchesObj.length
+            )
           : 0
       ),
     [navigateMatches]
@@ -159,8 +165,13 @@ export default function useFindMatches() {
         'previous',
         // 'backward',
         (state2: TabState) =>
-          (state2.currentIndex - 1 + state2.matchesObj.length) %
-          state2.matchesObj.length
+          // (state2.currentIndex - 1 + state2.matchesObj.length) %
+          // state2.matchesObj.length
+          calculateTargetIndex(
+            'previous',
+            state2.currentIndex,
+            state2.matchesObj.length
+          )
       ),
     [navigateMatches]
   );
