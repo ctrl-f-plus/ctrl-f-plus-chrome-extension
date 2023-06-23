@@ -28,10 +28,6 @@ initStore().then((initializedStore) => {
 
   // const activeWindowStore = getActiveWindowStore(); //FIXME: refactor/DRY as this is the same as the next line
   const lastFocusedWindowStore = store.windowStores[lastFocusedWindowId];
-  // TODO: verify that `lastFocusedWindowStore` will never be undefined
-  // if (lastFocusedWindowStore) {
-  //   return;
-  // }
 
   if (process.env.E2E_TESTING === 'true') {
     updateStoreForTesting();

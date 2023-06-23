@@ -2,6 +2,7 @@
 
 import { LayoverPosition } from './Layover.types';
 import { TabStore } from './Store.types';
+import { Direction } from './shared.types';
 import { SerializedTabState, ValidTabId } from './tab.types';
 
 export interface BaseMessage {
@@ -50,10 +51,9 @@ export interface RemoveStylesAllTabs extends BaseMessage {
 export interface SwitchTabMsg extends BaseMessage {
   from: 'content-script-match-utils';
   type: 'switch-tab';
-  // TODO: direction probably shouild be a boolean or it should use CONSTANTS
   payload: {
     serializedState: SerializedTabState;
-    direction: 'next' | 'previous';
+    direction: Direction;
   };
 }
 
@@ -63,7 +63,7 @@ export interface UpdateHighlightsMsg extends BaseMessage {
   type: 'update-highlights';
   payload: {
     tabId: ValidTabId;
-    direction: 'next' | 'previous';
+    direction: Direction;
   };
 }
 
@@ -94,7 +94,6 @@ export interface HighlightMsg extends BaseMessage {
   async: true;
   from: 'background';
   type: 'highlight';
-  // payload: any;
   // TODO: change findValue to searchValue?
   payload: {
     findValue: string;

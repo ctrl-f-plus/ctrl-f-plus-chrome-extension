@@ -8,7 +8,6 @@ import Draggable, {
 import { LayoverContext } from '../../contexts/LayoverContext';
 import { LayoverPosition, LayoverProps } from '../../types/Layover.types';
 import { UpdateLayoverPositionMsg } from '../../types/message.types';
-import { createUpdateLayoverPositionMsg } from '../../utils/messageUtils/createMessages';
 import { sendMsgToBackground } from '../../utils/messageUtils/sendMessageToBackground';
 
 function DraggableContainer({

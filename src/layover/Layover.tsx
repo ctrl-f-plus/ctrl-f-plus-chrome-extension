@@ -5,7 +5,6 @@ import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
 import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
-// import useInjectStyles from '../hooks/useInjectStyles';
 import useMessageHandler from '../hooks/useMessageHandler';
 import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import SearchInput from './components/SearchInput';
@@ -20,7 +19,6 @@ import {
 } from '../utils/htmlUtils';
 
 import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
-// import contentStyles from './contentStyles';
 import DraggableContainer from './components/DraggableContainer';
 
 function Layover() {
@@ -33,8 +31,6 @@ function Layover() {
     setTotalMatchesCount,
     setLayoverPosition,
     setActiveTabId,
-    // showMatches,
-    // activeTabId,
   } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
   const { updateHighlights, findAllMatches } = useFindMatches();
@@ -69,8 +65,6 @@ function Layover() {
     ]
   );
 
-  // const lastProcessedTransactionId = '0'; // FIXME: Should this be state?
-
   const handleMessage = useCallback(
     async (
       message: Messages,
@@ -80,12 +74,6 @@ function Layover() {
       console.log('Received message:', message);
 
       const { type } = message;
-      // const { type, transactionId } = message;
-
-      // if (transactionId && transactionId <= lastProcessedTransactionId) {
-      //   return undefined;
-      // }
-
       let newState;
 
       switch (type) {
@@ -144,7 +132,6 @@ function Layover() {
       tabStateContext,
       setTabStateContext,
       updateHighlights,
-      // lastProcessedTransactionId,
       updateContextFromStore,
       findAllMatches,
     ]
@@ -154,7 +141,6 @@ function Layover() {
   useMessageHandler(handleMessage);
   useEscapeKeyDown();
   useActiveTabChange();
-  // useInjectStyles(contentStyles);
   useRemoveAllHighlightMatches();
 
   return (

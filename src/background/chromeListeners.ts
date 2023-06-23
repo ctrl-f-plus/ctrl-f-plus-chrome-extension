@@ -1,24 +1,20 @@
 // src/background/chromeListeners.ts
 /* eslint-disable import/prefer-default-export */
 import { Store, WindowStore } from '../types/Store.types';
-import { Messages, UpdateHighlightsMsg } from '../types/message.types';
-import { ValidTabId } from '../types/tab.types';
-import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
+import { Messages } from '../types/message.types';
 import {
   executeContentScriptOnAllTabs,
   handleRemoveAllHighlightMatches,
-  handleUpdateTabStatesObj,
   handleSwitchTab,
+  handleUpdateTabStatesObj,
 } from './backgroundUtils';
 import { getActiveTabId } from './helpers/chromeAPI';
-import { switchToTargetTab, updateActiveTabState } from './helpers/tabHelpers';
 import { clearLocalStorage } from './storage';
 import {
   handleUpdateLayoverPosition,
   resetPartialStore,
   sendStoreToContentScripts,
   updateStore,
-  updateTabStore,
   updateTotalTabsCount,
 } from './store';
 
@@ -55,7 +51,6 @@ export function startListeners(store: Store) {
       switch (type) {
         case 'remove-all-highlight-matches':
           await handleRemoveAllHighlightMatches(sendResponse);
-
           sendStoreToContentScripts(activeWindowStore);
           return true;
         case 'get-all-matches': {

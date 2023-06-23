@@ -10,6 +10,8 @@ import searchAndHighlight from '../utils/matchUtils/searchAndHighlight';
 import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
 import scrollToElement from '../utils/scrollUtil';
 import calculateTargetIndex from '../helpers/calculateTargetIndex';
+import { Direction } from '../types/shared.types';
+import { DIRECTION_NEXT } from '../utils/constants';
 
 type UpdateHighlightsOptions = {
   previousIndex?: number;
@@ -75,7 +77,7 @@ export default function useFindMatches() {
   const navigateMatches = useCallback(
     (
       // traversalDirection: 'forward' | 'backward',
-      traversalDirection: 'next' | 'previous',
+      traversalDirection: Direction,
       indexCalc: (state2: TabState) => number
     ) => {
       if (state2.currentIndex === undefined) {
@@ -92,8 +94,7 @@ export default function useFindMatches() {
       let updatedState: TabState;
 
       const isEnd =
-        // traversalDirection === 'forward'
-        traversalDirection === 'next'
+        traversalDirection === DIRECTION_NEXT
           ? newState2.currentIndex === 0
           : newState2.currentIndex === state2.matchesObj.length - 1;
 

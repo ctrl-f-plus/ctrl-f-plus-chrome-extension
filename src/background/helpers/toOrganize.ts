@@ -23,7 +23,7 @@ export async function getOrderedTabs(
   return orderedTabs;
 }
 
-// You can probably delete the commented code here. It seemed to be redundant, but I 100% wasn't sure, so i left it for now.
+// FIXME: The storedTabs and the filter are both required otherwise the tabs won't cycle back to the beginning
 export async function getOrderedTabIds(
   windowStore: WindowStore
 ): Promise<ValidTabId[]> {
@@ -33,7 +33,6 @@ export async function getOrderedTabIds(
 
   const orderedTabIds: ValidTabId[] = orderedTabs
     .map((tab) => tab.id)
-    // .filter((id): id is ValidTabId => id !== undefined); // && tabIds.includes(id));
     .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
 
   return orderedTabIds;

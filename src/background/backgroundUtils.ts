@@ -7,7 +7,9 @@ import {
   RemoveAllHighlightMatchesMsg,
   UpdateHighlightsMsg,
 } from '../types/message.types';
+import { Direction } from '../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
+import { DIRECTION_NEXT } from '../utils/constants';
 import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
 import { getActiveTabId, queryCurrentWindowTabs } from './helpers/chromeAPI';
 import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
@@ -59,22 +61,6 @@ async function executeContentScriptOnTab(
       totalMatchesCount: windowStore.totalMatchesCount + matchesCount,
     });
 
-    // updateStore(windowStore, {
-    //   tabStores: {
-    //     ...windowStore.tabStores,
-    //     [tabId]: {
-    //       tabId,
-    //       serializedTabState: {
-    //         tabId,
-    //         currentIndex,
-    //         matchesCount,
-    //         serializedMatches,
-    //         globalMatchIdxStart,
-    //       },
-    //     },
-    //   },
-    // });
-    // updateTabStore(windowStore, response.serializedState);
     updateTabStore(windowStore, {
       tabId,
       currentIndex,
@@ -132,18 +118,17 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
   // await Promise.allSettled(tabPromises);
 }
 
-// TODO: add ts type for direction
 export function calculateTargetMatchIndex(
-  direction: any,
+  direction: Direction,
   matchesCount: number
 ) {
-  return direction === 'next' ? 0 : matchesCount - 1;
+  return direction === DIRECTION_NEXT ? 0 : matchesCount - 1;
 }
 
 export async function handleSwitchTab(
   activeWindowStore: WindowStore,
   serializedState: SerializedTabState,
-  direction: 'next' | 'previous'
+  direction: Direction
 ): Promise<void> {
   if (serializedState.tabId === undefined) {
     console.warn('switchTab: Tab ID is undefined:', serializedState);

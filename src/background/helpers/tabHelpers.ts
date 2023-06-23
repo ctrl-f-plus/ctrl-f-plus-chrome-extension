@@ -1,6 +1,7 @@
 import calculateTargetIndex from '../../helpers/calculateTargetIndex';
 import { WindowStore } from '../../types/Store.types';
 import { UpdateHighlightsMsg } from '../../types/message.types';
+import { Direction } from '../../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import sendMessageToTab from '../../utils/messageUtils/sendMessageToContentScripts';
 import { calculateTargetMatchIndex } from '../backgroundUtils';
@@ -10,7 +11,7 @@ import { getOrderedTabIds } from './toOrganize';
 export async function switchToTargetTab(
   activeWindowStore: WindowStore,
   serializedState: SerializedTabState,
-  direction: 'next' | 'previous'
+  direction: Direction
 ): Promise<void> {
   const orderedTabIds: ValidTabId[] = await getOrderedTabIds(activeWindowStore);
   const currentTabIndex = orderedTabIds.findIndex(
@@ -37,7 +38,7 @@ export async function switchToTargetTab(
 
 export async function updateActiveTabState(
   activeWindowStore: WindowStore,
-  direction: 'next' | 'previous'
+  direction: Direction
 ): Promise<void> {
   const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
 
