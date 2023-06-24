@@ -1,25 +1,21 @@
 // src/background/background.ts
 
-import { Store } from '../types/Store.types';
+import {} from '../types/Store.types';
 import { startListeners } from './chromeListeners';
-import { initStore, sendStoreToContentScripts, updateStore } from './store';
+import { sendStoreToContentScripts } from './store';
+import store from './databaseStore';
 
-let store: Store;
+// let store: Store;
 
 function updateStoreForTesting() {
   Object.keys(store.windowStores).forEach((windowId) => {
     const windowStore = store.windowStores[windowId];
 
-    updateStore(windowStore, {
-      showLayover: true,
-      showMatches: true,
-    });
+    windowStore.setShowLayoverAndShowMatches(true);
   });
 }
 
-initStore().then((initializedStore) => {
-  store = initializedStore;
-
+store.init().then(() => {
   const lastFocusedWindowId = store?.lastFocusedWindowId;
 
   if (lastFocusedWindowId === undefined) {
@@ -34,5 +30,5 @@ initStore().then((initializedStore) => {
   }
   sendStoreToContentScripts(lastFocusedWindowStore);
 
-  startListeners(store);
+  startListeners();
 });

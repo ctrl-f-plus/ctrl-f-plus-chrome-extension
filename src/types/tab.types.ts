@@ -25,7 +25,10 @@ export interface XPathTabState extends Tab {
 export interface TabState extends Tab {
   matchesObj: HTMLSpanElement[];
 }
-
+export interface BasicTabState {
+  tabId: ValidTabId;
+  serializedTabState: SerializedTabState;
+}
 export interface SerializedTabState extends Tab {
   serializedMatches: JSONString;
 }

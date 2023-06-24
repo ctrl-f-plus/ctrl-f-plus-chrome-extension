@@ -3,7 +3,7 @@
 import { LayoverPosition } from './Layover.types';
 import { SerializedTabState, TabId, ValidTabId } from './tab.types';
 
-interface SharedStore {
+export interface SharedStore {
   totalMatchesCount: number;
   layoverPosition: LayoverPosition;
   showLayover: boolean;
@@ -13,25 +13,7 @@ interface SharedStore {
   lastSearchValue: string;
 }
 
-interface BasicTabState {
-  tabId: ValidTabId;
-  serializedTabState: SerializedTabState;
-}
-
 export interface TabStore extends SharedStore {
   tabId: ValidTabId;
   serializedTabState: SerializedTabState;
-}
-
-export interface WindowStore extends SharedStore {
-  updatedTabsCount: number;
-  totalTabs: number | undefined;
-  tabStores: Record<ValidTabId, BasicTabState>;
-}
-
-export interface Store {
-  lastFocusedWindowId: chrome.windows.Window['id'];
-  windowStores: {
-    [K in number]: WindowStore;
-  };
 }

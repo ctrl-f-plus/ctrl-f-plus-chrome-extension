@@ -1,7 +1,7 @@
 // src/utils/backgroundUtils.ts
 
 import calculateTargetIndex from '../helpers/calculateTargetIndex';
-import { WindowStore } from '../types/Store.types';
+
 import {
   HighlightMsg,
   RemoveAllHighlightMatchesMsg,
@@ -14,13 +14,8 @@ import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts'
 import { getActiveTabId, queryCurrentWindowTabs } from './helpers/chromeAPI';
 import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
 import { setStoredTabs } from './storage';
-import {
-  sendStoreToContentScripts,
-  updateMatchesCount,
-  updateStore,
-  updateTabStore,
-} from './store';
-// import parentDatabaseStore from './databaseStore';
+import { sendStoreToContentScripts } from './store';
+import { WindowStore } from './windowStore';
 
 /**
  *  Utility/Helper Functions:
@@ -58,16 +53,24 @@ async function executeContentScriptOnTab(
 
     const globalMatchIdxStart = windowStore.totalMatchesCount;
 
-    updateStore(windowStore, {
-      totalMatchesCount: windowStore.totalMatchesCount + matchesCount,
-    });
+    windowStore.updateTotalMatchesCount(
+      windowStore.totalMatchesCount + matchesCount
+    );
 
-    updateTabStore(windowStore, {
-      tabId,
-      currentIndex,
-      matchesCount,
-      serializedMatches,
-      globalMatchIdxStart,
+    windowStore.update({
+      tabStores: {
+        ...windowStore.tabStores,
+        [tabId]: {
+          tabId,
+          serializedTabState: {
+            tabId,
+            currentIndex,
+            matchesCount,
+            serializedMatches,
+            globalMatchIdxStart,
+          },
+        },
+      },
     });
 
     return response;
@@ -136,24 +139,30 @@ export async function handleSwitchTab(
     return;
   }
 
-  // const databaseStore = parentDatabaseStore.stores[0];
-  // console.log(`${databaseStore.name}`);
-  // console.log(databaseStore);
-  // databaseStore.name = 'hooya!';
-  // console.log(databaseStore);
+  // updateTabStore(activeWindowStore, serializedState);
+  const {
+    tabId,
+    currentIndex,
+    matchesCount,
+    serializedMatches,
+    globalMatchIdxStart,
+  } = serializedState;
 
-  // console.log(parentDatabaseStore.stores);
-  // console.log(`${databaseStore.name}`);
-  // console.log(databaseStore);
-
-  // // eslint-disable-next-line no-promise-executor-return
-  // await new Promise((r) => setTimeout(r, 5000));
-  // databaseStore.name = 'hooya!';
-  // console.log(databaseStore);
-  // console.log(parentDatabaseStore);
-  // console.log(parentDatabaseStore.stores);
-
-  updateTabStore(activeWindowStore, serializedState);
+  activeWindowStore.update({
+    tabStores: {
+      ...activeWindowStore.tabStores,
+      [tabId]: {
+        tabId,
+        serializedTabState: {
+          tabId,
+          currentIndex,
+          matchesCount,
+          serializedMatches,
+          globalMatchIdxStart,
+        },
+      },
+    },
+  });
 
   const orderedTabIds: ValidTabId[] = await getOrderedTabIds(activeWindowStore);
   const tabCount = orderedTabIds.length;
@@ -255,11 +264,11 @@ export async function handleUpdateTabStatesObj(
   windowStore.updatedTabsCount += 1;
 
   if (windowStore.updatedTabsCount === windowStore.totalTabs) {
-    updateMatchesCount(windowStore);
+    windowStore.updateMatchesCount();
     windowStore.updatedTabsCount = 0;
   }
 
-  updateStore(windowStore, {
+  windowStore.update({
     tabStores: {
       ...windowStore.tabStores,
       [tabId]: {
