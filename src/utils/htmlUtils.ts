@@ -68,7 +68,6 @@ export function serializeMatchesObj(
  *
  * UTILS FOR RESTORING MATCHES HTML
  */
-
 function getElementByXPath(xpath: string) {
   let result = null;
 

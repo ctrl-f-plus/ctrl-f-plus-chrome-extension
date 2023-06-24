@@ -6,7 +6,7 @@ import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { queryCurrentWindowTabs } from './helpers/chromeAPI';
 import { getAllStoredTabs } from './storage';
 
-export async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
+async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   return new Promise((resolve, reject) => {
     chrome.windows.getAll({ populate: true }, (windows) => {
       if (chrome.runtime.lastError) {

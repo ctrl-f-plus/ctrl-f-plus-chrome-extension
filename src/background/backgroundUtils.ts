@@ -20,6 +20,7 @@ import {
   updateStore,
   updateTabStore,
 } from './store';
+// import parentDatabaseStore from './databaseStore';
 
 /**
  *  Utility/Helper Functions:
@@ -134,6 +135,23 @@ export async function handleSwitchTab(
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
+
+  // const databaseStore = parentDatabaseStore.stores[0];
+  // console.log(`${databaseStore.name}`);
+  // console.log(databaseStore);
+  // databaseStore.name = 'hooya!';
+  // console.log(databaseStore);
+
+  // console.log(parentDatabaseStore.stores);
+  // console.log(`${databaseStore.name}`);
+  // console.log(databaseStore);
+
+  // // eslint-disable-next-line no-promise-executor-return
+  // await new Promise((r) => setTimeout(r, 5000));
+  // databaseStore.name = 'hooya!';
+  // console.log(databaseStore);
+  // console.log(parentDatabaseStore);
+  // console.log(parentDatabaseStore.stores);
 
   updateTabStore(activeWindowStore, serializedState);
 

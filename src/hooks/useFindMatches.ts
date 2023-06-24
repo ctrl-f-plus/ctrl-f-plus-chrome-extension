@@ -76,7 +76,6 @@ export default function useFindMatches() {
 
   const navigateMatches = useCallback(
     (
-      // traversalDirection: 'forward' | 'backward',
       traversalDirection: Direction,
       indexCalc: (state2: TabState) => number
     ) => {
