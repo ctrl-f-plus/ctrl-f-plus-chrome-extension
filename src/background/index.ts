@@ -5,13 +5,11 @@ import { startListeners } from './chromeListeners';
 import { sendStoreToContentScripts } from './store';
 import store from './databaseStore';
 
-// let store: Store;
-
 function updateStoreForTesting() {
   Object.keys(store.windowStores).forEach((windowId) => {
     const windowStore = store.windowStores[windowId];
 
-    windowStore.setShowLayoverAndShowMatches(true);
+    windowStore.toggleShowFileds(true);
   });
 }
 

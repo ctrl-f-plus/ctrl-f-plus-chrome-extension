@@ -16,6 +16,7 @@ import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
 import { setStoredTabs } from './storage';
 import { sendStoreToContentScripts } from './store';
 import { WindowStore } from './windowStore';
+import store from './databaseStore';
 
 /**
  *  Utility/Helper Functions:
@@ -25,13 +26,13 @@ import { WindowStore } from './windowStore';
 
 async function executeContentScriptOnTab(
   tab: chrome.tabs.Tab,
-  windowStore: WindowStore,
   foundFirstMatch: boolean
 ): Promise<{
   hasMatch: boolean;
   state: any;
 }> {
   try {
+    const { activeWindowStore } = store;
     const tabId: ValidTabId = tab.id as number;
 
     const msg: HighlightMsg = {
@@ -39,7 +40,7 @@ async function executeContentScriptOnTab(
       from: 'background',
       type: 'highlight',
       payload: {
-        findValue: windowStore.searchValue,
+        findValue: activeWindowStore.searchValue,
         foundFirstMatch,
         tabId,
       },
@@ -51,15 +52,15 @@ async function executeContentScriptOnTab(
 
     await setStoredTabs(response.serializedState);
 
-    const globalMatchIdxStart = windowStore.totalMatchesCount;
+    const globalMatchIdxStart = activeWindowStore.totalMatchesCount;
 
-    windowStore.updateTotalMatchesCount(
-      windowStore.totalMatchesCount + matchesCount
+    activeWindowStore.updateTotalMatchesCount(
+      activeWindowStore.totalMatchesCount + matchesCount
     );
 
-    windowStore.update({
+    activeWindowStore.update({
       tabStores: {
-        ...windowStore.tabStores,
+        ...activeWindowStore.tabStores,
         [tabId]: {
           tabId,
           serializedTabState: {
@@ -80,8 +81,9 @@ async function executeContentScriptOnTab(
 }
 
 /* eslint-disable no-await-in-loop */ // FIXME: might make sense to refactor the loop to get all matches and then update the start indexes after
-export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
-  const orderedTabs = await getOrderedTabs(windowStore);
+export async function executeContentScriptOnAllTabs() {
+  const { activeWindowStore } = store;
+  const orderedTabs = await getOrderedTabs(activeWindowStore);
   let foundFirstMatch = false;
   // let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
@@ -94,7 +96,6 @@ export async function executeContentScriptOnAllTabs(windowStore: WindowStore) {
 
       const { hasMatch } = await executeContentScriptOnTab(
         tab,
-        windowStore,
         foundFirstMatch
       );
 
@@ -130,7 +131,6 @@ export function calculateTargetMatchIndex(
 }
 
 export async function handleSwitchTab(
-  activeWindowStore: WindowStore,
   serializedState: SerializedTabState,
   direction: Direction
 ): Promise<void> {
@@ -138,6 +138,7 @@ export async function handleSwitchTab(
     console.warn('switchTab: Tab ID is undefined:', serializedState);
     return;
   }
+  const { activeWindowStore } = store;
 
   // updateTabStore(activeWindowStore, serializedState);
   const {
@@ -203,10 +204,8 @@ export async function handleSwitchTab(
     }
   );
 
-  if (activeWindowStore) {
-    activeWindowStore.tabStores[activeTabId].serializedTabState =
-      newSerializedState;
-  }
+  activeWindowStore.tabStores[activeTabId].serializedTabState =
+    newSerializedState;
 }
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
@@ -238,12 +237,12 @@ export async function handleRemoveAllHighlightMatches(
 
 // FIXME: REFACTOR
 export async function handleUpdateTabStatesObj(
-  windowStore: WindowStore,
   payload: {
     serializedState: SerializedTabState;
   },
   sendResponse: (response?: any) => void
 ) {
+  const { activeWindowStore } = store;
   const {
     serializedState: {
       currentIndex,
@@ -261,18 +260,18 @@ export async function handleUpdateTabStatesObj(
 
   await setStoredTabs(payload.serializedState);
 
-  windowStore.updatedTabsCount += 1;
+  activeWindowStore.setUpdatedTabsCount(activeWindowStore.updatedTabsCount + 1);
 
-  if (windowStore.updatedTabsCount === windowStore.totalTabs) {
-    windowStore.updateMatchesCount();
-    windowStore.updatedTabsCount = 0;
+  if (activeWindowStore.updatedTabsCount === activeWindowStore.totalTabs) {
+    activeWindowStore.updateMatchesCount();
+    activeWindowStore.setUpdatedTabsCount(0);
   }
 
-  windowStore.update({
+  activeWindowStore.update({
     tabStores: {
-      ...windowStore.tabStores,
+      ...activeWindowStore.tabStores,
       [tabId]: {
-        ...windowStore.tabStores[tabId],
+        ...activeWindowStore.tabStores[tabId],
         tabId,
         serializedTabState: {
           tabId,

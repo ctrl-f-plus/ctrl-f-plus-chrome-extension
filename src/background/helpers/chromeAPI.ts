@@ -10,16 +10,15 @@ export async function queryCurrentWindowTabs(
   });
 }
 
-export function getActiveTabId(): Promise<number | undefined> {
-  return new Promise((resolve) => {
+// export function getActiveTabId(): Promise<number | undefined> {
+export function getActiveTabId(): Promise<number> {
+  return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length) {
+      if (tabs[0]?.id) {
         resolve(tabs[0].id);
       } else {
-        resolve(undefined);
+        reject(new Error('No active Tab'));
       }
     });
   });
 }
-
-

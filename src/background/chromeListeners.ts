@@ -12,15 +12,6 @@ import { getActiveTabId } from './helpers/chromeAPI';
 import { clearLocalStorage } from './storage';
 import { sendStoreToContentScripts } from './store';
 import store from './databaseStore';
-import { WindowStore } from './windowStore';
-
-function getActiveWindowStore(): WindowStore | undefined {
-  const { lastFocusedWindowId } = store;
-  if (lastFocusedWindowId !== undefined) {
-    return store.windowStores[lastFocusedWindowId];
-  }
-  return undefined;
-}
 
 export function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {
@@ -29,20 +20,10 @@ export function startListeners() {
 
   chrome.runtime.onMessage.addListener(
     async (message: Messages, sender, sendResponse) => {
-      if (!store) {
-        console.error('Store is not yet initialized');
-        return undefined;
-      }
-
       console.log('Received message:', message, ' \n Store: ', store);
 
       const { type, payload } = message;
-      const activeWindowStore = getActiveWindowStore();
-
-      if (!activeWindowStore) {
-        console.error('No active window store available');
-        return undefined;
-      }
+      const { activeWindowStore } = store;
 
       switch (type) {
         case 'remove-all-highlight-matches':
@@ -64,40 +45,23 @@ export function startListeners() {
             return undefined;
           }
 
-          await executeContentScriptOnAllTabs(activeWindowStore);
+          await executeContentScriptOnAllTabs();
 
           sendStoreToContentScripts(activeWindowStore);
 
           return true;
         }
         case 'update-tab-states-obj':
-          await handleUpdateTabStatesObj(
-            activeWindowStore,
-            payload,
-            sendResponse
-          );
+          await handleUpdateTabStatesObj(payload, sendResponse);
           return true;
 
         case 'switch-tab': {
-          await handleSwitchTab(
-            activeWindowStore,
-            payload.serializedState,
-            payload.direction
-          );
-          // updateTabStore(activeWindowStore, payload.serializedState);
-          // await switchToTargetTab(
-          //   activeWindowStore,
-          //   payload.serializedState,
-          //   payload.direction
-          // );
-          // await sendStoreToContentScripts(activeWindowStore);
-          // await updateActiveTabState(activeWindowStore, payload.direction);
-
+          await handleSwitchTab(payload.serializedState, payload.direction);
           return true;
         }
 
         case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
-          activeWindowStore.setShowLayoverAndShowMatches(false);
+          activeWindowStore.toggleShowFields(false);
           sendStoreToContentScripts(activeWindowStore);
 
           return true;
@@ -117,21 +81,16 @@ export function startListeners() {
       return;
     }
 
+    store.setLastFocusedWindowId(windowId);
+
+    const { activeWindowStore } = store;
     const activeTabId = await getActiveTabId();
-    store.lastFocusedWindowId = windowId;
-
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
-
-    activeWindowStore.activeTabId = activeTabId;
+    activeWindowStore.setActiveTabId(activeTabId);
 
     chrome.windows.get(windowId, (focusedWindow) => {
       if (focusedWindow.type === 'normal') {
-        activeWindowStore.updateTotalTabsCount();
-        activeWindowStore.updatedTabsCount = 0;
+        activeWindowStore.setTotalTabsCount();
+        activeWindowStore.setUpdatedTabsCount(0);
 
         sendStoreToContentScripts(activeWindowStore);
       }
@@ -139,24 +98,14 @@ export function startListeners() {
   });
 
   chrome.tabs.onCreated.addListener(() => {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
-
-    activeWindowStore.updateTotalTabsCount();
+    const { activeWindowStore } = store;
+    activeWindowStore.setTotalTabsCount();
 
     sendStoreToContentScripts(activeWindowStore);
   });
 
   chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
-
+    const { activeWindowStore } = store;
     activeWindowStore.setActiveTabId(tabId);
 
     // TODO: if showMatches then search the new tab and update everything? Otherwise, if you open a new tab, go back to the previously opened tab and search the same value again, it doesn't know to search the new tab because it uses nextMatch(). There are other solutions if you change your mind on this one.
@@ -167,11 +116,7 @@ export function startListeners() {
   });
 
   chrome.tabs.onUpdated.addListener(async () => {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
+    const { activeWindowStore } = store;
 
     if (!activeWindowStore.showMatches) {
       return;
@@ -181,37 +126,23 @@ export function startListeners() {
   });
 
   chrome.tabs.onRemoved.addListener(() => {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
-
-    activeWindowStore.updateTotalTabsCount();
+    const { activeWindowStore } = store;
+    activeWindowStore.setTotalTabsCount();
 
     sendStoreToContentScripts(activeWindowStore);
   });
 
   chrome.action.onClicked.addListener(() => {
-    const activeWindowStore = getActiveWindowStore();
-    const addStyles = !activeWindowStore.showLayover;
-
-    activeWindowStore.setShowLayoverAndShowMatches(addStyles);
+    const { activeWindowStore } = store;
+    activeWindowStore.toggleShowFields();
 
     sendStoreToContentScripts(activeWindowStore);
   });
 
   chrome.commands.onCommand.addListener(async (command) => {
-    const activeWindowStore = getActiveWindowStore();
-    if (!activeWindowStore) {
-      console.error('No active window store available');
-      return;
-    }
-
     if (command === 'toggle_search_layover') {
-      const addStyles = !activeWindowStore.showLayover;
-
-      activeWindowStore.setShowLayoverAndShowMatches(addStyles);
+      const { activeWindowStore } = store;
+      activeWindowStore.toggleShowFields();
 
       sendStoreToContentScripts(activeWindowStore);
     }

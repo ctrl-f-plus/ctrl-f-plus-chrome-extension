@@ -14,10 +14,12 @@ export interface WindowStore extends SharedStore {
   resetPartialStore: () => void;
   update: (updates: Partial<WindowStore>) => void;
   updateLayoverPosition: (newPosition: LayoverPosition) => void;
-  updateTotalTabsCount: () => void;
+  setTotalTabsCount: () => void;
+  setUpdatedTabsCount: (updatedTabsCount: number) => void;
   updateMatchesCount: () => void;
   updateTotalMatchesCount: (totalMatchesCount: number) => void;
-  setShowLayoverAndShowMatches: (isVisible: boolean) => void;
+  toggleShowFields: (isVisible?: boolean) => void;
+  // setShowLayoverAndShowMatches: (isVisible: boolean) => void;
   setActiveTabId: (activeTabId: number) => void;
 }
 
@@ -68,9 +70,13 @@ export const createWindowStore = (): WindowStore => {
       this.layoverPosition = newPosition;
     },
 
-    async updateTotalTabsCount() {
+    async setTotalTabsCount() {
       const tabs = await queryCurrentWindowTabs();
       this.totalTabs = tabs.length;
+    },
+
+    setUpdatedTabsCount(updatedTabsCount) {
+      this.updatedTabsCount = updatedTabsCount;
     },
 
     async updateMatchesCount() {
@@ -89,10 +95,18 @@ export const createWindowStore = (): WindowStore => {
       this.totalMatchesCount = totalMatchesCount;
     },
 
-    setShowLayoverAndShowMatches(isVisible) {
-      this.showLayover = isVisible;
-      this.showMatches = isVisible;
+    toggleShowFields(isVisible) {
+      // FIXME: feels hacky
+      const show = isVisible !== undefined ? isVisible : !this.showLayover;
+
+      this.showLayover = show;
+      this.showMatches = show;
     },
+
+    // setShowLayoverAndShowMatches(isVisible) {
+    //   this.showLayover = isVisible;
+    //   this.showMatches = isVisible;
+    // },
 
     setActiveTabId(activeTabId) {
       this.activeTabId = activeTabId;

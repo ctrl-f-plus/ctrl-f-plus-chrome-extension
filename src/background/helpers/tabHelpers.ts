@@ -8,6 +8,26 @@ import { calculateTargetMatchIndex } from '../backgroundUtils';
 import { getActiveTabId } from './chromeAPI';
 import { getOrderedTabIds } from './toOrganize';
 
+/**
+ case 'switch-tab': {
+    await handleSwitchTab(
+      activeWindowStore,
+      payload.serializedState,
+      payload.direction
+    );
+    // updateTabStore(activeWindowStore, payload.serializedState);
+    // await switchToTargetTab(
+    //   activeWindowStore,
+    //   payload.serializedState,
+    //   payload.direction
+    // );
+    // await sendStoreToContentScripts(activeWindowStore);
+    // await updateActiveTabState(activeWindowStore, payload.direction);
+
+    return true;
+  }
+ */
+
 export async function switchToTargetTab(
   activeWindowStore: WindowStore,
   serializedState: SerializedTabState,
