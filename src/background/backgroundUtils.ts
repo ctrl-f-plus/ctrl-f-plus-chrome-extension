@@ -11,12 +11,11 @@ import { Direction } from '../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../types/tab.types';
 import { DIRECTION_NEXT } from '../utils/constants';
 import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
+import store from './databaseStore';
 import { getActiveTabId, queryCurrentWindowTabs } from './helpers/chromeAPI';
 import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
 import { setStoredTabs } from './storage';
 import { sendStoreToContentScripts } from './store';
-import { WindowStore } from './windowStore';
-import store from './databaseStore';
 
 /**
  *  Utility/Helper Functions:

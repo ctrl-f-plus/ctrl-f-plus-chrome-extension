@@ -2,8 +2,8 @@
 
 import {} from '../types/Store.types';
 import { startListeners } from './chromeListeners';
-import { sendStoreToContentScripts } from './store';
 import store from './databaseStore';
+import { sendStoreToContentScripts } from './store';
 
 function updateStoreForTesting() {
   Object.keys(store.windowStores).forEach((windowId) => {
@@ -14,19 +14,10 @@ function updateStoreForTesting() {
 }
 
 store.init().then(() => {
-  const lastFocusedWindowId = store?.lastFocusedWindowId;
-
-  if (lastFocusedWindowId === undefined) {
-    return;
-  }
-
-  // const activeWindowStore = getActiveWindowStore(); //FIXME: refactor/DRY as this is the same as the next line
-  const lastFocusedWindowStore = store.windowStores[lastFocusedWindowId];
-
   if (process.env.E2E_TESTING === 'true') {
     updateStoreForTesting();
   }
-  sendStoreToContentScripts(lastFocusedWindowStore);
 
+  sendStoreToContentScripts(store.activeWindowStore);
   startListeners();
 });

@@ -30,42 +30,30 @@ export function startListeners() {
           await handleRemoveAllHighlightMatches(sendResponse);
           sendStoreToContentScripts(activeWindowStore);
           return true;
-        case 'get-all-matches': {
-          const { searchValue } = payload;
-
+        case 'get-all-matches':
           activeWindowStore.resetPartialStore();
-
           activeWindowStore.update({
-            searchValue,
-            lastSearchValue: searchValue,
+            searchValue: payload.searchValue,
+            lastSearchValue: payload.searchValue,
           });
 
-          if (searchValue === '') {
+          if (payload.searchValue === '') {
             sendStoreToContentScripts(activeWindowStore);
             return undefined;
           }
-
           await executeContentScriptOnAllTabs();
-
           sendStoreToContentScripts(activeWindowStore);
-
           return true;
-        }
         case 'update-tab-states-obj':
           await handleUpdateTabStatesObj(payload, sendResponse);
           return true;
-
-        case 'switch-tab': {
+        case 'switch-tab':
           await handleSwitchTab(payload.serializedState, payload.direction);
           return true;
-        }
-
         case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
           activeWindowStore.toggleShowFields(false);
           sendStoreToContentScripts(activeWindowStore);
-
           return true;
-
         case 'update-layover-position': // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
           activeWindowStore.updateLayoverPosition(payload.newPosition);
           break;
