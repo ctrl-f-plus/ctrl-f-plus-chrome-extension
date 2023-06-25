@@ -1,14 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-import { WindowStore } from '../../types/Store.types';
+
 import { ValidTabId } from '../../types/tab.types';
 import { getAllStoredTabs } from '../storage';
 import { queryCurrentWindowTabs } from './chromeAPI';
 
 export async function getOrderedTabs(
-  windowStore: WindowStore,
   includeActiveTab = true
 ): Promise<chrome.tabs.Tab[]> {
-  const tabs = await queryCurrentWindowTabs();
+  const tabs = await queryCurrentWindowTabs(); // FIXME: this should probably use store.activeWindowStore
 
   // tabs = tabs.sort((a, b) => a.index - b.index);
 
@@ -24,10 +23,8 @@ export async function getOrderedTabs(
 }
 
 // FIXME: The storedTabs and the filter are both required otherwise the tabs won't cycle back to the beginning
-export async function getOrderedTabIds(
-  windowStore: WindowStore
-): Promise<ValidTabId[]> {
-  const orderedTabs = await getOrderedTabs(windowStore);
+export async function getOrderedTabIds(): Promise<ValidTabId[]> {
+  const orderedTabs = await getOrderedTabs();
   const storedTabs = await getAllStoredTabs();
   const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
 

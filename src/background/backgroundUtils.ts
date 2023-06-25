@@ -17,12 +17,6 @@ import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
 import { setStoredTabs } from './storage';
 import { sendStoreToContentScripts } from './store';
 
-/**
- *  Utility/Helper Functions:
- */
-
-// 'Match X/Y (Total: Z)';
-
 async function executeContentScriptOnTab(
   tab: chrome.tabs.Tab,
   foundFirstMatch: boolean
@@ -81,8 +75,7 @@ async function executeContentScriptOnTab(
 
 /* eslint-disable no-await-in-loop */ // FIXME: might make sense to refactor the loop to get all matches and then update the start indexes after
 export async function executeContentScriptOnAllTabs() {
-  const { activeWindowStore } = store;
-  const orderedTabs = await getOrderedTabs(activeWindowStore);
+  const orderedTabs = await getOrderedTabs();
   let foundFirstMatch = false;
   // let firstMatchTabIndex = orderedTabs.length; // default to length, as if no match found
 
@@ -164,7 +157,7 @@ export async function handleSwitchTab(
     },
   });
 
-  const orderedTabIds: ValidTabId[] = await getOrderedTabIds(activeWindowStore);
+  const orderedTabIds: ValidTabId[] = await getOrderedTabIds();
   const tabCount = orderedTabIds.length;
   const currentTabIndex = orderedTabIds.findIndex(
     (currentTabId) => currentTabId === serializedState.tabId

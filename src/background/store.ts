@@ -63,7 +63,6 @@ export async function sendStoreToContentScripts(
     return new Promise<boolean | Error>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, msg, (response) => {
         if (chrome.runtime.lastError) {
-          console.log(tabId);
           reject(chrome.runtime.lastError);
         } else {
           resolve(response as boolean);

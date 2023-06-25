@@ -4,12 +4,10 @@ import { WindowStore, createWindowStore } from './windowStore';
 
 type DatabaseStore = {
   lastFocusedWindowId: chrome.windows.Window['id'];
-  windowStores: { [K in number]: WindowStore };
+  windowStores: { [K in string]: WindowStore };
   activeWindowStore: WindowStore;
-  latest?: number;
 
   init: () => Promise<void>;
-  getActiveWindowStore: () => WindowStore;
   setLastFocusedWindowId: (
     lastFocusedWindowId: chrome.windows.Window['id']
   ) => void;
@@ -27,9 +25,22 @@ async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
   });
 }
 
+async function getLastFocusedWindow(): Promise<chrome.windows.Window> {
+  return new Promise((resolve, reject) => {
+    chrome.windows.getLastFocused((window) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(window);
+      }
+    });
+  });
+}
+
 const databaseStore: DatabaseStore = {
   lastFocusedWindowId: -1,
   windowStores: {},
+  activeWindowStore: createWindowStore(),
 
   async init() {
     const windows = await getAllOpenWindows();
@@ -37,18 +48,11 @@ const databaseStore: DatabaseStore = {
     windows.forEach((window) => {
       if (window.id !== undefined) {
         this.windowStores[window.id] = createWindowStore();
-        // this.lastFocusedWindowId = window.id;
-        this.setLastFocusedWindowId(window.id); // FIXME: this should not happen in the loop
       }
     });
-  },
 
-  getActiveWindowStore(): WindowStore {
-    if (this.lastFocusedWindowId === undefined) {
-      throw new Error('No active window');
-    }
-
-    return this.windowStores[this.lastFocusedWindowId];
+    const lastFocusedWindow = await getLastFocusedWindow();
+    this.setLastFocusedWindowId(lastFocusedWindow.id);
   },
 
   setLastFocusedWindowId(lastFocusedWindowId) {

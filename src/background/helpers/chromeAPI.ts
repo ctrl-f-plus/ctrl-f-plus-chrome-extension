@@ -1,7 +1,5 @@
 // src/utils/chromeAPI.ts
 
-import { WindowStore } from '../../types/Store.types';
-
 export async function queryCurrentWindowTabs(
   activeTab: boolean | undefined = undefined
 ): Promise<chrome.tabs.Tab[]> {
@@ -10,7 +8,6 @@ export async function queryCurrentWindowTabs(
   });
 }
 
-// export function getActiveTabId(): Promise<number | undefined> {
 export function getActiveTabId(): Promise<number> {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

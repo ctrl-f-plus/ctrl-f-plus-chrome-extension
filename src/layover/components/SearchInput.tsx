@@ -112,7 +112,7 @@ function SearchInput({ focus }: SearchInputProps) {
           data-testid="inputForm"
         >
           <div
-            // className="col-span-3 grid grid-cols-6 gap-0 "
+            // className="col-span-3 grid grid-cols-6 gap-0"
             className="form-div"
           >
             <input

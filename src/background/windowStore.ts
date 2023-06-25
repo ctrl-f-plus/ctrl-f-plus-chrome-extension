@@ -19,7 +19,6 @@ export interface WindowStore extends SharedStore {
   updateMatchesCount: () => void;
   updateTotalMatchesCount: (totalMatchesCount: number) => void;
   toggleShowFields: (isVisible?: boolean) => void;
-  // setShowLayoverAndShowMatches: (isVisible: boolean) => void;
   setActiveTabId: (activeTabId: number) => void;
 }
 
@@ -102,11 +101,6 @@ export const createWindowStore = (): WindowStore => {
       this.showLayover = show;
       this.showMatches = show;
     },
-
-    // setShowLayoverAndShowMatches(isVisible) {
-    //   this.showLayover = isVisible;
-    //   this.showMatches = isVisible;
-    // },
 
     setActiveTabId(activeTabId) {
       this.activeTabId = activeTabId;
