@@ -1,19 +1,19 @@
 // src/background/chromeListeners.ts
-/* eslint-disable import/prefer-default-export */
-import {} from '../types/Store.types';
+
 import { Messages } from '../types/message.types';
 import {
-  executeContentScriptOnAllTabs,
+  handleGetAllMatches,
   handleRemoveAllHighlightMatches,
   handleSwitchTab,
   handleUpdateTabStatesObj,
-} from './backgroundUtils';
+  // } from './backgroundUtils';
+} from './messageHandlers';
 import { getActiveTabId } from './helpers/chromeAPI';
 import { clearLocalStorage } from './storage';
 import { sendStoreToContentScripts } from './store';
 import store from './databaseStore';
 
-export function startListeners() {
+export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {
     clearLocalStorage();
   });
@@ -29,31 +29,19 @@ export function startListeners() {
         case 'remove-all-highlight-matches':
           await handleRemoveAllHighlightMatches(sendResponse);
           sendStoreToContentScripts(activeWindowStore);
-          return true;
+          break;
         case 'get-all-matches':
-          activeWindowStore.resetPartialStore();
-          activeWindowStore.update({
-            searchValue: payload.searchValue,
-            lastSearchValue: payload.searchValue,
-          });
-
-          if (payload.searchValue === '') {
-            sendStoreToContentScripts(activeWindowStore);
-            return undefined;
-          }
-          await executeContentScriptOnAllTabs();
-          sendStoreToContentScripts(activeWindowStore);
-          return true;
+          return handleGetAllMatches(payload.searchValue);
         case 'update-tab-states-obj':
           await handleUpdateTabStatesObj(payload, sendResponse);
-          return true;
+          break;
         case 'switch-tab':
           await handleSwitchTab(payload.serializedState, payload.direction);
-          return true;
+          break;
         case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
           activeWindowStore.toggleShowFields(false);
           sendStoreToContentScripts(activeWindowStore);
-          return true;
+          break;
         case 'update-layover-position': // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
           activeWindowStore.updateLayoverPosition(payload.newPosition);
           break;
@@ -75,12 +63,12 @@ export function startListeners() {
     const activeTabId = await getActiveTabId();
     activeWindowStore.setActiveTabId(activeTabId);
 
+    sendStoreToContentScripts(activeWindowStore);
+
     chrome.windows.get(windowId, (focusedWindow) => {
       if (focusedWindow.type === 'normal') {
         activeWindowStore.setTotalTabsCount();
         activeWindowStore.setUpdatedTabsCount(0);
-
-        sendStoreToContentScripts(activeWindowStore);
       }
     });
   });
@@ -95,8 +83,6 @@ export function startListeners() {
   chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     const { activeWindowStore } = store;
     activeWindowStore.setActiveTabId(tabId);
-
-    // TODO: if showMatches then search the new tab and update everything? Otherwise, if you open a new tab, go back to the previously opened tab and search the same value again, it doesn't know to search the new tab because it uses nextMatch(). There are other solutions if you change your mind on this one.
 
     if (activeWindowStore.showLayover) {
       sendStoreToContentScripts(activeWindowStore);

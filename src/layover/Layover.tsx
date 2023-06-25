@@ -104,8 +104,8 @@ function Layover() {
           const serializedState = serializeMatchesObj(newState);
 
           sendResponse({
-            serializedState,
             hasMatch,
+            serializedState,
           });
           return true;
         }

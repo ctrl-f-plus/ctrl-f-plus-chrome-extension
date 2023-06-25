@@ -1,6 +1,6 @@
 // src/background/background.ts
 
-import { startListeners } from './chromeListeners';
+import startListeners from './chromeListeners';
 import store from './databaseStore';
 import { sendStoreToContentScripts } from './store';
 
