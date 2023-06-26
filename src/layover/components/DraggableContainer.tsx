@@ -6,13 +6,13 @@ import Draggable, {
   DraggableEventHandler,
 } from 'react-draggable';
 import { LayoverContext } from '../../contexts/LayoverContext';
-import { LayoverPosition, LayoverProps } from '../../types/Layover.types';
 import { UpdateLayoverPositionMsg } from '../../types/message.types';
 import { sendMsgToBackground } from '../../utils/sendMessageToBackground';
+import { LayoverPosition } from '../../types/shared.types';
 
-function DraggableContainer({
-  children,
-}: LayoverProps): React.ReactElement | null {
+function DraggableContainer(
+  children: React.ReactNode
+): React.ReactElement | null {
   const nodeRef = React.useRef(null);
 
   const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);

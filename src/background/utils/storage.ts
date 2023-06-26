@@ -1,16 +1,16 @@
 // src/utils/storage.ts
 
-import { LayoverPosition } from '../../types/Layover.types';
+import { LayoverPosition } from '../../types/shared.types';
 import { SerializedTabState } from '../../types/tab.types';
 
-export interface Match {
-  innerText: string;
-  className: string;
-  id: string;
-}
+// export interface Match {
+//   innerText: string;
+//   className: string;
+//   id: string;
+// }
 
 // FIXME: review for duplicates
-export interface LocalStorage {
+interface LocalStorage {
   searchValue?: string;
   lastSearchValue?: string;
   allMatches?: Match[];
@@ -18,7 +18,7 @@ export interface LocalStorage {
   layoverPosition?: LayoverPosition;
 }
 
-export type LocalStorageKeys = keyof LocalStorage;
+type LocalStorageKeys = keyof LocalStorage;
 
 async function getLocalStorageItem<T extends LocalStorageKeys>(
   key: T
@@ -41,10 +41,11 @@ async function setLocalStorageItem<T extends LocalStorageKeys>(
   });
 }
 
-export function getAllStoredTabs(): Promise<{
+export async function getAllStoredTabs(): Promise<{
   [tabId: number]: SerializedTabState;
 }> {
-  return getLocalStorageItem('tabs').then((tabs) => tabs ?? {});
+  const tabs = await getLocalStorageItem('tabs');
+  return tabs ?? {};
 }
 
 export async function setStoredTabs(

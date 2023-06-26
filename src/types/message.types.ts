@@ -1,8 +1,7 @@
 // src/interfaces/message.types.ts
 
-import { LayoverPosition } from './Layover.types';
 import { TabStore } from './Store.types';
-import { Direction } from './shared.types';
+import { Direction, LayoverPosition } from './shared.types';
 import { SerializedTabState, ValidTabId } from './tab.types';
 
 export interface BaseMessage {

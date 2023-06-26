@@ -21,11 +21,8 @@ import './SearchInputStyles.css';
 import '../../tailwind.css';
 
 // FIXME: Test this to see if you can just use showLayover directly instead of focus
-interface SearchInputProps {
-  focus: boolean; // or whatever type `focus` is supposed to be
-}
 
-function SearchInput({ focus }: SearchInputProps) {
+function SearchInput(focus: boolean) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
 

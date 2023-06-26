@@ -1,12 +1,6 @@
 // src/utils/matchUtils/highlightUtils.ts
 
-import {
-  CreateHighlightSpanProps,
-  GetAllTextNodesToProcessProps,
-  ProcessTextNodeProps,
-  SearchAndHighlightProps,
-  UpdateMatchesObjectProps,
-} from '../../types/highlightUtils.types';
+import { TabState } from '../../types/tab.types';
 import { HIGHLIGHT_CLASS } from '../constants';
 
 function isVisible(node: Node): boolean {
@@ -40,9 +34,7 @@ function createCustomTreeWalker() {
   );
 }
 
-function createHighlightSpan({
-  matchText,
-}: CreateHighlightSpanProps): HTMLElement {
+function createHighlightSpan(matchText: string): HTMLElement {
   const span = document.createElement('span');
   span.className = HIGHLIGHT_CLASS;
   span.textContent = matchText;
@@ -50,15 +42,11 @@ function createHighlightSpan({
   return span;
 }
 
-function updateMatchesObject({ state2, span }: UpdateMatchesObjectProps) {
-  if (state2) {
-    state2.matchesObj.push(span);
-  }
+function updateMatchesObject(span: HTMLElement, state2?: TabState) {
+  state2?.matchesObj.push(span);
 }
 
-function getAllTextNodesToProcess({
-  regex,
-}: GetAllTextNodesToProcessProps): Node[] {
+function getAllTextNodesToProcess(regex: RegExp): Node[] {
   const textNodesToProcess = [];
   const treeWalker = createCustomTreeWalker();
   let currentNode = treeWalker.nextNode();
@@ -78,7 +66,7 @@ function getAllTextNodesToProcess({
   return textNodesToProcess;
 }
 
-function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
+function processTextNode(textNode: Node, regex: RegExp, state2?: TabState) {
   const parent = textNode.parentNode;
   if (!parent) {
     console.warn(
@@ -105,9 +93,9 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
       fragment.appendChild(document.createTextNode(beforeMatch));
     }
 
-    const span = createHighlightSpan({ matchText });
+    const span = createHighlightSpan(matchText);
 
-    updateMatchesObject({ state2, span });
+    updateMatchesObject(span, state2);
     // FIXME: REMOVE `eslint-disable`
     /*  eslint-disable-next-line no-param-reassign, @typescript-eslint/ban-ts-comment */
     // @ts-ignore
@@ -127,10 +115,10 @@ function processTextNode({ textNode, regex, state2 }: ProcessTextNodeProps) {
   parent.replaceChild(fragment, textNode);
 }
 
-export default function searchAndHighlight({
-  state2,
-  findValue,
-}: SearchAndHighlightProps) {
+export default function searchAndHighlight(
+  state2: TabState,
+  findValue: string
+) {
   return new Promise<void>((resolve, reject) => {
     try {
       const normalizedFindValue = findValue.replace(/\s+/g, ' ');
@@ -139,10 +127,10 @@ export default function searchAndHighlight({
         .join('( |\\u00A0)');
       const regex = new RegExp(findValueWithSpaceOrNBSP, 'gi');
 
-      const textNodesToProcess = getAllTextNodesToProcess({ regex });
+      const textNodesToProcess = getAllTextNodesToProcess(regex);
 
       textNodesToProcess.forEach((textNode) => {
-        processTextNode({ textNode, regex, state2 });
+        processTextNode(textNode, regex, state2);
       });
 
       resolve();

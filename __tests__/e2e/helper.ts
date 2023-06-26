@@ -60,7 +60,7 @@ export async function navigateToLastMatch(
 }
 
 export async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
-  return await page.evaluate(() => {
+  return page.evaluate(() => {
     const nodeList = document.querySelectorAll('.ctrl-f-highlight');
     const elements = Array.from(nodeList);
     return elements.findIndex((el) =>
@@ -73,14 +73,14 @@ export async function getInputValueFromSelector(
   page: Page,
   selector: string = INPUT_SELECTOR
 ) {
-  return await page.$eval(selector, (el) => (el as HTMLInputElement).value);
+  return page.$eval(selector, (el) => (el as HTMLInputElement).value);
 }
 
 export async function getInnerTextFromSelector(
   page: Page,
   selector: string = MATCHING_COUNTS_SELECTOR
 ) {
-  return await page.$eval(selector, (el) => (el as HTMLElement).innerText);
+  return page.$eval(selector, (el) => (el as HTMLElement).innerText);
 }
 
 export async function waitForElementTextChange(
@@ -98,10 +98,7 @@ export async function waitForElementTextChange(
     initialText
   );
 
-  return await page.$eval(
-    selector,
-    (el: Element) => (el as HTMLElement).innerText
-  );
+  return page.$eval(selector, (el: Element) => (el as HTMLElement).innerText);
 }
 
 export // async function waitForCondition(page, condition, timeout = 30000) {

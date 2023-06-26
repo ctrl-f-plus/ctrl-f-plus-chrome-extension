@@ -12,7 +12,7 @@ const TIMEOUT = SLOW_MO ? 10000 : 5000;
 const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
 const MATCHING_COUNTS_SELECTOR =
   '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
-const NUMBER_OF_TABS: number = 1;
+const NUMBER_OF_TABS = 1;
 const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
 const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
 
@@ -111,7 +111,7 @@ describe('Tab Navigation Extension', () => {
   ];
 
   for (const scenario of tabScenarios) {
-    let browserArray: Browser[] = [];
+    const browserArray: Browser[] = [];
     let browser: Browser;
     let pages: Page[];
     let page: Page;
@@ -138,14 +138,14 @@ describe('Tab Navigation Extension', () => {
 
         totalHighlightCount = 0;
         totalMatchesCount = 0;
-        const testUrls = scenario.testUrls;
+        const { testUrls } = scenario;
         browserArray.push(browser);
         pages = await browser.pages();
         page = pages[0];
         await page.goto(testUrls[0]);
 
         for (let i = 1; i < scenario.tabCount; i++) {
-          let newPage = await browser.newPage();
+          const newPage = await browser.newPage();
           pages.push(newPage);
 
           await newPage.goto(testUrls[i]);
@@ -183,7 +183,7 @@ describe('Tab Navigation Extension', () => {
 
       describe('Count Display', () => {
         test('Total Matches Count is accurate', async () => {
-          let matchingCounts = await getInnerTextFromSelector(
+          const matchingCounts = await getInnerTextFromSelector(
             page,
             MATCHING_COUNTS_SELECTOR
           );
@@ -297,7 +297,7 @@ export async function getInputValueFromSelector(
   page: Page,
   selector: string = INPUT_SELECTOR
 ) {
-  return await page.$eval(selector, (el) => (el as HTMLInputElement).value);
+  return page.$eval(selector, (el) => (el as HTMLInputElement).value);
 }
 
 async function countQueryMatches(pages: Page[], query: string) {
@@ -349,7 +349,7 @@ async function getInnerTextFromSelector(
   selector: string = MATCHING_COUNTS_SELECTOR
 ) {
   await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-  return await page.$eval(selector, (el) => (el as HTMLElement).innerText);
+  return page.$eval(selector, (el) => (el as HTMLElement).innerText);
 }
 
 async function navigateMatchesWithNextButton(page: Page) {
@@ -394,7 +394,7 @@ export async function getActiveTabIndex(pages: Page[]) {
 }
 
 async function getHighlightFocusMatchIndex(page: Page): Promise<number> {
-  return await page.evaluate(() => {
+  return page.evaluate(() => {
     const nodeList = document.querySelectorAll('.ctrl-f-highlight');
     const elements = Array.from(nodeList);
 
@@ -434,13 +434,13 @@ async function navigationTest(
   expectedTabPath: number[],
   totalMatchesCount: number,
   navigationFunction: Function,
-  isNavigatingFowards: boolean = true
+  isNavigatingFowards = true
 ) {
-  let navigatedTabPath2 = [];
+  const navigatedTabPath2 = [];
   let globalMatchIndex = 0;
   let previousPage: Page = await getActiveTab(pages);
   let currentPage: Page = await getActiveTab(pages);
-  let previousHighlightIndex: number = 0;
+  let previousHighlightIndex = 0;
   let currentHighlightIndex = await getHighlightFocusMatchGlobalIndex(
     currentPage,
     pages
@@ -475,29 +475,29 @@ async function navigationTest(
     );
 
     if (isNavigatingFowards) {
-      globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //**FWD
+      globalMatchIndex = (globalMatchIndex + 1) % totalMatchesCount; //* *FWD
     } else {
       globalMatchIndex =
-        (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //**BCKWD
+        (globalMatchIndex - 1 + totalMatchesCount) % totalMatchesCount; //* *BCKWD
     }
 
-    let matchingCounts = await getInnerTextFromSelector(
+    const matchingCounts = await getInnerTextFromSelector(
       currentPage,
       MATCHING_COUNTS_SELECTOR
     );
 
-    let currentMatchIndex = parseInt(matchingCounts.split('/')[0]);
+    const currentMatchIndex = parseInt(matchingCounts.split('/')[0]);
 
     expect(globalMatchIndex).toBe(currentMatchIndex - 1);
 
     let expectedValue;
     if (isNavigatingFowards) {
-      expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //**FWD - 1-indexed
+      expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //* *FWD - 1-indexed
       // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
     } else {
       expectedValue =
         (previousHighlightIndex - 1 + totalMatchesCount) % totalMatchesCount ||
-        totalMatchesCount; //**BCKWD
+        totalMatchesCount; //* *BCKWD
     }
 
     expect(currentHighlightIndex).toBe(
@@ -511,13 +511,13 @@ async function navigationTest(
 
   let expectedNavPath = expectedTabPath;
   if (!isNavigatingFowards) {
-    expectedNavPath = expectedNavPath.reverse(); //**BCKWD
+    expectedNavPath = expectedNavPath.reverse(); //* *BCKWD
   }
 
   expect(navigatedTabPath2).toStrictEqual(expectedNavPath);
 }
 
-/////////
+/// //////
 
 export function parseMatchingCounts(matchingCounts: string) {
   const [currentMatchIndex, totalMatchesCount] = matchingCounts
@@ -563,13 +563,10 @@ export async function waitForElementTextChange(
     initialText
   );
 
-  return await page.$eval(
-    selector,
-    (el: Element) => (el as HTMLElement).innerText
-  );
+  return page.$eval(selector, (el: Element) => (el as HTMLElement).innerText);
 }
 
-//export  async function waitForCondition(page, condition, timeout = 30000) {
+// export  async function waitForCondition(page, condition, timeout = 30000) {
 //   try {
 //     await page.waitForFunction(condition, { timeout });
 //   } catch (error) {

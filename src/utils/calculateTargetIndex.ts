@@ -1,3 +1,5 @@
+// src/utils/calculateTargetIndex.ts
+
 export default function calculateTargetIndex(
   direction: 'next' | 'previous',
   currentIndex: number,

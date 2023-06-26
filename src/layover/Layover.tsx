@@ -1,5 +1,4 @@
-import React from 'react';
-import { useCallback, useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';

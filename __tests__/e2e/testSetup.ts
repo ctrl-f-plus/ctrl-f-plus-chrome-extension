@@ -8,12 +8,12 @@ export const BAD_SEARCH_QUERY = 'falseSearchQuery';
 const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
 
 export async function setupTest(scenario: any) {
-  let browserArray: Browser[] = [];
+  const browserArray: Browser[] = [];
   let browser: Browser;
   let pages: Page[] = [];
   let page: Page;
-  let totalHighlightCount: number = 0;
-  let totalMatchesCount: number = 0;
+  const totalHighlightCount = 0;
+  const totalMatchesCount = 0;
 
   browser = await puppeteer.launch({
     headless: false,
@@ -26,14 +26,14 @@ export async function setupTest(scenario: any) {
     ],
   });
 
-  const testUrls = scenario.testUrls;
+  const { testUrls } = scenario;
   browserArray.push(browser);
   pages = await browser.pages();
   page = pages[0];
   await page.goto(testUrls[0]);
 
   for (let i = 1; i < scenario.tabCount; i++) {
-    let newPage = await browser.newPage();
+    const newPage = await browser.newPage();
     pages.push(newPage);
     await newPage.goto(testUrls[i]);
     await newPage.bringToFront();

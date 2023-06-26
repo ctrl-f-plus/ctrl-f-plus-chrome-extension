@@ -9,7 +9,7 @@
     "test": "jest --verbose --config jest.config.js",
     "test:e2e": "webpack --config webpack.dev.js --env E2E_TESTING=true && jest --verbose --config jest.e2e.config.js",
     "e2e:slow": "SLOW_MO=250 jest",
-    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
+    "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "author": "",
