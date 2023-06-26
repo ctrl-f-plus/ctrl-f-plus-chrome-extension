@@ -3,17 +3,16 @@
 import { Messages } from '../types/message.types';
 
 import {
-  // handleGetAllMatches,
+  handleGetAllMatches,
   handleRemoveAllHighlightMatches,
   handleSwitchTab,
-  handleUpdateTabStatesObj,
+  handleUpdateTabStates,
   // } from './backgroundUtils';
 } from './messageHandlers';
 import { getActiveTabId } from '../utils/background/chromeApiUtils';
 import { clearLocalStorage } from '../utils/background/storage';
 import { sendStoreToContentScripts } from './store/store';
 import store from './store/databaseStore';
-import { executeContentScriptOnAllTabs } from './messageHandlers/handleGetAllMatches';
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {
@@ -44,11 +43,11 @@ export default function startListeners() {
             sendStoreToContentScripts(activeWindowStore);
             return undefined;
           }
-          await executeContentScriptOnAllTabs();
+          await handleGetAllMatches();
           sendStoreToContentScripts(activeWindowStore);
           return true;
         case 'update-tab-states-obj':
-          await handleUpdateTabStatesObj(payload, sendResponse);
+          await handleUpdateTabStates(payload, sendResponse);
           break;
         case 'switch-tab':
           await handleSwitchTab(payload.serializedState, payload.direction);

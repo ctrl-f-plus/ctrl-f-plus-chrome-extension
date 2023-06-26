@@ -97,7 +97,7 @@ import { setStoredTabs } from '../../utils/background/storage';
 //   return true;
 // }
 
-async function executeContentScriptOnTab(
+async function findMatchesOnTab(
   tab: chrome.tabs.Tab,
   foundFirstMatch: boolean
 ): Promise<{
@@ -154,7 +154,7 @@ async function executeContentScriptOnTab(
 }
 
 /* eslint-disable no-await-in-loop */ // FIXME: might make sense to refactor the loop to get all matches and then update the start indexes after
-export async function executeContentScriptOnAllTabs() {
+export default async function handleGetAllMatches() {
   const orderedTabs = await getOrderedTabs();
   let foundFirstMatch = false;
 
@@ -165,10 +165,7 @@ export async function executeContentScriptOnAllTabs() {
     if (tab.id) {
       const tabId: ValidTabId = tab.id as number;
 
-      const { hasMatch } = await executeContentScriptOnTab(
-        tab,
-        foundFirstMatch
-      );
+      const { hasMatch } = await findMatchesOnTab(tab, foundFirstMatch);
 
       if (hasMatch && !foundFirstMatch) {
         foundFirstMatch = true;

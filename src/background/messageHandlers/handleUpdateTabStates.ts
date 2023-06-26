@@ -1,11 +1,11 @@
-// src/background/messageHandlers/handleUpdateTabStatesObj.ts
+// src/background/messageHandlers/handleUpdateTabStates.ts
 
 import { SerializedTabState } from '../../types/tab.types';
 import store from '../store/databaseStore';
 import { setStoredTabs } from '../../utils/background/storage';
 
 // FIXME: REFACTOR
-export default async function handleUpdateTabStatesObj(
+export default async function handleUpdateTabStates(
   payload: {
     serializedState: SerializedTabState;
   },
@@ -23,7 +23,7 @@ export default async function handleUpdateTabStatesObj(
   } = payload;
 
   if (tabId === undefined) {
-    console.warn('handleUpdateTabStatesObj: Tab ID is undefined:', payload);
+    console.warn('handleUpdateTabStates: Tab ID is undefined:', payload);
     return;
   }
 
