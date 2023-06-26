@@ -5,13 +5,13 @@ import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
-import { serializeMatchesObj } from '../utils/htmlUtils';
-import searchAndHighlight from '../utils/matchUtils/searchAndHighlight';
-import { sendMsgToBackground } from '../utils/sendMessageToBackground';
-import scrollToElement from '../utils/scrollUtil';
-import calculateTargetIndex from '../utils/calculateTargetIndex';
+import searchAndHighlight from '../utils/search/searchAndHighlight';
+import { sendMsgToBackground } from '../utils/messaging/sendMessageToBackground';
+import scrollToElement from '../utils/dom/scrollUtil';
+import calculateTargetIndex from '../utils/search/calculateTargetIndex';
 import { Direction } from '../types/shared.types';
-import { DIRECTION_NEXT } from '../utils/constants';
+import { DIRECTION_NEXT, HIGHLIGHT_FOCUS_CLASS } from '../utils/constants';
+import serializeTabState from '../utils/serialization/serializeTabState';
 
 type UpdateHighlightsOptions = {
   previousIndex?: number;
@@ -38,10 +38,10 @@ export default function useFindMatches() {
       newState.matchesCount = 0;
       newState.matchesObj = [];
 
-      await searchAndHighlight({
+      await searchAndHighlight(
         state2: newState,
         findValue,
-      });
+      );
 
       setTabStateContext(newState);
       return newState;
@@ -59,13 +59,13 @@ export default function useFindMatches() {
 
       if (typeof previousIndex === 'number') {
         const prevMatch = newState.matchesObj[previousIndex];
-        prevMatch.classList.remove('ctrl-f-highlight-focus');
+        prevMatch.classList.remove(HIGHLIGHT_FOCUS_CLASS);
       }
 
       if (!endOfTab && typeof newState.currentIndex !== 'undefined') {
         const curMatch = newState.matchesObj[newState.currentIndex];
 
-        curMatch.classList.add('ctrl-f-highlight-focus');
+        curMatch.classList.add(HIGHLIGHT_FOCUS_CLASS);
         scrollToElement(curMatch);
       }
 
@@ -107,7 +107,7 @@ export default function useFindMatches() {
         if (newState2.matchesCount === totalMatchesCount) {
           updatedState = updateHighlights(updatedState, { endOfTab: false });
         } else {
-          const serializedState: SerializedTabState = serializeMatchesObj({
+          const serializedState: SerializedTabState = serializeTabState({
             ...newState2,
           });
 
@@ -126,7 +126,7 @@ export default function useFindMatches() {
         updatedState = updateHighlights(newState2, { previousIndex });
       }
 
-      const serializedState: SerializedTabState = serializeMatchesObj({
+      const serializedState: SerializedTabState = serializeTabState({
         ...updatedState,
       });
 

@@ -1,9 +1,11 @@
 // src/utils/matchUtils/removeAllHighlightMatches.ts
 
+import { HIGHLIGHT_CLASS, HIGHLIGHT_FOCUS_CLASS } from '../constants';
+
 // TODO: make sure that you test this to ensure that the html is being rebuilt correctly
 export default function removeAllHighlightMatches() {
   const highlightElements = document.querySelectorAll(
-    '.ctrl-f-highlight, .ctrl-f-highlight-focus'
+    `.${HIGHLIGHT_CLASS}, .${HIGHLIGHT_FOCUS_CLASS}`
   );
 
   highlightElements.forEach((elem) => {

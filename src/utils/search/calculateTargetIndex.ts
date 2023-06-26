@@ -1,7 +1,9 @@
 // src/utils/calculateTargetIndex.ts
 
+import { Direction } from '../../types/shared.types';
+
 export default function calculateTargetIndex(
-  direction: 'next' | 'previous',
+  direction: Direction,
   currentIndex: number,
   totalCount: number
 ): number {

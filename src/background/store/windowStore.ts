@@ -3,8 +3,8 @@
 import { SharedStore } from '../../types/Store.types';
 import { LayoverPosition, SerializedTabState } from '../../types/shared.types';
 import { ValidTabId } from '../../types/tab.types';
-import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
-import { getAllStoredTabs } from '../utils/storage';
+import { queryCurrentWindowTabs } from '../../utils/background/chromeApiUtils';
+import { getAllStoredTabs } from '../../utils/background/storage';
 
 interface BasicTabState {
   tabId: ValidTabId;

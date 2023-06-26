@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
+import removeAllHighlightMatches from '../utils/dom/removeAllHighlightMatches';
 
 export default function useRemoveAllHighlightMatches() {
   const { showMatches } = useContext(LayoverContext);

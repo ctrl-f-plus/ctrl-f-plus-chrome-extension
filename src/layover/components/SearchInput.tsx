@@ -16,13 +16,15 @@ import { LayoverContext } from '../../contexts/LayoverContext';
 import { TabStateContext } from '../../contexts/TabStateContext';
 import useFindMatches from '../../hooks/useFindMatches';
 import useSearchHandler from '../../hooks/useSearchHandler';
-import { sendMessageToBackground } from '../../utils/sendMessageToBackground';
+import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
 import './SearchInputStyles.css';
 import '../../tailwind.css';
 
-// FIXME: Test this to see if you can just use showLayover directly instead of focus
+type SearchInputProps = {
+  focus: boolean;
+};
 
-function SearchInput(focus: boolean) {
+function SearchInput({ focus }: SearchInputProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [initialLoad, setInitialLoad] = useState(true);
 

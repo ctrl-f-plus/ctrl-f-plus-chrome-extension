@@ -6,19 +6,16 @@ import useEscapeKeyDown from '../hooks/useEscapeKeydown';
 import useFindMatches from '../hooks/useFindMatches';
 import useMessageHandler from '../hooks/useMessageHandler';
 import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
-import SearchInput from './components/SearchInput';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
 import { Messages } from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
-import {
-  deserializeMatchesObj,
-  restoreHighlightSpans,
-  serializeMatchesObj,
-} from '../utils/htmlUtils';
-
-import removeAllHighlightMatches from '../utils/matchUtils/removeAllHighlightMatches';
+import deserializeTabState from '../utils/serialization/deserializeTabState';
+import removeAllHighlightMatches from '../utils/dom/removeAllHighlightMatches';
+import restoreHighlightSpans from '../utils/dom/restoreHighlightSpans';
+import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
+import SearchInput from './components/SearchInput';
 
 function Layover() {
   const {
@@ -47,7 +44,7 @@ function Layover() {
 
       const { serializedTabState } = tabStore;
       const xPathTabState: XPathTabState =
-        deserializeMatchesObj(serializedTabState);
+        deserializeTabState(serializedTabState);
       const tabState = restoreHighlightSpans(xPathTabState);
 
       setTabStateContext(tabState);
@@ -100,7 +97,7 @@ function Layover() {
 
           setTabStateContext(newState);
 
-          const serializedState = serializeMatchesObj(newState);
+          const serializedState = serializeTabState(newState);
 
           sendResponse({
             hasMatch,
@@ -116,7 +113,7 @@ function Layover() {
 
           setTabStateContext(newState);
 
-          const newSerializedState = serializeMatchesObj(newState);
+          const newSerializedState = serializeTabState(newState);
 
           sendResponse({ status: 'success', newSerializedState });
           return true;

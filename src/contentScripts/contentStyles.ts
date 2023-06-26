@@ -1,7 +1,9 @@
 // src/contentScripts/contentStyles.ts
 
+import { HIGHLIGHT_CLASS, HIGHLIGHT_FOCUS_CLASS } from '../utils/constants';
+
 const contentStyles = `
-.ctrl-f-highlight {
+.${HIGHLIGHT_CLASS} {
   background-color: #128da1 !important;
   color: #010100;
   border-radius: 0.25rem;
@@ -10,7 +12,7 @@ const contentStyles = `
   border-color: #128da1;
 }
 
-.ctrl-f-highlight-focus {
+.${HIGHLIGHT_FOCUS_CLASS} {
   background-color: #05fdb4 !important;
   border-color: #05fdb4;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /*Tailwind: .box-shadow-medium */

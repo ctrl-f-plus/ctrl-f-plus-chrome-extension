@@ -1,4 +1,4 @@
-// src/components/Layover.tsx
+// src/layover/components/DraggableContainer.tsx
 
 import React, { useContext } from 'react';
 import Draggable, {
@@ -7,12 +7,16 @@ import Draggable, {
 } from 'react-draggable';
 import { LayoverContext } from '../../contexts/LayoverContext';
 import { UpdateLayoverPositionMsg } from '../../types/message.types';
-import { sendMsgToBackground } from '../../utils/sendMessageToBackground';
+import { sendMsgToBackground } from '../../utils/messaging/sendMessageToBackground';
 import { LayoverPosition } from '../../types/shared.types';
 
-function DraggableContainer(
-  children: React.ReactNode
-): React.ReactElement | null {
+export interface DraggableContainerProps {
+  children: React.ReactNode;
+}
+
+function DraggableContainer({
+  children,
+}: DraggableContainerProps): React.ReactElement | null {
   const nodeRef = React.useRef(null);
 
   const { layoverPosition, setLayoverPosition } = useContext(LayoverContext);

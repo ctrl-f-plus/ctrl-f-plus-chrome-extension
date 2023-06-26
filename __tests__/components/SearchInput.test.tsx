@@ -6,7 +6,7 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import { LayoverContext } from '../../src/contexts/LayoverContext';
 import { TabStateContext } from '../../src/contexts/TabStateContext';
 import SearchInput from '../../src/layover/components/SearchInput';
-import { sendMessageToBackground } from '../../src/utils/sendMessageToBackground';
+import { sendMessageToBackground } from '../../src/utils/messaging/sendMessageToBackground';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');
 

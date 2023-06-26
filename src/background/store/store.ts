@@ -2,7 +2,7 @@
 
 import { TabStore } from '../../types/Store.types';
 import { ValidTabId } from '../../types/tab.types';
-import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
+import { queryCurrentWindowTabs } from '../../utils/background/chromeApiUtils';
 import { WindowStore } from './windowStore';
 
 export function createTabStore(

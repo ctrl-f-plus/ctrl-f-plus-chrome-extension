@@ -8,8 +8,8 @@ import {
   handleUpdateTabStatesObj,
   // } from './backgroundUtils';
 } from './messageHandlers';
-import { getActiveTabId } from './utils/chromeApiUtils';
-import { clearLocalStorage } from './utils/storage';
+import { getActiveTabId } from '../utils/background/chromeApiUtils';
+import { clearLocalStorage } from '../utils/background/storage';
 import { sendStoreToContentScripts } from './store/store';
 import store from './store/databaseStore';
 

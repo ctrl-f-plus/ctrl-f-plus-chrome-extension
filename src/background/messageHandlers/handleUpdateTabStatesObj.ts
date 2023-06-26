@@ -2,7 +2,7 @@
 
 import { SerializedTabState } from '../../types/tab.types';
 import store from '../store/databaseStore';
-import { setStoredTabs } from '../utils/storage';
+import { setStoredTabs } from '../../utils/background/storage';
 
 // FIXME: REFACTOR
 export default async function handleUpdateTabStatesObj(

@@ -2,11 +2,11 @@
 
 import { HighlightMsg } from '../../types/message.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-import sendMessageToTab from '../utils/sendMessageToContentScripts';
+import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 import store from '../store/databaseStore';
 import { sendStoreToContentScripts } from '../store/store';
-import { getOrderedTabs } from '../utils/chromeApiUtils';
-import { setStoredTabs } from '../utils/storage';
+import { getOrderedTabs } from '../../utils/background/chromeApiUtils';
+import { setStoredTabs } from '../../utils/background/storage';
 
 async function findMatchesOnTab(
   tabId: ValidTabId,
