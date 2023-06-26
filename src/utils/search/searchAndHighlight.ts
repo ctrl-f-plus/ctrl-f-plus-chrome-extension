@@ -2,6 +2,7 @@
 
 import { TabState } from '../../types/tab.types';
 import { HIGHLIGHT_CLASS } from '../constants';
+import createSpan from '../dom/createSpan';
 
 function isVisible(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
@@ -34,13 +35,13 @@ function createCustomTreeWalker() {
   );
 }
 
-function createHighlightSpan(matchText: string): HTMLElement {
-  const span = document.createElement('span');
-  span.className = HIGHLIGHT_CLASS;
-  span.textContent = matchText;
+// function createHighlightSpan(matchText: string): HTMLElement {
+//   const span = document.createElement('span');
+//   span.className = HIGHLIGHT_CLASS;
+//   span.textContent = matchText;
 
-  return span;
-}
+//   return span;
+// }
 
 function updateMatchesObject(span: HTMLElement, state2?: TabState) {
   state2?.matchesObj.push(span);
@@ -93,13 +94,10 @@ function processTextNode(textNode: Node, regex: RegExp, state2?: TabState) {
       fragment.appendChild(document.createTextNode(beforeMatch));
     }
 
-    const span = createHighlightSpan(matchText);
+    const span = createSpan([HIGHLIGHT_CLASS], matchText);
 
     updateMatchesObject(span, state2);
-    // FIXME: REMOVE `eslint-disable`
-    /*  eslint-disable-next-line no-param-reassign, @typescript-eslint/ban-ts-comment */
-    // @ts-ignore
-    // eslint-disable-next-line no-param-reassign
+
     state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
 
     fragment.appendChild(span);

@@ -1,6 +1,7 @@
 // src/utils/restoreHighlightSpans.ts
 
 import { TabState, XPathTabState } from '../../types/tab.types';
+import createSpan from './createSpan';
 
 function getElementByXPath(xpath: string) {
   let result = null;
@@ -41,13 +42,12 @@ function wrapTextWithHighlight(
         node.nodeType === Node.TEXT_NODE && node.textContent.includes(text)
     );
 
-  if (textNodeIndex === -1) return document.createElement('span');
+  if (textNodeIndex === -1) return createSpan([]);
 
   const textNode = element.childNodes[textNodeIndex];
   const range = document.createRange();
-  const span = document.createElement('span');
-  span.classList.add(...spanClasses);
-  
+  const span = createSpan(spanClasses);
+
   if (textNode.textContent !== null) {
     range.setStart(textNode, textNode.textContent.indexOf(text));
     range.setEnd(textNode, textNode.textContent.indexOf(text) + text.length);
@@ -72,7 +72,6 @@ export default function restoreHighlightSpans(
       const spanElement: HTMLSpanElement | null = (
         element as Element
       ).querySelector('span');
-
       if (spanElement) {
         tabState.matchesObj.push(spanElement);
       }

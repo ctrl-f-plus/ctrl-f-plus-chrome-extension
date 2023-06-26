@@ -38,10 +38,7 @@ export default function useFindMatches() {
       newState.matchesCount = 0;
       newState.matchesObj = [];
 
-      await searchAndHighlight(
-        state2: newState,
-        findValue,
-      );
+      await searchAndHighlight(newState, findValue);
 
       setTabStateContext(newState);
       return newState;
