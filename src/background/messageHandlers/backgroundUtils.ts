@@ -1,21 +1,14 @@
-// src/background/messageHandlers/backgroundUtils.ts
+/* eslint-disable import/prefer-default-export */
+// src / background / messageHandlers / backgroundUtils.ts;
 
-// import calculateTargetIndex from '../helpers/calculateTargetIndex';
-
-// import {
-//   HighlightMsg,
-//   RemoveAllHighlightMatchesMsg,
-//   UpdateHighlightsMsg,
-// } from '../types/message.types';
-// import { Direction } from '../types/shared.types';
-// import { SerializedTabState, ValidTabId } from '../types/tab.types';
-// import { DIRECTION_NEXT } from '../utils/constants';
-// import sendMessageToTab from '../utils/messageUtils/sendMessageToContentScripts';
-// import store from './databaseStore';
-// import { getActiveTabId, queryCurrentWindowTabs } from './helpers/chromeAPI';
-// import { getOrderedTabIds, getOrderedTabs } from './helpers/toOrganize';
-// import { setStoredTabs } from './storage';
-// import { sendStoreToContentScripts } from './store';
+// import { HighlightMsg } from '../../types/message.types';
+// import { SerializedTabState, ValidTabId } from '../../types/tab.types';
+// import { getOrderedTabs } from '../../utils/background/chromeApiUtils';
+// import { setStoredTabs } from '../../utils/background/storage';
+// import { DIRECTION_NEXT } from '../../utils/constants';
+// import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+// import store from '../store/databaseStore';
+// import { sendStoreToContentScripts } from '../store/store';
 
 // async function findMatchesOnTab(
 //   tabId: ValidTabId,

@@ -1,8 +1,9 @@
 // src/background/chromeListeners.ts
 
 import { Messages } from '../types/message.types';
+
 import {
-  handleGetAllMatches,
+  // handleGetAllMatches,
   handleRemoveAllHighlightMatches,
   handleSwitchTab,
   handleUpdateTabStatesObj,
@@ -12,6 +13,7 @@ import { getActiveTabId } from '../utils/background/chromeApiUtils';
 import { clearLocalStorage } from '../utils/background/storage';
 import { sendStoreToContentScripts } from './store/store';
 import store from './store/databaseStore';
+import { executeContentScriptOnAllTabs } from './messageHandlers/handleGetAllMatches';
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {
@@ -31,7 +33,20 @@ export default function startListeners() {
           sendStoreToContentScripts(activeWindowStore);
           break;
         case 'get-all-matches':
-          return handleGetAllMatches(payload.searchValue);
+          // return handleGetAllMatches(payload.searchValue);
+          activeWindowStore.resetPartialStore();
+          activeWindowStore.update({
+            searchValue: payload.searchValue,
+            lastSearchValue: payload.searchValue,
+          });
+
+          if (payload.searchValue === '') {
+            sendStoreToContentScripts(activeWindowStore);
+            return undefined;
+          }
+          await executeContentScriptOnAllTabs();
+          sendStoreToContentScripts(activeWindowStore);
+          return true;
         case 'update-tab-states-obj':
           await handleUpdateTabStatesObj(payload, sendResponse);
           break;
