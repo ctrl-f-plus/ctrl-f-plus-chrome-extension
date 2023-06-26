@@ -8,7 +8,7 @@ import { WindowStore, createWindowStore } from './windowStore';
 
 type DatabaseStore = {
   lastFocusedWindowId: chrome.windows.Window['id'];
-  windowStores: { [K in string]: WindowStore };
+  windowStores: { [K in number]: WindowStore };
   activeWindowStore: WindowStore;
 
   init: () => Promise<void>;

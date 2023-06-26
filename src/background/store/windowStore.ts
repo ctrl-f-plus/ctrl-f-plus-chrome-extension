@@ -1,10 +1,15 @@
 // src/background/windowStore.ts
 
-import { SharedStore } from '../../types/Store.types';
-import { LayoverPosition, SerializedTabState } from '../../types/shared.types';
-import { ValidTabId } from '../../types/tab.types';
-import { queryCurrentWindowTabs } from '../../utils/background/chromeApiUtils';
+import { SharedStore, TabStore } from '../../types/Store.types';
+import { UpdateStoreMsg } from '../../types/message.types';
+import { LayoverPosition } from '../../types/shared.types';
+import { SerializedTabState, ValidTabId } from '../../types/tab.types';
+import {
+  queryCurrentWindowTabs,
+  toValidTabId,
+} from '../../utils/background/chromeApiUtils';
 import { getAllStoredTabs } from '../../utils/background/storage';
+import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 
 interface BasicTabState {
   tabId: ValidTabId;
@@ -25,6 +30,8 @@ export interface WindowStore extends SharedStore {
   updateTotalMatchesCount: (totalMatchesCount: number) => void;
   toggleShowFields: (isVisible?: boolean) => void;
   setActiveTabId: (activeTabId: number) => void;
+  createTabStore: (tabId: ValidTabId) => TabStore;
+  sendToContentScripts: () => Promise<(boolean | Error)[]>;
 }
 
 export const createWindowStore = (): WindowStore => {
@@ -46,7 +53,7 @@ export const createWindowStore = (): WindowStore => {
 
       if (updatesTabStores) {
         Object.keys(updatesTabStores).forEach((tabId) => {
-          const validTabId = tabId as unknown as ValidTabId;
+          const validTabId = toValidTabId(Number(tabId));
 
           if (!this.tabStores[validTabId]) {
             this.tabStores[validTabId] = updatesTabStores[validTabId];
@@ -88,7 +95,7 @@ export const createWindowStore = (): WindowStore => {
       let totalMatchesCount = 0;
 
       Object.keys(storedTabs).forEach((tabId) => {
-        const validTabId = tabId as unknown as ValidTabId;
+        const validTabId = toValidTabId(Number(tabId));
         totalMatchesCount += storedTabs[validTabId]?.matchesCount ?? 0;
       });
 
@@ -100,8 +107,7 @@ export const createWindowStore = (): WindowStore => {
     },
 
     toggleShowFields(isVisible) {
-      // FIXME: feels hacky
-      const show = isVisible !== undefined ? isVisible : !this.showLayover;
+      const show = isVisible ?? !this.showLayover;
 
       this.showLayover = show;
       this.showMatches = show;
@@ -109,6 +115,55 @@ export const createWindowStore = (): WindowStore => {
 
     setActiveTabId(activeTabId) {
       this.activeTabId = activeTabId;
+    },
+
+    createTabStore(tabId: ValidTabId): TabStore {
+      let serializedTabState = this.tabStores[tabId]?.serializedTabState;
+
+      if (serializedTabState === undefined) {
+        serializedTabState = {
+          tabId,
+          currentIndex: 0,
+          matchesCount: 0,
+          serializedMatches: '',
+          globalMatchIdxStart: -1,
+        };
+      }
+
+      return {
+        tabId,
+        serializedTabState,
+        totalMatchesCount: this.totalMatchesCount,
+        layoverPosition: this.layoverPosition,
+        showLayover: this.showLayover,
+        showMatches: this.showMatches,
+        searchValue: this.searchValue,
+        lastSearchValue: this.lastSearchValue,
+        activeTabId: this.activeTabId,
+      };
+    },
+
+    async sendToContentScripts(): Promise<(boolean | Error)[]> {
+      const currentWindowTabs = await queryCurrentWindowTabs();
+      const validatedTabIds = currentWindowTabs
+        .map((tab) => tab.id)
+        .filter((id): id is ValidTabId => id !== undefined);
+
+      const promises = (validatedTabIds || []).map((tabId) => {
+        const tabStore = this.createTabStore(tabId);
+
+        return sendMessageToTab<UpdateStoreMsg>(tabId, {
+          async: true,
+          from: 'background:store',
+          type: 'store-updated',
+          payload: {
+            tabId,
+            tabStore,
+          },
+        });
+      });
+
+      return Promise.all(promises);
     },
   };
 };

@@ -7,10 +7,10 @@ import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 // import { DIRECTION_NEXT } from '../../utils/constants';
 import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 import store from '../store/databaseStore';
-import { sendStoreToContentScripts } from '../store/store';
 import {
   getActiveTabId,
   getOrderedTabIds,
+  toValidTabId,
 } from '../../utils/background/chromeApiUtils';
 
 function calculateTargetMatchIndex(direction: Direction, matchesCount: number) {
@@ -74,9 +74,9 @@ export default async function handleSwitchTab(
 
   chrome.tabs.update(targetTabId, { active: true });
 
-  await sendStoreToContentScripts(activeWindowStore);
+  await activeWindowStore.sendToContentScripts();
 
-  const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
+  const activeTabId = toValidTabId(await getActiveTabId());
 
   const { newSerializedState } = await sendMessageToTab<UpdateHighlightsMsg>(
     activeTabId,

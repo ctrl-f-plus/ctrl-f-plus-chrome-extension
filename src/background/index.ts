@@ -2,7 +2,6 @@
 
 import startListeners from './listeners';
 import store from './store/databaseStore';
-import { sendStoreToContentScripts } from './store/store';
 
 function updateStoreForTesting() {
   Object.keys(store.windowStores).forEach((windowId) => {
@@ -17,5 +16,6 @@ store.init().then(() => {
   }
 
   startListeners();
-  sendStoreToContentScripts(store.activeWindowStore);
+
+  store.activeWindowStore.sendToContentScripts();
 });

@@ -5,8 +5,10 @@ import { HighlightMsg } from '../../types/message.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 import store from '../store/databaseStore';
-import { sendStoreToContentScripts } from '../store/store';
-import { getOrderedTabs } from '../../utils/background/chromeApiUtils';
+import {
+  getOrderedTabs,
+  toValidTabId,
+} from '../../utils/background/chromeApiUtils';
 import { setStoredTabs } from '../../utils/background/storage';
 
 // async function findMatchesOnTab(
@@ -106,7 +108,7 @@ async function findMatchesOnTab(
 }> {
   try {
     const { activeWindowStore } = store;
-    const tabId: ValidTabId = tab.id as number;
+    const tabId: ValidTabId = toValidTabId(tab.id);
 
     const msg: HighlightMsg = {
       async: true,
@@ -163,7 +165,7 @@ export default async function handleGetAllMatches() {
     const tab = orderedTabs[i];
 
     if (tab.id) {
-      const tabId: ValidTabId = tab.id as number;
+      const validTabId: ValidTabId = toValidTabId(tab.id);
 
       const { hasMatch } = await findMatchesOnTab(tab, foundFirstMatch);
 
@@ -171,8 +173,8 @@ export default async function handleGetAllMatches() {
         foundFirstMatch = true;
 
         const activeTab = orderedTabs[0];
-        if (activeTab.id !== tabId) {
-          chrome.tabs.update(tabId, { active: true });
+        if (activeTab.id !== validTabId) {
+          chrome.tabs.update(validTabId, { active: true });
         }
       }
     }

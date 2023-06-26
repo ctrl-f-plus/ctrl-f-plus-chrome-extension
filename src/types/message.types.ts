@@ -73,6 +73,7 @@ export interface UpdateTabStatesObjMsg extends BaseMessage {
 }
 
 export interface UpdateStoreMsg extends BaseMessage {
+  async: true;
   from: 'background:store';
   type: 'store-updated';
   payload: {

@@ -32,6 +32,13 @@ export async function getLastFocusedWindow(): Promise<chrome.windows.Window> {
 /**
  * Chrome Api: Tab Utils
  */
+export function toValidTabId(tabId: TabId): ValidTabId {
+  if (tabId === undefined) {
+    throw new Error('TabId cannot be undefined');
+  }
+  return tabId as ValidTabId;
+}
+
 export function getActiveTabId(): Promise<number> {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -77,9 +84,13 @@ export async function getOrderedTabIds(): Promise<ValidTabId[]> {
   const storedTabs = await getAllStoredTabs();
   const tabIds = Object.keys(storedTabs).map((key) => parseInt(key, 10));
 
+  // const orderedTabIds: ValidTabId[] = orderedTabs
+  //   .map((tab) => tab.id)
+  //   .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
+
   const orderedTabIds: ValidTabId[] = orderedTabs
-    .map((tab) => tab.id)
-    .filter((id): id is ValidTabId => id !== undefined && tabIds.includes(id));
+    .map((tab) => toValidTabId(tab.id))
+    .filter((id) => tabIds.includes(id));
 
   return orderedTabIds;
 }

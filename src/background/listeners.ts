@@ -11,7 +11,6 @@ import {
 } from './messageHandlers';
 import { getActiveTabId } from '../utils/background/chromeApiUtils';
 import { clearLocalStorage } from '../utils/background/storage';
-import { sendStoreToContentScripts } from './store/store';
 import store from './store/databaseStore';
 
 export default function startListeners() {
@@ -29,7 +28,7 @@ export default function startListeners() {
       switch (type) {
         case 'remove-all-highlight-matches':
           await handleRemoveAllHighlightMatches(sendResponse);
-          sendStoreToContentScripts(activeWindowStore);
+          await activeWindowStore.sendToContentScripts();
           break;
         case 'get-all-matches':
           // return handleGetAllMatches(payload.searchValue);
@@ -40,11 +39,11 @@ export default function startListeners() {
           });
 
           if (payload.searchValue === '') {
-            sendStoreToContentScripts(activeWindowStore);
+            activeWindowStore.sendToContentScripts();
             return undefined;
           }
           await handleGetAllMatches();
-          sendStoreToContentScripts(activeWindowStore);
+          activeWindowStore.sendToContentScripts();
           return true;
         case 'update-tab-states-obj':
           await handleUpdateTabStates(payload, sendResponse);
@@ -54,7 +53,7 @@ export default function startListeners() {
           break;
         case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
           activeWindowStore.toggleShowFields(false);
-          sendStoreToContentScripts(activeWindowStore);
+          activeWindowStore.sendToContentScripts();
           break;
         case 'update-layover-position': // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
           activeWindowStore.updateLayoverPosition(payload.newPosition);
@@ -77,7 +76,7 @@ export default function startListeners() {
     const activeTabId = await getActiveTabId();
     activeWindowStore.setActiveTabId(activeTabId);
 
-    sendStoreToContentScripts(activeWindowStore);
+    activeWindowStore.sendToContentScripts();
 
     chrome.windows.get(windowId, (focusedWindow) => {
       if (focusedWindow.type === 'normal') {
@@ -91,7 +90,7 @@ export default function startListeners() {
     const { activeWindowStore } = store;
     activeWindowStore.setTotalTabsCount();
 
-    sendStoreToContentScripts(activeWindowStore);
+    activeWindowStore.sendToContentScripts();
   });
 
   chrome.tabs.onActivated.addListener(async ({ tabId }) => {
@@ -99,7 +98,7 @@ export default function startListeners() {
     activeWindowStore.setActiveTabId(tabId);
 
     if (activeWindowStore.showLayover) {
-      sendStoreToContentScripts(activeWindowStore);
+      activeWindowStore.sendToContentScripts();
     }
   });
 
@@ -110,21 +109,21 @@ export default function startListeners() {
       return;
     }
 
-    sendStoreToContentScripts(activeWindowStore);
+    activeWindowStore.sendToContentScripts();
   });
 
   chrome.tabs.onRemoved.addListener(() => {
     const { activeWindowStore } = store;
     activeWindowStore.setTotalTabsCount();
 
-    sendStoreToContentScripts(activeWindowStore);
+    activeWindowStore.sendToContentScripts();
   });
 
   chrome.action.onClicked.addListener(() => {
     const { activeWindowStore } = store;
     activeWindowStore.toggleShowFields();
 
-    sendStoreToContentScripts(activeWindowStore);
+    activeWindowStore.sendToContentScripts();
   });
 
   chrome.commands.onCommand.addListener(async (command) => {
@@ -132,7 +131,7 @@ export default function startListeners() {
       const { activeWindowStore } = store;
       activeWindowStore.toggleShowFields();
 
-      sendStoreToContentScripts(activeWindowStore);
+      activeWindowStore.sendToContentScripts();
     }
   });
 }
