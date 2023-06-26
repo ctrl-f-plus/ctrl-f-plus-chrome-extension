@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { sendMessageToBackground } from '../../src/utils/messageUtils/sendMessageToBackground';
+import { sendMessageToBackground } from '../../src/utils/sendMessageToBackground';
 import { clearAllStoredTabs } from '../../src/background/utils/storage';
 import useSearchHandler from '../../src/hooks/useSearchHandler';
 

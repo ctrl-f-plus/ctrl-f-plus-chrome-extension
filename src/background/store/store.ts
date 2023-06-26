@@ -73,27 +73,3 @@ export async function sendStoreToContentScripts(
 
   return Promise.all(promises);
 }
-
-// TODO: REPLACE PREVIOUS IMPLEMENTATION ONCE ALL CALLING INSTANCES ARE UPDATED
-// export function updateStoreNew(
-//   windowStore: WindowStore,
-//   updates: Partial<WindowStore>
-// ): void {
-//   Object.assign(windowStore, updates);
-// }
-
-// export function updateTabStore(
-//   windowStore: WindowStore,
-//   serializedTabState
-// ): void {
-//   const { tabId } = serializedTabState;
-
-//   windowStore.tabStores[tabId] ||= { tabId, serializedTabState };
-
-//   Object.assign(windowStore.tabStores[tabId], {
-//     tabId,
-//     serializedTabState,
-//   });
-
-//   updateStoreNew(windowStore, { tabStores: windowStore.tabStores });
-// }

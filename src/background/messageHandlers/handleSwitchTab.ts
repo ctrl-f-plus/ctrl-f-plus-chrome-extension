@@ -1,11 +1,11 @@
 // src/background/messageHandlers/handleSwitchTab.ts
 
-import calculateTargetIndex from '../../helpers/calculateTargetIndex';
+import calculateTargetIndex from '../../utils/calculateTargetIndex';
 import { UpdateHighlightsMsg } from '../../types/message.types';
 import { Direction } from '../../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import { DIRECTION_NEXT } from '../../utils/constants';
-import sendMessageToTab from '../../utils/messageUtils/sendMessageToContentScripts';
+import sendMessageToTab from '../utils/sendMessageToContentScripts';
 import store from '../store/databaseStore';
 import { sendStoreToContentScripts } from '../store/store';
 import { getActiveTabId, getOrderedTabIds } from '../utils/chromeApiUtils';
