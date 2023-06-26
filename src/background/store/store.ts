@@ -42,13 +42,14 @@ export async function sendStoreToContentScripts(
 ): Promise<(boolean | Error)[]> {
   const currentWindowTabs = await queryCurrentWindowTabs();
 
+  let validatedTabIds;
   if (tabIds.length === 0) {
-    tabIds = currentWindowTabs
+    validatedTabIds = currentWindowTabs
       .map((tab) => tab.id)
       .filter((id): id is ValidTabId => id !== undefined);
   }
 
-  const promises = tabIds.map((tabId) => {
+  const promises = (validatedTabIds || []).map((tabId) => {
     const tabStore = createTabStore(windowStore, tabId);
     const msg = {
       async: false,
