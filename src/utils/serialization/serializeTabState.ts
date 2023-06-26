@@ -26,6 +26,7 @@ function getXPath(element: Node): string {
   let sibling = htmlElement;
   while (sibling.previousSibling) {
     sibling = sibling.previousSibling as HTMLElement;
+
     if (
       sibling.nodeType === Node.ELEMENT_NODE &&
       sibling.tagName === htmlElement.tagName

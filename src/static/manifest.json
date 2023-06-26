@@ -8,7 +8,7 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["tabs", "storage"],
   "commands": {
     "toggle_search_layover": {
       "suggested_key": {

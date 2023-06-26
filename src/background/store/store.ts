@@ -24,8 +24,6 @@ export function createTabStore(
   return {
     tabId,
     serializedTabState,
-
-    // SHARED STORE:
     totalMatchesCount: windowStore.totalMatchesCount,
     layoverPosition: windowStore.layoverPosition,
     showLayover: windowStore.showLayover,
