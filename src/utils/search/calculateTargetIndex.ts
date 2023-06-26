@@ -7,7 +7,7 @@ export default function calculateTargetIndex(
   currentIndex: number,
   totalCount: number
 ): number {
-  if (direction === 'next') {
+  if (direction === Direction.NEXT) {
     return (currentIndex + 1) % totalCount;
   }
 

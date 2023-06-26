@@ -4,7 +4,7 @@ import calculateTargetIndex from '../../utils/search/calculateTargetIndex';
 import { UpdateHighlightsMsg } from '../../types/message.types';
 import { Direction } from '../../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-import { DIRECTION_NEXT } from '../../utils/constants';
+// import { DIRECTION_NEXT } from '../../utils/constants';
 import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 import store from '../store/databaseStore';
 import { sendStoreToContentScripts } from '../store/store';
@@ -14,7 +14,7 @@ import {
 } from '../../utils/background/chromeApiUtils';
 
 function calculateTargetMatchIndex(direction: Direction, matchesCount: number) {
-  return direction === DIRECTION_NEXT ? 0 : matchesCount - 1;
+  return direction === Direction.NEXT ? 0 : matchesCount - 1;
 }
 
 export default async function handleSwitchTab(

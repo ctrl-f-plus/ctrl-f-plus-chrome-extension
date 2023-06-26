@@ -10,7 +10,7 @@ import { sendMsgToBackground } from '../utils/messaging/sendMessageToBackground'
 import scrollToElement from '../utils/dom/scrollUtil';
 import calculateTargetIndex from '../utils/search/calculateTargetIndex';
 import { Direction } from '../types/shared.types';
-import { DIRECTION_NEXT, HIGHLIGHT_FOCUS_CLASS } from '../utils/constants';
+import { HIGHLIGHT_FOCUS_CLASS } from '../utils/constants';
 import serializeTabState from '../utils/serialization/serializeTabState';
 
 type UpdateHighlightsOptions = {
@@ -22,13 +22,13 @@ export default function useFindMatches() {
   const { totalMatchesCount } = useContext(LayoverContext);
   const { tabStateContext, setTabStateContext } = useContext(TabStateContext);
 
-  const [state2, setState2] = useState(tabStateContext);
+  const [localTabState, setLocalTabState] = useState(tabStateContext);
 
   useEffect(() => {
-    if (JSON.stringify(state2) !== JSON.stringify(tabStateContext)) {
-      setState2(tabStateContext);
+    if (JSON.stringify(localTabState) !== JSON.stringify(tabStateContext)) {
+      setLocalTabState(tabStateContext);
     }
-  }, [state2, tabStateContext]);
+  }, [localTabState, tabStateContext]);
 
   const findAllMatches = useCallback(
     async (findValue: string) => {
@@ -74,53 +74,52 @@ export default function useFindMatches() {
   const navigateMatches = useCallback(
     (
       traversalDirection: Direction,
-      indexCalc: (state2: TabState) => number
+      indexCalc: (localTabState: TabState) => number
     ) => {
-      if (state2.currentIndex === undefined) {
+      if (localTabState.currentIndex === undefined) {
         return;
       }
 
-      const previousIndex = state2.currentIndex;
+      const previousIndex = localTabState.currentIndex;
 
-      const newState2 = {
-        ...state2,
-        currentIndex: indexCalc(state2),
+      const newLocalTabState = {
+        ...localTabState,
+        currentIndex: indexCalc(localTabState),
       };
 
       let updatedState: TabState;
 
       const isEnd =
-        traversalDirection === DIRECTION_NEXT
-          ? newState2.currentIndex === 0
-          : newState2.currentIndex === state2.matchesObj.length - 1;
+        traversalDirection === Direction.NEXT
+          ? newLocalTabState.currentIndex === 0
+          : newLocalTabState.currentIndex ===
+            localTabState.matchesObj.length - 1;
 
       if (isEnd) {
         // removes the focus class from the last match
-        updatedState = updateHighlights(newState2, {
+        updatedState = updateHighlights(newLocalTabState, {
           previousIndex,
           endOfTab: true,
         });
 
-        if (newState2.matchesCount === totalMatchesCount) {
+        if (newLocalTabState.matchesCount === totalMatchesCount) {
           updatedState = updateHighlights(updatedState, { endOfTab: false });
         } else {
           const serializedState: SerializedTabState = serializeTabState({
-            ...newState2,
+            ...newLocalTabState,
           });
 
-          const message: SwitchTabMsg = {
+          sendMsgToBackground<SwitchTabMsg>({
             from: 'content-script-match-utils',
             type: 'switch-tab',
             payload: {
               serializedState,
               direction: traversalDirection,
             },
-          };
-
-          sendMsgToBackground<SwitchTabMsg>(message);
+          });
         }
       } else {
-        updatedState = updateHighlights(newState2, { previousIndex });
+        updatedState = updateHighlights(newLocalTabState, { previousIndex });
       }
 
       const serializedState: SerializedTabState = serializeTabState({
@@ -133,23 +132,27 @@ export default function useFindMatches() {
         payload: { serializedState },
       });
 
-      setState2(updatedState);
+      setLocalTabState(updatedState);
       setTabStateContext(updatedState);
     },
-    [updateHighlights, setTabStateContext, state2, totalMatchesCount, setState2]
+    [
+      updateHighlights,
+      setTabStateContext,
+      localTabState,
+      totalMatchesCount,
+      setLocalTabState,
+    ]
   );
 
   // TODO: ***987 0 SearchInput Component Testing
   const nextMatch = useCallback(
     () =>
-      navigateMatches('next', (state2: TabState) =>
-        // navigateMatches('forward', (state2: TabState) =>
-        state2.matchesObj.length
-          ? // ? (state2.currentIndex + 1) % state2.matchesObj.length
-            calculateTargetIndex(
-              'next',
-              state2.currentIndex,
-              state2.matchesObj.length
+      navigateMatches(Direction.NEXT, (currentState: TabState) =>
+        currentState.matchesObj.length
+          ? calculateTargetIndex(
+              Direction.NEXT,
+              currentState.currentIndex,
+              currentState.matchesObj.length
             )
           : 0
       ),
@@ -158,17 +161,12 @@ export default function useFindMatches() {
 
   const previousMatch = useCallback(
     () =>
-      navigateMatches(
-        'previous',
-        // 'backward',
-        (state2: TabState) =>
-          // (state2.currentIndex - 1 + state2.matchesObj.length) %
-          // state2.matchesObj.length
-          calculateTargetIndex(
-            'previous',
-            state2.currentIndex,
-            state2.matchesObj.length
-          )
+      navigateMatches(Direction.PREVIOUS, (currentState: TabState) =>
+        calculateTargetIndex(
+          Direction.PREVIOUS,
+          currentState.currentIndex,
+          currentState.matchesObj.length
+        )
       ),
     [navigateMatches]
   );
