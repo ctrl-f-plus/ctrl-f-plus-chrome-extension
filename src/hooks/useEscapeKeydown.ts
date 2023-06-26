@@ -3,7 +3,7 @@
 // FIXME: This hook is actually quite specific. Consider refactoring and generalizing
 
 import { useContext, useEffect } from 'react';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { sendMessageToBackground } from '../utils/sendMessageToBackground';
 import { LayoverContext } from '../contexts/LayoverContext';
 
 export default function useEscapeKeyDown() {

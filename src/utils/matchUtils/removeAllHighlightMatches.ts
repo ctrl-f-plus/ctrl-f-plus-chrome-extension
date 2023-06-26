@@ -1,5 +1,6 @@
 // src/utils/matchUtils/removeAllHighlightMatches.ts
 
+// TODO: make sure that you test this to ensure that the html is being rebuilt correctly
 export default function removeAllHighlightMatches() {
   const highlightElements = document.querySelectorAll(
     '.ctrl-f-highlight, .ctrl-f-highlight-focus'

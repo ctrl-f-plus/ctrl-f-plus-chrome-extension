@@ -2,8 +2,8 @@
 
 import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import { sendMessageToBackground } from '../utils/messageUtils/sendMessageToBackground';
-import { clearAllStoredTabs } from '../background/storage';
+import { sendMessageToBackground } from '../utils/sendMessageToBackground';
+import { clearAllStoredTabs } from '../background/utils/storage';
 
 export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);

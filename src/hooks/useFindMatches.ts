@@ -7,9 +7,9 @@ import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import { serializeMatchesObj } from '../utils/htmlUtils';
 import searchAndHighlight from '../utils/matchUtils/searchAndHighlight';
-import { sendMsgToBackground } from '../utils/messageUtils/sendMessageToBackground';
+import { sendMsgToBackground } from '../utils/sendMessageToBackground';
 import scrollToElement from '../utils/scrollUtil';
-import calculateTargetIndex from '../helpers/calculateTargetIndex';
+import calculateTargetIndex from '../utils/calculateTargetIndex';
 import { Direction } from '../types/shared.types';
 import { DIRECTION_NEXT } from '../utils/constants';
 
@@ -76,7 +76,6 @@ export default function useFindMatches() {
 
   const navigateMatches = useCallback(
     (
-      // traversalDirection: 'forward' | 'backward',
       traversalDirection: Direction,
       indexCalc: (state2: TabState) => number
     ) => {

@@ -1,7 +1,7 @@
 // src/utils/storage.ts
 
-import { LayoverPosition } from '../types/Layover.types';
-import { SerializedTabState } from '../types/tab.types';
+import { LayoverPosition } from '../../types/Layover.types';
+import { SerializedTabState } from '../../types/tab.types';
 
 export interface Match {
   innerText: string;
