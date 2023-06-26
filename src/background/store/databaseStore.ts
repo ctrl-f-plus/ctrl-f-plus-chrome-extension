@@ -1,5 +1,9 @@
 // src/background/databaseStore.ts
 
+import {
+  getAllOpenWindows,
+  getLastFocusedWindow,
+} from '../utils/chromeApiUtils';
 import { WindowStore, createWindowStore } from './windowStore';
 
 type DatabaseStore = {
@@ -12,30 +16,6 @@ type DatabaseStore = {
     lastFocusedWindowId: chrome.windows.Window['id']
   ) => void;
 };
-
-async function getAllOpenWindows(): Promise<chrome.windows.Window[]> {
-  return new Promise((resolve, reject) => {
-    chrome.windows.getAll({ populate: true }, (windows) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(windows);
-      }
-    });
-  });
-}
-
-async function getLastFocusedWindow(): Promise<chrome.windows.Window> {
-  return new Promise((resolve, reject) => {
-    chrome.windows.getLastFocused((window) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(window);
-      }
-    });
-  });
-}
 
 const databaseStore: DatabaseStore = {
   lastFocusedWindowId: -1,

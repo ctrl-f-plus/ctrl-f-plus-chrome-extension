@@ -1,4 +1,4 @@
-// // src/utils/backgroundUtils.ts
+// src/background/messageHandlers/backgroundUtils.ts
 
 // import calculateTargetIndex from '../helpers/calculateTargetIndex';
 

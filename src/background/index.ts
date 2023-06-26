@@ -1,8 +1,8 @@
 // src/background/background.ts
 
-import startListeners from './chromeListeners';
-import store from './databaseStore';
-import { sendStoreToContentScripts } from './store';
+import startListeners from './listeners';
+import store from './store/databaseStore';
+import { sendStoreToContentScripts } from './store/store';
 
 function updateStoreForTesting() {
   Object.keys(store.windowStores).forEach((windowId) => {

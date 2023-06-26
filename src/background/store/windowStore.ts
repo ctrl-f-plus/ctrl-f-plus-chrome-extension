@@ -1,10 +1,10 @@
 // src/background/windowStore.ts
 
-import { LayoverPosition } from '../types/Layover.types';
-import { SharedStore } from '../types/Store.types';
-import { BasicTabState, ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from './helpers/chromeAPI';
-import { getAllStoredTabs } from './storage';
+import { LayoverPosition } from '../../types/Layover.types';
+import { SharedStore } from '../../types/Store.types';
+import { BasicTabState, ValidTabId } from '../../types/tab.types';
+import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
+import { getAllStoredTabs } from '../utils/storage';
 
 export interface WindowStore extends SharedStore {
   updatedTabsCount: number;

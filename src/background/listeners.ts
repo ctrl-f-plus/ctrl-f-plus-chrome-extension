@@ -8,10 +8,10 @@ import {
   handleUpdateTabStatesObj,
   // } from './backgroundUtils';
 } from './messageHandlers';
-import { getActiveTabId } from './helpers/chromeAPI';
-import { clearLocalStorage } from './storage';
-import { sendStoreToContentScripts } from './store';
-import store from './databaseStore';
+import { getActiveTabId } from './utils/chromeApiUtils';
+import { clearLocalStorage } from './utils/storage';
+import { sendStoreToContentScripts } from './store/store';
+import store from './store/databaseStore';
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {

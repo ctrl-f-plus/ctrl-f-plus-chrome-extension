@@ -2,7 +2,7 @@
 
 import { RemoveAllHighlightMatchesMsg } from '../../types/message.types';
 import sendMessageToTab from '../../utils/messageUtils/sendMessageToContentScripts';
-import { queryCurrentWindowTabs } from '../helpers/chromeAPI';
+import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
 export default async function handleRemoveAllHighlightMatches(

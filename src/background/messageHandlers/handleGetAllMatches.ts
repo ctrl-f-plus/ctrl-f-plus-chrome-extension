@@ -3,10 +3,10 @@
 import { HighlightMsg } from '../../types/message.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import sendMessageToTab from '../../utils/messageUtils/sendMessageToContentScripts';
-import store from '../databaseStore';
-import { getOrderedTabs } from '../helpers/toOrganize';
-import { setStoredTabs } from '../storage';
-import { sendStoreToContentScripts } from '../store';
+import store from '../store/databaseStore';
+import { getOrderedTabs } from '../utils/toOrganize';
+import { setStoredTabs } from '../utils/storage';
+import { sendStoreToContentScripts } from '../store/store';
 
 async function findMatchesOnTab(
   tabId: ValidTabId,

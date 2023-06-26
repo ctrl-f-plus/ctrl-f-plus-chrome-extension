@@ -1,8 +1,8 @@
 // src/background/store.ts
 
-import { TabStore } from '../types/Store.types';
-import { ValidTabId } from '../types/tab.types';
-import { queryCurrentWindowTabs } from './helpers/chromeAPI';
+import { TabStore } from '../../types/Store.types';
+import { ValidTabId } from '../../types/tab.types';
+import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
 import { WindowStore } from './windowStore';
 
 export function createTabStore(
