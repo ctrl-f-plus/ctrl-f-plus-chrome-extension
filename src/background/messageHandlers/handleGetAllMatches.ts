@@ -1,15 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 // src/background/messageHandlers/handleGetAllMatches.ts
 
-import { HIGHLIGHT, HighlightMsg } from '../../types/message.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+import { ValidTabId } from '../../contentScripts/types/tab.types';
 import store from '../store/databaseStore';
-import {
-  getOrderedTabs,
-  toValidTabId,
-} from '../../utils/background/chromeApiUtils';
-import { setStoredTabs } from '../../utils/background/storage';
+import { HIGHLIGHT, HighlightMsg } from '../types/message.types';
+import { getOrderedTabs, toValidTabId } from '../utils/chromeApiUtils';
+import sendMessageToTab from '../utils/sendMessageToContent';
+import { setStoredTabs } from '../utils/storage';
 
 // async function findMatchesOnTab(
 //   tabId: ValidTabId,

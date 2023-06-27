@@ -7,10 +7,7 @@ import {
   ToBackgroundMsg,
   UPDATE_LAYOVER_POSITION,
   UPDATED_TAB_STATE,
-} from '../types/message.types';
-
-import { getActiveTabId } from '../utils/background/chromeApiUtils';
-import { clearLocalStorage } from '../utils/background/storage';
+} from '../contentScripts/types/message.types';
 import {
   handleGetAllMatches,
   handleRemoveAllHighlightMatches,
@@ -18,6 +15,8 @@ import {
   handleUpdateTabStates,
 } from './messageHandlers';
 import store from './store/databaseStore';
+import { getActiveTabId } from './utils/chromeApiUtils';
+import { clearLocalStorage } from './utils/storage';
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {

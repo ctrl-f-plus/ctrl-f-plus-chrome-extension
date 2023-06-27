@@ -3,7 +3,7 @@
 import {
   getAllOpenWindows,
   getLastFocusedWindow,
-} from '../../utils/background/chromeApiUtils';
+} from '../utils/chromeApiUtils';
 import { WindowStore, createWindowStore } from './windowStore';
 
 type DatabaseStore = {

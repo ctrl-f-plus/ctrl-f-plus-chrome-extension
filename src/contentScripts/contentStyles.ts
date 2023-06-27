@@ -1,6 +1,9 @@
 // src/contentScripts/contentStyles.ts
 
-import { HIGHLIGHT_CLASS, HIGHLIGHT_FOCUS_CLASS } from '../utils/constants';
+import {
+  HIGHLIGHT_CLASS,
+  HIGHLIGHT_FOCUS_CLASS,
+} from '../shared/utils/constants';
 
 const contentStyles = `
 .${HIGHLIGHT_CLASS} {

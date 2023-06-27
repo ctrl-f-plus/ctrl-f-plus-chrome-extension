@@ -1,0 +1,24 @@
+// src/utils/deserializeTabState.ts
+
+import {
+  SerializedTabState,
+  XPathTabState,
+} from '../../contentScripts/types/tab.types';
+
+export default function deserializeTabState(
+  shallowStateObject: SerializedTabState
+): XPathTabState {
+  const { serializedMatches, ...otherProperties } = shallowStateObject;
+
+  const serializedXPaths = serializedMatches;
+
+  const deserializedXPaths =
+    serializedXPaths === '' ? [] : JSON.parse(serializedXPaths);
+
+  const deserializedState: XPathTabState = {
+    ...otherProperties,
+    matchesObj: deserializedXPaths,
+  };
+
+  return deserializedState;
+}

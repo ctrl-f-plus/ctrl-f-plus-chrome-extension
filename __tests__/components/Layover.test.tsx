@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { LayoverContext } from '../../src/contexts/LayoverContext';
-import Layover from '../../src/layover/components/DraggableContainer';
-import { LayoverPosition } from '../../src/types/Layover.types';
+import { LayoverContext } from '../../src/contentScripts/contexts/LayoverContext';
+import Layover from '../../src/contentScripts/layover/components/DraggableContainer';
+import { LayoverPosition } from '../../src/shared/types/shared.types';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');
 

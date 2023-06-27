@@ -26,7 +26,13 @@ module.exports = (env) => ({
     // background: path.resolve('src/background/index.ts'),
     background: path.join(__dirname, 'src', 'background', 'index.ts'),
     // contentScript: path.resolve('src/contentScripts/contentScript.tsx'),
-    layover: path.join(__dirname, 'src', 'layover', 'index.tsx'),
+    layover: path.join(
+      __dirname,
+      'src',
+      'contentScripts',
+      'layover',
+      'index.tsx'
+    ),
     contentStyles: path.join(
       __dirname,
       'src',
@@ -81,9 +87,16 @@ module.exports = (env) => ({
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve('src/static'),
+          // from: path.resolve('src/static'),
+          from: path.resolve('static'),
+          // from: path.resolve('public/manifest.json'),
+          // from: path.resolve('public'),
           to: path.resolve('dist'),
         },
+        // {
+        //   from: path.resolve('public/images'),
+        //   to: path.resolve('dist/images'),
+        // },
       ],
     }),
 

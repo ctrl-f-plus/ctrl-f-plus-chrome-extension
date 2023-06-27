@@ -1,15 +1,15 @@
 // src/background/windowStore.ts
 
-import { SharedStore, TabStore } from '../../types/Store.types';
-import { UPDATED_STORE, UpdatedStoreMsg } from '../../types/message.types';
-import { LayoverPosition } from '../../types/shared.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
+import { UPDATED_STORE, UpdatedStoreMsg } from '../types/message.types';
+import { LayoverPosition } from '../../shared/types/shared.types';
 import {
-  queryCurrentWindowTabs,
-  toValidTabId,
-} from '../../utils/background/chromeApiUtils';
-import { getAllStoredTabs } from '../../utils/background/storage';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+  SerializedTabState,
+  ValidTabId,
+} from '../../contentScripts/types/tab.types';
+import { SharedStore, TabStore } from '../types/Store.types';
+import { queryCurrentWindowTabs, toValidTabId } from '../utils/chromeApiUtils';
+import { getAllStoredTabs } from '../utils/storage';
+import sendMessageToTab from '../utils/sendMessageToContent';
 
 interface BasicTabState {
   tabId: ValidTabId;

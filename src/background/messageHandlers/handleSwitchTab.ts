@@ -1,20 +1,19 @@
 // src/background/messageHandlers/handleSwitchTab.ts
 
-import calculateTargetIndex from '../../utils/search/calculateTargetIndex';
+import { UPDATE_HIGHLIGHTS, UpdateHighlightsMsg } from '../types/message.types';
+import { Direction } from '../../shared/types/shared.types';
 import {
-  UPDATE_HIGHLIGHTS,
-  UpdateHighlightsMsg,
-} from '../../types/message.types';
-import { Direction } from '../../types/shared.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-// import { DIRECTION_NEXT } from '../../utils/constants';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+  SerializedTabState,
+  ValidTabId,
+} from '../../contentScripts/types/tab.types';
 import store from '../store/databaseStore';
 import {
   getActiveTabId,
   getOrderedTabIds,
   toValidTabId,
-} from '../../utils/background/chromeApiUtils';
+} from '../utils/chromeApiUtils';
+import calculateTargetIndex from '../../contentScripts/utils/search/calculateTargetIndex';
+import sendMessageToTab from '../utils/sendMessageToContent';
 
 function calculateTargetMatchIndex(direction: Direction, matchesCount: number) {
   return direction === Direction.NEXT ? 0 : matchesCount - 1;
