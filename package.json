@@ -12,7 +12,28 @@
     "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bmchavez/ctrl-f-plus-chrome-extension"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "react",
+    "typescript",
+    "webpack",
+    "tailwindcss",
+    "jest",
+    "puppeteer"
+  ],
+  "author": "Benjamin Weiss-Chavez",
+  "license": "",
+  "bugs": {},
+  "homepage": "https://ctrl-f.plus/",
+  "funding": {
+    "type": "individual",
+    "url": "https://TODO:/"
+  },
   "devDependencies": {
     "@babel/core": "^7.22.1",
     "@babel/eslint-parser": "^7.21.8",
@@ -61,9 +82,6 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.14",
     "clean-webpack-plugin": "^4.0.0",
