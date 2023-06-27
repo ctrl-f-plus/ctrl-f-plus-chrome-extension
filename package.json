@@ -27,7 +27,7 @@
     "puppeteer"
   ],
   "author": "Benjamin Weiss-Chavez",
-  "license": "",
+  "license": "MIT",
   "bugs": {},
   "homepage": "https://ctrl-f.plus/",
   "funding": {
