@@ -1,13 +1,12 @@
 /* eslint-disable import/prefer-default-export */
 // src/background/messageHandlers/handleGetAllMatches.ts
 
-import { HighlightMsg } from '../../types/message.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+import { ValidTabId } from '../../contentScripts/types/tab.types';
 import store from '../store/databaseStore';
-import { sendStoreToContentScripts } from '../store/store';
-import { getOrderedTabs } from '../../utils/background/chromeApiUtils';
-import { setStoredTabs } from '../../utils/background/storage';
+import { HIGHLIGHT, HighlightMsg } from '../types/message.types';
+import { getOrderedTabs, toValidTabId } from '../utils/chromeApiUtils';
+import sendMessageToTab from '../utils/sendMessageToContent';
+import { setStoredTabs } from '../utils/storage';
 
 // async function findMatchesOnTab(
 //   tabId: ValidTabId,
@@ -106,19 +105,17 @@ async function findMatchesOnTab(
 }> {
   try {
     const { activeWindowStore } = store;
-    const tabId: ValidTabId = tab.id as number;
+    const tabId: ValidTabId = toValidTabId(tab.id);
 
-    const msg: HighlightMsg = {
+    const response = await sendMessageToTab<HighlightMsg>(tabId, {
       async: true,
-      from: 'background',
-      type: 'highlight',
+      type: HIGHLIGHT,
       payload: {
-        findValue: activeWindowStore.searchValue,
-        foundFirstMatch,
         tabId,
+        searchValue: activeWindowStore.searchValue,
+        foundFirstMatch,
       },
-    };
-    const response = await sendMessageToTab<HighlightMsg>(tabId, msg);
+    });
 
     const { currentIndex, matchesCount, serializedMatches } =
       response.serializedState;
@@ -163,7 +160,7 @@ export default async function handleGetAllMatches() {
     const tab = orderedTabs[i];
 
     if (tab.id) {
-      const tabId: ValidTabId = tab.id as number;
+      const validTabId: ValidTabId = toValidTabId(tab.id);
 
       const { hasMatch } = await findMatchesOnTab(tab, foundFirstMatch);
 
@@ -171,8 +168,8 @@ export default async function handleGetAllMatches() {
         foundFirstMatch = true;
 
         const activeTab = orderedTabs[0];
-        if (activeTab.id !== tabId) {
-          chrome.tabs.update(tabId, { active: true });
+        if (activeTab.id !== validTabId) {
+          chrome.tabs.update(validTabId, { active: true });
         }
       }
     }

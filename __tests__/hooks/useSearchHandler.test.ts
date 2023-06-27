@@ -2,9 +2,13 @@
 
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { sendMessageToBackground } from '../../src/utils/messaging/sendMessageToBackground';
-import { clearAllStoredTabs } from '../../src/utils/background/storage';
-import useSearchHandler from '../../src/hooks/useSearchHandler';
+import useSearchHandler from '../../src/contentScripts/hooks/useSearchHandler';
+import {
+  GET_ALL_MATCHES,
+  REMOVE_ALL_HIGHLIGHT_MATCHES,
+} from '../../src/contentScripts/types/message.types';
+import { clearAllStoredTabs } from '../../src/background/utils/storage';
+import { sendMessageToBackground } from '../../src/contentScripts/utils/messaging/sendMessageToBackground';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');
 jest.mock('../../src/background/storage.ts');
@@ -33,12 +37,10 @@ describe('useSearchHandler', () => {
     expect(clearAllStoredTabs).toHaveBeenCalled();
     expect(sendMessageToBackground).toHaveBeenCalledTimes(2);
     expect(sendMessageToBackground).toHaveBeenNthCalledWith(1, {
-      from: 'content',
-      type: 'remove-all-highlight-matches',
+      type: REMOVE_ALL_HIGHLIGHT_MATCHES,
     });
     expect(sendMessageToBackground).toHaveBeenNthCalledWith(2, {
-      from: 'content',
-      type: 'get-all-matches',
+      type: GET_ALL_MATCHES,
       payload: {
         searchValue: newSearchValue,
       },

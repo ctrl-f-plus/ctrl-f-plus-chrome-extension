@@ -1,8 +1,8 @@
 // src/background/messageHandlers/handleUpdateTabStates.ts
 
-import { SerializedTabState } from '../../types/tab.types';
+import { SerializedTabState } from '../../contentScripts/types/tab.types';
 import store from '../store/databaseStore';
-import { setStoredTabs } from '../../utils/background/storage';
+import { setStoredTabs } from '../utils/storage';
 
 // FIXME: REFACTOR
 export default async function handleUpdateTabStates(

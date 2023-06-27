@@ -1,17 +1,19 @@
 // src/background/messageHandlers/handleSwitchTab.ts
 
-import calculateTargetIndex from '../../utils/search/calculateTargetIndex';
-import { UpdateHighlightsMsg } from '../../types/message.types';
-import { Direction } from '../../types/shared.types';
-import { SerializedTabState, ValidTabId } from '../../types/tab.types';
-// import { DIRECTION_NEXT } from '../../utils/constants';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+import { UPDATE_HIGHLIGHTS, UpdateHighlightsMsg } from '../types/message.types';
+import { Direction } from '../../shared/types/shared.types';
+import {
+  SerializedTabState,
+  ValidTabId,
+} from '../../contentScripts/types/tab.types';
 import store from '../store/databaseStore';
-import { sendStoreToContentScripts } from '../store/store';
 import {
   getActiveTabId,
   getOrderedTabIds,
-} from '../../utils/background/chromeApiUtils';
+  toValidTabId,
+} from '../utils/chromeApiUtils';
+import calculateTargetIndex from '../../contentScripts/utils/search/calculateTargetIndex';
+import sendMessageToTab from '../utils/sendMessageToContent';
 
 function calculateTargetMatchIndex(direction: Direction, matchesCount: number) {
   return direction === Direction.NEXT ? 0 : matchesCount - 1;
@@ -74,16 +76,15 @@ export default async function handleSwitchTab(
 
   chrome.tabs.update(targetTabId, { active: true });
 
-  await sendStoreToContentScripts(activeWindowStore);
+  await activeWindowStore.sendToContentScripts();
 
-  const activeTabId = (await getActiveTabId()) as unknown as ValidTabId;
+  const activeTabId = toValidTabId(await getActiveTabId());
 
   const { newSerializedState } = await sendMessageToTab<UpdateHighlightsMsg>(
     activeTabId,
     {
       async: true,
-      from: 'background',
-      type: 'update-highlights',
+      type: UPDATE_HIGHLIGHTS,
       payload: {
         tabId: activeTabId,
         direction,

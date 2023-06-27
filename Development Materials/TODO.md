@@ -15,11 +15,10 @@
   - Review the use of `async` on your messages and update this hook accordingly
   - Rename?
   - See if you can use it in more places
-<!-- - Fix the `popup` button so that it opens the search component -->
+  <!-- - Fix the `popup` button so that it opens the search component -->
 - Finalize the manifest file
 - Cleanup all uses of `state2`
 - Cleanup the use of `searchValue` and `findValue`
-
 
 - FIX: Issue that comes up when you search the same value two times in a row, but the tabs or any of their respective content was changed in between searches. When this happens, the search logic doesn't know to examine the changed content because it is triggering a `nextMatch()` not a `New Search`.
 
