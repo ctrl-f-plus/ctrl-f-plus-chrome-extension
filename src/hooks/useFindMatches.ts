@@ -3,7 +3,12 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
-import { SwitchTabMsg, UpdateTabStatesObjMsg } from '../types/message.types';
+import {
+  SWITCH_TAB,
+  SwitchTabMsg,
+  UPDATED_TAB_STATE,
+  UpdatedTabStateMsg,
+} from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import searchAndHighlight from '../utils/search/searchAndHighlight';
 import { sendMsgToBackground } from '../utils/messaging/sendMessageToBackground';
@@ -31,14 +36,14 @@ export default function useFindMatches() {
   }, [localTabState, tabStateContext]);
 
   const findAllMatches = useCallback(
-    async (findValue: string) => {
+    async (searchValue: string) => {
       const newState = { ...tabStateContext };
 
       newState.currentIndex = 0;
       newState.matchesCount = 0;
       newState.matchesObj = [];
 
-      await searchAndHighlight(newState, findValue);
+      await searchAndHighlight(newState, searchValue);
 
       setTabStateContext(newState);
       return newState;
@@ -110,8 +115,7 @@ export default function useFindMatches() {
           });
 
           sendMsgToBackground<SwitchTabMsg>({
-            from: 'content-script-match-utils',
-            type: 'switch-tab',
+            type: SWITCH_TAB,
             payload: {
               serializedState,
               direction: traversalDirection,
@@ -126,9 +130,8 @@ export default function useFindMatches() {
         ...updatedState,
       });
 
-      sendMsgToBackground<UpdateTabStatesObjMsg>({
-        from: 'content:match-utils',
-        type: 'update-tab-states-obj',
+      sendMsgToBackground<UpdatedTabStateMsg>({
+        type: UPDATED_TAB_STATE,
         payload: { serializedState },
       });
 

@@ -4,6 +4,10 @@ import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
 import { clearAllStoredTabs } from '../utils/background/storage';
+import {
+  GET_ALL_MATCHES,
+  REMOVE_ALL_HIGHLIGHT_MATCHES,
+} from '../types/message.types';
 
 export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
@@ -15,14 +19,14 @@ export default function useSearchHandler() {
 
       await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
+      // msg: RemoveAllHighlightMatchesMsg;
       await sendMessageToBackground({
-        from: 'content',
-        type: 'remove-all-highlight-matches',
+        type: REMOVE_ALL_HIGHLIGHT_MATCHES,
       });
 
+      // msg: GetAllMatchesMsg;
       await sendMessageToBackground({
-        from: 'content',
-        type: 'get-all-matches',
+        type: GET_ALL_MATCHES,
         payload: {
           searchValue: newSearchValue,
         },

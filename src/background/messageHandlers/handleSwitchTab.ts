@@ -82,8 +82,7 @@ export default async function handleSwitchTab(
     activeTabId,
     {
       async: true,
-      from: 'background',
-      type: 'update-highlights',
+      type: 'UPDATE_HIGHLIGHTS',
       payload: {
         tabId: activeTabId,
         direction,

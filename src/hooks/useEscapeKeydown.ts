@@ -5,6 +5,7 @@
 import { useContext, useEffect } from 'react';
 import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
 import { LayoverContext } from '../contexts/LayoverContext';
+import { REMOVE_ALL_STYLES } from '../types/message.types';
 
 export default function useEscapeKeyDown() {
   const { showLayover } = useContext(LayoverContext);
@@ -12,10 +13,7 @@ export default function useEscapeKeyDown() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showLayover) {
-        sendMessageToBackground({
-          from: 'content',
-          type: 'remove-styles-all-tabs',
-        });
+        sendMessageToBackground({ type: REMOVE_ALL_STYLES });
       }
     };
 

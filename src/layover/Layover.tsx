@@ -8,7 +8,13 @@ import useMessageHandler from '../hooks/useMessageHandler';
 import useRemoveAllHighlightMatches from '../hooks/useRemoveAllHighlightMatches';
 import '../tailwind.css';
 import { TabStore } from '../types/Store.types';
-import { Messages } from '../types/message.types';
+import {
+  UPDATED_STORE,
+  HIGHLIGHT,
+  REMOVE_HIGHLIGHT_MATCHES,
+  ToLayoverMessage,
+  UPDATE_HIGHLIGHTS,
+} from '../types/message.types';
 import { XPathTabState } from '../types/tab.types';
 import deserializeTabState from '../utils/serialization/deserializeTabState';
 import removeAllHighlightMatches from '../utils/dom/removeAllHighlightMatches';
@@ -63,7 +69,7 @@ function Layover() {
 
   const handleMessage = useCallback(
     async (
-      message: Messages,
+      message: ToLayoverMessage,
       sender: chrome.runtime.MessageSender,
       sendResponse: (response?: any) => void
     ) => {
@@ -73,7 +79,7 @@ function Layover() {
       let newState;
 
       switch (type) {
-        case 'store-updated': {
+        case UPDATED_STORE: {
           const { tabStore } = message.payload;
           if (tabStore) {
             await updateContextFromStore(tabStore);
@@ -82,12 +88,12 @@ function Layover() {
 
           return true;
         }
-        case 'remove-all-highlight-matches':
+        case REMOVE_HIGHLIGHT_MATCHES:
           removeAllHighlightMatches();
           break;
-        case 'highlight': {
-          const { findValue, foundFirstMatch } = message.payload;
-          newState = await findAllMatches(findValue);
+        case HIGHLIGHT: {
+          const { searchValue, foundFirstMatch } = message.payload;
+          newState = await findAllMatches(searchValue);
 
           const hasMatch = newState.matchesObj.length > 0;
 
@@ -105,7 +111,7 @@ function Layover() {
           });
           return true;
         }
-        case 'update-highlights': {
+        case UPDATE_HIGHLIGHTS: {
           newState = updateHighlights(
             { ...tabStateContext },
             { endOfTab: false }

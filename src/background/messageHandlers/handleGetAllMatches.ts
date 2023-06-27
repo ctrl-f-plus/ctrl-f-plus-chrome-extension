@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // src/background/messageHandlers/handleGetAllMatches.ts
 
-import { HighlightMsg } from '../../types/message.types';
+import { HIGHLIGHT, HighlightMsg } from '../../types/message.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 import store from '../store/databaseStore';
@@ -110,17 +110,15 @@ async function findMatchesOnTab(
     const { activeWindowStore } = store;
     const tabId: ValidTabId = toValidTabId(tab.id);
 
-    const msg: HighlightMsg = {
+    const response = await sendMessageToTab<HighlightMsg>(tabId, {
       async: true,
-      from: 'background',
-      type: 'highlight',
+      type: HIGHLIGHT,
       payload: {
-        findValue: activeWindowStore.searchValue,
-        foundFirstMatch,
         tabId,
+        searchValue: activeWindowStore.searchValue,
+        foundFirstMatch,
       },
-    };
-    const response = await sendMessageToTab<HighlightMsg>(tabId, msg);
+    });
 
     const { currentIndex, matchesCount, serializedMatches } =
       response.serializedState;

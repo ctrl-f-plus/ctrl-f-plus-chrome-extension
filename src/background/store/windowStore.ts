@@ -1,7 +1,7 @@
 // src/background/windowStore.ts
 
 import { SharedStore, TabStore } from '../../types/Store.types';
-import { UpdateStoreMsg } from '../../types/message.types';
+import { UPDATED_STORE, UpdatedStoreMsg } from '../../types/message.types';
 import { LayoverPosition } from '../../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 import {
@@ -152,10 +152,9 @@ export const createWindowStore = (): WindowStore => {
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);
 
-        return sendMessageToTab<UpdateStoreMsg>(tabId, {
+        return sendMessageToTab<UpdatedStoreMsg>(tabId, {
           async: true,
-          from: 'background:store',
-          type: 'store-updated',
+          type: UPDATED_STORE,
           payload: {
             tabId,
             tabStore,

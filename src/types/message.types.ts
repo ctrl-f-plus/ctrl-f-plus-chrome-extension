@@ -5,111 +5,107 @@ import { Direction, LayoverPosition } from './shared.types';
 import { SerializedTabState, ValidTabId } from './tab.types';
 
 export interface BaseMessage {
-  from:
-    | 'background'
-    | 'background:store'
-    | 'content'
-    | 'content:match-utils'
-    | 'match-utils'
-    | 'inner-match-utils'
-    | 'content-script-match-utils'
-    | 'background:backgroundUtils'
-    | 'content:layover-component';
-  async?: boolean | true;
-  type: string;
-  // payload?: unknown; // TODO: you might need to add this back, but i think you are fine without it
-  payload?: any;
+  async?: boolean;
+  payload?: unknown;
 }
+/**
+ * FROM UI TO BACKGROUND
+ */
+export const SWITCH_TAB = 'SWITCH_TAB' as const;
+export const REMOVE_ALL_HIGHLIGHT_MATCHES =
+  'REMOVE_ALL_HIGHLIGHT_MATCHES' as const;
+export const GET_ALL_MATCHES = 'GET_ALL_MATCHES' as const;
+export const REMOVE_ALL_STYLES = 'REMOVE_ALL_STYLES' as const;
+export const UPDATED_TAB_STATE = 'UPDATED_TAB_STATE' as const;
+export const UPDATE_LAYOVER_POSITION = 'UPDATE_LAYOVER_POSITION' as const;
 
 export interface GetAllMatchesMsg extends BaseMessage {
-  from: 'content';
-  // type: 'GET_ALL_MATCHES';
-  type: 'get-all-matches';
+  type: typeof GET_ALL_MATCHES;
   payload: { searchValue: string };
 }
 
-export interface RemoveAllHighlightMatches extends BaseMessage {
-  from: 'content';
-  type: 'remove-all-highlight-matches';
-}
-
 export interface RemoveAllHighlightMatchesMsg extends BaseMessage {
-  async: false;
-  from: 'background:backgroundUtils';
-  type: 'remove-all-highlight-matches';
-  payload: {
-    tabId: ValidTabId;
-  };
+  type: typeof REMOVE_ALL_HIGHLIGHT_MATCHES;
 }
 
-export interface RemoveStylesAllTabs extends BaseMessage {
-  from: 'content';
-  type: 'remove-styles-all-tabs';
+export interface RemoveAllStylesMsg extends BaseMessage {
+  type: typeof REMOVE_ALL_STYLES;
 }
 
 export interface SwitchTabMsg extends BaseMessage {
-  from: 'content-script-match-utils';
-  type: 'switch-tab';
+  type: typeof SWITCH_TAB;
   payload: {
     serializedState: SerializedTabState;
     direction: Direction;
   };
 }
 
-export interface UpdateHighlightsMsg extends BaseMessage {
-  async: true;
-  from: 'background';
-  type: 'update-highlights';
-  payload: {
-    tabId: ValidTabId;
-    direction: Direction;
-  };
-}
-
-export interface UpdateTabStatesObjMsg extends BaseMessage {
-  from: 'content:match-utils';
-  type: 'update-tab-states-obj';
+export interface UpdatedTabStateMsg extends BaseMessage {
+  type: typeof UPDATED_TAB_STATE;
   payload: { serializedState: SerializedTabState };
 }
 
-export interface UpdateStoreMsg extends BaseMessage {
+export interface UpdateLayoverPositionMsg extends BaseMessage {
+  type: typeof UPDATE_LAYOVER_POSITION;
+  payload: {
+    newPosition: LayoverPosition;
+  };
+}
+
+export type ToBackgroundMsg =
+  | GetAllMatchesMsg
+  | RemoveAllHighlightMatchesMsg
+  | RemoveAllStylesMsg
+  | SwitchTabMsg
+  | UpdatedTabStateMsg
+  | UpdateLayoverPositionMsg;
+
+/**
+ * FROM BACKGROUND TO UI
+ */
+export const HIGHLIGHT = 'HIGHLIGHT' as const;
+export const UPDATED_STORE = 'UPDATED_STORE' as const;
+export const UPDATE_HIGHLIGHTS = 'UPDATE_HIGHLIGHTS' as const;
+export const REMOVE_HIGHLIGHT_MATCHES = 'REMOVE_HIGHLIGHT_MATCHES' as const;
+
+export interface HighlightMsg extends BaseMessage {
   async: true;
-  from: 'background:store';
-  type: 'store-updated';
+  type: typeof HIGHLIGHT;
+  payload: {
+    tabId: ValidTabId;
+    searchValue: string;
+    foundFirstMatch: boolean;
+  };
+}
+
+export interface UpdatedStoreMsg extends BaseMessage {
+  async: true;
+  type: typeof UPDATED_STORE;
   payload: {
     tabId: ValidTabId;
     tabStore?: TabStore;
   };
 }
 
-export interface UpdateLayoverPositionMsg extends BaseMessage {
-  from: 'content:layover-component';
-  type: 'update-layover-position';
-  payload: {
-    newPosition: LayoverPosition;
-  };
-}
-
-export interface HighlightMsg extends BaseMessage {
+export interface UpdateHighlightsMsg extends BaseMessage {
   async: true;
-  from: 'background';
-  type: 'highlight';
-  // TODO: change findValue to searchValue?
+  type: typeof UPDATE_HIGHLIGHTS;
   payload: {
-    findValue: string;
     tabId: ValidTabId;
-    foundFirstMatch: boolean;
+    direction: Direction;
   };
 }
 
-export type Messages =
-  | GetAllMatchesMsg
-  | RemoveStylesAllTabs
-  | RemoveAllHighlightMatches
-  | RemoveAllHighlightMatchesMsg
-  | SwitchTabMsg
-  | UpdateHighlightsMsg
+export interface RemoveHighlightMatchesMsg extends BaseMessage {
+  async: false;
+  type: typeof REMOVE_HIGHLIGHT_MATCHES;
+  payload: {
+    tabId: ValidTabId;
+  };
+}
+
+export type ToLayoverMessage =
   | HighlightMsg
-  | UpdateTabStatesObjMsg
-  | UpdateStoreMsg
-  | UpdateLayoverPositionMsg;
+  | UpdatedStoreMsg
+  | UpdateHighlightsMsg
+  | RemoveHighlightMatchesMsg;

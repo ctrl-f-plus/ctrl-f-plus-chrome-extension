@@ -19,6 +19,7 @@ import useSearchHandler from '../../hooks/useSearchHandler';
 import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
 import './SearchInputStyles.css';
 import '../../tailwind.css';
+import { REMOVE_ALL_STYLES } from '../../types/message.types';
 
 type SearchInputProps = {
   focus: boolean;
@@ -48,10 +49,7 @@ function SearchInput({ focus }: SearchInputProps) {
 
   // TODO: Review to decide if you want to handle this in another way
   const closeSearchLayover = () => {
-    sendMessageToBackground({
-      from: 'content',
-      type: 'remove-styles-all-tabs',
-    });
+    sendMessageToBackground({ type: REMOVE_ALL_STYLES });
   };
 
   // TODO: CLEANUP:

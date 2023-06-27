@@ -1,8 +1,11 @@
 // src/background/messageHandlers/handleRemoveAllHighlightMatches.ts
 
-import { RemoveAllHighlightMatchesMsg } from '../../types/message.types';
-import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
+import {
+  REMOVE_HIGHLIGHT_MATCHES,
+  RemoveHighlightMatchesMsg,
+} from '../../types/message.types';
 import { queryCurrentWindowTabs } from '../../utils/background/chromeApiUtils';
+import sendMessageToTab from '../../utils/messaging/sendMessageToContentScripts';
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
 export default async function handleRemoveAllHighlightMatches(
@@ -12,15 +15,14 @@ export default async function handleRemoveAllHighlightMatches(
 
   const tabPromises = tabs.map((tab) => {
     if (tab.id) {
-      const msg: RemoveAllHighlightMatchesMsg = {
+      const msg: RemoveHighlightMatchesMsg = {
         async: false,
-        from: 'background:backgroundUtils',
-        type: 'remove-all-highlight-matches',
+        type: REMOVE_HIGHLIGHT_MATCHES,
         payload: {
           tabId: tab.id,
         },
       };
-      return sendMessageToTab<RemoveAllHighlightMatchesMsg>(tab.id, msg);
+      return sendMessageToTab<RemoveHighlightMatchesMsg>(tab.id, msg);
     }
     return Promise.resolve(null);
   });

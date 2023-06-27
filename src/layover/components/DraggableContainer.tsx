@@ -34,7 +34,6 @@ function DraggableContainer({
     }
 
     const msg: UpdateLayoverPositionMsg = {
-      from: 'content:layover-component',
       type: 'update-layover-position',
       payload: {
         newPosition,

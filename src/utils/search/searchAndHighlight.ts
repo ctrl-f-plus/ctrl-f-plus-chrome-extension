@@ -43,8 +43,8 @@ function createCustomTreeWalker() {
 //   return span;
 // }
 
-function updateMatchesObject(span: HTMLElement, state2?: TabState) {
-  state2?.matchesObj.push(span);
+function updateMatchesObject(span: HTMLElement, tabState?: TabState) {
+  tabState?.matchesObj.push(span);
 }
 
 function getAllTextNodesToProcess(regex: RegExp): Node[] {
@@ -67,7 +67,7 @@ function getAllTextNodesToProcess(regex: RegExp): Node[] {
   return textNodesToProcess;
 }
 
-function processTextNode(textNode: Node, regex: RegExp, state2?: TabState) {
+function processTextNode(textNode: Node, regex: RegExp, tabState?: TabState) {
   const parent = textNode.parentNode;
   if (!parent) {
     console.warn(
@@ -96,9 +96,9 @@ function processTextNode(textNode: Node, regex: RegExp, state2?: TabState) {
 
     const span = createSpan([HIGHLIGHT_CLASS], matchText);
 
-    updateMatchesObject(span, state2);
+    updateMatchesObject(span, tabState);
 
-    state2.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
+    tabState.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
 
     fragment.appendChild(span);
 
@@ -114,21 +114,21 @@ function processTextNode(textNode: Node, regex: RegExp, state2?: TabState) {
 }
 
 export default function searchAndHighlight(
-  state2: TabState,
-  findValue: string
+  tabState: TabState,
+  searchValue: string
 ) {
   return new Promise<void>((resolve, reject) => {
     try {
-      const normalizedFindValue = findValue.replace(/\s+/g, ' ');
-      const findValueWithSpaceOrNBSP = normalizedFindValue
+      const normalizedSearchValue = searchValue.replace(/\s+/g, ' ');
+      const searchValueWithSpaceOrNBSP = normalizedSearchValue
         .split(' ')
         .join('( |\\u00A0)');
-      const regex = new RegExp(findValueWithSpaceOrNBSP, 'gi');
+      const regex = new RegExp(searchValueWithSpaceOrNBSP, 'gi');
 
       const textNodesToProcess = getAllTextNodesToProcess(regex);
 
       textNodesToProcess.forEach((textNode) => {
-        processTextNode(textNode, regex, state2);
+        processTextNode(textNode, regex, tabState);
       });
 
       resolve();

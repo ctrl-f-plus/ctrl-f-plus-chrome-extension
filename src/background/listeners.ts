@@ -1,16 +1,22 @@
 // src/background/chromeListeners.ts
 
-import { Messages } from '../types/message.types';
+import {
+  REMOVE_ALL_HIGHLIGHT_MATCHES,
+  REMOVE_ALL_STYLES,
+  SWITCH_TAB,
+  ToBackgroundMsg,
+  UPDATE_LAYOVER_POSITION,
+  UPDATED_TAB_STATE,
+} from '../types/message.types';
 
+import { getActiveTabId } from '../utils/background/chromeApiUtils';
+import { clearLocalStorage } from '../utils/background/storage';
 import {
   handleGetAllMatches,
   handleRemoveAllHighlightMatches,
   handleSwitchTab,
   handleUpdateTabStates,
-  // } from './backgroundUtils';
 } from './messageHandlers';
-import { getActiveTabId } from '../utils/background/chromeApiUtils';
-import { clearLocalStorage } from '../utils/background/storage';
 import store from './store/databaseStore';
 
 export default function startListeners() {
@@ -19,18 +25,18 @@ export default function startListeners() {
   });
 
   chrome.runtime.onMessage.addListener(
-    async (message: Messages, sender, sendResponse) => {
+    async (message: ToBackgroundMsg, sender, sendResponse) => {
       console.log('Received message:', message, ' \n Store: ', store);
 
       const { type, payload } = message;
       const { activeWindowStore } = store;
 
       switch (type) {
-        case 'remove-all-highlight-matches':
+        case REMOVE_ALL_HIGHLIGHT_MATCHES:
           await handleRemoveAllHighlightMatches(sendResponse);
           await activeWindowStore.sendToContentScripts();
           break;
-        case 'get-all-matches':
+        case 'GET_ALL_MATCHES':
           // return handleGetAllMatches(payload.searchValue);
           activeWindowStore.resetPartialStore();
           activeWindowStore.update({
@@ -45,17 +51,17 @@ export default function startListeners() {
           await handleGetAllMatches();
           activeWindowStore.sendToContentScripts();
           return true;
-        case 'update-tab-states-obj':
+        case UPDATED_TAB_STATE:
           await handleUpdateTabStates(payload, sendResponse);
           break;
-        case 'switch-tab':
+        case SWITCH_TAB:
           await handleSwitchTab(payload.serializedState, payload.direction);
           break;
-        case 'remove-styles-all-tabs': // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
+        case REMOVE_ALL_STYLES: // FIXME: Maybe rename to 'CLOSE_SEARCH_OVERLAY' - GETS CALLED WHEN CLOSING OVERLAY VIA `Escape` KEY
           activeWindowStore.toggleShowFields(false);
           activeWindowStore.sendToContentScripts();
           break;
-        case 'update-layover-position': // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
+        case UPDATE_LAYOVER_POSITION: // FIXME: MAYBE CONSOLIDATE INTO update-tab-states-obj?
           activeWindowStore.updateLayoverPosition(payload.newPosition);
           break;
         default:

@@ -7,6 +7,7 @@ import { LayoverContext } from '../../src/contexts/LayoverContext';
 import { TabStateContext } from '../../src/contexts/TabStateContext';
 import SearchInput from '../../src/layover/components/SearchInput';
 import { sendMessageToBackground } from '../../src/utils/messaging/sendMessageToBackground';
+import { REMOVE_ALL_STYLES } from '../../src/types/message.types';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');
 
@@ -85,8 +86,7 @@ describe('SearchInput', () => {
 
     expect(sendMessageToBackground).toHaveBeenCalledTimes(1);
     expect(sendMessageToBackground).toHaveBeenCalledWith({
-      from: 'content',
-      type: 'remove-styles-all-tabs',
+      type: REMOVE_ALL_STYLES,
     });
   });
 
