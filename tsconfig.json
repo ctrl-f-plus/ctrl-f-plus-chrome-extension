@@ -1,16 +1,11 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    // "module": "es6",
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
-
-    // "lib": ["dom", "es2017"],
-    // "lib": ["dom", "es2019"],
     "lib": ["ESNext", "DOM"],
-    // "lib": ["dom", "dom.iterable", "esnext"],
     "strict": true,
     "sourceMap": true
   },

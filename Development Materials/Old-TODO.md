@@ -19,7 +19,6 @@ const obj = {
 };
 ```
 
-
 Testing Packages:
 @babel/plugin-transform-runtime
 @babel/runtime
@@ -106,8 +105,8 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
   - FIXME: double check what html code is being searched, i think we are also searching within the extension's `id="ctrl-f-extension"` which we don't need to do
 - TabId is getting reset to undefined in `newState2`
 - - If you search an empty string twice, then you get `NaN/0`. fix this
-  - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
-<!-- -// Fix styling so that it is consistent accross pages -->
+    - On close, and/or shutdown, etc make sure all styles, Layover, etc are gone. I had a bug showing up at some point where the other window had a layover stuck open
+    <!-- -// Fix styling so that it is consistent accross pages -->
 
 - add `.eslintignore` file?
 - Add Error Handling
@@ -121,13 +120,15 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
   - cleanup sendMessageToContentScripts.ts file
   - Consolidate `sendMessageToBackground()` and `sendMsgToBackground()` in `sendMessageToBackground.ts`
 - Storage
-    - clean up storagUtils
-    - updated all updates to store so that they also write to chrome storage
+
+  - clean up storagUtils
+  - updated all updates to store so that they also write to chrome storage
 
 - `BackgroundUtils.ts`
   - General/Complete refactor
 
 <!-- //- Look into updating the codebase with the `activeTab` permission. You might be able to clean a few things up through using the permission. -->
+
 - Currently the `@benjamin-chavez` line on your Youtube profile doesn't add the `ctrl-f-highlight-focus` class for some reason:
   - `https://www.youtube.com/channel/UC6bQ5cJIHV0f7PeQNsorQhg`
   - This part of your github profile doesn't work either: `Listen Here: aminchavez.com`
@@ -136,17 +137,18 @@ DOM ELEMENTS TO LOCAL STORAGE: - https://stackoverflow.com/questions/3103962/con
 - I don't think you actually need this package: `"@tailwindcss/forms": "^0.5.3",`
 
 Notes from: `replace-layover-with-popup` branch:
-  - https://github.com/bmchavez/Ctrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
-  - https://github.com/bmchavez/Ctrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json
 
+- https://github.com/bmchavez/Ctrl-F/tree/bdc5ccdd56d0246a1db978d59023679ff4ba1743
+- https://github.com/bmchavez/Ctrl-F/blob/bdc5ccdd56d0246a1db978d59023679ff4ba1743/src/static/manifest.json
 
-  - inspo:
-    - https://motion.dev/tools
-    - https://chrome.google.com/webstore/detail/motion-devtools/mnbliiaiiflhmnndmoidhddombbmgcdk
+- inspo:
 
-  - Iframe:
-    - https://itnext.io/create-chrome-extension-with-reactjs-using-inject-page-strategy-137650de1f39#6186
+  - https://motion.dev/tools
+  - https://chrome.google.com/webstore/detail/motion-devtools/mnbliiaiiflhmnndmoidhddombbmgcdk
 
+- Iframe:
+
+  - https://itnext.io/create-chrome-extension-with-reactjs-using-inject-page-strategy-137650de1f39#6186
 
 - Double check styling leakage:
   - https://thebyteseffect.com/posts/crx-extractor-features/

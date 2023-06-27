@@ -2,13 +2,13 @@
 
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { sendMessageToBackground } from '../../src/utils/messaging/sendMessageToBackground';
-import { clearAllStoredTabs } from '../../src/utils/background/storage';
 import useSearchHandler from '../../src/contentScripts/hooks/useSearchHandler';
 import {
   GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
 } from '../../src/contentScripts/types/message.types';
+import { clearAllStoredTabs } from '../../src/background/utils/storage';
+import { sendMessageToBackground } from '../../src/contentScripts/utils/messaging/sendMessageToBackground';
 
 jest.mock('../../src/utils/messageUtils/sendMessageToBackground');
 jest.mock('../../src/background/storage.ts');

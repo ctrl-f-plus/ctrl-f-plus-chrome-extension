@@ -1,9 +1,6 @@
 // src/utils/deserializeTabState.ts
 
-import {
-  SerializedTabState,
-  XPathTabState,
-} from '../../contentScripts/types/tab.types';
+import { SerializedTabState, XPathTabState } from '../../types/tab.types';
 
 export default function deserializeTabState(
   shallowStateObject: SerializedTabState

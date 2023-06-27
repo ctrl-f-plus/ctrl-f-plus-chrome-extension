@@ -5,7 +5,7 @@ import {
   SerializedTabState,
   TabState,
   XPathMatchObject,
-} from '../../contentScripts/types/tab.types';
+} from '../../types/tab.types';
 
 function getXPath(element: Node): string {
   if (element.nodeType !== Node.ELEMENT_NODE) {

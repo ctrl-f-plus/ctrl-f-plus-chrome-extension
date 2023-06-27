@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 // src/utils/messageUtils/sendMessageToBackground.ts
 
-import { ToBackgroundMsg } from '../../contentScripts/types/message.types';
+import { ToBackgroundMsg } from '../../types/message.types';
 
 export const sendMessageToBackground = <T extends ToBackgroundMsg>(
   message: T

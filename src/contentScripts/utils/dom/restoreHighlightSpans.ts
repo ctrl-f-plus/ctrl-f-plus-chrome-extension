@@ -1,6 +1,6 @@
 // src/utils/restoreHighlightSpans.ts
 
-import { TabState, XPathTabState } from '../../contentScripts/types/tab.types';
+import { TabState, XPathTabState } from '../../types/tab.types';
 import createSpan from './createSpan';
 
 function getElementByXPath(xpath: string) {

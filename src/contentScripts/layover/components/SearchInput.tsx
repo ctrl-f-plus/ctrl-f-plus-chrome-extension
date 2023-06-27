@@ -21,8 +21,8 @@ import {
   REMOVE_ALL_STYLES,
   RemoveAllStylesMsg,
 } from '../../types/message.types';
-import '../styles.css';
 import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
+import '../styles.css';
 
 type SearchInputProps = {
   focus: boolean;
