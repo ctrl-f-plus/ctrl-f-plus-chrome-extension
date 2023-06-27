@@ -1,11 +1,11 @@
 // src/hooks/useMessageHandler.ts
 
 import { useEffect } from 'react';
-import { Messages } from '../types/message.types';
+import { ToLayoverMessage } from '../types/message.types';
 
 // FIXME: (***878) review the return type here:
 type MessageHandler = (
-  message: Messages,
+  message: ToLayoverMessage,
   sender: chrome.runtime.MessageSender,
   sendResponse: (response?: any) => void
   // ) => Promise<void>;

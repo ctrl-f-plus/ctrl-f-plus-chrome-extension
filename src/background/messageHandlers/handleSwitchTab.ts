@@ -1,7 +1,10 @@
 // src/background/messageHandlers/handleSwitchTab.ts
 
 import calculateTargetIndex from '../../utils/search/calculateTargetIndex';
-import { UpdateHighlightsMsg } from '../../types/message.types';
+import {
+  UPDATE_HIGHLIGHTS,
+  UpdateHighlightsMsg,
+} from '../../types/message.types';
 import { Direction } from '../../types/shared.types';
 import { SerializedTabState, ValidTabId } from '../../types/tab.types';
 // import { DIRECTION_NEXT } from '../../utils/constants';
@@ -82,7 +85,7 @@ export default async function handleSwitchTab(
     activeTabId,
     {
       async: true,
-      type: 'UPDATE_HIGHLIGHTS',
+      type: UPDATE_HIGHLIGHTS,
       payload: {
         tabId: activeTabId,
         direction,

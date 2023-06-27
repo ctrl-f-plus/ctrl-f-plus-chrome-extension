@@ -1,8 +1,8 @@
 // src/utils/messageUtils/sendMessageToContentScripts.ts
 
-import { Messages } from '../../types/message.types';
+import { ToLayoverMessage } from '../../types/message.types';
 
-export default function sendMessageToTab<T extends Messages>(
+export default function sendMessageToTab<T extends ToLayoverMessage>(
   tabId: number,
   message: T
 ): Promise<any> {

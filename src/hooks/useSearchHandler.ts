@@ -2,12 +2,14 @@
 
 import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
-import { clearAllStoredTabs } from '../utils/background/storage';
 import {
   GET_ALL_MATCHES,
+  GetAllMatchesMsg,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
+  RemoveAllHighlightMatchesMsg,
 } from '../types/message.types';
+import { clearAllStoredTabs } from '../utils/background/storage';
+import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
 
 export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);
@@ -20,12 +22,12 @@ export default function useSearchHandler() {
       await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
       // msg: RemoveAllHighlightMatchesMsg;
-      await sendMessageToBackground({
+      await sendMessageToBackground<RemoveAllHighlightMatchesMsg>({
         type: REMOVE_ALL_HIGHLIGHT_MATCHES,
       });
 
       // msg: GetAllMatchesMsg;
-      await sendMessageToBackground({
+      await sendMessageToBackground<GetAllMatchesMsg>({
         type: GET_ALL_MATCHES,
         payload: {
           searchValue: newSearchValue,

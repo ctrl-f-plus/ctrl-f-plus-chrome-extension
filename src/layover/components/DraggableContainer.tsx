@@ -6,8 +6,11 @@ import Draggable, {
   DraggableEventHandler,
 } from 'react-draggable';
 import { LayoverContext } from '../../contexts/LayoverContext';
-import { UpdateLayoverPositionMsg } from '../../types/message.types';
-import { sendMsgToBackground } from '../../utils/messaging/sendMessageToBackground';
+import {
+  UPDATE_LAYOVER_POSITION,
+  UpdateLayoverPositionMsg,
+} from '../../types/message.types';
+import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
 import { LayoverPosition } from '../../types/shared.types';
 
 export interface DraggableContainerProps {
@@ -34,12 +37,12 @@ function DraggableContainer({
     }
 
     const msg: UpdateLayoverPositionMsg = {
-      type: 'update-layover-position',
+      type: UPDATE_LAYOVER_POSITION,
       payload: {
         newPosition,
       },
     };
-    sendMsgToBackground<UpdateLayoverPositionMsg>(msg);
+    sendMessageToBackground<UpdateLayoverPositionMsg>(msg);
   };
 
   return layoverPosition ? (

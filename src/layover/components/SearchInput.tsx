@@ -16,10 +16,13 @@ import { LayoverContext } from '../../contexts/LayoverContext';
 import { TabStateContext } from '../../contexts/TabStateContext';
 import useFindMatches from '../../hooks/useFindMatches';
 import useSearchHandler from '../../hooks/useSearchHandler';
+import '../../tailwind.css';
+import {
+  REMOVE_ALL_STYLES,
+  RemoveAllStylesMsg,
+} from '../../types/message.types';
 import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
 import './SearchInputStyles.css';
-import '../../tailwind.css';
-import { REMOVE_ALL_STYLES } from '../../types/message.types';
 
 type SearchInputProps = {
   focus: boolean;
@@ -49,7 +52,7 @@ function SearchInput({ focus }: SearchInputProps) {
 
   // TODO: Review to decide if you want to handle this in another way
   const closeSearchLayover = () => {
-    sendMessageToBackground({ type: REMOVE_ALL_STYLES });
+    sendMessageToBackground<RemoveAllStylesMsg>({ type: REMOVE_ALL_STYLES });
   };
 
   // TODO: CLEANUP:

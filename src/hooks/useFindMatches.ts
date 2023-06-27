@@ -11,7 +11,7 @@ import {
 } from '../types/message.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import searchAndHighlight from '../utils/search/searchAndHighlight';
-import { sendMsgToBackground } from '../utils/messaging/sendMessageToBackground';
+import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
 import scrollToElement from '../utils/dom/scrollUtil';
 import calculateTargetIndex from '../utils/search/calculateTargetIndex';
 import { Direction } from '../types/shared.types';
@@ -114,7 +114,7 @@ export default function useFindMatches() {
             ...newLocalTabState,
           });
 
-          sendMsgToBackground<SwitchTabMsg>({
+          sendMessageToBackground<SwitchTabMsg>({
             type: SWITCH_TAB,
             payload: {
               serializedState,
@@ -130,7 +130,7 @@ export default function useFindMatches() {
         ...updatedState,
       });
 
-      sendMsgToBackground<UpdatedTabStateMsg>({
+      sendMessageToBackground<UpdatedTabStateMsg>({
         type: UPDATED_TAB_STATE,
         payload: { serializedState },
       });
