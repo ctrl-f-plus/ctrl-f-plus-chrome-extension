@@ -29,7 +29,7 @@
 
 ### Important Default Boilerplate Notes
 
-- Folders get flattened, static references to images from HTML do not need to be relative (i.e. `icon.png` instead of `../static/icon.png`)
+<!-- //- Folders get flattened, static references to images from HTML do not need to be relative (i.e. `icon.png` instead of `../static/icon.png`) -->
 - Importing local ts/tsx/css files should be relative, since Webpack will build a dependancy graph using these paths
 
 TODO: "fontsource-roboto": "^4.0.0",
@@ -39,3 +39,5 @@ npm-check
 
 
 - ADD nvm and .nvmrc note
+`nvm use`
+  - Now using node v18.15.0 (npm v9.6.2)
