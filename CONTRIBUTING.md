@@ -1,69 +1,59 @@
-# Contributing to Ctrl-F Plus
+# Contributing Guide
 
-We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
+We love your input! There are many ways to contribute, including submitting bug reports, improving documentation, submitting feature requests, reviewing new submissions, or contributing code that can be incorporated into the project.
 
-  - Reporting a bug
-  - Submitting a fix
-  - Proposing new features
-  - Becoming a maintainer
-  - Improving documentation
-  - Discussing the current state of the code
-  - Contributing code that can be **incorporated** into the project
-  - Providing user feedback
+**Table of Contents:**
 
-## Quicklinks
-
-- [Contributing to Ctrl-F Plus](#contributing-to-ctrl-f-plus)
-  - [Quicklinks](#quicklinks)
-  - [Code of Conduct](#code-of-conduct)
-  - [Getting Started](#getting-started)
-  - [Questions](#questions)
-  - [Feature Requests](#feature-requests)
-  - [Any contributions you make will be under the MIT Software License](#any-contributions-you-make-will-be-under-the-mit-software-license)
-  - [Report bugs using Github's issues](#report-bugs-using-githubs-issues)
-  - [Contributing Code](#contributing-code)
-
-
-## Code of Conduct
-By participating in this project, you agree to abide by our [Code of Conduct][0].
+1. [Getting Started](#getting-started)
+2. [Code of Conduct](#code-of-conduct)
+3. [Questions](#questions)
+4. [Feature Requests](#feature-requests)
+5. [Reporting Bugs](#reporting-bugs)
+6. [Contributing Code](#contributing-code)
+7. [Additional Help](#additional-help)
 
 ## Getting Started
 
 Contributions are made to this repo via Issues and Pull Requests (PRs). A few general guidelines that cover both:
 
-- To report security vulnerabilities, please use our [Responsible Disclosure Program](https://auth0.com/whitehat) which is monitored by our security team.
 - Search for existing Issues and PRs before creating your own.
-- We work hard to makes sure issues are handled in a timely manner but, depending on the impact, it could take a while to investigate the root cause. A friendly ping in the comment thread to the submitter or a contributor can help draw attention if your issue is blocking.
-- If you've never contributed before, see below for resources and tips on how to get started!
+- If you find a security vulnerability, do NOT open an issue. Email [ben.m.chavez@gmail.com](mailto:ben.m.chavez@gmail.com) instead.
+- If you're a first-time contributor, see the [Additional Help](#additional-help) section for resources and tips on how to get started!
+
+## Code of Conduct
+
+By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Questions
-Please open a GitHub issue if you have any questions about the project.
+
+If you have any questions for the maintainer(s) about the project, please open a [new GitHub issue](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues/new) with the `question` label.
 
 ## Feature Requests
 
-Please request new features by opening a GitHub issue.
+New features can be requested by opening a [new GitHub issue](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues/new) with the `Enhancement` label.
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+## Reporting Bugs
 
-## Report bugs using Github's [issues](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues)
-
-**If you find a security vulnerability, do NOT open an issue. Email [ben.m.chavez@gmail.com](mailto:ben.m.chavez@gmail.com) instead.**
-
-We use GitHub issues to track public bugs. Please check open issues before opening a new ticket. Report a bug by [opening a new issue](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues/new); it's that easy!
-
+We track public bugs via [GitHub issues](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues). Please ensure your bug description is clear, complete with sufficient instructions to reproduce the issue. Including a minimal demo of the problem, if possible, is highly appreciated.
 
 ## Contributing Code
 
-Unsure where to begin contributing to this project? You can start by looking through open `help-wanted` issues!
+We actively welcome your pull requests! We follow the ["fork-and-pull" Git workflow](https://github.com/susam/gitpr):
 
-**Working on your first open source project or pull request?** Here are some helpful tutorials:
+1. Fork the repository to your own Github account
+2. Clone the project to your machine
+3. Create a branch locally with a succinct but descriptive name
+4. Commit changes to the branch
+5. Follow any formatting and testing guidelines specific to this repo
+6. Push changes to your fork
+7. Open a PR in our repository and follow the PR template to facilitate an efficient review of your changes.
 
--   [How to Contribute to an Open Source Project on GitHub][1]
--   [Make a Pull Request][2]
--   [First Timers Only][3]
+## Additional Help
 
-[0]: CODE_OF_CONDUCT.md
-[1]: https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github
-[2]: http://makeapullrequest.com/
-[3]: http://www.firsttimersonly.com
+If you are **unsure where to begin** contributing to this project, consider looking through open `help-wanted` [issues](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/issues)!
+
+For those **working on their first open source project or pull request**, here are some helpful tutorials:
+
+- [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+- [Make a Pull Request](http://makeapullrequest.com/)
+- [First Timers Only](http://www.firsttimersonly.com)
