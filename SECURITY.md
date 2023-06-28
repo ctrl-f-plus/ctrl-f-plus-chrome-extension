@@ -1,5 +1,3 @@
-<!-- SECURITY.md -->
-
 # Reporting Security Issues
 
 The Ctrl-F Plus team and community take security issues in Ctrl-F Plus seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
