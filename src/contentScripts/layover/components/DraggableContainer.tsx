@@ -11,8 +11,8 @@ import { LayoverContext } from '../../contexts/LayoverContext';
 import {
   UPDATE_LAYOVER_POSITION,
   UpdateLayoverPositionMsg,
-} from '../../types/message.types';
-import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
+} from '../../types/toBackgroundMessage.types';
+import sendMessageToBackground from '../../utils/messaging/sendMessageToBackground';
 
 export interface DraggableContainerProps {
   children: React.ReactNode;

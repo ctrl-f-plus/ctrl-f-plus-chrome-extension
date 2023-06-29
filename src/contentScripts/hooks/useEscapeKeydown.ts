@@ -2,8 +2,11 @@
 
 import { useContext, useEffect } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
-import { REMOVE_ALL_STYLES, RemoveAllStylesMsg } from '../types/message.types';
-import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
+import {
+  REMOVE_ALL_STYLES,
+  RemoveAllStylesMsg,
+} from '../types/toBackgroundMessage.types';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 
 export default function useEscapeKeyDown() {
   const { showLayover } = useContext(LayoverContext);

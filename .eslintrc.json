@@ -49,6 +49,7 @@
     // "func-names": "off",
     // "object-shorthand": "off",
     // "class-methods-use-this": "off",
+    "react/react-in-jsx-scope": "off",
     "no-continue": "off",
     "import/extensions": [
       "error",

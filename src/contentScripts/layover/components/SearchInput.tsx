@@ -20,8 +20,8 @@ import useSearchHandler from '../../hooks/useSearchHandler';
 import {
   REMOVE_ALL_STYLES,
   RemoveAllStylesMsg,
-} from '../../types/message.types';
-import { sendMessageToBackground } from '../../utils/messaging/sendMessageToBackground';
+} from '../../types/toBackgroundMessage.types';
+import sendMessageToBackground from '../../utils/messaging/sendMessageToBackground';
 import '../styles.css';
 
 type SearchInputProps = {

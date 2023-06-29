@@ -1,6 +1,7 @@
 // src/background/messageHandlers/handleUpdateTabStates.ts
 
 import { SerializedTabState } from '../../contentScripts/types/tab.types';
+import { ResponseCallback } from '../../shared/types/shared.types';
 import store from '../store/databaseStore';
 import { setStoredTabs } from '../utils/storage';
 
@@ -9,7 +10,7 @@ export default async function handleUpdateTabStates(
   payload: {
     serializedState: SerializedTabState;
   },
-  sendResponse: (response?: any) => void
+  sendResponse: ResponseCallback
 ) {
   const { activeWindowStore } = store;
   const {

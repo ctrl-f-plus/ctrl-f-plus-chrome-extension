@@ -4,10 +4,10 @@ import {
   REMOVE_ALL_HIGHLIGHT_MATCHES,
   REMOVE_ALL_STYLES,
   SWITCH_TAB,
-  ToBackgroundMsg,
+  ToBackgroundMessage,
   UPDATE_LAYOVER_POSITION,
   UPDATED_TAB_STATE,
-} from '../contentScripts/types/message.types';
+} from '../contentScripts/types/toBackgroundMessage.types';
 import {
   handleGetAllMatches,
   handleRemoveAllHighlightMatches,
@@ -24,7 +24,7 @@ export default function startListeners() {
   });
 
   chrome.runtime.onMessage.addListener(
-    async (message: ToBackgroundMsg, sender, sendResponse) => {
+    async (message: ToBackgroundMessage, sender, sendResponse) => {
       console.log('Received message:', message, ' \n Store: ', store);
 
       const { type, payload } = message;

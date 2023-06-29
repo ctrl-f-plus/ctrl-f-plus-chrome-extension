@@ -1,5 +1,6 @@
 // src/background/messageHandlers/handleRemoveAllHighlightMatches.ts
 
+import { ResponseCallback } from '../../shared/types/shared.types';
 import {
   REMOVE_HIGHLIGHT_MATCHES,
   RemoveHighlightMatchesMsg,
@@ -9,7 +10,7 @@ import sendMessageToTab from '../utils/sendMessageToContent';
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
 export default async function handleRemoveAllHighlightMatches(
-  sendResponse: (response?: any) => void
+  sendResponse: ResponseCallback
 ) {
   const tabs = await queryCurrentWindowTabs();
 

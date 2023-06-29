@@ -8,10 +8,10 @@ import {
   SwitchTabMsg,
   UPDATED_TAB_STATE,
   UpdatedTabStateMsg,
-} from '../types/message.types';
+} from '../types/toBackgroundMessage.types';
 import { SerializedTabState, TabState } from '../types/tab.types';
 import searchAndHighlight from '../utils/search/searchAndHighlight';
-import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 import scrollToElement from '../utils/dom/scrollUtil';
 import calculateTargetIndex from '../utils/search/calculateTargetIndex';
 import { Direction } from '../../shared/types/shared.types';

@@ -7,9 +7,9 @@ import {
   GetAllMatchesMsg,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
   RemoveAllHighlightMatchesMsg,
-} from '../types/message.types';
+} from '../types/toBackgroundMessage.types';
 import { clearAllStoredTabs } from '../../background/utils/storage';
-import { sendMessageToBackground } from '../utils/messaging/sendMessageToBackground';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 
 export default function useSearchHandler() {
   const { setSearchValue, setLastSearchValue } = useContext(LayoverContext);

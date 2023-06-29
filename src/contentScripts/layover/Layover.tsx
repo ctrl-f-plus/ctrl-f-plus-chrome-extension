@@ -22,6 +22,7 @@ import deserializeTabState from '../utils/serialization/deserializeTabState';
 import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
+import { ResponseCallback } from '../../shared/types/shared.types';
 
 function Layover() {
   const {
@@ -71,7 +72,7 @@ function Layover() {
     async (
       message: ToLayoverMessage,
       sender: chrome.runtime.MessageSender,
-      sendResponse: (response?: any) => void
+      sendResponse: ResponseCallback
     ) => {
       console.log('Received message:', message);
 

@@ -1,14 +1,13 @@
-// src/hooks/useMessageHandler.ts
+// src/contentScripts/hooks/useMessageHandler.ts
 
 import { useEffect } from 'react';
 import { ToLayoverMessage } from '../../background/types/message.types';
+import { ResponseCallback } from '../../shared/types/shared.types';
 
-// FIXME: (***878) review the return type here:
 type MessageHandler = (
   message: ToLayoverMessage,
   sender: chrome.runtime.MessageSender,
-  sendResponse: (response?: any) => void
-  // ) => Promise<void>;
+  sendResponse: ResponseCallback
 ) => Promise<boolean | undefined>;
 
 export default function useMessageHandler(messageHandler: MessageHandler) {

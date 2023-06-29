@@ -14,3 +14,5 @@ export interface BaseMessage {
   async?: boolean;
   payload?: unknown;
 }
+
+export type ResponseCallback = (response?: any) => void;

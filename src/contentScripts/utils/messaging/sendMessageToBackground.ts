@@ -1,11 +1,12 @@
-/* eslint-disable import/prefer-default-export */
 // src/utils/messageUtils/sendMessageToBackground.ts
 
-import { ToBackgroundMsg } from '../../types/message.types';
+import { ToBackgroundMessage } from '../../types/toBackgroundMessage.types';
 
-export const sendMessageToBackground = <T extends ToBackgroundMsg>(
+const sendMessageToBackground = <T extends ToBackgroundMessage>(
   message: T
 ): Promise<any> =>
   new Promise((resolve) => {
     chrome.runtime.sendMessage(message, (response) => resolve(response));
   });
+
+export default sendMessageToBackground;

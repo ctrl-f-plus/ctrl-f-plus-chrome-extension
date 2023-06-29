@@ -3,15 +3,11 @@
 import { Direction, LayoverPosition } from '../../shared/types/shared.types';
 import { SerializedTabState } from './tab.types';
 
-// TODO: review this
 interface BaseMessage {
   async?: boolean;
   payload?: unknown;
 }
 
-/**
- * FROM UI TO BACKGROUND
- */
 export const SWITCH_TAB = 'SWITCH_TAB' as const;
 export const REMOVE_ALL_HIGHLIGHT_MATCHES =
   'REMOVE_ALL_HIGHLIGHT_MATCHES' as const;
@@ -53,7 +49,7 @@ export interface UpdateLayoverPositionMsg extends BaseMessage {
   };
 }
 
-export type ToBackgroundMsg =
+export type ToBackgroundMessage =
   | GetAllMatchesMsg
   | RemoveAllHighlightMatchesMsg
   | RemoveAllStylesMsg
