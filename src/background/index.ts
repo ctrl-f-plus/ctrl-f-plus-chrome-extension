@@ -1,4 +1,4 @@
-// src/background/background.ts
+// src/background/index.ts
 
 import startListeners from './listeners';
 import store from './store/databaseStore';

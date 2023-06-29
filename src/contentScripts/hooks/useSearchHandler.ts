@@ -1,4 +1,4 @@
-// src/hooks/useSearchHandler.ts
+// src/contentScripts/hooks/useSearchHandler.ts
 
 import { useCallback, useContext } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
@@ -21,12 +21,10 @@ export default function useSearchHandler() {
 
       await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
-      // msg: RemoveAllHighlightMatchesMsg;
       await sendMessageToBackground<RemoveAllHighlightMatchesMsg>({
         type: REMOVE_ALL_HIGHLIGHT_MATCHES,
       });
 
-      // msg: GetAllMatchesMsg;
       await sendMessageToBackground<GetAllMatchesMsg>({
         type: GET_ALL_MATCHES,
         payload: {

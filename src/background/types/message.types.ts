@@ -1,4 +1,4 @@
-// src/interfaces/message.types.ts
+// src/background/types/message.types.ts
 
 import { ValidTabId } from '../../contentScripts/types/tab.types';
 import { Direction } from '../../shared/types/shared.types';

@@ -1,4 +1,4 @@
-// src/hooks/useRemoveAllHighlightMatches.ts
+// src/contentScripts/hooks/useRemoveAllHighlightMatches.ts
 
 import { useContext, useEffect } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';

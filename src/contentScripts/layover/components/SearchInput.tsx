@@ -1,4 +1,4 @@
-// src/components/SearchInput.tsx
+// src/contentScripts/layover/components/SearchInput.tsx
 
 import {
   ChevronDownIcon,
@@ -107,33 +107,20 @@ function SearchInput({ focus }: SearchInputProps) {
       <div className="overlay-wrapper">
         <form
           onSubmit={handleSearchSubmit}
-          // className="w-full p-2 text-white bg-black bg-opacity-75 rounded grid grid-cols-4 divide-x divide-slate-200"
           className="form-wrapper"
           data-testid="inputForm"
         >
-          <div
-            // className="col-span-3 grid grid-cols-6 gap-0"
-            className="form-div"
-          >
+          <div className="form-div">
             <input
               ref={searchInputRef}
               type="text"
               value={localSearchValue}
               onChange={handleInputChange}
-              // className="text-white placeholder-white bg-transparent focus:outline-none col-start-1 col-end-6 "
               className="input-style"
               placeholder="Find on page"
             />
-            <div
-              // className="mx-2 my-auto"
-              className="matching-counts-wrapper"
-            >
-              <p
-                // className="text-right float-right"
-                className="matching-counts"
-              >
-                {matchingCounts}
-              </p>
+            <div className="matching-counts-wrapper">
+              <p className="matching-counts">{matchingCounts}</p>
             </div>
           </div>
 

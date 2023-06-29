@@ -78,7 +78,7 @@ export async function getOrderedTabs(
   return orderedTabs;
 }
 
-// FIXME: The storedTabs and the filter are both required otherwise the tabs won't cycle back to the beginning
+// FIXME:  The storedTabs and the filter are both required otherwise the tabs won't cycle back to the beginning
 export async function getOrderedTabIds(): Promise<ValidTabId[]> {
   const orderedTabs = await getOrderedTabs();
   const storedTabs = await getAllStoredTabs();

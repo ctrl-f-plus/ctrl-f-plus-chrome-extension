@@ -1,4 +1,4 @@
-// src/background/databaseStore.ts
+// src/background/store/databaseStore.ts
 
 import {
   getAllOpenWindows,

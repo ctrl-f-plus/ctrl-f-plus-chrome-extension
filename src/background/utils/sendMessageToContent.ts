@@ -1,6 +1,6 @@
-// src/utils/messageUtils/sendMessageToContentScripts.ts
+// src/background/utils/sendMessageToContent.ts
 
-import { ToLayoverMessage } from '../../contentScripts/types/message.types';
+import { ToLayoverMessage } from '../types/message.types';
 
 export default function sendMessageToTab<T extends ToLayoverMessage>(
   tabId: number,

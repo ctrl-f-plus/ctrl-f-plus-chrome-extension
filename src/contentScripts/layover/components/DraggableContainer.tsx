@@ -1,4 +1,4 @@
-// src/layover/components/DraggableContainer.tsx
+// src/contentScripts/layover/components/DraggableContainer.tsx
 
 import React, { useContext } from 'react';
 import Draggable, {

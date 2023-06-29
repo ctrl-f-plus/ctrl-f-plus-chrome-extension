@@ -1,4 +1,4 @@
-// src/background/windowStore.ts
+// src/background/store/windowStore.ts
 
 import { UPDATED_STORE, UpdatedStoreMsg } from '../types/message.types';
 import { LayoverPosition } from '../../shared/types/shared.types';

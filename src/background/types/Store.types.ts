@@ -1,4 +1,4 @@
-// src/types/Store.types.ts
+// src/background/types/Store.types.ts
 
 import {
   SerializedTabState,

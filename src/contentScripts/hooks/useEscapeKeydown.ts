@@ -1,6 +1,4 @@
-// src/hooks/useHandleKeyDown.ts
-
-// FIXME: This hook is actually quite specific. Consider refactoring and generalizing
+// src/contentScripts/hooks/useEscapeKeydown.ts
 
 import { useContext, useEffect } from 'react';
 import { LayoverContext } from '../contexts/LayoverContext';
