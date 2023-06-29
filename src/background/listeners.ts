@@ -1,6 +1,7 @@
 // src/background/chromeListeners.ts
 
 import {
+  GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
   REMOVE_ALL_STYLES,
   SWITCH_TAB,
@@ -17,7 +18,7 @@ import {
 } from './messageHandlers';
 import store from './store/databaseStore';
 import { getActiveTabId } from './utils/chromeApiUtils';
-import { clearLocalStorage } from './utils/storage';
+import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async () => {
@@ -33,10 +34,11 @@ export default function startListeners() {
 
       switch (type) {
         case REMOVE_ALL_HIGHLIGHT_MATCHES:
+          await clearAllStoredTabs();
           await handleRemoveAllHighlightMatches(sendResponse);
           await activeWindowStore.sendToContentScripts();
           break;
-        case 'GET_ALL_MATCHES':
+        case GET_ALL_MATCHES:
           // return handleGetAllMatches(payload.searchValue);
           activeWindowStore.resetPartialStore();
           activeWindowStore.update({

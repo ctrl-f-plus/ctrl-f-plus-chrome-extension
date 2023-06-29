@@ -35,14 +35,6 @@ function createCustomTreeWalker() {
   );
 }
 
-// function createHighlightSpan(matchText: string): HTMLElement {
-//   const span = document.createElement('span');
-//   span.className = HIGHLIGHT_CLASS;
-//   span.textContent = matchText;
-
-//   return span;
-// }
-
 function updateMatchesObject(span: HTMLElement, tabState?: TabState) {
   tabState?.matchesObj.push(span);
 }

@@ -2,13 +2,13 @@
 
 import { useReducer } from 'react';
 
+import { LayoverPosition } from '../../shared/types/shared.types';
 import {
   ActionTypes,
   LayoverAction,
   LayoverState,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
-import { LayoverPosition } from '../../shared/types/shared.types';
 
 const initialState: LayoverState = {
   showLayover: false,

@@ -1,22 +1,22 @@
 // src/contentScripts/hooks/useFindMatches.ts
 
 import { useCallback, useContext, useEffect, useState } from 'react';
+import { Direction } from '../../shared/types/shared.types';
+import { HIGHLIGHT_FOCUS_CLASS } from '../../shared/utils/constants';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
+import { SerializedTabState, TabState } from '../types/tab.types';
 import {
   SWITCH_TAB,
   SwitchTabMsg,
   UPDATED_TAB_STATE,
   UpdatedTabStateMsg,
 } from '../types/toBackgroundMessage.types';
-import { SerializedTabState, TabState } from '../types/tab.types';
-import searchAndHighlight from '../utils/search/searchAndHighlight';
-import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 import scrollToElement from '../utils/dom/scrollUtil';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 import calculateTargetIndex from '../utils/search/calculateTargetIndex';
-import { Direction } from '../../shared/types/shared.types';
+import searchAndHighlight from '../utils/search/searchAndHighlight';
 import serializeTabState from '../utils/serialization/serializeTabState';
-import { HIGHLIGHT_FOCUS_CLASS } from '../../shared/utils/constants';
 
 type UpdateHighlightsOptions = {
   previousIndex?: number;

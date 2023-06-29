@@ -1,6 +1,6 @@
 // src/contexts/TabStateContext.tsx
 
-import React, { ReactNode, createContext, useMemo } from 'react';
+import { ReactNode, createContext, useMemo } from 'react';
 import useLayoverHandler from '../hooks/useLayoverHandler';
 import { TabState } from '../types/tab.types';
 

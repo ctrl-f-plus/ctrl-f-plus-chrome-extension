@@ -8,7 +8,6 @@ import {
   REMOVE_ALL_HIGHLIGHT_MATCHES,
   RemoveAllHighlightMatchesMsg,
 } from '../types/toBackgroundMessage.types';
-import { clearAllStoredTabs } from '../../background/utils/storage';
 import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 
 export default function useSearchHandler() {
@@ -18,8 +17,6 @@ export default function useSearchHandler() {
     async (newSearchValue: string): Promise<void> => {
       setSearchValue(newSearchValue);
       setLastSearchValue(newSearchValue);
-
-      await clearAllStoredTabs(); // FIXME: review a) if you need this and b) its location
 
       await sendMessageToBackground<RemoveAllHighlightMatchesMsg>({
         type: REMOVE_ALL_HIGHLIGHT_MATCHES,
