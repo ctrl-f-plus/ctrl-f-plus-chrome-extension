@@ -8,6 +8,7 @@ import {
   UPDATE_LAYOVER_POSITION,
   UPDATED_TAB_STATE,
 } from '../contentScripts/types/toBackgroundMessage.types';
+import log from '../shared/utils/logger';
 import {
   handleGetAllMatches,
   handleRemoveAllHighlightMatches,
@@ -25,7 +26,7 @@ export default function startListeners() {
 
   chrome.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
-      console.log('Received message:', message, ' \n Store: ', store);
+      log('Received message:', message, ' \n Store: ', store);
 
       const { type, payload } = message;
       const { activeWindowStore } = store;

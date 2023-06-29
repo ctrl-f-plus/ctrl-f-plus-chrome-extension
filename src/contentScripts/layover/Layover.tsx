@@ -23,6 +23,7 @@ import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
 import { ResponseCallback } from '../../shared/types/shared.types';
+import log from '../../shared/utils/logger';
 
 function Layover() {
   const {
@@ -74,7 +75,7 @@ function Layover() {
       sender: chrome.runtime.MessageSender,
       sendResponse: ResponseCallback
     ) => {
-      console.log('Received message:', message);
+      log('Received message:', message);
 
       const { type } = message;
       let newState;
@@ -140,7 +141,6 @@ function Layover() {
     ]
   );
 
-  // FIXME: (***878)
   useMessageHandler(handleMessage);
   useEscapeKeyDown();
   useActiveTabChange();
