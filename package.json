@@ -31,8 +31,8 @@
   "bugs": {},
   "homepage": "https://ctrl-f.plus/",
   "funding": {
-    "type": "individual",
-    "url": "https://TODO:/"
+    "type": "opencollective",
+    "url": "https://opencollective.com/ctrl-f-plus-chrome-extension"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",

@@ -1,6 +1,6 @@
 {
-  "name": "Ctrl-F Plus",
-  "description": "Kntrl is an extension for word searching through tabs - DEMO TEST VERSION",
+  "name": "Ctrl-F Plus - Multi-Tab Search",
+  "description": "Ctrl-F Plus is an extension for phrase searching through tabs",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
