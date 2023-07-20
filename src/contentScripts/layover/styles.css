@@ -1,5 +1,6 @@
 /* src/contentScripts/layover/styles.css */
 
+
 #ctrl-f-search-input button,
 #ctrl-f-search-input input[type='submit'],
 #ctrl-f-search-input input[type='reset'] {
@@ -14,8 +15,9 @@
 }
 
 #ctrl-f-search-input .overlay-wrapper {
-  font-family: sans-serif !important;
-  background-color: rgba(17, 24, 39, 0.9) !important;
+  /* font-family: sans-serif !important; */
+  font-family: 'Open Sans', sans-serif !important;
+  /* background-color: rgba(17, 24, 39, 0.9) !important; */
   border-radius: 6px !important;
 
   /* isolation: isolate !important; */
@@ -24,7 +26,11 @@
 #ctrl-f-search-input .form-wrapper {
   width: 100% !important;
   height: 100% !important;
-  background-color: rgba(17, 24, 39, 0.9) !important;
+  /* background-color: rgba(17, 24, 39, 0.9) !important; */
+  /* background-color: #69757b !important; */
+  /* background-color: rgba(5, 5, 5, 0.9) !important; */
+  background-color: rgba(18, 18, 18, 0.9) !important;
+  /* background-color: rgba(20, 20, 20, 0.9) !important; */
   border-radius: 6px !important;
   margin: 0px !important;
   display: grid !important;

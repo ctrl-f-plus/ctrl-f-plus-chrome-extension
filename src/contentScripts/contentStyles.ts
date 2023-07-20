@@ -5,6 +5,7 @@ import {
   HIGHLIGHT_FOCUS_CLASS,
 } from '../shared/utils/constants';
 
+// Old Highlight-Focus Color: #05fdb4
 const contentStyles = `
 .${HIGHLIGHT_CLASS} {
   background-color: #128da1 !important;
@@ -16,8 +17,8 @@ const contentStyles = `
 }
 
 .${HIGHLIGHT_FOCUS_CLASS} {
-  background-color: #05fdb4 !important;
-  border-color: #05fdb4;
+  background-color: #53e7bb !important;
+  border-color: #53e7bb;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /*Tailwind: .box-shadow-medium */
 }
 `;
@@ -32,3 +33,5 @@ function injectStyles(css: string): HTMLStyleElement {
 }
 
 injectStyles(contentStyles);
+// #222D31
+// #69757B

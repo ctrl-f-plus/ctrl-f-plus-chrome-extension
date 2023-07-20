@@ -25,7 +25,14 @@ import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 export let csLoaded = false;
 
 export default function startListeners() {
-  chrome.runtime.onInstalled.addListener(async () => {
+  chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+    // console.log('installed');
+    // console.log(reason);
+    if (reason === 'install') {
+      chrome.tabs.create({
+        url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
+      });
+    }
     clearLocalStorage();
   });
 
