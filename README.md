@@ -1,4 +1,4 @@
-# Ctrl-F
+# Ctrl-F Plus
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 ### Getting Started
@@ -14,11 +14,7 @@
 3. Click `Load unpacked`
 4. Select the entire `dist` folder
 
-## Important Initial Steps
 
-1. `git init` to start a new git repo for tracking your changes, do an initial base commit with all the default files
-2. Update `package.json`, important fields include `author`, `version`, `name` and `description`
-3. Update `manifest.json`, important fields include `version`, `name` and `description`
 4. Update `webpack.commmon.js`, the title in the `getHtmlPlugins` function should be your extension name
 
 ## Production Build
