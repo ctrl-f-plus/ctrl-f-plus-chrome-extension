@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { TabStore } from '../../background/types/Store.types';
 import {
   HIGHLIGHT,
@@ -7,7 +7,7 @@ import {
   UPDATED_STORE,
   UPDATE_HIGHLIGHTS,
 } from '../../background/types/message.types';
-import '../../tailwind.css';
+// import '../../tailwind.css';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
@@ -40,34 +40,22 @@ function Layover() {
   const { updateHighlights, findAllMatches } = useFindMatches();
 
   // TODO: review how often this is rendered
-  const updateContextFromStore = useCallback(
-    async (tabStore: TabStore) => {
-      setSearchValue(tabStore.searchValue);
-      setLastSearchValue(tabStore.lastSearchValue);
-      setShowLayover(tabStore.showLayover);
-      setShowMatches(tabStore.showMatches);
-      setTotalMatchesCount(tabStore.totalMatchesCount);
-      setLayoverPosition(tabStore.layoverPosition);
-      setActiveTabId(tabStore.activeTabId);
+  const updateContextFromStore = useCallback(async (tabStore: TabStore) => {
+    setSearchValue(tabStore.searchValue);
+    setLastSearchValue(tabStore.lastSearchValue);
+    setShowLayover(tabStore.showLayover);
+    setShowMatches(tabStore.showMatches);
+    setTotalMatchesCount(tabStore.totalMatchesCount);
+    setLayoverPosition(tabStore.layoverPosition);
+    setActiveTabId(tabStore.activeTabId);
 
-      const { serializedTabState } = tabStore;
-      const xPathTabState: XPathTabState =
-        deserializeTabState(serializedTabState);
-      const tabState = restoreHighlightSpans(xPathTabState);
+    const { serializedTabState } = tabStore;
+    const xPathTabState: XPathTabState =
+      deserializeTabState(serializedTabState);
+    const tabState = restoreHighlightSpans(xPathTabState);
 
-      setTabStateContext(tabState);
-    },
-    [
-      setActiveTabId,
-      setLastSearchValue,
-      setLayoverPosition,
-      setSearchValue,
-      setShowLayover,
-      setShowMatches,
-      setTabStateContext,
-      setTotalMatchesCount,
-    ]
-  );
+    setTabStateContext(tabState);
+  }, []);
 
   const handleMessage = useCallback(
     async (
@@ -85,10 +73,13 @@ function Layover() {
           const { tabStore } = message.payload;
           if (tabStore) {
             await updateContextFromStore(tabStore);
+            console.log('showLayover', showLayover);
+            console.log(tabStore);
             sendResponse(true);
           }
 
-          return true;
+          // return true;
+          break;
         }
         case REMOVE_HIGHLIGHT_MATCHES:
           removeAllHighlightMatches();
@@ -146,6 +137,13 @@ function Layover() {
   useActiveTabChange();
   useRemoveAllHighlightMatches();
 
+  useEffect(() => {
+    return () => {
+      console.log(`showLayover changed to: ${showLayover}`);
+    };
+  }, [showLayover]);
+
+  // console.log(showLayover);
   return (
     <>
       {' '}

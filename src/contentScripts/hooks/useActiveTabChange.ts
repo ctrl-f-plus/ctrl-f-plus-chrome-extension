@@ -24,5 +24,5 @@ export default function useActiveTabChange() {
     // }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTabId, showMatches]);
+  }, [activeTabId]);
 }
