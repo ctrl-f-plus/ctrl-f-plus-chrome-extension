@@ -7,7 +7,7 @@ import {
   UPDATED_STORE,
   UPDATE_HIGHLIGHTS,
 } from '../../background/types/message.types';
-// import '../../tailwind.css';
+import '../../tailwind.css';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
@@ -55,6 +55,7 @@ function Layover() {
     const tabState = restoreHighlightSpans(xPathTabState);
 
     setTabStateContext(tabState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleMessage = useCallback(
@@ -73,12 +74,9 @@ function Layover() {
           const { tabStore } = message.payload;
           if (tabStore) {
             await updateContextFromStore(tabStore);
-            console.log('showLayover', showLayover);
-            console.log(tabStore);
             sendResponse(true);
           }
 
-          // return true;
           break;
         }
         case REMOVE_HIGHLIGHT_MATCHES:
@@ -137,13 +135,6 @@ function Layover() {
   useActiveTabChange();
   useRemoveAllHighlightMatches();
 
-  useEffect(() => {
-    return () => {
-      console.log(`showLayover changed to: ${showLayover}`);
-    };
-  }, [showLayover]);
-
-  // console.log(showLayover);
   return (
     <>
       {' '}

@@ -1,6 +1,6 @@
 // src/background/index.ts
 
-import startListeners from './listeners';
+import startListeners, { csLoaded } from './listeners';
 import store from './store/databaseStore';
 
 function updateStoreForTesting() {
@@ -17,5 +17,7 @@ store.init().then(() => {
 
   startListeners();
 
-  store.activeWindowStore.sendToContentScripts();
+  if (csLoaded) {
+    store.activeWindowStore.sendToContentScripts();
+  }
 });
