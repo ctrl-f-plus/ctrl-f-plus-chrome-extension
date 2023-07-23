@@ -24,6 +24,19 @@ import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
 import { ResponseCallback } from '../../shared/types/shared.types';
 import log from '../../shared/utils/logger';
+import { ErrorBoundary } from 'react-error-boundary';
+
+// @ts-ignore
+// function fallbackRender({ error, resetErrorBoundary }) {
+//   // Call resetErrorBoundary() to reset the error boundary and retry the render.
+//   alert('Ctrl-F Plus - Something went wrong please reload extension');
+//   return (
+//     <div role="alert">
+//       <p>Something went wrong:</p>
+//       <pre style={{ color: 'red' }}>{error.message}</pre>
+//     </div>
+//   );
+// }
 
 function Layover() {
   const {
@@ -143,11 +156,14 @@ function Layover() {
           <div className="font-open-sans ctrl-fixed ctrl-left-5 ctrl-top-10 ctrl-z-[9999] ctrl-w-screen">
             {' '}
             <DraggableContainer>
+              {/* <ErrorBoundary fallbackRender={fallbackRender}> */}
               <SearchInput focus={showLayover} />
+              {/* </ErrorBoundary> */}
             </DraggableContainer>
           </div>
         </div>
       )}
+      ;
     </>
   );
 }
