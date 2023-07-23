@@ -175,8 +175,8 @@ function SearchInput({ focus }: SearchInputProps) {
               type="button"
               id="previous-match-btn"
               data-testid="previous-match-btn"
-              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
-              disabled={localSearchValue === ''}
+              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white disabled:ctrl-ring-0 "
+              disabled={matchingCounts === '0/0'}
             >
               <span className="sr-only">Previous</span>
               <ChevronUpIcon className="btn-icon" aria-hidden="true" />
@@ -187,8 +187,8 @@ function SearchInput({ focus }: SearchInputProps) {
               type="button"
               id="next-match-btn"
               data-testid="next-match-btn"
-              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white"
-              disabled={localSearchValue === ''}
+              className="next-prev-btn active:ctrl-ring-2 active:ctrl-ring-white disabled:ctrl-ring-0 "
+              disabled={matchingCounts === '0/0'}
             >
               <span className="sr-only">Next</span>
               <ChevronDownIcon className="btn-icon" aria-hidden="true" />

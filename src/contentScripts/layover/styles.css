@@ -168,6 +168,20 @@
   border-radius: 9999px !important;
 }
 
+#ctrl-f-search-input .next-prev-btn:disabled {
+  color: #9ca3af !important;
+  /* pointer-events: none; */
+  cursor: default !important;
+}
+
+#ctrl-f-search-input .next-prev-btn:disabled:hover,
+#ctrl-f-search-input .next-prev-btn:disabled:active {
+  /* background-color: inherit; */
+  background-color: transparent !important;
+  color: #9ca3af !important;
+  cursor: pointer !important;
+}
+
 #ctrl-f-search-input .sr-only {
   position: absolute !important;
   width: 1px !important;
