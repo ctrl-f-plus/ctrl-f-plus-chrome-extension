@@ -1,7 +1,7 @@
 {
   "name": "Ctrl-F Plus - Multi-Tab Search",
-  "version": "1.0.0",
-  "description": "Find Text Across All Open Tabs",
+  "version": "1.0.2",
+  "description": "Find text across all open tabs! The Ctrl-F Plus browser extension enables cross-tab search functionality in your browser window 🔍",
   "scripts": {
     "start": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
     "build": "webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
