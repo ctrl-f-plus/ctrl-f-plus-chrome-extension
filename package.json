@@ -40,7 +40,6 @@
     "@babel/preset-env": "^7.22.4",
     "@babel/preset-react": "^7.22.3",
     "@babel/preset-typescript": "^7.21.5",
-    "@tailwindcss/forms": "^0.5.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/chrome": "^0.0.237",
@@ -82,6 +81,7 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
     "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.14",
     "clean-webpack-plugin": "^4.0.0",
