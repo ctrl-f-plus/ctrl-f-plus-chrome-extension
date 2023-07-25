@@ -5,3 +5,4 @@ npm-check
 
 
 - ADD nvm and .nvmrc note
+- searching for `?` bug
