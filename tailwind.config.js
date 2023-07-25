@@ -11,9 +11,9 @@ module.exports = {
       backgroundColor: ['disabled', 'group-hover'],
       textColor: ['disabled', 'group-hover'],
       opacity: ['disabled'],
-      fontFamily: {
-        'open-sans': ['Open Sans', 'sans-serif'],
-      },
+      // fontFamily: {
+      //   'open-sans': ['Open Sans', 'sans-serif'],
+      // },
     },
   },
   plugins: [],
