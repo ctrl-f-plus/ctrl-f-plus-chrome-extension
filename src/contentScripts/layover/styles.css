@@ -15,10 +15,8 @@
 
 #ctrl-f-search-input .overlay-wrapper {
   font-family: sans-serif !important;
-  /* font-family: 'Open Sans', sans-serif !important; */
   /* background-color: rgba(17, 24, 39, 0.9) !important; */
   border-radius: 6px !important;
-
   /* isolation: isolate !important; */
 }
 

@@ -153,7 +153,6 @@ function Layover() {
       {' '}
       {showLayover && (
         <div id="ctrl-f-plus-extension">
-          {/* font-open-sans */}
           <div className=" ctrl-fixed ctrl-left-5 ctrl-top-10 ctrl-z-[9999] ctrl-w-screen">
             {' '}
             <DraggableContainer>
