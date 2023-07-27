@@ -65,9 +65,12 @@ function Layover() {
     const { serializedTabState } = tabStore;
     const xPathTabState: XPathTabState =
       deserializeTabState(serializedTabState);
+    console.log('xPathTabState', xPathTabState);
     const tabState = restoreHighlightSpans(xPathTabState);
-
+    console.log(`tabStore: `, tabState);
+    console.log(`tabStateContext`, tabStateContext);
     setTabStateContext(tabState);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -106,6 +109,7 @@ function Layover() {
           }
 
           setTabStateContext(newState);
+          console.log('newState', newState);
 
           const serializedState = serializeTabState(newState);
 
