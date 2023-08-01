@@ -1,5 +1,6 @@
 // src/utils/matchUtils/highlightUtils.ts
 
+import Mark from 'mark.js';
 import { HIGHLIGHT_CLASS } from '../../../shared/utils/constants';
 import { TabState } from '../../types/tab.types';
 import createSpan from '../dom/createSpan';
@@ -111,18 +112,20 @@ export default function searchAndHighlight(
 ) {
   return new Promise<void>((resolve, reject) => {
     try {
-      const normalizedSearchValue = searchValue.replace(/\s+/g, ' ');
-      const searchValueWithSpaceOrNBSP = normalizedSearchValue
-        .split(' ')
-        .join('( |\\u00A0)');
-      const regex = new RegExp(searchValueWithSpaceOrNBSP, 'gi');
+      const instance = new Mark(document.body);
+      instance.mark(`${searchValue}`);
+      console.log(searchValue);
 
-      const textNodesToProcess = getAllTextNodesToProcess(regex);
-
-      textNodesToProcess.forEach((textNode) => {
-        processTextNode(textNode, regex, tabState);
-      });
-
+      // const normalizedSearchValue = searchValue.replace(/\s+/g, ' ');
+      // const searchValueWithSpaceOrNBSP = normalizedSearchValue
+      //   .split(' ')
+      //   .map((part) => part.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')) // escape special characters in each part
+      //   .join('\\s'); // Match any whitespace character
+      // const regex = new RegExp(searchValueWithSpaceOrNBSP, 'gi');
+      // const textNodesToProcess = getAllTextNodesToProcess(regex);
+      // textNodesToProcess.forEach((textNode) => {
+      //   processTextNode(textNode, regex, tabState);
+      // });
       resolve();
     } catch (error) {
       reject(error);

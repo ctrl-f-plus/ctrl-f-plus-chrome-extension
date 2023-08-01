@@ -1,4 +1,5 @@
 import { useCallback, useContext } from 'react';
+import Mark from 'mark.js';
 import { TabStore } from '../../background/types/Store.types';
 import {
   HIGHLIGHT,

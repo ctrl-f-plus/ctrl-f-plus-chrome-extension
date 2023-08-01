@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script> -->
+  <body>
+  <style>
+  body {
+    margin: 15px;
+  }
+
+  div.search span,
+  div.search input[name='keyword'] {
+    display: block;
+  }
+
+  div.search input[name='keyword'] {
+    margin-top: 4px;
+  }
+
+  div.panel {
+    margin-bottom: 15px;
+  }
+
+  div.panel .panel-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  mark {
+    padding: 0;
+  }
+</style>
+</head>
+
+
+<h2>
+  <a href="https://markjs.io/" target="_blank">mark.js</a> example with pure
+  JavaScript
+</h2>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Search</div>
+  <div class="panel-body">
+    <div class="search row">
+      <div class="col-xs-6">
+        <span>Type in a keyword:</span>
+        <input
+          type="text"
+          name="keyword"
+          class="form-control input-sm"
+          placeholder="Lorem ipsum..."
+        />
+      </div>
+      <div class="col-xs-6">
+        <span>Search options:</span>
+        <input
+          type="checkbox"
+          name="opt[]"
+          value="separateWordSearch"
+          checked
+        />
+        separate word search
+        <br />
+        <input type="checkbox" name="opt[]" value="diacritics" checked />
+        diacritics
+        <br />
+        <input type="checkbox" name="opt[]" value="debug" /> debug
+        <br />
+        <span
+          >There are a lot more
+          <a target="_blank" href="https://markjs.io/configurator.html"
+            >options</a
+          >!</span
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body context">
+    <p>
+      Lorem ipsum dolor sit āmet, consetetur sadipscing elitr, sed diam nonumy
+      eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+      voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+      clita kasd gubergren, nò sea takimata sanctus est Lorem ipsum dolor sit
+      amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+      nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
+      diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+      Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor
+      sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+      diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+      erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+      rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+      dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate
+      velit esse molestie çonsequat, vel illum dolore eu feugiat nulla facilisis
+      at vero eros et accumsan et iusto odio dignissim qui blandit prāesent
+      luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem
+      ipsum dolor sit amet,
+    </p>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>
+      <small
+        >Demo by
+        <a href="https://github.com/julmot" target="_blank"
+          >Julian Motz</a
+        ></small
+      >
+    </p>
+  </div>
+</div>
+
+</body>
+<script>
+  // var instance = new Mark(document.querySelector(".context"));
+  // instance.mark("Lorem ipsum");
+
+</script>
+</html>
