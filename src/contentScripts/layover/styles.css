@@ -42,13 +42,13 @@
   margin: 0px !important;
 }
 
-#ctrl-f-search-input .form-div {
+/* #ctrl-f-search-input .form-div {
   display: grid !important;
   position: relative !important;
   grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
   grid-column: span 3 / span 3 !important;
   gap: 0 !important;
-}
+} */
 
 #ctrl-f-search-input .mag {
   position: absolute !important;
@@ -62,7 +62,7 @@
   pointer-events: none !important;
   /* fill: #9ca3af !important; */
 }
-
+/*
 #ctrl-f-search-input .mag.placeholder {
   /* color: #9ca3af !important; */
   /* fill: none; */
@@ -72,7 +72,7 @@
 #ctrl-f-search-input .mag.active {
   /* display: hidden !important; */
   fill: none !important;
-}
+} */
 
 #ctrl-f-search-input .input-style {
   display: block !important;
@@ -117,9 +117,9 @@
   /* color: #ffffff !important; */
 }
 
-#ctrl-f-search-input .matching-counts.placeholder {
+/* #ctrl-f-search-input .matching-counts.placeholder {
   color: #9ca3af !important;
-}
+} */
 
 #ctrl-f-search-input .matching-counts.active {
   color: #ffffff !important;
@@ -135,7 +135,7 @@
   align-items: center !important;
 }
 
-#ctrl-f-search-input .divider-x {
+/* #ctrl-f-search-input .divider-x {
   padding-left: 0 !important;
   padding-right: 0 !important;
   margin-left: 0 !important;
@@ -144,23 +144,23 @@
   border-left-width: 1px !important;
   height: 28px !important;
   border-left-style: double !important;
-}
+} */
 
-#ctrl-f-search-input .btn-icon {
+/* #ctrl-f-search-input .btn-icon {
   height: 20px !important;
   width: 20px !important;
-}
+} */
 
-#ctrl-f-search-input .next-prev-btn {
+/* #ctrl-f-search-input .next-prev-btn {
   display: inline-flex !important;
   padding: 0.125rem !important;
   color: #ffffff !important;
   border-radius: 9999px !important;
-}
+} */
 
-#ctrl-f-search-input .next-prev-btn:hover {
+/* #ctrl-f-search-input .next-prev-btn:hover {
   background-color: #6b7280 !important;
-}
+} */
 
 #ctrl-f-search-input .next-prev-btn:active {
   border-radius: 9999px !important;
@@ -192,14 +192,14 @@
   borderwidth: 0 !important;
 }
 
-#ctrl-f-search-input .x-mark-btn {
+/* #ctrl-f-search-input .x-mark-btn {
   display: inline-flex !important;
   padding: 0.125rem !important;
   color: #ffffff !important;
   border-radius: 9999px !important;
-}
+} */
 
-#ctrl-f-search-input .x-mark-btn:hover {
+/* #ctrl-f-search-input .x-mark-btn:hover {
   background-color: #6b7280 !important;
   color: #f87171 !important;
-}
+} */
