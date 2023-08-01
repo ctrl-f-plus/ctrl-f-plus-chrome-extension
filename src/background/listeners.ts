@@ -86,7 +86,7 @@ export default function startListeners() {
         }
         return true;
       } catch (error) {
-        console.log('caught error');
+        console.log('caught error: ', error);
       }
     }
   );
