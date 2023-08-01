@@ -53,6 +53,7 @@ module.exports = (env) => ({
       // CSS/STYLE LOADER
       {
         test: /\.css$/i,
+        exclude: /\.shadow\.css$/,
         use: [
           'style-loader',
           {
@@ -63,6 +64,10 @@ module.exports = (env) => ({
           },
           'postcss-loader',
         ],
+      },
+      {
+        test: /\.shadow\.css$/,
+        use: 'raw-loader',
       },
 
       // Resource Loader (included in webpack)

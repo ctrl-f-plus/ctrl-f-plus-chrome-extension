@@ -6,7 +6,6 @@ import Draggable, {
   DraggableEventHandler,
 } from 'react-draggable';
 import { LayoverPosition } from '../../../shared/types/shared.types';
-import '../../../tailwind.css';
 import { LayoverContext } from '../../contexts/LayoverContext';
 import {
   UPDATE_LAYOVER_POSITION,
@@ -53,7 +52,7 @@ function DraggableContainer({
       onStop={handleDragStop}
     >
       <div
-        className="ctrl-absolute ctrl-w-[434px] ctrl-cursor-move ctrl-rounded-lg ctrl-shadow-lg ctrl-ring-1 ctrl-ring-white/10"
+        className="absolute w-[432px] cursor-move rounded-lg shadow-lg ring-1 ring-white/10"
         ref={nodeRef}
       >
         {children}

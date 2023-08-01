@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import { TabStore } from '../../background/types/Store.types';
 import {
   HIGHLIGHT,
@@ -7,7 +7,8 @@ import {
   UPDATED_STORE,
   UPDATE_HIGHLIGHTS,
 } from '../../background/types/message.types';
-import '../../tailwind.css';
+import { ResponseCallback } from '../../shared/types/shared.types';
+import log from '../../shared/utils/logger';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
@@ -22,21 +23,6 @@ import deserializeTabState from '../utils/serialization/deserializeTabState';
 import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
-import { ResponseCallback } from '../../shared/types/shared.types';
-import log from '../../shared/utils/logger';
-import { ErrorBoundary } from 'react-error-boundary';
-
-// @ts-ignore
-// function fallbackRender({ error, resetErrorBoundary }) {
-//   // Call resetErrorBoundary() to reset the error boundary and retry the render.
-//   alert('Ctrl-F Plus - Something went wrong please reload extension');
-//   return (
-//     <div role="alert">
-//       <p>Something went wrong:</p>
-//       <pre style={{ color: 'red' }}>{error.message}</pre>
-//     </div>
-//   );
-// }
 
 function Layover() {
   const {
@@ -153,17 +139,13 @@ function Layover() {
       {' '}
       {showLayover && (
         <div id="ctrl-f-plus-extension">
-          <div className=" ctrl-fixed ctrl-left-5 ctrl-top-10 ctrl-z-[9999] ctrl-w-screen">
-            {' '}
+          <div className="fixed left-5 top-10 z-[9999] h-0 w-0 bg-red-500">
             <DraggableContainer>
-              {/* <ErrorBoundary fallbackRender={fallbackRender}> */}
               <SearchInput focus={showLayover} />
-              {/* </ErrorBoundary> */}
             </DraggableContainer>
           </div>
         </div>
       )}
-      ;
     </>
   );
 }
