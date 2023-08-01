@@ -26,13 +26,14 @@ export let csLoaded = false;
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-    // console.log('installed');
-    // console.log(reason);
+    console.log('installed');
+    console.log(reason);
     if (reason === 'install') {
       chrome.tabs.create({
-        url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
+        url: 'https://ctrl-f.plus/',
       });
     }
+
     clearLocalStorage();
   });
 
@@ -245,6 +246,18 @@ export default function startListeners() {
         console.log(activeWindowStore);
         activeWindowStore.toggleShowFields();
 
+        // activeWindowStore.sendToContentScripts();
+        // activeWindowStore.resetPartialStore();
+        // activeWindowStore.update({
+        //   searchValue: activeWindowStore.lastSearchValue,
+        //   lastSearchValue: activeWindowStore.lastSearchValue,
+        // });
+
+        if (activeWindowStore.lastSearchValue === '') {
+          activeWindowStore.sendToContentScripts();
+          return;
+        }
+        await handleGetAllMatches();
         activeWindowStore.sendToContentScripts();
       }
     } catch (error) {

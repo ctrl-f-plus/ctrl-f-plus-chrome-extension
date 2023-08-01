@@ -1,4 +1,7 @@
 /* src/contentScripts/layover/styles.css */
+#ctrl-f-search-input {
+  all: unset !important;
+}
 
 #ctrl-f-search-input button,
 #ctrl-f-search-input input[type='submit'],
