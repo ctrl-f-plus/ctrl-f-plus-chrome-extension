@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext } from 'react';
 import { TabStore } from '../../background/types/Store.types';
 import {
   HIGHLIGHT,
@@ -7,6 +7,8 @@ import {
   UPDATED_STORE,
   UPDATE_HIGHLIGHTS,
 } from '../../background/types/message.types';
+import { ResponseCallback } from '../../shared/types/shared.types';
+import log from '../../shared/utils/logger';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
@@ -21,8 +23,6 @@ import deserializeTabState from '../utils/serialization/deserializeTabState';
 import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
-import { ResponseCallback } from '../../shared/types/shared.types';
-import log from '../../shared/utils/logger';
 
 function Layover() {
   const {

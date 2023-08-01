@@ -4,7 +4,7 @@
   "description": "Find text across all open tabs! The Ctrl-F Plus browser extension enables cross-tab search functionality in your browser window 🔍",
   "scripts": {
     "start": "npm run build:css && webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
-    "build": "webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
+    "build": "npm run build:css && webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
     "build:css": "postcss src/tailwind.css -o src/contentScripts/layover/tailwindStyles.shadow.css",
     "build:test:e2e": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=true",
     "test": "jest --verbose --config jest.config.js",
