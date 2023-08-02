@@ -32,8 +32,8 @@ export const TabStateContext = createContext<TabStateContextData>({
     currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
-    // globalMatchIdxStart: undefined,
-    globalMatchIdxStart: -1,
+    globalMatchIdxStart: undefined,
+    // globalMatchIdxStart: -1,
   },
   setTabStateContext: () => {},
 });

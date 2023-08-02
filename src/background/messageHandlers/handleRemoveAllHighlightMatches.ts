@@ -7,23 +7,25 @@ import {
 } from '../types/message.types';
 import { queryCurrentWindowTabs } from '../utils/chromeApiUtils';
 import sendMessageToTab from '../utils/sendMessageToContent';
+import store from '../store/databaseStore';
 
 // FIXME: Create a ts type of sendResponse and update throughout codebase
 export default async function handleRemoveAllHighlightMatches(
   sendResponse: ResponseCallback
 ) {
-  const tabs = await queryCurrentWindowTabs();
+  // const tabs = await queryCurrentWindowTabs();
+  const tabIds = Object.keys(store.activeWindowStore.tabStores);
 
-  const tabPromises = tabs.map((tab) => {
-    if (tab.id) {
+  const tabPromises = tabIds.map((tabId) => {
+    if (tabId) {
       const msg: RemoveHighlightMatchesMsg = {
         async: false,
         type: REMOVE_HIGHLIGHT_MATCHES,
         payload: {
-          tabId: tab.id,
+          tabId: Number(tabId),
         },
       };
-      return sendMessageToTab<RemoveHighlightMatchesMsg>(tab.id, msg);
+      return sendMessageToTab<RemoveHighlightMatchesMsg>(Number(tabId), msg);
     }
     return Promise.resolve(null);
   });

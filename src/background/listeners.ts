@@ -66,9 +66,9 @@ export default function startListeners() {
     // console.log('installed');
     console.log(`Installed Reason: `, reason);
     // if (reason === 'install') {
-    chrome.tabs.create({
-      url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
-    });
+    // chrome.tabs.create({
+    //   url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
+    // });
     // }
     clearLocalStorage();
   });
@@ -88,14 +88,16 @@ export default function startListeners() {
               break;
             }
 
-            const serializedTabState = payload.serializedState;
-            serializedTabState.tabId = sender.tab.id;
-            activeWindowStore.addTabToTabStores(
-              sender.tab.id,
-              serializedTabState
-            );
-            // break;
-            return false;
+            activeWindowStore.tabStores[sender.tab.id] = payload;
+
+            // const serializedTabState = payload.serializedState;
+            // serializedTabState.tabId = sender.tab.id;
+            // activeWindowStore.addTabToTabStores(
+            //   sender.tab.id,
+            //   serializedTabState
+            // );
+            break;
+            // return false;
           }
           case UPDATED_TAB_STATE:
             ensureActiveWindowStore();
@@ -115,6 +117,7 @@ export default function startListeners() {
             });
 
             if (payload.searchValue === '') {
+              console.log(store);
               activeWindowStore.sendToContentScripts();
               return undefined;
             }

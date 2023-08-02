@@ -158,7 +158,8 @@ export const createWindowStore = (): WindowStore => {
           currentIndex: 0,
           matchesCount: 0,
           serializedMatches: '',
-          globalMatchIdxStart: -1,
+          // globalMatchIdxStart: -1,
+          globalMatchIdxStart: undefined,
         };
       }
 
