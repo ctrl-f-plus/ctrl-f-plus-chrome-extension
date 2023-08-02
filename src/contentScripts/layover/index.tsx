@@ -21,11 +21,11 @@ shadowRoot.appendChild(style);
 const reactRoot = createRoot(root);
 
 reactRoot.render(
-  <React.StrictMode>
-    <TabStateContextProvider>
-      <LayoverProvider>
-        <Layover />
-      </LayoverProvider>
-    </TabStateContextProvider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <TabStateContextProvider>
+    <LayoverProvider>
+      <Layover />
+    </LayoverProvider>
+  </TabStateContextProvider>
+  // </React.StrictMode>
 );

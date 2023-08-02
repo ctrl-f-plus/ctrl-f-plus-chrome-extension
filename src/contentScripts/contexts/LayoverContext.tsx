@@ -1,9 +1,14 @@
-import { createContext, useMemo } from 'react';
+import { createContext, useEffect, useMemo } from 'react';
 import useLayoverHandler from '../hooks/useLayoverHandler';
 import {
   LayoverContextData,
   LayoverProviderProps,
 } from '../types/layoverContext.types';
+import {
+  CONTENT_SCRIPT_INITIALIZED,
+  ContentScriptInitializedMsg,
+} from '../types/toBackgroundMessage.types';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
 
 export const LayoverContext = createContext<LayoverContextData>({
   showLayover: false,

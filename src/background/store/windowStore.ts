@@ -4,6 +4,7 @@ import { UPDATED_STORE, UpdatedStoreMsg } from '../types/message.types';
 import { LayoverPosition } from '../../shared/types/shared.types';
 import {
   SerializedTabState,
+  TabId,
   ValidTabId,
 } from '../../contentScripts/types/tab.types';
 import { SharedStore, TabStore } from '../types/Store.types';
@@ -22,6 +23,10 @@ export interface WindowStore extends SharedStore {
   tabStores: Record<ValidTabId, BasicTabState>;
 
   resetPartialStore: () => void;
+  addTabToTabStores: (
+    tabId: ValidTabId,
+    serializedTabState: SerializedTabState
+  ) => void;
   update: (updates: Partial<WindowStore>) => void;
   updateLayoverPosition: (newPosition: LayoverPosition) => void;
   setTotalTabsCount: () => void;
@@ -32,7 +37,6 @@ export interface WindowStore extends SharedStore {
   setActiveTabId: (activeTabId: number) => void;
   createTabStore: (tabId: ValidTabId) => TabStore;
   sendToContentScripts: () => Promise<(boolean | Error)[]>;
-  sendToExistingContentScripts: () => Promise<(boolean | Error)[]>;
 }
 
 export const createWindowStore = (): WindowStore => {
@@ -66,6 +70,17 @@ export const createWindowStore = (): WindowStore => {
           }
         });
       }
+    },
+
+    addTabToTabStores(tabId, serializedTabState): void {
+      // if (Object.keys(this.tabStores).includes(tabId.toString())) {
+      //   return;
+      // }
+
+      this.tabStores[tabId] = {
+        tabId,
+        serializedTabState,
+      };
     },
 
     resetPartialStore(): void {
@@ -145,41 +160,39 @@ export const createWindowStore = (): WindowStore => {
     },
 
     // TODO: rename to sendToAllTabs
+    // async sendToContentScripts(): Promise<(boolean | Error)[]> {
+    //   const currentWindowTabs = await queryCurrentWindowTabs();
+
+    //   console.log(Object.keys(this.tabStores));
+
+    //   const validatedTabIds = currentWindowTabs
+    //     .map((tab) => tab.id)
+    //     .filter((id): id is ValidTabId => id !== undefined);
+
+    //   console.log(validatedTabIds);
+
+    //   const promises = (validatedTabIds || []).map((tabId) => {
+    //     const tabStore = this.createTabStore(tabId);
+
+    //     return sendMessageToTab<UpdatedStoreMsg>(tabId, {
+    //       async: true,
+    //       type: UPDATED_STORE,
+    //       payload: {
+    //         tabId,
+    //         tabStore,
+    //       },
+    //     });
+    //   });
+
+    //   return Promise.all(promises);
+    // },
+
     async sendToContentScripts(): Promise<(boolean | Error)[]> {
-      const currentWindowTabs = await queryCurrentWindowTabs();
-
-      console.log(Object.keys(this.tabStores));
-
-      const validatedTabIds = currentWindowTabs
-        .map((tab) => tab.id)
-        .filter((id): id is ValidTabId => id !== undefined);
-
-      console.log(validatedTabIds);
-
-      const promises = (validatedTabIds || []).map((tabId) => {
-        const tabStore = this.createTabStore(tabId);
-
-        return sendMessageToTab<UpdatedStoreMsg>(tabId, {
-          async: true,
-          type: UPDATED_STORE,
-          payload: {
-            tabId,
-            tabStore,
-          },
-        });
-      });
-
-      return Promise.all(promises);
-    },
-
-    async sendToExistingContentScripts(): Promise<(boolean | Error)[]> {
       const stringTabIds = Object.keys(this.tabStores);
 
       const validatedTabIds = stringTabIds.map((id) =>
         toValidTabId(Number(id))
       );
-
-      console.log(validatedTabIds);
 
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);

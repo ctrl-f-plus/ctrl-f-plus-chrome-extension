@@ -13,6 +13,7 @@ export default async function handleUpdateTabStates(
   sendResponse: ResponseCallback
 ) {
   const { activeWindowStore } = store;
+
   const {
     serializedState: {
       currentIndex,

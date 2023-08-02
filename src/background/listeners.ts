@@ -1,6 +1,8 @@
+/* eslint-disable no-fallthrough */
 // src/background/chromeListeners.ts
 
 import {
+  CONTENT_SCRIPT_INITIALIZED,
   GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
   REMOVE_ALL_STYLES,
@@ -22,32 +24,81 @@ import { getActiveTabId } from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 
 // eslint-disable-next-line import/no-mutable-exports
-export let csLoaded = false;
+// export let csLoaded = false;
+
+function ensureActiveWindowStore() {
+  const { activeWindowStore } = store;
+
+  if (activeWindowStore === undefined) {
+    store.activeWindowStore = createWindowStore();
+  }
+
+  return activeWindowStore;
+}
+
+function isStoreDefined() {
+  if (store === undefined) {
+    console.log('store undefined');
+    return false;
+  }
+
+  return true;
+}
+
+// function errorHandler(
+//   callback: (windowId: number) => Promise<void>
+// ): (windowId: number) => Promise<void> {
+//   return async (windowId: number) => {
+//     try {
+//       if (!isStoreDefined()) {
+//         return;
+//       }
+
+//       await callback(windowId);
+//     } catch (error) {
+//       console.error(`Error occurred: ${error}`);
+//     }
+//   };
+// }
 
 export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     // console.log('installed');
-    // console.log(reason);
-    if (reason === 'install') {
-      chrome.tabs.create({
-        url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
-      });
-    }
+    console.log(`Installed Reason: `, reason);
+    // if (reason === 'install') {
+    chrome.tabs.create({
+      url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
+    });
+    // }
     clearLocalStorage();
   });
 
   chrome.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
+      console.log('chrome.runtime.onMessage.addListener started');
       try {
         log('Received message:', message, ' \n Store: ', store);
 
         const { type, payload } = message;
-        const { activeWindowStore } = store;
-        if (typeof activeWindowStore === undefined) {
-          console.error('activeWindowStore is undefined!');
-        }
+        const activeWindowStore = ensureActiveWindowStore();
 
         switch (type) {
+          case CONTENT_SCRIPT_INITIALIZED:
+            if (!sender.tab?.id) {
+              break;
+            }
+            // activeWindowStore.tabStores[sender.tab.id] = payload;
+
+            activeWindowStore.addTabToTabStores(
+              sender.tab.id,
+              // payload.serializedState
+              payload.serializedState
+            );
+            break;
+          case UPDATED_TAB_STATE:
+            ensureActiveWindowStore();
+            await handleUpdateTabStates(payload, sendResponse);
+            break;
           case REMOVE_ALL_HIGHLIGHT_MATCHES:
             await clearAllStoredTabs();
             await handleRemoveAllHighlightMatches(sendResponse);
@@ -68,9 +119,6 @@ export default function startListeners() {
             await handleGetAllMatches();
             activeWindowStore.sendToContentScripts();
             return true;
-          case UPDATED_TAB_STATE:
-            await handleUpdateTabStates(payload, sendResponse);
-            break;
           case SWITCH_TAB:
             await handleSwitchTab(payload.serializedState, payload.direction);
             break;
@@ -84,6 +132,7 @@ export default function startListeners() {
           default:
             break;
         }
+
         return true;
       } catch (error) {
         console.log('caught error: ', error);
@@ -91,100 +140,77 @@ export default function startListeners() {
     }
   );
 
-  chrome.windows.onFocusChanged.addListener(async (windowId) => {
-    try {
-      if (windowId === chrome.windows.WINDOW_ID_NONE) {
-        return;
-      }
-
-      if (store === undefined) {
-        console.log('omg no store - onFocusChange');
-        return;
-      }
-
-      store.setLastFocusedWindowId(windowId);
-
-      const { activeWindowStore } = store;
-      if (activeWindowStore === undefined) {
-        store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onFocusChange');
-        return;
-      }
-      const activeTabId = await getActiveTabId();
-      activeWindowStore.setActiveTabId(activeTabId);
-
-      activeWindowStore.sendToContentScripts();
-
-      chrome.windows.get(windowId, (focusedWindow) => {
-        if (focusedWindow.type === 'normal') {
-          activeWindowStore.setTotalTabsCount();
-          activeWindowStore.setUpdatedTabsCount(0);
+  chrome.windows.onFocusChanged.addListener(
+    // errorHandler(
+    async (windowId: number) => {
+      try {
+        if (windowId === chrome.windows.WINDOW_ID_NONE) {
+          return;
         }
-      });
-    } catch (error) {
-      console.log(error);
+
+        if (!isStoreDefined()) {
+          return;
+        }
+
+        store.setLastFocusedWindowId(windowId);
+
+        const activeWindowStore = ensureActiveWindowStore();
+
+        const activeTabId = await getActiveTabId();
+        activeWindowStore.setActiveTabId(activeTabId);
+        activeWindowStore.sendToContentScripts();
+
+        chrome.windows.get(windowId, (focusedWindow) => {
+          if (focusedWindow.type === 'normal') {
+            activeWindowStore.setTotalTabsCount();
+            activeWindowStore.setUpdatedTabsCount(0);
+          }
+        });
+      } catch (error) {
+        console.error(error);
+      }
     }
-  });
+    // )
+  );
 
   chrome.tabs.onCreated.addListener(() => {
     try {
-      if (store === undefined) {
-        console.log('omg no store - onCreated');
+      if (!isStoreDefined()) {
         return;
       }
 
-      const { activeWindowStore } = store;
-      if (activeWindowStore === undefined) {
-        store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onCreated');
-        return;
-      }
+      const activeWindowStore = ensureActiveWindowStore();
       activeWindowStore.setTotalTabsCount();
-
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
   chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     try {
-      if (store === undefined) {
-        console.log('omg no store - onActivated');
+      if (!isStoreDefined()) {
         return;
       }
 
-      const { activeWindowStore } = store;
-      if (activeWindowStore === undefined) {
-        store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onActivated');
-        return;
-      }
-
+      const activeWindowStore = ensureActiveWindowStore();
       activeWindowStore.setActiveTabId(tabId);
 
       if (activeWindowStore.showLayover) {
         activeWindowStore.sendToContentScripts();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
   chrome.tabs.onUpdated.addListener(async () => {
     try {
-      if (store === undefined) {
-        console.log('omg no store - onActivated');
+      if (!isStoreDefined()) {
         return;
       }
 
-      const { activeWindowStore } = store;
-      csLoaded = true;
-      if (activeWindowStore === undefined) {
-        store.activeWindowStore = createWindowStore();
-        console.log('aint got no store');
-        return;
-      }
+      const activeWindowStore = ensureActiveWindowStore();
 
       if (!activeWindowStore.showMatches) {
         return;
@@ -192,63 +218,53 @@ export default function startListeners() {
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
   chrome.tabs.onRemoved.addListener(() => {
     try {
-      if (store === undefined) {
-        console.log('omg no store - onActivated');
+      if (!isStoreDefined()) {
         return;
       }
-      const { activeWindowStore } = store;
-      activeWindowStore.setTotalTabsCount();
 
+      const activeWindowStore = ensureActiveWindowStore();
+      activeWindowStore.setTotalTabsCount();
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 
   chrome.action.onClicked.addListener(() => {
     try {
-      if (store === undefined) {
-        console.log('omg no store - onActivated');
+      if (!isStoreDefined()) {
         return;
       }
-      const { activeWindowStore } = store;
-      console.log(activeWindowStore);
+
+      // const { activeWindowStore } = store;
+      const activeWindowStore = ensureActiveWindowStore();
       activeWindowStore.toggleShowFields();
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log('Caught chrome.action.onClicked.addListener Error');
+      console.error(error);
     }
   });
 
   chrome.commands.onCommand.addListener(async (command) => {
     try {
       if (command === 'toggle_search_layover') {
-        if (store === undefined) {
-          console.log('omg no store - onActivated');
+        if (!isStoreDefined()) {
           return;
         }
 
-        const { activeWindowStore } = store;
-        if (activeWindowStore === undefined) {
-          store.activeWindowStore = createWindowStore();
-          console.log('aint got no store1');
-          return;
-        }
-
-        console.log(activeWindowStore);
+        const activeWindowStore = ensureActiveWindowStore();
         activeWindowStore.toggleShowFields();
-
         activeWindowStore.sendToContentScripts();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   });
 }

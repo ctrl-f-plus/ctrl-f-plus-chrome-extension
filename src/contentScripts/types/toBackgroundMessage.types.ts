@@ -8,6 +8,7 @@ interface BaseMessage {
   payload?: unknown;
 }
 
+export const CONTENT_SCRIPT_INITIALIZED = 'CONTENT_SCRIPT_INITIALIZED' as const;
 export const SWITCH_TAB = 'SWITCH_TAB' as const;
 export const REMOVE_ALL_HIGHLIGHT_MATCHES =
   'REMOVE_ALL_HIGHLIGHT_MATCHES' as const;
@@ -15,6 +16,16 @@ export const GET_ALL_MATCHES = 'GET_ALL_MATCHES' as const;
 export const REMOVE_ALL_STYLES = 'REMOVE_ALL_STYLES' as const;
 export const UPDATED_TAB_STATE = 'UPDATED_TAB_STATE' as const;
 export const UPDATE_LAYOVER_POSITION = 'UPDATE_LAYOVER_POSITION' as const;
+
+export interface ContentScriptInitializedMsg extends BaseMessage {
+  type: typeof CONTENT_SCRIPT_INITIALIZED;
+  payload: { serializedState: SerializedTabState };
+}
+
+export interface UpdatedTabStateMsg extends BaseMessage {
+  type: typeof UPDATED_TAB_STATE;
+  payload: { serializedState: SerializedTabState };
+}
 
 export interface GetAllMatchesMsg extends BaseMessage {
   type: typeof GET_ALL_MATCHES;
@@ -37,11 +48,6 @@ export interface SwitchTabMsg extends BaseMessage {
   };
 }
 
-export interface UpdatedTabStateMsg extends BaseMessage {
-  type: typeof UPDATED_TAB_STATE;
-  payload: { serializedState: SerializedTabState };
-}
-
 export interface UpdateLayoverPositionMsg extends BaseMessage {
   type: typeof UPDATE_LAYOVER_POSITION;
   payload: {
@@ -50,6 +56,7 @@ export interface UpdateLayoverPositionMsg extends BaseMessage {
 }
 
 export type ToBackgroundMessage =
+  | ContentScriptInitializedMsg
   | GetAllMatchesMsg
   | RemoveAllHighlightMatchesMsg
   | RemoveAllStylesMsg

@@ -17,7 +17,7 @@ store.init().then(() => {
 
   startListeners();
 
-  if (csLoaded) {
-    store.activeWindowStore.sendToContentScripts();
-  }
+  // if (csLoaded) {
+  //   store.activeWindowStore.sendToContentScripts();
+  // }
 });

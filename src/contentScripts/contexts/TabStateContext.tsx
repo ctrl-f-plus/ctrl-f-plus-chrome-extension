@@ -1,8 +1,14 @@
 // src/contexts/TabStateContext.tsx
 
-import { ReactNode, createContext, useMemo } from 'react';
+import { ReactNode, createContext, useEffect, useMemo } from 'react';
 import useLayoverHandler from '../hooks/useLayoverHandler';
-import { TabState } from '../types/tab.types';
+import { SerializedTabState, TabState } from '../types/tab.types';
+import {
+  CONTENT_SCRIPT_INITIALIZED,
+  ContentScriptInitializedMsg,
+} from '../types/toBackgroundMessage.types';
+import sendMessageToBackground from '../utils/messaging/sendMessageToBackground';
+import serializeTabState from '../utils/serialization/serializeTabState';
 
 export interface TabStateContextData {
   tabStateContext: TabState;
@@ -41,6 +47,18 @@ export function TabStateContextProvider({
     // [tabStateContext, setTabStateContext]
     [tabStateContext]
   );
+
+  useEffect(() => {
+    console.log(contextValue);
+
+    const serializedState: SerializedTabState =
+      serializeTabState(tabStateContext);
+
+    sendMessageToBackground<ContentScriptInitializedMsg>({
+      type: CONTENT_SCRIPT_INITIALIZED,
+      payload: { serializedState },
+    });
+  }, []);
 
   return (
     <TabStateContext.Provider value={contextValue}>
