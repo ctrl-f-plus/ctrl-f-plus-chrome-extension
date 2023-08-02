@@ -98,7 +98,7 @@ function SearchInput({ focus }: SearchInputProps) {
   }, [totalMatchesCount, tabStateContext, showLayover, showMatches]);
 
   return (
-    <div className="h-[44px] w-[432px] rounded-[9px] bg-[#121212]/90 px-[16px] font-sans">
+    <div className="h-[44px] w-[432px] rounded-[9px] bg-cod-gray/90 px-[16px]  ">
       <form
         onSubmit={handleSearchSubmit}
         className="flex h-full w-full flex-row items-center gap-[12px]"
@@ -110,7 +110,7 @@ function SearchInput({ focus }: SearchInputProps) {
           value={localSearchValue}
           onChange={handleInputChange}
           // grow
-          className="w-full shrink bg-transparent text-white placeholder:text-[#9ca3af] focus:outline-none"
+          className="leading-6-pp w-full shrink bg-transparent font-sans text-base-pp text-white placeholder:text-gray-400 focus:outline-none"
           placeholder="Find on page"
         />
 
@@ -123,9 +123,9 @@ function SearchInput({ focus }: SearchInputProps) {
           <div className="pointer-events-none flex grow">
             <div
               ref={matchingCountsRef}
-              className={`${
+              className={`leading-6-pp font-sans text-base-pp ${
                 matchingCounts === '0/0' || localSearchValue !== lastSearchValue
-                  ? 'text-[#9ca3af]'
+                  ? 'text-gray-400'
                   : 'text-white'
               }
 
@@ -136,8 +136,8 @@ function SearchInput({ focus }: SearchInputProps) {
           </div>
 
           <div
-            // border-[#6b7280]
-            className="border-w ml-0 mr-0 h-[28px] border-l border-[#9ca3af] pl-0 pr-0"
+            // border-gray-500
+            className="border-w ml-0 mr-0 h-[28px] border-l border-gray-400 pl-0 pr-0"
           />
 
           <button
@@ -145,7 +145,7 @@ function SearchInput({ focus }: SearchInputProps) {
             type="button"
             id="previous-match-btn"
             data-testid="previous-match-btn"
-            className="inline-flex rounded-full p-[2px] text-white hover:bg-[#6b7280] active:ring-2 active:ring-white disabled:cursor-default disabled:text-[#9ca3af] disabled:ring-0 disabled:hover:bg-transparent"
+            className="inline-flex rounded-full p-[2px] text-white hover:bg-gray-500 active:ring-2 active:ring-white disabled:cursor-default disabled:text-gray-400 disabled:ring-0 disabled:hover:bg-transparent"
             disabled={matchingCounts === '0/0'}
           >
             <span className="sr-only">Previous</span>
@@ -157,7 +157,7 @@ function SearchInput({ focus }: SearchInputProps) {
             type="button"
             id="next-match-btn"
             data-testid="next-match-btn"
-            className="inline-flex rounded-full p-[2px] text-white hover:bg-[#6b7280] active:ring-2 active:ring-white disabled:cursor-default disabled:text-[#9ca3af] disabled:ring-0 disabled:hover:bg-transparent"
+            className="inline-flex rounded-full p-[2px] text-white hover:bg-gray-500 active:ring-2 active:ring-white disabled:cursor-default disabled:text-gray-400 disabled:ring-0 disabled:hover:bg-transparent"
             disabled={matchingCounts === '0/0'}
           >
             <span className="sr-only">Next</span>
@@ -170,11 +170,11 @@ function SearchInput({ focus }: SearchInputProps) {
             id="close-layover-btn"
             data-testid="close-layover-btn"
             // active:bg-[#ffffff]
-            className="inline-flex rounded-full p-[2px] text-white hover:bg-[#6b7280] focus:ring-2 focus:ring-[#FF6960] active:ring-2 active:ring-[#FF6960]"
+            className="inline-flex rounded-full p-[2px] text-white hover:bg-gray-500 focus:ring-2 focus:ring-bittersweet active:ring-2 active:ring-bittersweet"
           >
             <span className="sr-only">Dismiss</span>
             <XMarkIcon
-              className="h-[20px] w-[20px] active:text-[#FF6960]"
+              className="h-[20px] w-[20px] active:text-bittersweet"
               aria-hidden="true"
             />
           </button>

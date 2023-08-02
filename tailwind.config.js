@@ -18,12 +18,12 @@
 // };
 
 module.exports = {
-  // purge: false,
+  // darkMode: 'class',
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   // safelist: [
   //   {
   //     pattern:
-  //       /bg-(red|green|blue|purple)-(100|200|300|400|500|600|700|800|900)/,
+  //       /bg-(gray|red|green|blue|purple|)-(100|200|300|400|500|600|700|800|900)/,
   //   },
   //   'flex-row',
   //   'flex-row-reverse',
@@ -54,7 +54,45 @@ module.exports = {
   //   'hidden',
   // ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        'base-pp': '16px',
+      },
+      lineHeight: {
+        'leading-6-pp': '24px',
+      },
+
+      colors: {
+        bittersweet: {
+          DEFAULT: '#ff6960',
+          50: '#fff0f0',
+          100: '#ffe2e0',
+          200: '#ffc5c2',
+          300: '#ffa39e',
+          400: '#ff8680',
+          500: '#ff6960',
+          600: '#ff251a',
+          700: '#d10a00',
+          800: '#8f0700',
+          900: '#470400',
+          950: '#240200',
+        },
+        'cod-gray': {
+          DEFAULT: '#121212',
+          50: '#ebebeb',
+          100: '#d9d9d9',
+          200: '#b0b0b0',
+          300: '#8a8a8a',
+          400: '#616161',
+          500: '#3b3b3b',
+          600: '#121212',
+          700: '#0d0d0d',
+          800: '#0a0a0a',
+          900: '#050505',
+          950: '#030303',
+        },
+      },
+    },
   },
   plugins: [],
   important: true,

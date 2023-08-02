@@ -1,3 +1,5 @@
 dist
 node_modules
 .tmp
+
+src/contentScripts/layover/tailwindStyles.shadow.css
