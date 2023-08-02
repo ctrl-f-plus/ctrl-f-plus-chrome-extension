@@ -94,7 +94,8 @@ export default function startListeners() {
               sender.tab.id,
               serializedTabState
             );
-            break;
+            // break;
+            return false;
           }
           case UPDATED_TAB_STATE:
             ensureActiveWindowStore();

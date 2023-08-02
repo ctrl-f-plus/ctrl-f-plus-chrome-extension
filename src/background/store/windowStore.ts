@@ -79,8 +79,24 @@ export const createWindowStore = (): WindowStore => {
 
       this.tabStores[tabId] = {
         tabId,
-        serializedTabState,
+        serializedTabState: {
+          tabId,
+          currentIndex: 0,
+          matchesCount: 0,
+          serializedMatches: '',
+          globalMatchIdxStart: -1,
+        },
       };
+      // if (serializedTabState === undefined) {
+      // serializedTabState = {
+      //   tabId,
+      //   currentIndex: 0,
+      //   matchesCount: 0,
+      //   serializedMatches: '',
+      //   // globalMatchIdxStart: -1,
+      //   globalMatchIdxStart: undefined,
+      // };
+      // }
     },
 
     resetPartialStore(): void {
