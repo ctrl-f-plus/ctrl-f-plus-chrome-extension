@@ -1,6 +1,6 @@
 // src/contentScripts/hooks/useLayoverHandler.ts
 
-import { useReducer } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 
 import { LayoverPosition } from '../../shared/types/shared.types';
 import {
@@ -9,6 +9,7 @@ import {
   LayoverState,
 } from '../types/layoverContext.types';
 import { TabId, TabState } from '../types/tab.types';
+import { TabStateContext } from '../contexts/TabStateContext';
 
 const initialState: LayoverState = {
   showLayover: false,
@@ -24,7 +25,8 @@ const initialState: LayoverState = {
     currentIndex: 0,
     matchesCount: 0,
     matchesObj: [],
-    globalMatchIdxStart: undefined,
+    // globalMatchIdxStart: undefined,
+    globalMatchIdxStart: -1,
   },
 };
 

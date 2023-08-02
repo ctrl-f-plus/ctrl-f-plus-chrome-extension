@@ -83,18 +83,19 @@ export default function startListeners() {
         const activeWindowStore = ensureActiveWindowStore();
 
         switch (type) {
-          case CONTENT_SCRIPT_INITIALIZED:
+          case CONTENT_SCRIPT_INITIALIZED: {
             if (!sender.tab?.id) {
               break;
             }
-            // activeWindowStore.tabStores[sender.tab.id] = payload;
 
+            const serializedTabState = payload.serializedState;
+            serializedTabState.tabId = sender.tab.id;
             activeWindowStore.addTabToTabStores(
               sender.tab.id,
-              // payload.serializedState
-              payload.serializedState
+              serializedTabState
             );
             break;
+          }
           case UPDATED_TAB_STATE:
             ensureActiveWindowStore();
             await handleUpdateTabStates(payload, sendResponse);

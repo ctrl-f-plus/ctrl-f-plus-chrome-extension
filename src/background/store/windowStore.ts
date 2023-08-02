@@ -73,9 +73,9 @@ export const createWindowStore = (): WindowStore => {
     },
 
     addTabToTabStores(tabId, serializedTabState): void {
-      // if (Object.keys(this.tabStores).includes(tabId.toString())) {
-      //   return;
-      // }
+      if (Object.keys(this.tabStores).includes(tabId.toString())) {
+        return;
+      }
 
       this.tabStores[tabId] = {
         tabId,

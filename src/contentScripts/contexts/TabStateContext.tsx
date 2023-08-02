@@ -32,7 +32,8 @@ export const TabStateContext = createContext<TabStateContextData>({
     currentIndex: 0,
     matchesCount: undefined,
     matchesObj: [],
-    globalMatchIdxStart: undefined,
+    // globalMatchIdxStart: undefined,
+    globalMatchIdxStart: -1,
   },
   setTabStateContext: () => {},
 });
@@ -50,6 +51,7 @@ export function TabStateContextProvider({
 
   useEffect(() => {
     console.log(contextValue);
+    console.log(tabStateContext);
 
     const serializedState: SerializedTabState =
       serializeTabState(tabStateContext);

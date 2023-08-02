@@ -76,7 +76,7 @@ export default async function handleSwitchTab(
 
   chrome.tabs.update(targetTabId, { active: true });
 
-  await activeWindowStore.sendToExistingContentScripts();
+  await activeWindowStore.sendToContentScripts();
   const activeTabId = toValidTabId(await getActiveTabId());
   const { newSerializedState } = await sendMessageToTab<UpdateHighlightsMsg>(
     activeTabId,
