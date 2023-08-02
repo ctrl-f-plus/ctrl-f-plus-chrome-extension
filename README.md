@@ -2,11 +2,9 @@
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
 
-<div align="center">
-  <a href="https://youtu.be/b1_lsbYvx5M">
-    <img src="http://img.youtube.com/vi/b1_lsbYvx5M/0.jpg" alt="Alt Text">
-  </a>
-</div>
+<p align="center">
+  <img src="ctrl-f-resized-gif.gif" alt="Demo GIF">
+</p>
 
 
 ### Getting Started
