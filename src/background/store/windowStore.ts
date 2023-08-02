@@ -32,6 +32,7 @@ export interface WindowStore extends SharedStore {
   setActiveTabId: (activeTabId: number) => void;
   createTabStore: (tabId: ValidTabId) => TabStore;
   sendToContentScripts: () => Promise<(boolean | Error)[]>;
+  sendToExistingContentScripts: () => Promise<(boolean | Error)[]>;
 }
 
 export const createWindowStore = (): WindowStore => {
@@ -143,11 +144,42 @@ export const createWindowStore = (): WindowStore => {
       };
     },
 
+    // TODO: rename to sendToAllTabs
     async sendToContentScripts(): Promise<(boolean | Error)[]> {
       const currentWindowTabs = await queryCurrentWindowTabs();
+
+      console.log(Object.keys(this.tabStores));
+
       const validatedTabIds = currentWindowTabs
         .map((tab) => tab.id)
         .filter((id): id is ValidTabId => id !== undefined);
+
+      console.log(validatedTabIds);
+
+      const promises = (validatedTabIds || []).map((tabId) => {
+        const tabStore = this.createTabStore(tabId);
+
+        return sendMessageToTab<UpdatedStoreMsg>(tabId, {
+          async: true,
+          type: UPDATED_STORE,
+          payload: {
+            tabId,
+            tabStore,
+          },
+        });
+      });
+
+      return Promise.all(promises);
+    },
+
+    async sendToExistingContentScripts(): Promise<(boolean | Error)[]> {
+      const stringTabIds = Object.keys(this.tabStores);
+
+      const validatedTabIds = stringTabIds.map((id) =>
+        toValidTabId(Number(id))
+      );
+
+      console.log(validatedTabIds);
 
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);
