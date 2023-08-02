@@ -114,6 +114,7 @@ export default function searchAndHighlight(
       const normalizedSearchValue = searchValue.replace(/\s+/g, ' ');
       const searchValueWithSpaceOrNBSP = normalizedSearchValue
         .split(' ')
+        .map((part) => part.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'))
         .join('( |\\u00A0)');
       const regex = new RegExp(searchValueWithSpaceOrNBSP, 'gi');
 
