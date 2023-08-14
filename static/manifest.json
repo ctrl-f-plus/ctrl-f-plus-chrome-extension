@@ -1,15 +1,25 @@
 {
+  "manifest_version": 3,
   "name": "Ctrl-F Plus - Multi-Tab Search",
   "description": "Find text across all open tabs! The Ctrl-F Plus browser extension enables cross-tab search functionality in your browser window 🔍",
   "version": "1.0.3",
-  "manifest_version": 3,
+  "homepage_url": "https://ctrl-f.plus",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": ["layover.js", "contentStyles.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_idle"
+    }
+  ],
   "permissions": ["activeTab", "tabs", "storage", "contextMenus", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "commands": {
     "_execute_action": {
       "suggested_key": {
@@ -24,12 +34,5 @@
   "background": {
     "service_worker": "background.js"
   },
-  "action": {},
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["layover.js", "contentStyles.js"],
-      "run_at": "document_idle"
-    }
-  ]
+  "action": {}
 }

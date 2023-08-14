@@ -148,13 +148,13 @@ export const createWindowStore = (): WindowStore => {
     async sendToContentScripts(): Promise<(boolean | Error)[]> {
       const currentWindowTabs = await queryCurrentWindowTabs();
 
-      console.log(Object.keys(this.tabStores));
+      // console.log(Object.keys(this.tabStores));
 
       const validatedTabIds = currentWindowTabs
         .map((tab) => tab.id)
         .filter((id): id is ValidTabId => id !== undefined);
 
-      console.log(validatedTabIds);
+      // console.log(validatedTabIds);
 
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);

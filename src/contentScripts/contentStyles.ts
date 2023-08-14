@@ -1,4 +1,4 @@
-// src/contentScripts/contentStyles.ts
+// src/contentScripts/highlightStyles.ts
 
 import {
   HIGHLIGHT_CLASS,
@@ -7,7 +7,7 @@ import {
 
 // Old Highlight-Focus Color: #05fdb4
 // background-color: #53e7bb !important;
-const contentStyles = `
+const highlightStyles = `
 .${HIGHLIGHT_CLASS} {
   background-color: #128da1 !important;
   color: #010100;
@@ -33,6 +33,14 @@ function injectStyles(css: string): HTMLStyleElement {
   return style;
 }
 
-injectStyles(contentStyles);
+if (!window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__) {
+  window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__ = true;
+  injectStyles(highlightStyles);
+} else {
+  console.log(
+    'highlightStyles.ts: Content script already injected. Exiting...'
+  );
+}
+
 // #222D31
 // #69757B

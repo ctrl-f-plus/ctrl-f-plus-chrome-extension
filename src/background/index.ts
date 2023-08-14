@@ -1,14 +1,13 @@
 // src/background/index.ts
 
-import startListeners, { csLoaded } from './listeners';
+import startListeners, {
+  csLoaded,
+  startOnInstalledListener,
+} from './listeners';
 import store from './store/databaseStore';
+import updateStoreForTesting from './utils/testUtils';
 
-function updateStoreForTesting() {
-  Object.keys(store.windowStores).forEach((windowId) => {
-    const windowStore = store.windowStores[windowId];
-    windowStore.toggleShowFields(true);
-  });
-}
+startOnInstalledListener();
 
 store.init().then(() => {
   if (process.env.E2E_TESTING === 'true') {

@@ -2,6 +2,8 @@
 
 declare global {
   interface Window {
+    __LAYOVER_SCRIPT_INJECTED__?: boolean;
+    __HIGHLIGHT_STYLES_SCRIPT_INJECTED__?: boolean;
     find: (
       string: string,
       caseSensitive?: boolean,
@@ -14,5 +16,7 @@ declare global {
     toggleLayover: () => void;
   }
 }
+
+declare module '*.shadow.css';
 
 export {};

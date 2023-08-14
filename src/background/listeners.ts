@@ -1,5 +1,6 @@
 // src/background/chromeListeners.ts
 
+import { ValidTabId } from '../contentScripts/types/tab.types';
 import {
   GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
@@ -17,30 +18,59 @@ import {
   handleUpdateTabStates,
 } from './messageHandlers';
 import store from './store/databaseStore';
+import InstallDetails from './store/installDetails';
 import { createWindowStore } from './store/windowStore';
-import { getActiveTabId } from './utils/chromeApiUtils';
+import {
+  getActiveTabId,
+  getOrderedTabs,
+  toValidTabId,
+} from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let csLoaded = false;
 
-export default function startListeners() {
-  chrome.runtime.onInstalled.addListener(async ({ reason }) => {
-    // console.log('installed');
-    // console.log(reason);
-    // if (reason === 'install') {
-    //   chrome.tabs.create({
-    //     url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
-    //   });
-    // }
-    clearLocalStorage();
-  });
+async function executeContentScript() {
+  const orderedTabs = await getOrderedTabs();
+  const orderedTabIds: ValidTabId[] = orderedTabs.map((tab) =>
+    toValidTabId(tab.id)
+  );
 
-  chrome.contextMenus.create({
-    contexts: ['browser_action'],
-    title: 'Add city to weather extension',
-    id: 'weatherExtension',
+  orderedTabIds.forEach((tabId) => {
+    try {
+      chrome.scripting.executeScript({
+        target: { tabId },
+        files: ['layover.js', 'contentStyles.js'],
+      });
+    } catch (error) {
+      console.log(`Caught Error: `, error);
+    }
   });
+}
+
+async function checkOnInstalled() {
+  setTimeout(async () => {
+    if (InstallDetails != null) {
+      if (InstallDetails.reason === 'install') {
+        // BrowserApi.createNewTab('https://bitwarden.com/browser-start/');
+
+        await executeContentScript();
+      }
+
+      InstallDetails.reason = null;
+    }
+  }, 100);
+}
+
+export function startOnInstalledListener() {
+  chrome.runtime.onInstalled.addListener((details) => {
+    clearLocalStorage();
+    InstallDetails.reason = details.reason;
+  });
+}
+
+export default async function startListeners() {
+  await checkOnInstalled();
 
   chrome.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
@@ -93,6 +123,7 @@ export default function startListeners() {
         return true;
       } catch (error) {
         console.log('caught error: ', error);
+        return false;
       }
     }
   );
@@ -104,7 +135,6 @@ export default function startListeners() {
       }
 
       if (store === undefined) {
-        console.log('omg no store - onFocusChange');
         return;
       }
 
@@ -113,7 +143,6 @@ export default function startListeners() {
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
         store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onFocusChange');
         return;
       }
       const activeTabId = await getActiveTabId();
@@ -135,14 +164,12 @@ export default function startListeners() {
   chrome.tabs.onCreated.addListener(() => {
     try {
       if (store === undefined) {
-        console.log('omg no store - onCreated');
         return;
       }
 
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
         store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onCreated');
         return;
       }
       activeWindowStore.setTotalTabsCount();
@@ -156,14 +183,12 @@ export default function startListeners() {
   chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     try {
       if (store === undefined) {
-        console.log('omg no store - onActivated');
         return;
       }
 
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
         store.activeWindowStore = createWindowStore();
-        console.log('aint got no store - onActivated');
         return;
       }
 
@@ -180,7 +205,6 @@ export default function startListeners() {
   chrome.tabs.onUpdated.addListener(async () => {
     try {
       if (store === undefined) {
-        console.log('omg no store - onActivated');
         return;
       }
 
@@ -188,7 +212,6 @@ export default function startListeners() {
       csLoaded = true;
       if (activeWindowStore === undefined) {
         store.activeWindowStore = createWindowStore();
-        console.log('aint got no store');
         return;
       }
 
@@ -205,7 +228,6 @@ export default function startListeners() {
   chrome.tabs.onRemoved.addListener(() => {
     try {
       if (store === undefined) {
-        console.log('omg no store - onActivated');
         return;
       }
       const { activeWindowStore } = store;
@@ -220,11 +242,10 @@ export default function startListeners() {
   chrome.action.onClicked.addListener(() => {
     try {
       if (store === undefined) {
-        console.log('omg no store - onActivated');
         return;
       }
       const { activeWindowStore } = store;
-      console.log(activeWindowStore);
+
       activeWindowStore.toggleShowFields();
 
       activeWindowStore.sendToContentScripts();
@@ -235,20 +256,18 @@ export default function startListeners() {
 
   chrome.commands.onCommand.addListener(async (command) => {
     try {
+      await executeContentScript(); // <THIS WORKS>
       if (command === 'toggle_search_layover') {
         if (store === undefined) {
-          console.log('omg no store - onActivated');
           return;
         }
 
         const { activeWindowStore } = store;
         if (activeWindowStore === undefined) {
           store.activeWindowStore = createWindowStore();
-          console.log('aint got no store1');
           return;
         }
 
-        console.log(activeWindowStore);
         activeWindowStore.toggleShowFields();
 
         activeWindowStore.sendToContentScripts();

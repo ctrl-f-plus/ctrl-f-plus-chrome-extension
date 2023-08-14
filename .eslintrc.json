@@ -51,6 +51,7 @@
     // "class-methods-use-this": "off",
     "react/react-in-jsx-scope": "off",
     "no-continue": "off",
+    "no-underscore-dangle": "off",
     "import/extensions": [
       "error",
       "ignorePackages",

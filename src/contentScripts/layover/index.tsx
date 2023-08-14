@@ -5,27 +5,33 @@ import { TabStateContextProvider } from '../contexts/TabStateContext';
 import Layover from './Layover';
 import shadowStyles from './tailwindStyles.shadow.css';
 
-const shadowHost = document.createElement('div');
-document.body.appendChild(shadowHost);
+if (!window.__LAYOVER_SCRIPT_INJECTED__) {
+  window.__LAYOVER_SCRIPT_INJECTED__ = true;
 
-const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+  const shadowHost = document.createElement('div');
+  document.body.appendChild(shadowHost);
 
-const root = document.createElement('div');
+  const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
 
-shadowRoot.appendChild(root);
+  const root = document.createElement('div');
 
-const style = document.createElement('style');
-style.textContent = shadowStyles;
-shadowRoot.appendChild(style);
+  shadowRoot.appendChild(root);
 
-const reactRoot = createRoot(root);
+  const style = document.createElement('style');
+  style.textContent = shadowStyles;
+  shadowRoot.appendChild(style);
 
-reactRoot.render(
-  <React.StrictMode>
-    <TabStateContextProvider>
-      <LayoverProvider>
-        <Layover />
-      </LayoverProvider>
-    </TabStateContextProvider>
-  </React.StrictMode>
-);
+  const reactRoot = createRoot(root);
+
+  reactRoot.render(
+    <React.StrictMode>
+      <TabStateContextProvider>
+        <LayoverProvider>
+          <Layover />
+        </LayoverProvider>
+      </TabStateContextProvider>
+    </React.StrictMode>
+  );
+} else {
+  console.log('layover.ts: Content script already injected. Exiting...');
+}
