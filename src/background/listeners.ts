@@ -28,12 +28,18 @@ export default function startListeners() {
   chrome.runtime.onInstalled.addListener(async ({ reason }) => {
     // console.log('installed');
     // console.log(reason);
-    if (reason === 'install') {
-      chrome.tabs.create({
-        url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
-      });
-    }
+    // if (reason === 'install') {
+    //   chrome.tabs.create({
+    //     url: 'https://ctrl-f-plus-website-git-final-design-dev-3a5ab2-bmchavez-s-team.vercel.app/',
+    //   });
+    // }
     clearLocalStorage();
+  });
+
+  chrome.contextMenus.create({
+    contexts: ['browser_action'],
+    title: 'Add city to weather extension',
+    id: 'weatherExtension',
   });
 
   chrome.runtime.onMessage.addListener(

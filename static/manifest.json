@@ -9,16 +9,16 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["tabs", "storage"],
+  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "scripting"],
   "commands": {
-    "toggle_search_layover": {
+    "_execute_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+F",
         "mac": "MacCtrl+Shift+F",
         "chromeos": "Ctrl+Shift+F",
         "linux": "Ctrl+Shift+F"
       },
-      "description": "Toggle the Cntrl-F search layover"
+      "description": "Start the extension"
     }
   },
   "background": {
