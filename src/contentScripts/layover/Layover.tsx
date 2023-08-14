@@ -24,8 +24,6 @@ import serializeTabState from '../utils/serialization/serializeTabState';
 import DraggableContainer from './components/DraggableContainer';
 import SearchInput from './components/SearchInput';
 
-console.log('Layover Script Added');
-
 function Layover() {
   const {
     showLayover,

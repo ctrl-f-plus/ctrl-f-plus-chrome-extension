@@ -33,5 +33,5 @@ if (!window.__LAYOVER_SCRIPT_INJECTED__) {
     </React.StrictMode>
   );
 } else {
-  console.log('layover.ts: Content script already injected. Exiting...');
+  // console.log('layover.ts: Content script already injected. Exiting...');
 }

@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "js": ["layover.js", "contentStyles.js"],
+      "js": ["layover.js", "highlightStyles.js"],
       "matches": ["<all_urls>"],
       "run_at": "document_idle"
     }

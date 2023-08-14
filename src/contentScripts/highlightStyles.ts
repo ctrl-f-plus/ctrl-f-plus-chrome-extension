@@ -37,9 +37,9 @@ if (!window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__) {
   window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__ = true;
   injectStyles(highlightStyles);
 } else {
-  console.log(
-    'highlightStyles.ts: Content script already injected. Exiting...'
-  );
+  // console.log(
+  //   'highlightStyles.ts: Content script already injected. Exiting...'
+  // );
 }
 
 // #222D31

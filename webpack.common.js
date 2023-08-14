@@ -33,11 +33,11 @@ module.exports = (env) => ({
       'layover',
       'index.tsx'
     ),
-    contentStyles: path.join(
+    highlightStyles: path.join(
       __dirname,
       'src',
       'contentScripts',
-      'contentStyles.ts'
+      'highlightStyles.ts'
     ),
     // layover: path.resolve('src/layover/index.tsx'),
   },

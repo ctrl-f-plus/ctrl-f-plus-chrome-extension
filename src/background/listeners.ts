@@ -40,7 +40,7 @@ async function executeContentScript() {
     try {
       chrome.scripting.executeScript({
         target: { tabId },
-        files: ['layover.js', 'contentStyles.js'],
+        files: ['layover.js', 'highlightStyles.js'],
       });
     } catch (error) {
       console.log(`Caught Error: `, error);
@@ -232,6 +232,7 @@ export default async function startListeners() {
       }
       const { activeWindowStore } = store;
       activeWindowStore.setTotalTabsCount();
+      console.log('activeWindowStore:', activeWindowStore);
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
