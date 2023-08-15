@@ -78,13 +78,20 @@ export default async function startListeners() {
 
         switch (type) {
           case REMOVE_ALL_HIGHLIGHT_MATCHES:
+            activeWindowStore.resetPartialStore();
+
+            activeWindowStore.sendToContentScripts({
+              restoreHighlights: false,
+            });
+
             await clearAllStoredTabs();
             await handleRemoveAllHighlightMatches(sendResponse);
-            await activeWindowStore.sendToContentScripts();
+            // handleRemoveAllHighlightMatches(sendResponse);
+
             break;
           case GET_ALL_MATCHES:
             // return handleGetAllMatches(payload.searchValue);
-            activeWindowStore.resetPartialStore();
+            // activeWindowStore.resetPartialStore();
             activeWindowStore.update({
               searchValue: payload.searchValue,
               lastSearchValue: payload.searchValue,
@@ -141,7 +148,7 @@ export default async function startListeners() {
       const activeTabId = await getActiveTabId();
       activeWindowStore.setActiveTabId(activeTabId);
 
-      activeWindowStore.sendToContentScripts();
+      activeWindowStore.sendToContentScripts({ restoreHighlights: false });
 
       chrome.windows.get(windowId, (focusedWindow) => {
         if (focusedWindow.type === 'normal') {
@@ -169,9 +176,9 @@ export default async function startListeners() {
         return;
       }
       activeWindowStore.setTotalTabsCount();
-      // activeWindowStore.lastSearchValue = '';
+      activeWindowStore.lastSearchValue = '';
 
-      activeWindowStore.sendToContentScripts();
+      activeWindowStore.sendToContentScripts({ restoreHighlights: false });
     } catch (error) {
       ctrlLogger.log(error);
     }
@@ -216,7 +223,7 @@ export default async function startListeners() {
         return;
       }
 
-      activeWindowStore.sendToContentScripts();
+      activeWindowStore.sendToContentScripts({ restoreHighlights: false });
     } catch (error) {
       ctrlLogger.log(error);
     }

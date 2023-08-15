@@ -5,7 +5,7 @@ import {
   HIGHLIGHT_FOCUS_CLASS,
 } from '../../../shared/utils/constants';
 
-// TODO: make sure that you test this to ensure that the html is being rebuilt correctly
+// TODO: make sure that you add tests to ensure that the html is being rebuilt correctly
 export default function removeAllHighlightMatches() {
   const highlightElements = document.querySelectorAll(
     `.${HIGHLIGHT_CLASS}, .${HIGHLIGHT_FOCUS_CLASS}`

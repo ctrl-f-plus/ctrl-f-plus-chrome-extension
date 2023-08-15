@@ -1,16 +1,15 @@
 // src/background/store/windowStore.ts
 
-import { UPDATED_STORE, UpdatedStoreMsg } from '../types/message.types';
-import { LayoverPosition } from '../../shared/types/shared.types';
 import {
   SerializedTabState,
   ValidTabId,
 } from '../../contentScripts/types/tab.types';
+import { LayoverPosition } from '../../shared/types/shared.types';
 import { SharedStore, TabStore } from '../types/Store.types';
+import { UPDATED_STORE, UpdatedStoreMsg } from '../types/message.types';
 import { queryCurrentWindowTabs, toValidTabId } from '../utils/chromeApiUtils';
-import { getAllStoredTabs } from '../utils/storage';
 import sendMessageToTab from '../utils/sendMessageToContent';
-import ctrlLogger from '../../shared/utils/ctrlLogger';
+import { getAllStoredTabs } from '../utils/storage';
 
 interface BasicTabState {
   tabId: ValidTabId;
@@ -181,9 +180,6 @@ export const createWindowStore = (): WindowStore => {
     } = {}): Promise<(boolean | Error)[]> {
       const currentWindowTabs = await queryCurrentWindowTabs();
 
-      // console.log(Object.keys(this.tabStores));
-      console.log(`restoreHighlights: `, restoreHighlights);
-
       const validatedTabIds = currentWindowTabs
         .map((tab) => tab.id)
         .filter((id): id is ValidTabId => id !== undefined);
@@ -203,7 +199,6 @@ export const createWindowStore = (): WindowStore => {
           },
         });
       });
-
       return Promise.all(promises);
     },
 

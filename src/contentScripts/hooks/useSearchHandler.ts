@@ -22,6 +22,10 @@ export default function useSearchHandler() {
         type: REMOVE_ALL_HIGHLIGHT_MATCHES,
       });
 
+      // sendMessageToBackground<RemoveAllHighlightMatchesMsg>({
+      //   type: REMOVE_ALL_HIGHLIGHT_MATCHES,
+      // });
+
       await sendMessageToBackground<GetAllMatchesMsg>({
         type: GET_ALL_MATCHES,
         payload: {
