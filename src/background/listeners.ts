@@ -23,6 +23,7 @@ import { createWindowStore } from './store/windowStore';
 import {
   getActiveTabId,
   getOrderedTabs,
+  queryAllTabIds,
   toValidTabId,
 } from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
@@ -31,12 +32,13 @@ import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 export let csLoaded = false;
 
 async function executeContentScript() {
-  const orderedTabs = await getOrderedTabs();
-  const orderedTabIds: ValidTabId[] = orderedTabs.map((tab) =>
-    toValidTabId(tab.id)
-  );
+  // const orderedTabs = await getOrderedTabs();
+  // const orderedTabIds: ValidTabId[] = orderedTabs.map((tab) =>
+  //   toValidTabId(tab.id)
+  // );
+  const tabIds = await queryAllTabIds();
 
-  orderedTabIds.forEach(async (tabId) => {
+  tabIds.forEach(async (tabId) => {
     try {
       await chrome.scripting.executeScript({
         target: { tabId },
@@ -238,7 +240,7 @@ export default async function startListeners() {
       activeWindowStore.setTotalTabsCount();
       ctrlLogger.log('activeWindowStore:', activeWindowStore);
 
-      // activeWindowStore.sendToContentScripts();
+      activeWindowStore.sendToContentScripts();
     } catch (error) {
       ctrlLogger.log(error);
     }
@@ -246,7 +248,7 @@ export default async function startListeners() {
 
   chrome.action.onClicked.addListener(() => {
     try {
-      // await executeContentScript(); // <THIS WORKS>
+      // await executeContentScript();
       if (store === undefined) {
         return;
       }
@@ -260,7 +262,6 @@ export default async function startListeners() {
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      // ctrlLogger.log('Caught chrome.action.onClicked.addListener ', Error);
       ctrlLogger.log('Caught chrome.action.onClicked.addListener ', Error);
     }
   });

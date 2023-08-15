@@ -4,6 +4,7 @@ import { LayoverProvider } from '../contexts/LayoverContext';
 import { TabStateContextProvider } from '../contexts/TabStateContext';
 import Layover from './Layover';
 import shadowStyles from './tailwindStyles.shadow.css';
+import ctrlLogger from '../../shared/utils/ctrlLogger';
 
 if (!window.__LAYOVER_SCRIPT_INJECTED__) {
   window.__LAYOVER_SCRIPT_INJECTED__ = true;
@@ -32,6 +33,8 @@ if (!window.__LAYOVER_SCRIPT_INJECTED__) {
       </TabStateContextProvider>
     </React.StrictMode>
   );
+
+  ctrlLogger.info('Layover Injected');
 } else {
-  // console.log('layover.ts: Content script already injected. Exiting...');
+  ctrlLogger.log('layover.ts: Content script already injected. Exiting...');
 }

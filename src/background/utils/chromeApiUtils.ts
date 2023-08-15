@@ -94,3 +94,18 @@ export async function getOrderedTabIds(): Promise<ValidTabId[]> {
 
   return orderedTabIds;
 }
+
+export async function queryAllTabIds(): Promise<ValidTabId[]> {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({}, (tabs) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+      } else {
+        const tabIds = tabs
+          .map((tab) => tab.id)
+          .filter((id): id is number => id !== undefined);
+        resolve(tabIds);
+      }
+    });
+  });
+}

@@ -4,6 +4,7 @@ import {
   HIGHLIGHT_CLASS,
   HIGHLIGHT_FOCUS_CLASS,
 } from '../shared/utils/constants';
+import ctrlLogger from '../shared/utils/ctrlLogger';
 
 // Old Highlight-Focus Color: #05fdb4
 // background-color: #53e7bb !important;
@@ -36,10 +37,11 @@ function injectStyles(css: string): HTMLStyleElement {
 if (!window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__) {
   window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__ = true;
   injectStyles(highlightStyles);
+  ctrlLogger.info('Highlight Styles Injected');
 } else {
-  // console.log(
-  //   'highlightStyles.ts: Content script already injected. Exiting...'
-  // );
+  ctrlLogger.info(
+    'highlightStyles.ts: Content script already injected. Exiting...'
+  );
 }
 
 // #222D31
