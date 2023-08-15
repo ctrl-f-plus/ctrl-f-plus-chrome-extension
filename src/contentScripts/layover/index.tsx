@@ -10,6 +10,7 @@ if (!window.__LAYOVER_SCRIPT_INJECTED__) {
   window.__LAYOVER_SCRIPT_INJECTED__ = true;
 
   const shadowHost = document.createElement('div');
+  shadowHost.id = 'ctrl-f-plus-shadow-host';
   document.body.appendChild(shadowHost);
 
   const shadowRoot = shadowHost.attachShadow({ mode: 'open' });

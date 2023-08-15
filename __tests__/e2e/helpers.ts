@@ -3,30 +3,66 @@
 // __tests__/e2e/helpers.ts
 
 import { Page } from 'puppeteer';
-// import { getInputValueFromSelector } from './helper';
+
 export const EXTENSION_PATH = 'dist/';
-// const GOOD_SEARCH_QUERY = 'chavez';
 export const GOOD_SEARCH_QUERY = 'ben';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
-// const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
-// const TIMEOUT = SLOW_MO ? 10000 : 5000;
-const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
-const MATCHING_COUNTS_SELECTOR =
-  '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
-// const NUMBER_OF_TABS = 1;
-const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
-const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
+// const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
+// const INPUT_SELECTOR = '[data-testid="inputForm"] input[type="text"]';
+
+// const inputElement = await page.$(
+//   '[data-testid="inputForm"] input[type="text"]'
+// );
+
+// const MATCHING_COUNTS_SELECTOR =
+//   '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
+// const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
+// const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
+
+export const SHADOW_HOST_SELECTOR = '#ctrl-f-plus-shadow-host';
+export const INPUT_SELECTOR = '[data-testid="inputForm"]';
+export const MATCHING_COUNTS_SELECTOR = '[data-testid="matching-counts"]';
+export const NEXT_BUTTON_SELECTOR = '[data-testid="next-match-btn"]';
+export const PREVIOUS_BUTTON_SELECTOR = '[data-testid="previous-match-btn"]';
+
+// export async function typeInSearch(page: Page, query: string) {
+//   await page.waitForSelector(INPUT_SELECTOR);
+//   await page.type(INPUT_SELECTOR, query);
+// }
+
+export async function queryShadowRoot(page: Page) {
+  const shadowHost = await page.$(SHADOW_HOST_SELECTOR);
+  const shadowRoot = await page.evaluateHandle(
+    (el) => el?.shadowRoot,
+    shadowHost
+  );
+
+  return shadowRoot;
+}
 
 export async function typeInSearch(page: Page, query: string) {
-  await page.waitForSelector(INPUT_SELECTOR);
-  await page.type(INPUT_SELECTOR, query);
+  // const shadowHost = await page.$(SHADOW_HOST_SELECTOR);
+  // const shadowRoot = await page.evaluateHandle(
+  //   (el) => el?.shadowRoot,
+  //   shadowHost
+  // );
+  const shadowRoot = await queryShadowRoot(page);
+  const inputForm = await shadowRoot.$(INPUT_SELECTOR);
+  await inputForm.type(query);
 }
 
 export async function getInputValueFromSelector(
   page: Page,
   selector: string = INPUT_SELECTOR
 ) {
-  return page.$eval(selector, (el) => (el as HTMLInputElement).value);
+  // return page.$eval(selector, (el) => (el as HTMLInputElement).value);
+  const shadowRoot = await queryShadowRoot(page);
+  const inputValue = await shadowRoot.$eval(
+    selector,
+    (el: HTMLInputElement) => el.value
+  );
+
+  return inputValue;
 }
 
 export async function validateSearchInput(page: Page, expectedQuery: string) {
@@ -35,8 +71,18 @@ export async function validateSearchInput(page: Page, expectedQuery: string) {
 }
 
 export async function submitSearchForm(page: Page) {
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(1000);
+  const shadowRoot = await queryShadowRoot(page);
+  const inputElement = await shadowRoot.$(INPUT_SELECTOR);
+
+  // await page.keyboard.press('Enter');
+  // await page.waitForTimeout(1000);
+
+  if (inputElement) {
+    await inputElement.focus();
+    await page.keyboard.press('Enter');
+
+    await page.waitForTimeout(1000);
+  }
 }
 
 export async function countMatchesOnPage(page: Page, query: string) {
@@ -87,26 +133,45 @@ export async function getInnerTextFromSelector(
   page: Page,
   selector: string = MATCHING_COUNTS_SELECTOR
 ) {
-  await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-  return page.$eval(selector, (el) => (el as HTMLElement).innerText);
+  // await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
+  // return page.$eval(selector, (el) => (el as HTMLElement).innerText);
+  const shadowRoot = await queryShadowRoot(page);
+  const element = await shadowRoot.$(selector);
+  return page.evaluate((el) => (el as HTMLElement).innerText, element);
 }
 
 export async function navigateMatchesWithNextButton(page: Page) {
-  await page.waitForSelector(NEXT_BUTTON_SELECTOR);
-  await page.click(NEXT_BUTTON_SELECTOR);
-  // await page.waitForTimeout(1000);
+  // await page.waitForSelector(NEXT_BUTTON_SELECTOR);
+  // await page.click(NEXT_BUTTON_SELECTOR);
+
+  const shadowRoot = await queryShadowRoot(page);
+  const nextButton = await shadowRoot.$(NEXT_BUTTON_SELECTOR);
+  await nextButton.click();
 }
 
 export async function navigateMatchesWithEnterKey(page: Page) {
   // await page.focus(INPUT_SELECTOR);
-  await page.keyboard.press('Enter');
-  await page.waitForTimeout(1000);
+  const shadowRoot = await queryShadowRoot(page);
+  const inputElement = await shadowRoot.$(INPUT_SELECTOR);
+
+  if (inputElement) {
+    await inputElement.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(1000);
+  }
 }
 
 export async function navigateMatchesWithPreviousButton(page: Page) {
-  await page.waitForSelector(PREVIOUS_BUTTON_SELECTOR);
-  await page.click(PREVIOUS_BUTTON_SELECTOR);
+  // await page.waitForSelector(PREVIOUS_BUTTON_SELECTOR);
+  // await page.click(PREVIOUS_BUTTON_SELECTOR);
   // await page.waitForTimeout(1000);
+
+  const shadowRoot = await queryShadowRoot(page);
+  const previousButton = await shadowRoot.$(PREVIOUS_BUTTON_SELECTOR);
+
+  if (previousButton) {
+    await previousButton.click();
+  }
 }
 
 export async function getActiveTab(pages: Page[]) {
@@ -306,10 +371,16 @@ export async function navigateToLastMatch(
 }
 
 export async function searchAndHighlightMatches(page: Page, query: string) {
-  await page.waitForSelector(INPUT_SELECTOR);
-  await page.type(INPUT_SELECTOR, query);
+  // await page.waitForSelector(INPUT_SELECTOR);
+  // await page.type(INPUT_SELECTOR, query);
 
-  const inputValue = await getInputValueFromSelector(page);
+  // const inputValue = await getInputValueFromSelector(page);
+
+  const shadowRoot = await queryShadowRoot(page);
+  const inputForm = await shadowRoot.$(INPUT_SELECTOR);
+  await inputForm.type(query);
+
+  const inputValue = await getInputValueFromSelector(page, INPUT_SELECTOR);
 
   expect(inputValue).toBe(query);
 

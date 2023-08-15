@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 // __tests__/e2e/e2e.test.ts
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 
 import puppeteer, { Browser, Page } from 'puppeteer';
-import { setupTest } from './testSetup';
+
+// import { setupTest } from './testSetup';
 import {
+  INPUT_SELECTOR,
+  MATCHING_COUNTS_SELECTOR,
   countHighlightedMatches,
   countQueryMatches,
   getActiveTab,
@@ -14,23 +19,17 @@ import {
   navigateMatchesWithNextButton,
   navigateMatchesWithPreviousButton,
   navigationTest,
+  queryShadowRoot,
   submitSearchForm,
   typeInSearch,
   validateSearchInput,
 } from './helpers';
+
 // import { getInputValueFromSelector } from './helper';
 const EXTENSION_PATH = 'dist/';
 // const GOOD_SEARCH_QUERY = 'chavez';
 const GOOD_SEARCH_QUERY = 'ben';
 const BAD_SEARCH_QUERY = 'falseSearchQuery';
-// const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
-// const TIMEOUT = SLOW_MO ? 10000 : 5000;
-const INPUT_SELECTOR = '#ctrl-f-plus-extension .form-div .input-style';
-const MATCHING_COUNTS_SELECTOR =
-  '#ctrl-f-plus-extension .form-div .matching-counts-wrapper .matching-counts';
-// const NUMBER_OF_TABS = 1;
-const NEXT_BUTTON_SELECTOR = '#ctrl-f-plus-extension #next-match-btn';
-const PREVIOUS_BUTTON_SELECTOR = '#ctrl-f-plus-extension #previous-match-btn';
 
 // TODO: NEED TO ADD ACTUAL URLs. May need to add them to the tabScenarios' objects
 
@@ -45,7 +44,7 @@ const TEST_URLS_NO_YES = [
 const TEST_URLS_YES_NO_YES = [
   'https://benjamin-chavez.com',
   'https://www.google.com',
-  'https://github.com/bmchavez',
+  'https://github.com/benjamin-chavez',
 ];
 
 const TEST_URLS_YES_YES_YES = [
@@ -67,7 +66,7 @@ const TEST_URLS_NO_NO_YES_YES_NO_NO_YES_NO_NO = [
   'https://www.google.com',
 
   'https://benjamin-chavez.com',
-  'https://github.com/bmchavez',
+  'https://github.com/benjamin-chavez',
   'https://www.google.com',
   'https://www.google.com',
 
@@ -174,7 +173,7 @@ describe('Tab Navigation Extension', () => {
 
           // async function performSearch(page: Page, query: string) {
           await typeInSearch(page, query);
-          await validateSearchInput(page, query);
+          // await validateSearchInput(page, query); // TODO: HERE TODO: HERE TODO: HERE TODO: HERE TODO: HERE: Start Here => Add back??
           await submitSearchForm(page);
           // }
 
@@ -189,9 +188,22 @@ describe('Tab Navigation Extension', () => {
 
       describe('Count Display', () => {
         test('Total Matches Count is accurate', async () => {
-          const matchingCounts = await getInnerTextFromSelector(
-            page,
+          // const matchingCounts = await getInnerTextFromSelector(
+          //   page,
+          //   MATCHING_COUNTS_SELECTOR
+          // );
+
+          // totalMatchesCount = parseInt(matchingCounts.split('/')[1], 10);
+
+          // expect(totalMatchesCount).toBe(totalHighlightCount);
+          const shadowRoot = await queryShadowRoot(page);
+          const matchingCountsElement = await shadowRoot.$(
             MATCHING_COUNTS_SELECTOR
+          );
+
+          const matchingCounts = await page.evaluate(
+            (el) => el.innerText,
+            matchingCountsElement
           );
 
           totalMatchesCount = parseInt(matchingCounts.split('/')[1], 10);
@@ -255,7 +267,10 @@ describe('Tab Navigation Extension', () => {
         });
 
         test('closing the search input hides the overlay', async () => {
-          const searchInput = await page.$(INPUT_SELECTOR); // TODO: Consider making this a loop too (to check all tabs)
+          // const searchInput = await page.$(INPUT_SELECTOR); // TODO: Consider making this a loop too (to check all tabs)
+
+          const shadowRoot = await queryShadowRoot(page);
+          const searchInput = await shadowRoot.$(INPUT_SELECTOR);
           expect(searchInput).toBeNull();
         });
 

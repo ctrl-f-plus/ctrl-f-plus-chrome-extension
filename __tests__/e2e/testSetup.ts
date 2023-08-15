@@ -5,7 +5,7 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 // import { EXTENSION_PATH } from './config';
 const EXTENSION_PATH = 'dist/';
 export const BAD_SEARCH_QUERY = 'falseSearchQuery';
-const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO) : 0;
+// const SLOW_MO = process.env.SLOW_MO ? parseInt(process.env.SLOW_MO, 10) : 0;
 
 export async function setupTest(scenario: any) {
   const browserArray: Browser[] = [];
@@ -18,7 +18,8 @@ export async function setupTest(scenario: any) {
   browser = await puppeteer.launch({
     headless: false,
     devtools: true,
-    slowMo: 15,
+    // slowMo: 15,
+    slowMo: 100,
     defaultViewport: null,
     args: [
       `--disable-extensions-except=${EXTENSION_PATH}`,

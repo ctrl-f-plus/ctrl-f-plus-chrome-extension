@@ -120,6 +120,7 @@ function SearchInput({ focus }: SearchInputProps) {
           <div className="pointer-events-none flex grow">
             <div
               ref={matchingCountsRef}
+              data-testid="matching-counts"
               className={`leading-6-pp font-sans text-base-pp ${
                 matchingCounts === '0/0' || localSearchValue !== lastSearchValue
                   ? 'text-gray-400'
