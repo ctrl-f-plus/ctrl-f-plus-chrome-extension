@@ -58,10 +58,15 @@ function wrapTextWithHighlight(
 }
 
 export default function restoreHighlightSpans(
-  xPathTabState: XPathTabState
+  xPathTabState: XPathTabState,
+  restoreHighlights: boolean
 ): TabState {
   const { matchesObj: tabXPaths, ...rest } = xPathTabState;
   const tabState: TabState = { ...rest, matchesObj: [] };
+
+  if (!restoreHighlights) {
+    return tabState;
+  }
 
   tabXPaths.forEach(({ xpath, text, spanClasses }) => {
     const element = getElementByXPath(xpath);

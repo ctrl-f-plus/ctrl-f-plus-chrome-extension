@@ -39,25 +39,26 @@ function Layover() {
   const { updateHighlights, findAllMatches } = useFindMatches();
 
   // TODO: review how often this is rendered
-  const updateContextFromStore = useCallback(async (tabStore: TabStore) => {
-    setSearchValue(tabStore.searchValue);
-    setLastSearchValue(tabStore.lastSearchValue);
-    setShowLayover(tabStore.showLayover);
-    setShowMatches(tabStore.showMatches);
-    setTotalMatchesCount(tabStore.totalMatchesCount);
-    setLayoverPosition(tabStore.layoverPosition);
-    setActiveTabId(tabStore.activeTabId);
+  const updateContextFromStore = useCallback(
+    async (tabStore: TabStore, restoreHighlights: boolean) => {
+      setSearchValue(tabStore.searchValue);
+      setLastSearchValue(tabStore.lastSearchValue);
+      setShowLayover(tabStore.showLayover);
+      setShowMatches(tabStore.showMatches);
+      setTotalMatchesCount(tabStore.totalMatchesCount);
+      setLayoverPosition(tabStore.layoverPosition);
+      setActiveTabId(tabStore.activeTabId);
 
-    const { serializedTabState } = tabStore;
-    const xPathTabState: XPathTabState =
-      deserializeTabState(serializedTabState);
-    const tabState = restoreHighlightSpans(xPathTabState);
+      const { serializedTabState } = tabStore;
+      const xPathTabState: XPathTabState =
+        deserializeTabState(serializedTabState);
 
-    ctrlLogger.log('tabState: ', tabState);
-
-    setTabStateContext(tabState);
+      const tabState = restoreHighlightSpans(xPathTabState, restoreHighlights);
+      setTabStateContext(tabState);
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    []
+  );
 
   const handleMessage = useCallback(
     async (
@@ -72,9 +73,9 @@ function Layover() {
 
       switch (type) {
         case UPDATED_STORE: {
-          const { tabStore } = message.payload;
+          const { tabStore, restoreHighlights } = message.payload;
           if (tabStore) {
-            await updateContextFromStore(tabStore);
+            await updateContextFromStore(tabStore, restoreHighlights);
             sendResponse(true);
           }
 

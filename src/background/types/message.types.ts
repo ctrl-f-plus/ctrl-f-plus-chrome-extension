@@ -33,6 +33,7 @@ export interface UpdatedStoreMsg extends BaseMessage {
   payload: {
     tabId: ValidTabId;
     tabStore?: TabStore;
+    restoreHighlights: boolean;
   };
 }
 

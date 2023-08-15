@@ -10,6 +10,7 @@ import { SharedStore, TabStore } from '../types/Store.types';
 import { queryCurrentWindowTabs, toValidTabId } from '../utils/chromeApiUtils';
 import { getAllStoredTabs } from '../utils/storage';
 import sendMessageToTab from '../utils/sendMessageToContent';
+import ctrlLogger from '../../shared/utils/ctrlLogger';
 
 interface BasicTabState {
   tabId: ValidTabId;
@@ -31,7 +32,10 @@ export interface WindowStore extends SharedStore {
   toggleShowFields: (isVisible?: boolean) => void;
   setActiveTabId: (activeTabId: number) => void;
   createTabStore: (tabId: ValidTabId) => TabStore;
-  sendToContentScripts: () => Promise<(boolean | Error)[]>;
+  removeTabStore: (tabId: ValidTabId) => void;
+  sendToContentScripts: (options?: {
+    restoreHighlights?: boolean;
+  }) => Promise<(boolean | Error)[]>;
   sendToExistingContentScripts: () => Promise<(boolean | Error)[]>;
 }
 
@@ -118,6 +122,31 @@ export const createWindowStore = (): WindowStore => {
       this.activeTabId = activeTabId;
     },
 
+    removeTabStore(tabId: ValidTabId) {
+      delete this.tabStores[tabId];
+
+      let globalMatchCount = 0;
+      // eslint-disable-next-line no-restricted-syntax, guard-for-in
+      for (const curTabId in this.tabStores) {
+        if (
+          this.tabStores[curTabId].serializedTabState.globalMatchIdxStart !==
+          globalMatchCount
+        ) {
+          this.tabStores[curTabId].serializedTabState.globalMatchIdxStart =
+            globalMatchCount;
+        }
+
+        if (
+          this.tabStores[curTabId].serializedTabState.matchesCount !== undefined
+        ) {
+          globalMatchCount +=
+            this.tabStores[curTabId].serializedTabState.matchesCount;
+        }
+      }
+
+      this.updateTotalMatchesCount(globalMatchCount);
+    },
+
     createTabStore(tabId: ValidTabId): TabStore {
       let serializedTabState = this.tabStores[tabId]?.serializedTabState;
 
@@ -145,10 +174,15 @@ export const createWindowStore = (): WindowStore => {
     },
 
     // TODO: rename to sendToAllTabs
-    async sendToContentScripts(): Promise<(boolean | Error)[]> {
+    async sendToContentScripts({
+      restoreHighlights = true,
+    }: {
+      restoreHighlights?: boolean;
+    } = {}): Promise<(boolean | Error)[]> {
       const currentWindowTabs = await queryCurrentWindowTabs();
 
       // console.log(Object.keys(this.tabStores));
+      console.log(`restoreHighlights: `, restoreHighlights);
 
       const validatedTabIds = currentWindowTabs
         .map((tab) => tab.id)
@@ -165,6 +199,7 @@ export const createWindowStore = (): WindowStore => {
           payload: {
             tabId,
             tabStore,
+            restoreHighlights,
           },
         });
       });
@@ -172,7 +207,9 @@ export const createWindowStore = (): WindowStore => {
       return Promise.all(promises);
     },
 
-    async sendToExistingContentScripts(): Promise<(boolean | Error)[]> {
+    async sendToExistingContentScripts({
+      restoreHighlights = true,
+    }: { restoreHighlights?: boolean } = {}): Promise<(boolean | Error)[]> {
       const stringTabIds = Object.keys(this.tabStores);
 
       const validatedTabIds = stringTabIds.map((id) =>
@@ -188,6 +225,7 @@ export const createWindowStore = (): WindowStore => {
           payload: {
             tabId,
             tabStore,
+            restoreHighlights,
           },
         });
       });

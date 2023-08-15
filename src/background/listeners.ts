@@ -26,10 +26,6 @@ import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 export let csLoaded = false;
 
 async function executeContentScript() {
-  // const orderedTabs = await getOrderedTabs();
-  // const orderedTabIds: ValidTabId[] = orderedTabs.map((tab) =>
-  //   toValidTabId(tab.id)
-  // );
   const tabIds = await queryAllTabIds();
 
   tabIds.forEach(async (tabId) => {
@@ -158,13 +154,14 @@ export default async function startListeners() {
     }
   });
 
+  // TODO:***
   chrome.tabs.onCreated.addListener(() => {
     try {
       if (store === undefined) {
         return;
       }
 
-      ctrlLogger.log('store: ', store);
+      // ctrlLogger.log('store: ', store);
 
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
@@ -225,16 +222,16 @@ export default async function startListeners() {
     }
   });
 
-  chrome.tabs.onRemoved.addListener(() => {
+  chrome.tabs.onRemoved.addListener((removedTabId: any) => {
     try {
       if (store === undefined) {
         return;
       }
       const { activeWindowStore } = store;
       activeWindowStore.setTotalTabsCount();
+      activeWindowStore.removeTabStore(removedTabId);
 
-      activeWindowStore.sendToContentScripts();
-      // activeWindowStore.lastSearchValue = '';
+      activeWindowStore.sendToContentScripts({ restoreHighlights: false });
     } catch (error) {
       ctrlLogger.log(error);
     }
