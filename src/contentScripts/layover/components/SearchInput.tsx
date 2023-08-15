@@ -116,10 +116,7 @@ function SearchInput({ focus }: SearchInputProps) {
 
         <button type="submit" className="hidden" aria-label="Submit" />
 
-        <div
-          // justify-end
-          className="flex h-full flex-shrink-0 flex-row items-center gap-[12px] focus:outline-none"
-        >
+        <div className="flex h-full flex-shrink-0 flex-row items-center gap-[12px] focus:outline-none">
           <div className="pointer-events-none flex grow">
             <div
               ref={matchingCountsRef}

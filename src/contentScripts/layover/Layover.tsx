@@ -8,7 +8,7 @@ import {
   UPDATE_HIGHLIGHTS,
 } from '../../background/types/message.types';
 import { ResponseCallback } from '../../shared/types/shared.types';
-import log from '../../shared/utils/logger';
+import ctrlLogger from '../../shared/utils/ctrlLogger';
 import { LayoverContext } from '../contexts/LayoverContext';
 import { TabStateContext } from '../contexts/TabStateContext';
 import useActiveTabChange from '../hooks/useActiveTabChange';
@@ -63,7 +63,7 @@ function Layover() {
       sender: chrome.runtime.MessageSender,
       sendResponse: ResponseCallback
     ) => {
-      log('Received message:', message);
+      ctrlLogger.info('Received message:', message);
 
       const { type } = message;
       let newState;

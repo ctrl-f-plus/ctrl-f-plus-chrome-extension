@@ -10,7 +10,7 @@ import {
   UPDATE_LAYOVER_POSITION,
   UPDATED_TAB_STATE,
 } from '../contentScripts/types/toBackgroundMessage.types';
-import log from '../shared/utils/logger';
+import ctrlLogger from '../shared/utils/ctrlLogger';
 import {
   handleGetAllMatches,
   handleRemoveAllHighlightMatches,
@@ -36,14 +36,14 @@ async function executeContentScript() {
     toValidTabId(tab.id)
   );
 
-  orderedTabIds.forEach((tabId) => {
+  orderedTabIds.forEach(async (tabId) => {
     try {
-      chrome.scripting.executeScript({
+      await chrome.scripting.executeScript({
         target: { tabId },
         files: ['layover.js', 'highlightStyles.js'],
       });
     } catch (error) {
-      console.log(`Caught Error: `, error);
+      ctrlLogger.warn(`Caught `, error);
     }
   });
 }
@@ -51,11 +51,12 @@ async function executeContentScript() {
 async function checkOnInstalled() {
   setTimeout(async () => {
     if (InstallDetails != null) {
-      if (InstallDetails.reason === 'install') {
-        // BrowserApi.createNewTab('https://bitwarden.com/browser-start/');
+      await executeContentScript();
+      // if (InstallDetails.reason === 'install') {
+      //   // BrowserApi.createNewTab('https://bitwarden.com/browser-start/');
 
-        await executeContentScript();
-      }
+      //   await executeContentScript();
+      // }
 
       InstallDetails.reason = null;
     }
@@ -75,12 +76,12 @@ export default async function startListeners() {
   chrome.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
       try {
-        log('Received message:', message, ' \n Store: ', store);
+        ctrlLogger.info('Received message:', message, ' \n Store: ', store);
 
         const { type, payload } = message;
         const { activeWindowStore } = store;
         if (typeof activeWindowStore === undefined) {
-          console.error('activeWindowStore is undefined!');
+          ctrlLogger.error('activeWindowStore is undefined!');
         }
 
         switch (type) {
@@ -122,7 +123,7 @@ export default async function startListeners() {
         }
         return true;
       } catch (error) {
-        console.log('caught error: ', error);
+        ctrlLogger.log('caught error: ', error);
         return false;
       }
     }
@@ -157,7 +158,7 @@ export default async function startListeners() {
         }
       });
     } catch (error) {
-      console.log(error);
+      ctrlLogger.log(error);
     }
   });
 
@@ -167,16 +168,19 @@ export default async function startListeners() {
         return;
       }
 
+      ctrlLogger.log('store: ', store);
+
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
         store.activeWindowStore = createWindowStore();
         return;
       }
       activeWindowStore.setTotalTabsCount();
+      activeWindowStore.lastSearchValue = '';
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      ctrlLogger.log(error);
     }
   });
 
@@ -198,7 +202,7 @@ export default async function startListeners() {
         activeWindowStore.sendToContentScripts();
       }
     } catch (error) {
-      console.log(error);
+      ctrlLogger.log(error);
     }
   });
 
@@ -221,7 +225,7 @@ export default async function startListeners() {
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      ctrlLogger.log(error);
     }
   });
 
@@ -232,49 +236,32 @@ export default async function startListeners() {
       }
       const { activeWindowStore } = store;
       activeWindowStore.setTotalTabsCount();
-      console.log('activeWindowStore:', activeWindowStore);
+      ctrlLogger.log('activeWindowStore:', activeWindowStore);
 
-      activeWindowStore.sendToContentScripts();
+      // activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log(error);
+      ctrlLogger.log(error);
     }
   });
 
   chrome.action.onClicked.addListener(() => {
     try {
+      // await executeContentScript(); // <THIS WORKS>
       if (store === undefined) {
         return;
       }
-      const { activeWindowStore } = store;
 
+      const { activeWindowStore } = store;
+      if (activeWindowStore === undefined) {
+        store.activeWindowStore = createWindowStore();
+        return;
+      }
       activeWindowStore.toggleShowFields();
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      console.log('Caught chrome.action.onClicked.addListener Error');
-    }
-  });
-
-  chrome.commands.onCommand.addListener(async (command) => {
-    try {
-      await executeContentScript(); // <THIS WORKS>
-      if (command === 'toggle_search_layover') {
-        if (store === undefined) {
-          return;
-        }
-
-        const { activeWindowStore } = store;
-        if (activeWindowStore === undefined) {
-          store.activeWindowStore = createWindowStore();
-          return;
-        }
-
-        activeWindowStore.toggleShowFields();
-
-        activeWindowStore.sendToContentScripts();
-      }
-    } catch (error) {
-      console.log(error);
+      // ctrlLogger.log('Caught chrome.action.onClicked.addListener ', Error);
+      ctrlLogger.log('Caught chrome.action.onClicked.addListener ', Error);
     }
   });
 }

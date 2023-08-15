@@ -179,8 +179,6 @@ export const createWindowStore = (): WindowStore => {
         toValidTabId(Number(id))
       );
 
-      console.log(validatedTabIds);
-
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);
 

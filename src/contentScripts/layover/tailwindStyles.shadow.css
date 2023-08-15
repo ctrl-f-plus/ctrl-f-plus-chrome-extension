@@ -588,9 +588,6 @@ video {
 .items-center {
   align-items: center !important;
 }
-.justify-end {
-  justify-content: flex-end !important;
-}
 .gap-\[12px\] {
   gap: 12px !important;
 }
