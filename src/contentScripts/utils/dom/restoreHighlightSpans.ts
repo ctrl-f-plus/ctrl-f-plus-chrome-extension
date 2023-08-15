@@ -72,6 +72,7 @@ export default function restoreHighlightSpans(
       const spanElement: HTMLSpanElement | null = (
         element as Element
       ).querySelector('span');
+
       if (spanElement) {
         tabState.matchesObj.push(spanElement);
       }

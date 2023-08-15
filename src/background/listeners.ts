@@ -1,6 +1,5 @@
 // src/background/chromeListeners.ts
 
-import { ValidTabId } from '../contentScripts/types/tab.types';
 import {
   GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
@@ -20,12 +19,7 @@ import {
 import store from './store/databaseStore';
 import InstallDetails from './store/installDetails';
 import { createWindowStore } from './store/windowStore';
-import {
-  getActiveTabId,
-  getOrderedTabs,
-  queryAllTabIds,
-  toValidTabId,
-} from './utils/chromeApiUtils';
+import { getActiveTabId, queryAllTabIds } from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -178,7 +172,7 @@ export default async function startListeners() {
         return;
       }
       activeWindowStore.setTotalTabsCount();
-      activeWindowStore.lastSearchValue = '';
+      // activeWindowStore.lastSearchValue = '';
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
@@ -238,9 +232,9 @@ export default async function startListeners() {
       }
       const { activeWindowStore } = store;
       activeWindowStore.setTotalTabsCount();
-      ctrlLogger.log('activeWindowStore:', activeWindowStore);
 
       activeWindowStore.sendToContentScripts();
+      // activeWindowStore.lastSearchValue = '';
     } catch (error) {
       ctrlLogger.log(error);
     }
