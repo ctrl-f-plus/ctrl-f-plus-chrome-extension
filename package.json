@@ -1,17 +1,14 @@
 {
-  "name": "Ctrl-F Plus - Multi-Tab Search",
+  "name": "ctrl-f-plus",
   "version": "1.0.4",
-  "description": "Find text across all open tabs! The Ctrl-F Plus browser extension enables cross-tab search functionality in your browser window 🔍",
-  "scripts": {
-    "start": "npm run build:css && webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
-    "build": "npm run build:css && webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
-    "build:css": "postcss src/tailwind.css -o src/contentScripts/layover/tailwindStyles.shadow.css",
-    "build:test:e2e": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=true",
-    "test": "jest --verbose --config jest.config.js",
-    "test:e2e": "webpack --config webpack.dev.js --env E2E_TESTING=true && jest --verbose --config jest.e2e.config.js",
-    "e2e:slow": "SLOW_MO=250 jest",
-    "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
-    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
+  "description": "Find words or phrases across ALL your open tabs! 🔍",
+  "author": "Benjamin Chavez-Weiss",
+  "license": "MIT",
+  "bugs": {},
+  "homepage": "https://ctrl-f.plus/",
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/ctrl-f-plus-chrome-extension"
   },
   "repository": {
     "type": "git",
@@ -27,13 +24,16 @@
     "jest",
     "puppeteer"
   ],
-  "author": "Benjamin Weiss-Chavez",
-  "license": "MIT",
-  "bugs": {},
-  "homepage": "https://ctrl-f.plus/",
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/ctrl-f-plus-chrome-extension"
+  "scripts": {
+    "start": "npm run build:css && webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=false",
+    "build": "npm run build:css && webpack --watch --progress --config webpack.prod.js --env E2E_TESTING=false",
+    "build:css": "postcss src/tailwind.css -o src/contentScripts/layover/tailwindStyles.shadow.css",
+    "build:test:e2e": "webpack --watch --progress --config webpack.dev.js --env E2E_TESTING=true",
+    "test": "jest --verbose --config jest.config.js",
+    "test:e2e": "webpack --config webpack.dev.js --env E2E_TESTING=true && jest --verbose --config jest.e2e.config.js",
+    "e2e:slow": "SLOW_MO=250 jest",
+    "lint": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}' '__tests__/**/*.{js,jsx,ts,tsx}'",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
@@ -84,8 +84,6 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.4.0",
-    "@heroicons/react": "^2.0.18",
     "autoprefixer": "^10.4.14",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",

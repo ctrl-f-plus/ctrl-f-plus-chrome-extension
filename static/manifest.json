@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Ctrl-F Plus - Multi-Tab Search",
-  "description": "Find text across all open tabs! The Ctrl-F Plus browser extension enables cross-tab search functionality in your browser window 🔍",
+  "name": "Ctrl-F Plus: Ctrl + F Across All Tabs",
+  "short_name": "Ctrl-F Plus",
+  "description": "Find words or phrases across ALL your open tabs! 🔍",
   "version": "1.0.4",
+  "author": "Ctrl-F Plus",
   "homepage_url": "https://ctrl-f.plus",
   "icons": {
     "16": "icons/icon16.png",
