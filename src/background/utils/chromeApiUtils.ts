@@ -1,6 +1,8 @@
 // src/background/utils/chromeApiUtils.ts
 import { TabId, ValidTabId } from '../../contentScripts/types/tab.types';
 import { getAllStoredTabs } from './storage';
+import InstallDetails from '../store/installDetails';
+import ctrlLogger from '../../shared/utils/ctrlLogger';
 
 /**
  * Chrome Api: Window Utils
@@ -108,4 +110,28 @@ export async function queryAllTabIds(): Promise<ValidTabId[]> {
       }
     });
   });
+}
+
+export async function executeContentScripts() {
+  const tabIds = await queryAllTabIds();
+
+  tabIds.forEach(async (tabId) => {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        files: ['layover.js', 'highlightStyles.js'],
+      });
+    } catch (error) {
+      ctrlLogger.warn(`Caught `, error);
+    }
+  });
+}
+
+export async function checkOnInstalled() {
+  setTimeout(async () => {
+    if (InstallDetails != null) {
+      await executeContentScripts();
+      InstallDetails.reason = null;
+    }
+  }, 100);
 }

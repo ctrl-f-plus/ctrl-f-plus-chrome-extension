@@ -19,51 +19,58 @@ import {
 import store from './store/databaseStore';
 import InstallDetails from './store/installDetails';
 import { createWindowStore } from './store/windowStore';
-import { getActiveTabId, queryAllTabIds } from './utils/chromeApiUtils';
+import { checkOnInstalled, getActiveTabId } from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let csLoaded = false;
 
-async function executeContentScript() {
-  const tabIds = await queryAllTabIds();
-
-  tabIds.forEach(async (tabId) => {
-    try {
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        files: ['layover.js', 'highlightStyles.js'],
-      });
-    } catch (error) {
-      ctrlLogger.warn(`Caught `, error);
-    }
-  });
-}
-
-async function checkOnInstalled() {
-  setTimeout(async () => {
-    if (InstallDetails != null) {
-      await executeContentScript();
-      // if (InstallDetails.reason === 'install') {
-      //   // BrowserApi.createNewTab('https://bitwarden.com/browser-start/');
-
-      //   await executeContentScript();
-      // }
-
-      InstallDetails.reason = null;
-    }
-  }, 100);
-}
-
 export function startOnInstalledListener() {
   chrome.runtime.onInstalled.addListener((details) => {
     clearLocalStorage();
     InstallDetails.reason = details.reason;
+
+    chrome.contextMenus.create({
+      id: 'KEYBOARD_SHORTCUT_SETUP',
+      title: 'Set Keyboard Shortcut',
+      contexts: ['action'],
+    });
+
+    chrome.contextMenus.create({
+      id: 'GITHUB',
+      title: 'Open Source: View on GitHub',
+      contexts: ['action'],
+    });
+
+    chrome.contextMenus.create({
+      id: 'DONATE',
+      title: 'Donate',
+      contexts: ['action'],
+    });
   });
 }
 
 export default async function startListeners() {
   await checkOnInstalled();
+
+  chrome.contextMenus.onClicked.addListener((info, tab) => {
+    switch (info.menuItemId) {
+      case 'DONATE':
+        chrome.tabs.create({
+          url: 'https://opencollective.com/ctrl-f-plus-chrome-extension',
+        });
+        break;
+      case 'KEYBOARD_SHORTCUT_SETUP':
+        chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+        break;
+      case 'GITHUB':
+        chrome.tabs.create({
+          url: 'https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension',
+        });
+        break;
+      default:
+    }
+  });
 
   chrome.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
@@ -161,14 +168,11 @@ export default async function startListeners() {
     }
   });
 
-  // TODO:***
   chrome.tabs.onCreated.addListener(() => {
     try {
       if (store === undefined) {
         return;
       }
-
-      // ctrlLogger.log('store: ', store);
 
       const { activeWindowStore } = store;
       if (activeWindowStore === undefined) {
@@ -246,7 +250,7 @@ export default async function startListeners() {
 
   chrome.action.onClicked.addListener(() => {
     try {
-      // await executeContentScript();
+      // await executeContentScripts();
       if (store === undefined) {
         return;
       }
