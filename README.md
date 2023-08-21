@@ -1,6 +1,13 @@
-# Ctrl-F Plus
+<div align="center">
+  <img src="static/icons/FINAL ICON.png" width="100px" />
+  <h1>Ctrl-F Plus</h1>
+<!-- # Ctrl-F Plus -->
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+![GitHub top language](https://img.shields.io/github/languages/top/ctrl-f-plus/ctrl-f-plus-chrome-extension)
+![GitHub](https://img.shields.io/github/license/ctrl-f-plus/ctrl-f-plus-chrome-extension)
+
+</div>
 
 <p align="center">
   <img src="assets/ctrl-f-resized-gif.gif" alt="Demo GIF">
