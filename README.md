@@ -1,5 +1,6 @@
 <div align="center">
-  <img src="static/icons/FINAL ICON.png" width="100px" />
+  <a href="https://ctrl-f.plus" target="_blank" rel="noreferrer noopener"><img src="static/icons/FINAL ICON.png" width="100px" alt="Ctrl-F Plus' Logo" /></a>
+  
   <h1>Ctrl-F Plus</h1>
 <!-- # Ctrl-F Plus -->
 
