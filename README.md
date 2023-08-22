@@ -54,7 +54,7 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 2. Unzip the file.
 3. Open `chrome://extensions` in Chrome / `edge://extensions` in Microsoft Edge.
 4. Enable developer mode (top right corner).
-5. Click on `Load unpacked` and select the **unzipped** dist folder. **TODO:TODO:TODO:**
+5. Click on `Load unpacked` and select the **unzipped** dist folder.
 6. Hit `Ctrl+Shift+F` on your keyboard or click the extension icon to start using!
 
 :warning: If the keyboard command does not work see [setting keyboard shortcut]() for additional instructions.
