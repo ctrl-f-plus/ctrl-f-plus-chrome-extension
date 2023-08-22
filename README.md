@@ -13,13 +13,12 @@
 
 <div align="center">
 
-<a href="https://ctrl-f.plus/" style="color: #128da1;" target="_blank" rel="noreferrer noopener">Website</a> |
+<a href="https://ctrl-f.plus/" target="_blank" style="color: #128da1;" target="_blank" rel="noreferrer noopener">Website</a> |
 <a href="#installation" style="color: #128da1;">Installation</a> |
-<a href="#getting-started" style="color: #128da1;">Getting Started</a> |
 <a href="#contributing" style="color: #128da1;">Contributing</a> |
 <a href="#other-links" style="color: #128da1;">Other Links</a> |
+<a href="#questions" style="color: #128da1;">Questions</a> |
 <a href="#support" style="color: #128da1;">Support <span style="color: #05fdb4;">❤</span></a>
-
 
 
 </div>
@@ -76,11 +75,11 @@ We're thrilled to have you contribute to Ctrl-F Plus! Whether you're looking to 
 - [Security Reporting Guidelines](SECURITY.md) <!--To report a security issue, please follow our -->
 - [Privacy Policy](Privacy.md)
 
-## Questions / Contact
+## Questions
 
 [support@ctrl-f.plus](support@ctrl-f.plus)
 
-## Support ❤
+## Support
 
 Any [donations](https://opencollective.com/ctrl-f-plus-chrome-extension) are highly appreciated. <3
 
