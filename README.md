@@ -16,10 +16,7 @@
 <a href="https://ctrl-f.plus/" style="color: #128da1;" target="_blank" rel="noreferrer noopener">Website</a> |
 <a href="#installation" style="color: #128da1;">Installation</a> |
 <a href="#getting-started" style="color: #128da1;">Getting Started</a> |
-<!-- <a href="#contributing" style="color: #128da1;">Contributing</a> | -->
-<a rel="noreferrer noopener" href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh/">
-  <img alt="Chrome Web Store" src="./assets//Ctrl-F Plus - Assets/Contributing.png"/>
-</a> |
+<a href="#contributing" style="color: #128da1;">Contributing</a> |
 <a href="#other-links" style="color: #128da1;">Other Links</a> |
 <a href="#support" style="color: #128da1;">Support <span style="color: #05fdb4;">❤</span></a>
 
