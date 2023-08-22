@@ -1,4 +1,4 @@
-:keyboard: # KEYBOARD SHORTCUT SETUP FOR CTRL-F PLUS:
+# :keyboard: KEYBOARD SHORTCUT SETUP FOR CTRL-F PLUS:
 
   1. Install "Ctrl-F Plus" in Chrome.
   2. Pin the extension:
