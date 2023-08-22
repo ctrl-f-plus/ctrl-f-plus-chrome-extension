@@ -4,9 +4,11 @@
   <h1>Ctrl-F Plus</h1>
 <!-- # Ctrl-F Plus -->
 
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
-![GitHub top language](https://img.shields.io/github/languages/top/ctrl-f-plus/ctrl-f-plus-chrome-extension)
-![GitHub](https://img.shields.io/github/license/ctrl-f-plus/ctrl-f-plus-chrome-extension)
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-%2348D0A8?style=for-the-badge)](https://makeapullrequest.com)
+![GitHub top language](https://img.shields.io/github/languages/top/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)
+
 
 </div>
 
