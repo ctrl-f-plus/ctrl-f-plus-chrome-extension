@@ -13,16 +13,19 @@
 
 <div align="center">
 
-
 <a href="https://ctrl-f.plus/" style="color: #128da1;" target="_blank" rel="noreferrer noopener">Website</a> |
 <a href="#installation" style="color: #128da1;">Installation</a> |
 <a href="#getting-started" style="color: #128da1;">Getting Started</a> |
-<a href="#contributing" style="color: #128da1;">Contributing</a> |
+<!-- <a href="#contributing" style="color: #128da1;">Contributing</a> | -->
+<a rel="noreferrer noopener" href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh/">
+  <img alt="Chrome Web Store" src="./assets//Ctrl-F Plus - Assets/Contributing.png"/>
+</a> |
 <a href="#other-links" style="color: #128da1;">Other Links</a> |
 <a href="#support" style="color: #128da1;">Support <span style="color: #05fdb4;">❤</span></a>
 
-</div>
 
+
+</div>
 
 <!-- <div align="center">
   <p>Find words and phrases across **ALL** your open tabs! 🔍</p>
@@ -32,17 +35,16 @@
   <img src="assets/ctrl-f-resized-gif.gif" alt="Demo GIF">
 </p>
 
-
-
 ## About
 
 Ctrl-F Plus is an open source browser extension that enables cross-tab search functionality in a browser window by extending the browser's native Ctrl + F Find Feature (Cmd + F on Mac). Now you can find a specific word or phrase on any of your browser tabs without having to search each tab separately.
 
 Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Opera, Vivaldi.
 
-  ### Tech Stack
-  - Typescript
-  - Tailwind
+### Tech Stack
+
+- Typescript
+- Tailwind
 
 ## Installation
 
@@ -71,7 +73,6 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 ## Contributing
 
 We're thrilled to have you contribute to Ctrl-F Plus! Whether you're looking to fix bugs, add new features, or improve our documentation, your efforts are greatly appreciated. Please see our [contributing guidelines](CONTRIBUTING.md) for a detailed guide on how to get started. Remember, by participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
-
 
 ## Other Links
 
