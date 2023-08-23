@@ -48,7 +48,7 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 
 ### Chrome, Microsoft Edge, etc.
 
-1. Download the most recent prebuilt zip file from [Build - 1.0.4.zip](/Build%20-%201.0.4.zip).
+1. Download the most recent prebuilt zip file from [build-master.zip](archive/build-master.zip).
 2. Unzip the file.
 3. Open `chrome://extensions` in Chrome / `edge://extensions` in Microsoft Edge.
 4. Enable developer mode (top right corner).
@@ -86,8 +86,8 @@ Any [donations](https://opencollective.com/ctrl-f-plus-chrome-extension) are hig
 Here are the other ways to support/cheer this project:
 
 - Starring this repo.
-  <!-- - Joining us on [Discord](https://discord.com/invite/CtuYV47nuJ). -->
-  <!-- - Following @daniel31x13 on [Mastodon](https://mastodon.social/@daniel31x13), [Twitter](https://twitter.com/daniel31x13) and [GitHub](https://github.com/daniel31x13). -->
+  <!-- - Joining us on [Discord](). -->
+  <!-- - Following @<username> on [Mastodon](https://mastodon.social/@<username>), [Twitter](https://twitter.com/<username>) and [GitHub](https://github.com/d<username>). -->
 - Referring Ctrl-F Plus to a friend.
 
 If you did any of the above, danke schön :pray:
