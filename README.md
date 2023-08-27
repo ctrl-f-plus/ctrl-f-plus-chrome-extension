@@ -59,12 +59,12 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 
 ### Build From Source
 
-1. `npm i` to install dependencies
-2. `npm start` to start running the fast development mode Webpack build process that bundle files into the `dist` folder
+1. `pnpm i` to install dependencies
+2. `pnpm start` to start running the fast development mode Webpack build process that bundle files into the `dist` folder
 
 ### Production Build
 
-1. `npm run build` to generate a minimized production build in the `dist` folder
+1. `pnpm run build` to generate a minimized production build in the `dist` folder
 
 ## Contributing
 
