@@ -16,7 +16,7 @@ import {
   RemoveAllStylesMsg,
 } from '../../types/toBackgroundMessage.types';
 import sendMessageToBackground from '../../utils/messaging/sendMessageToBackground';
-import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from './Icons2';
+import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from './Icons';
 
 type SearchInputProps = {
   focus: boolean;
@@ -109,7 +109,6 @@ function SearchInput({ focus }: SearchInputProps) {
           type="text"
           value={localSearchValue}
           onChange={handleInputChange}
-          // grow
           className="leading-6-pp w-full shrink bg-transparent font-sans text-base-pp text-white placeholder:text-gray-400 focus:outline-none"
           placeholder="Find on page"
         />
@@ -133,10 +132,7 @@ function SearchInput({ focus }: SearchInputProps) {
             </div>
           </div>
 
-          <div
-            // border-gray-500
-            className="border-w ml-0 mr-0 h-[28px] border-l border-gray-400 pl-0 pr-0"
-          />
+          <div className="border-w ml-0 mr-0 h-[28px] border-l border-gray-400 pl-0 pr-0" />
 
           <button
             onClick={previousMatch}
@@ -167,7 +163,6 @@ function SearchInput({ focus }: SearchInputProps) {
             type="button"
             id="close-layover-btn"
             data-testid="close-layover-btn"
-            // active:bg-[#ffffff]
             className="inline-flex rounded-full p-[2px] text-white hover:bg-gray-500 focus:ring-2 focus:ring-bittersweet active:ring-2 active:ring-bittersweet"
           >
             <span className="sr-only">Dismiss</span>
