@@ -1,7 +1,7 @@
+// __tests__/e2e/e2e.test.ts
 /* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-// __tests__/e2e/e2e.test.ts
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 import puppeteer, { Browser, Page } from 'puppeteer';
@@ -14,7 +14,6 @@ import {
   countQueryMatches,
   getActiveTab,
   getActiveTabIndex,
-  getInnerTextFromSelector,
   navigateMatchesWithEnterKey,
   navigateMatchesWithNextButton,
   navigateMatchesWithPreviousButton,
@@ -22,14 +21,13 @@ import {
   queryShadowRoot,
   submitSearchForm,
   typeInSearch,
-  validateSearchInput,
 } from './helpers';
 
 // import { getInputValueFromSelector } from './helper';
 const EXTENSION_PATH = 'dist/';
 // const GOOD_SEARCH_QUERY = 'chavez';
 const GOOD_SEARCH_QUERY = 'ben';
-const BAD_SEARCH_QUERY = 'falseSearchQuery';
+// const BAD_SEARCH_QUERY = 'falseSearchQuery';
 
 // TODO: NEED TO ADD ACTUAL URLs. May need to add them to the tabScenarios' objects
 
@@ -146,7 +144,8 @@ describe('Tab Navigation Extension', () => {
         const { testUrls } = scenario;
         browserArray.push(browser);
         pages = await browser.pages();
-        page = pages[0];
+        [page] = pages;
+
         await page.goto(testUrls[0]);
 
         for (let i = 1; i < scenario.tabCount; i += 1) {
@@ -188,14 +187,6 @@ describe('Tab Navigation Extension', () => {
 
       describe('Count Display', () => {
         test('Total Matches Count is accurate', async () => {
-          // const matchingCounts = await getInnerTextFromSelector(
-          //   page,
-          //   MATCHING_COUNTS_SELECTOR
-          // );
-
-          // totalMatchesCount = parseInt(matchingCounts.split('/')[1], 10);
-
-          // expect(totalMatchesCount).toBe(totalHighlightCount);
           const shadowRoot = await queryShadowRoot(page);
           const matchingCountsElement = await shadowRoot.$(
             MATCHING_COUNTS_SELECTOR
@@ -280,7 +271,7 @@ describe('Tab Navigation Extension', () => {
             pages,
             query
           );
-          // expect(isOverlayVisible(page)).toBeFalsy();
+
           expect(totalHighlightCount).toBe(0);
         });
       });

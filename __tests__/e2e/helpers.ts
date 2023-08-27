@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 // __tests__/e2e/helpers.ts
 
@@ -24,11 +23,6 @@ export const INPUT_SELECTOR = '[data-testid="inputForm"]';
 export const MATCHING_COUNTS_SELECTOR = '[data-testid="matching-counts"]';
 export const NEXT_BUTTON_SELECTOR = '[data-testid="next-match-btn"]';
 export const PREVIOUS_BUTTON_SELECTOR = '[data-testid="previous-match-btn"]';
-
-// export async function typeInSearch(page: Page, query: string) {
-//   await page.waitForSelector(INPUT_SELECTOR);
-//   await page.type(INPUT_SELECTOR, query);
-// }
 
 export async function queryShadowRoot(page: Page) {
   const shadowHost = await page.$(SHADOW_HOST_SELECTOR);
@@ -97,7 +91,9 @@ export async function countMatchesOnPage(page: Page, query: string) {
 export async function countQueryMatches(pages: Page[], query: string) {
   let totalMatches = 0;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const page of pages) {
+    // eslint-disable-next-line no-await-in-loop
     const matchCount = await countMatchesOnPage(page, query);
     totalMatches += matchCount;
   }
@@ -106,7 +102,6 @@ export async function countQueryMatches(pages: Page[], query: string) {
 }
 
 export async function countHighlightsOnPage(page: Page, query: string) {
-  // const bodyContent = await page.evaluate(() => document.body.innerText);
   const content = await page.content();
 
   const highlightRegex = new RegExp(
@@ -121,6 +116,7 @@ export async function countHighlightsOnPage(page: Page, query: string) {
 export async function countHighlightedMatches(pages: Page[], query: string) {
   let totalHighlights = 0;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const page of pages) {
     const totalHighlightCount = await countHighlightsOnPage(page, query);
     totalHighlights += totalHighlightCount;
@@ -133,24 +129,18 @@ export async function getInnerTextFromSelector(
   page: Page,
   selector: string = MATCHING_COUNTS_SELECTOR
 ) {
-  // await page.waitForSelector(MATCHING_COUNTS_SELECTOR);
-  // return page.$eval(selector, (el) => (el as HTMLElement).innerText);
   const shadowRoot = await queryShadowRoot(page);
   const element = await shadowRoot.$(selector);
   return page.evaluate((el) => (el as HTMLElement).innerText, element);
 }
 
 export async function navigateMatchesWithNextButton(page: Page) {
-  // await page.waitForSelector(NEXT_BUTTON_SELECTOR);
-  // await page.click(NEXT_BUTTON_SELECTOR);
-
   const shadowRoot = await queryShadowRoot(page);
   const nextButton = await shadowRoot.$(NEXT_BUTTON_SELECTOR);
   await nextButton.click();
 }
 
 export async function navigateMatchesWithEnterKey(page: Page) {
-  // await page.focus(INPUT_SELECTOR);
   const shadowRoot = await queryShadowRoot(page);
   const inputElement = await shadowRoot.$(INPUT_SELECTOR);
 
@@ -162,10 +152,6 @@ export async function navigateMatchesWithEnterKey(page: Page) {
 }
 
 export async function navigateMatchesWithPreviousButton(page: Page) {
-  // await page.waitForSelector(PREVIOUS_BUTTON_SELECTOR);
-  // await page.click(PREVIOUS_BUTTON_SELECTOR);
-  // await page.waitForTimeout(1000);
-
   const shadowRoot = await queryShadowRoot(page);
   const previousButton = await shadowRoot.$(PREVIOUS_BUTTON_SELECTOR);
 
@@ -213,6 +199,7 @@ export async function getHighlightFocusMatchGlobalIndex(
   pages: Page[]
 ): Promise<number> {
   let globalIndex = 0;
+  // eslint-disable-next-line no-restricted-syntax
   for (const page of pages) {
     if (page === currentPage) {
       break;
@@ -297,20 +284,13 @@ export async function navigationTest(
     let expectedValue;
     if (isNavigatingFowards) {
       expectedValue = (previousHighlightIndex % totalMatchesCount) + 1; //* *FWD - 1-indexed
-      // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
     } else {
       expectedValue =
         (previousHighlightIndex - 1 + totalMatchesCount) % totalMatchesCount ||
         totalMatchesCount; //* *BCKWD
     }
 
-    expect(currentHighlightIndex).toBe(
-      expectedValue
-      // (previousHighlightIndex % totalMatchesCount) + 1 //**FWD - 1-indexed
-      // (previousHighlightIndex + 1) % totalMatchesCount //**FWD - 0-indexed
-      // (previousHighlightIndex - 1 + totalMatchesCount) %
-      //   totalMatchesCount || totalMatchesCount //**BCKWD
-    );
+    expect(currentHighlightIndex).toBe(expectedValue);
   }
 
   let expectedNavPath = expectedTabPath;
@@ -320,8 +300,6 @@ export async function navigationTest(
 
   expect(navigatedTabPath2).toStrictEqual(expectedNavPath);
 }
-
-/// //////
 
 export function parseMatchingCounts(matchingCounts: string) {
   const [currentMatchIndex, totalMatchesCount] = matchingCounts
@@ -371,11 +349,6 @@ export async function navigateToLastMatch(
 }
 
 export async function searchAndHighlightMatches(page: Page, query: string) {
-  // await page.waitForSelector(INPUT_SELECTOR);
-  // await page.type(INPUT_SELECTOR, query);
-
-  // const inputValue = await getInputValueFromSelector(page);
-
   const shadowRoot = await queryShadowRoot(page);
   const inputForm = await shadowRoot.$(INPUT_SELECTOR);
   await inputForm.type(query);
@@ -404,7 +377,6 @@ export async function getMatchCountsFromHtml(page: Page, query: string) {
   return { highlightCount, searchQueryCount };
 }
 
-// TESTS
 export function verifyAllMatchesAreHighlighted(
   highlightCount: number,
   searchQueryCount: number
