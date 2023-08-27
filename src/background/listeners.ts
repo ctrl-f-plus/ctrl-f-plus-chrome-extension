@@ -93,12 +93,9 @@ export default async function startListeners() {
 
             await clearAllStoredTabs();
             await handleRemoveAllHighlightMatches(sendResponse);
-            // handleRemoveAllHighlightMatches(sendResponse);
 
             break;
           case GET_ALL_MATCHES:
-            // return handleGetAllMatches(payload.searchValue);
-            // activeWindowStore.resetPartialStore();
             activeWindowStore.update({
               searchValue: payload.searchValue,
               lastSearchValue: payload.searchValue,
