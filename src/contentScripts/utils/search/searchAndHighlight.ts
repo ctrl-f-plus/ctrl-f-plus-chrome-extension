@@ -35,8 +35,8 @@ function createCustomTreeWalker() {
   );
 }
 
-function updateMatchesObject(span: HTMLElement, tabState?: TabState) {
-  tabState?.matchesObj.push(span);
+function updatequeryMatchesect(span: HTMLElement, tabState?: TabState) {
+  tabState?.queryMatches.push(span);
 }
 
 function getAllTextNodesToProcess(regex: RegExp): Node[] {
@@ -88,9 +88,9 @@ function processTextNode(textNode: Node, regex: RegExp, tabState?: TabState) {
 
     const span = createSpan([HIGHLIGHT_CLASS], matchText);
 
-    updateMatchesObject(span, tabState);
+    updatequeryMatchesect(span, tabState);
 
-    tabState.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.matchesObj.push(span);
+    tabState.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.queryMatches.push(span);
 
     fragment.appendChild(span);
 

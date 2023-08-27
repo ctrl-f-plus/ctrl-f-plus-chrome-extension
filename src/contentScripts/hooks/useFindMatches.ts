@@ -41,7 +41,7 @@ export default function useFindMatches() {
 
       newState.currentIndex = 0;
       newState.matchesCount = 0;
-      newState.matchesObj = [];
+      newState.queryMatches = [];
 
       await searchAndHighlight(newState, searchValue);
 
@@ -55,17 +55,17 @@ export default function useFindMatches() {
     (state: TabState, options?: UpdateHighlightsOptions): TabState => {
       const { previousIndex, endOfTab } = options || {};
       const newState = { ...state };
-      if (!newState.matchesObj.length) {
+      if (!newState.queryMatches.length) {
         return newState;
       }
 
       if (typeof previousIndex === 'number') {
-        const prevMatch = newState.matchesObj[previousIndex];
+        const prevMatch = newState.queryMatches[previousIndex];
         prevMatch.classList.remove(HIGHLIGHT_FOCUS_CLASS);
       }
 
       if (!endOfTab && typeof newState.currentIndex !== 'undefined') {
-        const curMatch = newState.matchesObj[newState.currentIndex];
+        const curMatch = newState.queryMatches[newState.currentIndex];
 
         curMatch.classList.add(HIGHLIGHT_FOCUS_CLASS);
         scrollToElement(curMatch);
@@ -98,7 +98,7 @@ export default function useFindMatches() {
         traversalDirection === Direction.NEXT
           ? newLocalTabState.currentIndex === 0
           : newLocalTabState.currentIndex ===
-            localTabState.matchesObj.length - 1;
+            localTabState.queryMatches.length - 1;
 
       if (isEnd) {
         // removes the focus class from the last match
@@ -151,11 +151,11 @@ export default function useFindMatches() {
   const nextMatch = useCallback(
     () =>
       navigateMatches(Direction.NEXT, (currentState: TabState) =>
-        currentState.matchesObj.length
+        currentState.queryMatches.length
           ? calculateTargetIndex(
               Direction.NEXT,
               currentState.currentIndex,
-              currentState.matchesObj.length
+              currentState.queryMatches.length
             )
           : 0
       ),
@@ -168,7 +168,7 @@ export default function useFindMatches() {
         calculateTargetIndex(
           Direction.PREVIOUS,
           currentState.currentIndex,
-          currentState.matchesObj.length
+          currentState.queryMatches.length
         )
       ),
     [navigateMatches]

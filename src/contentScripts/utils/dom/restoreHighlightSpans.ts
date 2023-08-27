@@ -61,8 +61,8 @@ export default function restoreHighlightSpans(
   xPathTabState: XPathTabState,
   restoreHighlights: boolean
 ): TabState {
-  const { matchesObj: tabXPaths, ...rest } = xPathTabState;
-  const tabState: TabState = { ...rest, matchesObj: [] };
+  const { queryMatches: tabXPaths, ...rest } = xPathTabState;
+  const tabState: TabState = { ...rest, queryMatches: [] };
 
   if (!restoreHighlights) {
     return tabState;
@@ -79,7 +79,7 @@ export default function restoreHighlightSpans(
       ).querySelector('span');
 
       if (spanElement) {
-        tabState.matchesObj.push(spanElement);
+        tabState.queryMatches.push(spanElement);
       }
     }
   });

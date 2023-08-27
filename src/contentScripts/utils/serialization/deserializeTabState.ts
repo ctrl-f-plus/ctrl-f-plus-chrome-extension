@@ -14,7 +14,7 @@ export default function deserializeTabState(
 
   const deserializedState: XPathTabState = {
     ...otherProperties,
-    matchesObj: deserializedXPaths,
+    queryMatches: deserializedXPaths,
   };
 
   return deserializedState;

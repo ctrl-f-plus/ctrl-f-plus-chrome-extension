@@ -40,8 +40,8 @@ function getXPath(element: Node): string {
   }[${siblingIndex}]`;
 }
 
-function generateXPaths(matchesObj: HTMLSpanElement[]): XPathMatchObject[] {
-  const xpaths: XPathMatchObject[] = matchesObj.map((el) => {
+function generateXPaths(queryMatches: HTMLSpanElement[]): XPathMatchObject[] {
+  const xpaths: XPathMatchObject[] = queryMatches.map((el) => {
     const xpath: string = getXPath(el.parentNode as Node);
     const text = el.textContent || '';
     const spanClasses = Array.from(el.classList);
@@ -54,8 +54,8 @@ function generateXPaths(matchesObj: HTMLSpanElement[]): XPathMatchObject[] {
 export default function serializeTabState(
   shallowStateObject: TabState
 ): SerializedTabState {
-  const { matchesObj, ...otherProperties } = shallowStateObject;
-  const xpaths: XPathMatchObject[] = generateXPaths(matchesObj);
+  const { queryMatches, ...otherProperties } = shallowStateObject;
+  const xpaths: XPathMatchObject[] = generateXPaths(queryMatches);
   const serializedXPaths: JSONString = JSON.stringify(xpaths);
   const serializedState: SerializedTabState = {
     ...otherProperties,

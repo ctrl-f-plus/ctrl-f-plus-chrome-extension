@@ -184,8 +184,6 @@ export const createWindowStore = (): WindowStore => {
         .map((tab) => tab.id)
         .filter((id): id is ValidTabId => id !== undefined);
 
-      // console.log(validatedTabIds);
-
       const promises = (validatedTabIds || []).map((tabId) => {
         const tabStore = this.createTabStore(tabId);
 

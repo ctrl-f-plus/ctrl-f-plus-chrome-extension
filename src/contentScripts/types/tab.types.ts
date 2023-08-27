@@ -19,11 +19,11 @@ export interface XPathMatchObject {
 }
 
 export interface XPathTabState extends Tab {
-  matchesObj: XPathMatchObject[];
+  queryMatches: XPathMatchObject[];
 }
 
 export interface TabState extends Tab {
-  matchesObj: HTMLSpanElement[];
+  queryMatches: HTMLSpanElement[];
 }
 export interface BasicTabState {
   tabId: ValidTabId;

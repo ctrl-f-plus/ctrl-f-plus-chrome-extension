@@ -25,7 +25,7 @@ export const TabStateContext = createContext<TabStateContextData>({
     tabId: undefined,
     currentIndex: 0,
     matchesCount: undefined,
-    matchesObj: [],
+    queryMatches: [],
     globalMatchIdxStart: undefined,
   },
   setTabStateContext: () => {},

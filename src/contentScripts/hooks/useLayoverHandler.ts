@@ -23,7 +23,7 @@ const initialState: LayoverState = {
     tabId: undefined as TabId,
     currentIndex: 0,
     matchesCount: 0,
-    matchesObj: [],
+    queryMatches: [],
     globalMatchIdxStart: undefined,
   },
 };

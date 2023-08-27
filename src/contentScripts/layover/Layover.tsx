@@ -88,7 +88,7 @@ function Layover() {
           const { searchValue, foundFirstMatch } = message.payload;
           newState = await findAllMatches(searchValue);
 
-          const hasMatch = newState.matchesObj.length > 0;
+          const hasMatch = newState.queryMatches.length > 0;
 
           if (hasMatch && !foundFirstMatch) {
             newState = updateHighlights(newState, { endOfTab: false });
