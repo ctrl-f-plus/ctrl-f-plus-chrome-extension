@@ -38,7 +38,8 @@ export function TabStateContextProvider({
 
   const contextValue = useMemo(
     () => ({ tabStateContext, setTabStateContext }),
-    // [tabStateContext, setTabStateContext]
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [tabStateContext]
   );
 

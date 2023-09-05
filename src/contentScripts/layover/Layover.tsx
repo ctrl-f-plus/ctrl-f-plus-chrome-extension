@@ -56,6 +56,7 @@ function Layover() {
       const tabState = restoreHighlightSpans(xPathTabState, restoreHighlights);
       setTabStateContext(tabState);
     },
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
