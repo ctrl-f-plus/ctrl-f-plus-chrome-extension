@@ -15,7 +15,7 @@
 
 <a href="https://ctrl-f.plus/" target="_blank" style="color: #128da1;" target="_blank" rel="noreferrer noopener">Website</a> |
 <a href="#installation" style="color: #128da1;">Installation</a> |
-<a href="https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/blob/master/.github/CONTRIBUTING.md" style="color: #128da1;">Contributing</a> |
+<a href="#contributing" style="color: #128da1;">Contributing</a> |
 <a href="#other-links" style="color: #128da1;">Other Links</a> |
 <a href="#questions" style="color: #128da1;">Questions</a> |
 <a href="#support" style="color: #128da1;">Support <span style="color: #05fdb4;">❤</span></a>
@@ -68,7 +68,7 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 
 ## Contributing
 
-We're thrilled to have you contribute to Ctrl-F Plus! Whether you're looking to fix bugs, add new features, or improve our documentation, your efforts are greatly appreciated. Please see our [contributing guidelines](CONTRIBUTING.md) for a detailed guide on how to get started. Remember, by participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
+We're thrilled to have you contribute to Ctrl-F Plus! Whether you're looking to fix bugs, add new features, or improve our documentation, your efforts are greatly appreciated. Please see our [contributing guidelines](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/blob/master/.github/CONTRIBUTING.md) for a detailed guide on how to get started. Remember, by participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Other Links
 
