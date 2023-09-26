@@ -45,16 +45,11 @@ function SearchInput({ focus }: SearchInputProps) {
   const { nextMatch, previousMatch } = useFindMatches();
   const { handleSearch } = useSearchHandler();
 
-  // TODO: Review to decide if you want to handle this in another way
   const closeSearchLayover = () => {
     sendMessageToBackground<RemoveAllStylesMsg>({ type: REMOVE_ALL_STYLES });
   };
 
-  // TODO: CLEANUP:
-  //  - Add debounce
-  //  - remove lastSearchValue and all related code
-  //  - try adding e.preventDefault to handleNext()
-  //  - update searchInput count
+  // TODO: Add debounce
   const handleSearchSubmit = async (e: FormEvent) => {
     e.preventDefault();
 

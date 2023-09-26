@@ -1,22 +1,4 @@
-/* eslint-disable no-console */
-// src/helpers/CtrlLogger.ts
-
-// export default function ctrlLog(
-//   // message: string
-//   // level?: 'info' | 'warn' | 'error' = 'info',
-//   ...messages: any[]
-// ) {
-//   if (process.env.NODE_ENV === 'development') {
-//     // console[level](message);
-
-//     // eslint-disable-next-line no-console
-//     console.log(...messages);
-//   }
-// }
-
-// interface CtrlLogger extends Console {
-//   log: (...args: unknown[]) => void;
-// }
+// src/shared/utils/ctrlLogger.ts
 
 interface CtrlLogger extends Console {
   info: (message?: any, ...optionalParams: any[]) => void;
@@ -29,18 +11,21 @@ const ctrlLogger: CtrlLogger = {
 
   info(...args) {
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log(...args);
     }
   },
 
   log(...args) {
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.log(...args);
     }
   },
 
   warn(...args) {
     if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
       console.warn(...args);
     }
   },

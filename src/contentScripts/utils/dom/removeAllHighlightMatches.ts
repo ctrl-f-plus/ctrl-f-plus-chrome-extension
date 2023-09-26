@@ -19,6 +19,7 @@ export default function removeAllHighlightMatches() {
       return;
     }
 
+    // eslint-disable-next-line no-param-reassign
     elem.outerHTML = textContent;
   });
 }

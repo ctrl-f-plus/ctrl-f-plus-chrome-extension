@@ -6,9 +6,7 @@ import createSpan from './createSpan';
 function getElementByXPath(xpath: string) {
   let result = null;
 
-  // Check if the xpath starts with "//" (indicating an ID-based xpath)
   if (xpath.startsWith('//')) {
-    // Evaluate the xpath expression from the root of the document
     result = document.evaluate(
       xpath,
       document,

@@ -143,7 +143,7 @@ function Layover() {
       {' '}
       {showLayover && (
         <div id="ctrl-f-plus-extension">
-          <div className="fixed left-5 top-10 z-[9999] h-0 w-0 bg-red-500">
+          <div className="fixed left-5 top-10 z-[9999] h-0 w-0">
             <DraggableContainer>
               <SearchInput focus={showLayover} />
             </DraggableContainer>

@@ -1,7 +1,6 @@
 // src/contentScripts/hooks/useLayoverHandler.ts
 
 import { useReducer } from 'react';
-
 import { LayoverPosition } from '../../shared/types/shared.types';
 import {
   ActionTypes,

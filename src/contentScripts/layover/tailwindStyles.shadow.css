@@ -494,9 +494,6 @@ video {
 .pointer-events-none {
   pointer-events: none !important;
 }
-.visible {
-  visibility: visible !important;
-}
 .fixed {
   position: fixed !important;
 }

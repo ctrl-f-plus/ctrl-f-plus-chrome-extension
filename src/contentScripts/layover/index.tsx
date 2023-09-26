@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { LayoverProvider } from '../contexts/LayoverContext';
 import { TabStateContextProvider } from '../contexts/TabStateContext';
 import Layover from './Layover';
+// @ts-ignore
 import shadowStyles from './tailwindStyles.shadow.css';
 import ctrlLogger from '../../shared/utils/ctrlLogger';
 

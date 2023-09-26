@@ -147,7 +147,6 @@ export default function useFindMatches() {
     ]
   );
 
-  // TODO: ***987 0 SearchInput Component Testing
   const nextMatch = useCallback(
     () =>
       navigateMatches(Direction.NEXT, (currentState: TabState) =>

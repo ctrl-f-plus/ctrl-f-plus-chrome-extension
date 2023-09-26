@@ -20,8 +20,9 @@ export default function useActiveTabChange() {
 
     handleActiveTabChange();
 
-    // TODO: Try to make sure that you test for the infinite loop that this dependency array causes:
-    // }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
+    // TODO: Write test(s) that fails in the presence of infinite looping.
+    //       The following dependency array causes an infinite loop:
+    //       }, [activeTabId, setShowLayover, showMatches, tabStateContext.tabId]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTabId]);

@@ -8,6 +8,8 @@ import ctrlLogger from '../shared/utils/ctrlLogger';
 
 // Old Highlight-Focus Color: #05fdb4
 // background-color: #53e7bb !important;
+// #222D31
+// #69757B
 const highlightStyles = `
 .${HIGHLIGHT_CLASS} {
   background-color: #128da1 !important;
@@ -43,6 +45,3 @@ if (!window.__HIGHLIGHT_STYLES_SCRIPT_INJECTED__) {
     'highlightStyles.ts: Content script already injected. Exiting...'
   );
 }
-
-// #222D31
-// #69757B

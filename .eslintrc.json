@@ -1,7 +1,6 @@
 {
   "env": {
     "browser": true,
-    // "es2021": true
     "es6": true,
     "node": true,
     "jest": true
@@ -45,10 +44,7 @@
     "prettier/prettier": "error",
     "no-unused-vars": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
-    // "no-console": "off",
-    // "func-names": "off",
-    // "object-shorthand": "off",
-    // "class-methods-use-this": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "react/react-in-jsx-scope": "off",
     "no-continue": "off",
     "no-underscore-dangle": "off",
@@ -66,13 +62,8 @@
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
-    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
-    "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
-    // "max-len": [
-    //   "error",
-    //   { "code": 90, "ignoreComments": true, "ignoreUrls": true }
-    // ]
-    // FOR PRETTIER: "printWidth": 90
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "react": {
