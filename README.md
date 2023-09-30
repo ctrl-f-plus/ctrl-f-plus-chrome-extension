@@ -8,10 +8,9 @@
 
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-%2348D0A8?style=for-the-badge)](https://makeapullrequest.com)
-![GitHub top language](https://img.shields.io/github/languages/top/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)
-![GitHub](https://img.shields.io/github/license/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)
-![Chrome Users](https://img.shields.io/chrome-web-store/users/dkfbnlclahcmcgehpancgfhogmilankf?color=%2348D0A8&style=for-the-badge&logo=google-chrome&logoColor=white&label=Chrome%20Users)
-
+[![GitHub top language](https://img.shields.io/github/languages/top/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/tree/master)
+[![GitHub](https://img.shields.io/github/license/ctrl-f-plus/ctrl-f-plus-chrome-extension?color=%2348D0A8&style=for-the-badge)](https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension/blob/master/LICENSE)
+[![Chrome Users](https://img.shields.io/chrome-web-store/users/dkfbnlclahcmcgehpancgfhogmilankf?color=%2348D0A8&style=for-the-badge&logo=google-chrome&logoColor=white&label=Chrome%20Users)](https://chrome.google.com/webstore/detail/ctrl-f-plus-ctrl-%2B-f-acro/dkfbnlclahcmcgehpancgfhogmilankf)
 
 
 </div>
