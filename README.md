@@ -43,6 +43,7 @@ Ctrl-F Plus is currently supported by Google Chrome, Brave, Microsoft Edge, Oper
 
 ### Tech Stack
 
+- React
 - Typescript
 - Tailwind
 
