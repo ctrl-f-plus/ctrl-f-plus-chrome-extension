@@ -20,7 +20,7 @@
       "run_at": "document_idle"
     }
   ],
-  "permissions": ["activeTab", "tabs", "storage", "contextMenus", "scripting"],
+  "permissions": ["activeTab", "storage", "contextMenus", "scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "commands": {
     "_execute_action": {
