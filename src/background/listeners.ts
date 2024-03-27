@@ -1,5 +1,7 @@
 // src/background/chromeListeners.ts
+// src/background/listeners.ts
 
+import browser from 'webextension-polyfill';
 import {
   GET_ALL_MATCHES,
   REMOVE_ALL_HIGHLIGHT_MATCHES,
@@ -21,28 +23,29 @@ import InstallDetails from './store/installDetails';
 import { createWindowStore } from './store/windowStore';
 import { checkOnInstalled, getActiveTabId } from './utils/chromeApiUtils';
 import { clearAllStoredTabs, clearLocalStorage } from './utils/storage';
+import { ValidTabId } from '@src/contentScripts/types/tab.types';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let csLoaded = false;
 
 export function startOnInstalledListener() {
-  chrome.runtime.onInstalled.addListener((details) => {
+  browser.runtime.onInstalled.addListener((details) => {
     clearLocalStorage();
     InstallDetails.reason = details.reason;
 
-    chrome.contextMenus.create({
+    browser.contextMenus.create({
       id: 'KEYBOARD_SHORTCUT_SETUP',
       title: 'Set Keyboard Shortcut',
       contexts: ['action'],
     });
 
-    chrome.contextMenus.create({
+    browser.contextMenus.create({
       id: 'GITHUB',
       title: 'Open Source: View on GitHub',
       contexts: ['action'],
     });
 
-    chrome.contextMenus.create({
+    browser.contextMenus.create({
       id: 'DONATE',
       title: 'Donate',
       contexts: ['action'],
@@ -50,21 +53,29 @@ export function startOnInstalledListener() {
   });
 }
 
-export default async function startListeners() {
+export async function startListeners() {
   await checkOnInstalled();
 
-  chrome.contextMenus.onClicked.addListener((info, tab) => {
+  browser.runtime.onMessage.addListener(
+    (request: { popupMounted: boolean }) => {
+      if (request.popupMounted) {
+        console.log('background page notified that Popup.tsx has mounted');
+      }
+    }
+  );
+
+  browser.contextMenus.onClicked.addListener((info, tab) => {
     switch (info.menuItemId) {
       case 'DONATE':
-        chrome.tabs.create({
+        browser.tabs.create({
           url: 'https://opencollective.com/ctrl-f-plus-chrome-extension',
         });
         break;
       case 'KEYBOARD_SHORTCUT_SETUP':
-        chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+        browser.tabs.create({ url: 'chrome://extensions/shortcuts' });
         break;
       case 'GITHUB':
-        chrome.tabs.create({
+        browser.tabs.create({
           url: 'https://github.com/ctrl-f-plus/ctrl-f-plus-chrome-extension',
         });
         break;
@@ -72,7 +83,7 @@ export default async function startListeners() {
     }
   });
 
-  chrome.runtime.onMessage.addListener(
+  browser.runtime.onMessage.addListener(
     async (message: ToBackgroundMessage, sender, sendResponse) => {
       try {
         ctrlLogger.info('Received message:', message, ' \n Store: ', store);
@@ -132,13 +143,9 @@ export default async function startListeners() {
     }
   );
 
-  chrome.windows.onFocusChanged.addListener(async (windowId) => {
+  browser.windows.onFocusChanged.addListener(async (windowId) => {
     try {
-      if (windowId === chrome.windows.WINDOW_ID_NONE) {
-        return;
-      }
-
-      if (store === undefined) {
+      if (windowId === browser.windows.WINDOW_ID_NONE || store === undefined) {
         return;
       }
 
@@ -149,23 +156,31 @@ export default async function startListeners() {
         store.activeWindowStore = createWindowStore();
         return;
       }
-      const activeTabId = await getActiveTabId();
-      activeWindowStore.setActiveTabId(activeTabId);
+
+      try {
+        const activeTabId = await getActiveTabId();
+        activeWindowStore.setActiveTabId(activeTabId);
+      } catch (error) {
+        ctrlLogger.log('Error getting active tab ID:', error);
+      }
 
       activeWindowStore.sendToContentScripts({ restoreHighlights: false });
 
-      chrome.windows.get(windowId, (focusedWindow) => {
-        if (focusedWindow.type === 'normal') {
-          activeWindowStore.setTotalTabsCount();
-          activeWindowStore.setUpdatedTabsCount(0);
-        }
-      });
+      const focusedWindow = await browser.windows.get(windowId);
+
+      // browser.windows.get(windowId, (focusedWindow) => {
+      if (focusedWindow.type === 'normal') {
+        activeWindowStore.setTotalTabsCount();
+        activeWindowStore.setUpdatedTabsCount(0);
+      }
+      // });
     } catch (error) {
       ctrlLogger.log(error);
+      // ctrlLogger.log('Error in onFocusChanged listener:', error);
     }
   });
 
-  chrome.tabs.onCreated.addListener(() => {
+  browser.tabs.onCreated.addListener(() => {
     try {
       if (store === undefined) {
         return;
@@ -185,7 +200,8 @@ export default async function startListeners() {
     }
   });
 
-  chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  // TODO: not sure if you need async here or not
+  browser.tabs.onActivated.addListener(async ({ tabId }) => {
     try {
       if (store === undefined) {
         return;
@@ -207,7 +223,7 @@ export default async function startListeners() {
     }
   });
 
-  chrome.tabs.onUpdated.addListener(async () => {
+  browser.tabs.onUpdated.addListener(async () => {
     try {
       if (store === undefined) {
         return;
@@ -230,7 +246,7 @@ export default async function startListeners() {
     }
   });
 
-  chrome.tabs.onRemoved.addListener((removedTabId: any) => {
+  browser.tabs.onRemoved.addListener((removedTabId: ValidTabId) => {
     try {
       if (store === undefined) {
         return;
@@ -245,7 +261,7 @@ export default async function startListeners() {
     }
   });
 
-  chrome.action.onClicked.addListener(() => {
+  browser.action.onClicked.addListener(() => {
     try {
       // await executeContentScripts();
       if (store === undefined) {
@@ -261,7 +277,7 @@ export default async function startListeners() {
 
       activeWindowStore.sendToContentScripts();
     } catch (error) {
-      ctrlLogger.log('Caught chrome.action.onClicked.addListener ', Error);
+      ctrlLogger.log('Caught browser.action.onClicked.addListener ', Error);
     }
   });
 }

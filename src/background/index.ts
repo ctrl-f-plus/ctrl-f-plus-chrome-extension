@@ -1,6 +1,7 @@
 // src/background/index.ts
 
-import startListeners, {
+import {
+  startListeners,
   csLoaded,
   startOnInstalledListener,
 } from './listeners';
