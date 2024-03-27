@@ -1,4 +1,6 @@
 // __tests__/e2e/e2e.test.ts
+// @ts-nocheck
+
 /* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
@@ -161,6 +163,8 @@ describe('Tab Navigation Extension', () => {
       });
 
       afterAll(async () => {
+        // TODO: undo this eslint suppression
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         browserArray.map(async (browser: Browser) => {
           await browser.close();
         });
@@ -193,6 +197,7 @@ describe('Tab Navigation Extension', () => {
           );
 
           const matchingCounts = await page.evaluate(
+            // @ts-ignore
             (el) => el.innerText,
             matchingCountsElement
           );
@@ -265,8 +270,10 @@ describe('Tab Navigation Extension', () => {
           expect(searchInput).toBeNull();
         });
 
-        test('closing the search input unhighlights all matches', async () => {
+        test('closing the search input un-highlights all matches', async () => {
           await page.waitForTimeout(1000);
+          // TODO: undo this eslint suppression
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const totalHighlightCount = await countHighlightedMatches(
             pages,
             query

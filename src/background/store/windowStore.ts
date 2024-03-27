@@ -138,7 +138,9 @@ export const createWindowStore = (): WindowStore => {
         if (
           this.tabStores[curTabId].serializedTabState.matchesCount !== undefined
         ) {
+          // @ts-ignore
           globalMatchCount +=
+            // @ts-ignore
             this.tabStores[curTabId].serializedTabState.matchesCount;
         }
       }

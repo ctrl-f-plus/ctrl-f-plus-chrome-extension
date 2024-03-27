@@ -1,5 +1,5 @@
 // src/contentScripts/__tests__/useMessageHandler.test.tsx
-
+// @ts-nocheck
 import { render } from '@testing-library/react';
 import { useCallback } from 'react';
 import useMessageHandler from '../hooks/useMessageHandler';

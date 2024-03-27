@@ -33,6 +33,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
+    // "project": "./ctrl-f-plus-chrome-extension/tsconfig.json",
     "project": "./tsconfig.json",
     "requireConfigFile": true,
     "ecmaFeatures": {

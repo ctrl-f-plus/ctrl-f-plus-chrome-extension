@@ -61,5 +61,6 @@ export default function serializeTabState(
     ...otherProperties,
     serializedMatches: serializedXPaths,
   };
+
   return serializedState;
 }

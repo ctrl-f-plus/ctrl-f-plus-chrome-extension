@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-useless-escape */
+// @ts-nocheck
 /* eslint-disable no-await-in-loop */
 // __tests__/e2e/helpers.ts
 
@@ -51,6 +54,7 @@ export async function getInputValueFromSelector(
 ) {
   // return page.$eval(selector, (el) => (el as HTMLInputElement).value);
   const shadowRoot = await queryShadowRoot(page);
+  // @ts-ignore
   const inputValue = await shadowRoot.$eval(
     selector,
     (el: HTMLInputElement) => el.value

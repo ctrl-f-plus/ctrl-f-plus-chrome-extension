@@ -594,10 +594,6 @@ video {
 .bg-cod-gray\/90 {
   background-color: rgb(18 18 18 / 0.9) !important;
 }
-.bg-red-500 {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(239 68 68 / var(--tw-bg-opacity)) !important;
-}
 .bg-transparent {
   background-color: transparent !important;
 }

@@ -35,7 +35,7 @@ function createCustomTreeWalker() {
   );
 }
 
-function updatequeryMatchesect(span: HTMLElement, tabState?: TabState) {
+function updateQueryMatchesect(span: HTMLElement, tabState?: TabState) {
   tabState?.queryMatches.push(span);
 }
 
@@ -88,8 +88,11 @@ function processTextNode(textNode: Node, regex: RegExp, tabState?: TabState) {
 
     const span = createSpan([HIGHLIGHT_CLASS], matchText);
 
-    updatequeryMatchesect(span, tabState);
+    updateQueryMatchesect(span, tabState);
 
+    // @ts-ignore
+    // TODO: undo this eslint suppression
+    // eslint-disable-next-line no-param-reassign
     tabState.matchesCount += 1; // FIXME: maybe add state class -> // updatedState.queryMatches.push(span);
 
     fragment.appendChild(span);
