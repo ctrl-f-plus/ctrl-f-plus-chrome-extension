@@ -1,3 +1,5 @@
+// src/contentScripts/layover/Layover.tsx
+
 import { useCallback, useContext } from 'react';
 import { TabStore } from '../../background/types/Store.types';
 import {
@@ -56,8 +58,6 @@ function Layover() {
       const tabState = restoreHighlightSpans(xPathTabState, restoreHighlights);
       setTabStateContext(tabState);
     },
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

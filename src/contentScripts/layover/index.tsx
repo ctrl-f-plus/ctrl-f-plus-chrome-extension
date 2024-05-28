@@ -1,3 +1,5 @@
+// src/contentScripts/layover/index.tsx
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { LayoverProvider } from '../contexts/LayoverContext';

@@ -86,9 +86,11 @@
   },
   "dependencies": {
     "autoprefixer": "^10.4.14",
+    "babel-plugin-react-compiler": "0.0.0-experimental-c23de8d-20240515",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-react-compiler": "0.0.0-experimental-53bb89e-20240515",
     "eslint-webpack-plugin": "^4.0.1",
     "html-webpack-plugin": "^5.5.1",
     "postcss": "^8.4.23",
